@@ -1,34 +1,29 @@
-# Zed Bot
+# TWXProxy
+## What is TWXProxy?
 
-## What is Zed Bot?
+**TWXProxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Borland Delphi 5.
 
-**Zed Bot** is an **open source** repository for a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in [TWXProxy Script (TS)](https://github.com/erikh/twxproxy). 
-
-A TradeWars bot simplies gameplay by automating common tasks such as colonizing, cashing, and much much more.
+Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled under Windows XP using .
 
 ## Projects
 
-* [ZedBot](https://github.com/MicroBlaster/ZedBot/Source/ZedBot2) is Zed's complete TradeWars bot, including powerful scripts that were to authorized users ONLY!
-* [ZedPack](https://github.com/MicroBlaster/ZedBot/Source/ZedPack) is a collation of scripts that can be run from the bot or standalone.
-* [VISX-TS](https://github.com/MicroBlaster/ZedBot/tree/master/Source/TWXProxy/VSIX-TS) is a *Visual Studio extention for editing TWXProxy Script (TS).
+* [TWXProxy](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) is the latest version of TWXProxy released by Elder Prophit.
+* [VISX-TS](https://github.com/MicroBlaster/TWXProxy/Source/VSIX-TS) is a **Visual Studio** extention for editing TWXProxy Script (TS).
 
-## Zed Bot is free and open source
+## TWXProxy is free and open source
 
-All projects of [ZedBot](https://github.com/MicroBlaster/ZedBot) are available for free, under the [MIT license](https://github.com/MicroBlaster/ZedBot/LICENSE.MD).
+TWXProxy is availble under the [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) as published by the Free Software Foundation (Version 2 or later).
+
+VISX-TS is available under the [MIT license](https://github.com/MicroBlaster/TWXProxy/LICENSE.MD).
 
 ## Installation
 
-Download the and run the installer
+TWXProxy can be installed by copying the files to a local directory. I recommend using a short path (i.e. c:\TWXP), becuase TWXProxy has problems with longer paths.
 
-*Note: The installer includes TWXProxy 2.05 and additional scritpts that are not part of ZedBot.*
+VISX-TS installation instructions coming soon.
 
-## Credits
+## Active Contributers:
 
-Zed, Traveler, CareTaker, Remco Mulder, Cherokee, LoneStar
-
-##Active Contributers:
-
-* Archibald H. Vilanos III (aka Zed)
 * David O. McCartney (aka MicroBlaster)
 
 If you would like to contribute to this project, please email DMC@IT1.BIZ for further information.
