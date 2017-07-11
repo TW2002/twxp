@@ -14,7 +14,7 @@ Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy
 
 TWXProxy is availble under the [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) as published by the Free Software Foundation (Version 2 or later).
 
-VISX-TS is available under the [MIT license](https://github.com/MicroBlaster/TWXProxy/LICENSE.MD).
+VISX-TS is available under the [MIT license](https://github.com/MicroBlaster/TWXProxy/blob/master/LICENSE.md).
 
 ## Installation
 
