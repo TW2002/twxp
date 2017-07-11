@@ -151,9 +151,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WindowsScript.ProjectTemplate\WindowsScript.ProjectTemplate.csproj">
+    <ProjectReference Include="..\ProjectTemplate\ProjectTemplate.csproj">
       <Project>{651ebed8-058e-4104-a3b5-2e06330822f2}</Project>
-      <Name>WindowsScript.ProjectTemplate</Name>
+      <Name>ProjectTemplate</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
