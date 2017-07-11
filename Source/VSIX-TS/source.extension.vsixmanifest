@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="VSIX_TS.David McCartney.2daec86e-fc16-4514-8574-b1bd4ade6454" Version="1.0" Language="en-US" Publisher="David McCartney" />
+    <Identity Id="VSIX_TS.David McCartney.f932da4d-31c6-4015-88db-f2823d1de34f" Version="1.0" Language="en-US" Publisher="David McCartney" />
     <DisplayName>VSIX_TS</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>

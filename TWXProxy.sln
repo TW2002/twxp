@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TWXProxy", "TWXProxy", "{C21C482C-CF80-4C14-920A-B518345A4E33}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSIX-TS", "VSIX-TS", "{179C8D65-29B6-45B1-B08D-109D6D6398CC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIX-TS", "Source\TWXProxy\VSIX-TS\VSIX-TS.csproj", "{B3BCBE9A-9FE5-485B-9886-309B65EE91A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIX-TS", "Source\VSIX-TS\VSIX-TS.csproj", "{4F549E39-E57C-4494-8974-B4AFB673D0CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,15 +11,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3BCBE9A-9FE5-485B-9886-309B65EE91A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3BCBE9A-9FE5-485B-9886-309B65EE91A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3BCBE9A-9FE5-485B-9886-309B65EE91A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3BCBE9A-9FE5-485B-9886-309B65EE91A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F549E39-E57C-4494-8974-B4AFB673D0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F549E39-E57C-4494-8974-B4AFB673D0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F549E39-E57C-4494-8974-B4AFB673D0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F549E39-E57C-4494-8974-B4AFB673D0CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B3BCBE9A-9FE5-485B-9886-309B65EE91A6} = {179C8D65-29B6-45B1-B08D-109D6D6398CC}
 	EndGlobalSection
 EndGlobal
