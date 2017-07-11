@@ -8,7 +8,7 @@ A TradeWars bot simplies gameplay by automating common tasks such as colonizing,
 
 ## Projects
 
-* [ZedBot](https://github.com/MicroBlaster/ZedBot/Source/ZedBot2) is Zed's complete TradeWars bot, including powerful scripts that were previously available to authorized users ONLY!
+* [ZedBot](https://github.com/MicroBlaster/ZedBot/Source/ZedBot2) is Zed's complete TradeWars bot, including powerful scripts that were to authorized users ONLY!
 * [ZedPack](https://github.com/MicroBlaster/ZedBot/Source/ZedPack) is a collation of scripts that can be run from the bot or standalone.
 * [VISX-TS](https://github.com/MicroBlaster/ZedBot/tree/master/Source/TWXProxy/VSIX-TS) is a *Visual Studio extention for editing TWXProxy Script (TS).
 
