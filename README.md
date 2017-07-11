@@ -3,11 +3,11 @@
 
 **TWXProxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Borland Delphi 5.
 
-Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled under Windows XP using .
+Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled under Windows XP using Turbo Delphi 2006 Explorer. Turbo Delphi 2006 Explorer is no longer available from http://www.turboexplorer.com/delphi, and there is no way to request a license file.
 
 ## Projects
 
-* [TWXProxy](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) is the latest version of TWXProxy released by Elder Prophit.
+* [TWXProxy](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) 2.5.73 is the latest version of TWXProxy released by Elder Prophit.
 * [VISX-TS](https://github.com/MicroBlaster/TWXProxy/Source/VSIX-TS) is a **Visual Studio** extention for editing TWXProxy Script (TS).
 
 ## TWXProxy is free and open source
