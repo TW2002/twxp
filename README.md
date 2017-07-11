@@ -2,7 +2,9 @@
 
 ## What is Zed Bot?
 
-**Zed Bot** is an **open source** repository for a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in [TWXProxy Script (TS)](https://github.com/erikh/twxproxy). A TradeWars bot simplies gameplay by automating common tasks such as colonizing, cashing, and much much more.
+**Zed Bot** is an **open source** repository for a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in [TWXProxy Script (TS)](https://github.com/erikh/twxproxy). 
+
+A TradeWars bot simplies gameplay by automating common tasks such as colonizing, cashing, and much much more.
 
 ## Projects
 
