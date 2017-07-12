@@ -23,13 +23,6 @@ TWXProxy is licensed under the [GNU General Public License](https://www.gnu.org/
 
 VisualTS is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International license](https://creativecommons.org/licenses/by-nc/4.0/legalcode).
 
-
-## Installation
-
-TWXProxy can be installed by copying the files to a local directory. I recommend using a short path (i.e. c:\TWXP), becuase TWXProxy has problems with longer paths.
-
-VisualTS installation instructions coming soon.
-
 ## Active Contributers:
 
 * David O. McCartney (aka MicroBlaster)
