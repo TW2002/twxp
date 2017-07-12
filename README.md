@@ -7,7 +7,7 @@ Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy
 
 **Turbo Delphi 2006 Explorer** is no longer available from http://www.turboexplorer.com/delphi, and there is no way to request a license file.
 
-**Boreland RAD Studio 10.2** - Delphi Starter edition is currently available for free / limited use.
+**Boreland RAD Studio 10.2** - Delphi Starter edition is currently available for free / limited use, but can not be used to compile the Boreland Delphi 5 code.
 https://www.embarcadero.com/products/delphi/starter/
 
 ## Projects
