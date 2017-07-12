@@ -2,7 +2,7 @@
 
 # VisualTS
 
-## Visual Studio extetion for Tradewars Script (TS)
+**Visual Studio extetion for Tradewars Script (TS)**
 
 Now you can edit TradeWars scripts in Visual Sturio with this VISX estention.
 
