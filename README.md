@@ -1,6 +1,4 @@
-<img align="right" width="256" height="256" src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
-
-# TWXProxy
+# TWXProxy - The Veterans TradeWars helper
 ## What is TWXProxy?
 
 **TWXProxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Borland Delphi 5.
