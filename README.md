@@ -1,10 +1,4 @@
-<div style="float: right;margin-right: 7px;margin-top: 7px;" />
-test
-</div>
-<div style="align: right;">
-    <img src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
-</div>
-
+<img align="right" width="256" height="256" src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
 # TWXProxy
 ## What is TWXProxy?
 
@@ -12,16 +6,19 @@ test
 
 Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled under Windows XP using Turbo Delphi 2006 Explorer. Turbo Delphi 2006 Explorer is no longer available from http://www.turboexplorer.com/delphi, and there is no way to request a license file.
 
+**Boreland RAD Studio 10.2** - Delphi Starter edition is currently available for free / limited use.
+https://www.embarcadero.com/products/delphi/starter/
+
 ## Projects
 
-* [TWXProxy](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) 2.5.73 is the latest version of TWXProxy released by Elder Prophit.
-* [VISX-TS](https://github.com/MicroBlaster/TWXProxy/Source/VSIX-TS) is a **Visual Studio** extention for editing TWXProxy Script (TS).
+* [TWXProxy-EP](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) is the latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
+* [VisualTS](https://github.com/MicroBlaster/TWXProxy/Source/VisualTS) is a Visual Studio extention for editing TradewarsScript (TS).
 
 ## TWXProxy is free and open source
 
 TWXProxy is availble under the [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) as published by the Free Software Foundation (Version 2 or later).
 
-VISX-TS is available under the [MIT license](https://github.com/MicroBlaster/TWXProxy/blob/master/LICENSE.md).
+VisualTS is available under the Creative Commons [Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/legalcode) license.
 
 ## Installation
 
