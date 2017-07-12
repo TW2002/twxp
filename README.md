@@ -19,15 +19,17 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## TWXProxy is free and open source
 
-TWXProxy is availble under the [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) as published by the Free Software Foundation (Version 2 or later).
+TWXProxy is licensed under the [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) as published by the Free Software Foundation (Version 2 or later).
 
-VisualTS is available under the Creative Commons [Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/legalcode) license.
+VisualTS is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International license](https://creativecommons.org/licenses/by-nc/4.0/legalcode).
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
 
 ## Installation
 
 TWXProxy can be installed by copying the files to a local directory. I recommend using a short path (i.e. c:\TWXP), becuase TWXProxy has problems with longer paths.
 
-VISX-TS installation instructions coming soon.
+VisualTS installation instructions coming soon.
 
 ## Active Contributers:
 
