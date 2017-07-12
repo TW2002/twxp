@@ -12,8 +12,8 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Projects
 
-* [TWXProxy-EP](https://github.com/MicroBlaster/TWXProxy/Source/TWXProxy) is the latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
-* [VisualTS](https://github.com/MicroBlaster/TWXProxy/Source/VisualTS) is a Visual Studio extention for editing TradewarsScript (TS).
+* [TWXProxy-EP](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-EP) is the latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
+* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Visual Studio extention for editing TradewarsScript (TS).
 
 ## TWXProxy is free and open source
 
