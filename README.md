@@ -1,4 +1,5 @@
-<img src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" style="float: right;margin-right: 7px;margin-top: 7px;" />
+![](https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png#right)
+" style="float: right;margin-right: 7px;margin-top: 7px;" />
 
 
 # TWXProxy
