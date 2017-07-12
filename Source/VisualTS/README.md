@@ -1,4 +1,4 @@
-<img align="Right" src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
+<img align="Right" width="128" height="128" src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
 
 # VisualTS - Visual Studio extetion for Tradewars Script (TS)
 
