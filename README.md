@@ -7,7 +7,7 @@
 
 Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled under Windows XP using Turbo Delphi 2006 Explorer. 
 
-Turbo Delphi 2006 Explorer is no longer available from http://www.turboexplorer.com/delphi, and there is no way to request a license file.
+**Turbo Delphi 2006 Explorer** is no longer available from http://www.turboexplorer.com/delphi, and there is no way to request a license file.
 
 **Boreland RAD Studio 10.2** - Delphi Starter edition is currently available for free / limited use.
 https://www.embarcadero.com/products/delphi/starter/
