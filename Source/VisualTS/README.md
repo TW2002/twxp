@@ -1,6 +1,8 @@
 <img align="Right" width="128" height="128" src="https://github.com/MicroBlaster/TWXProxy/blob/master/Source/VisualTS/VisualTS.png" />
 
-# VisualTS - Visual Studio extetion for Tradewars Script (TS)
+# VisualTS
+
+##Visual Studio extetion for Tradewars Script (TS)
 
 Now you can edit TradeWars scripts in Visual Sturio with this VISX estention.
 
