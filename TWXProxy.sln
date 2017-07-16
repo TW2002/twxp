@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TWXProxy", "TWXProxy", "{0B71F460-A6F6-4609-8687-8C11EAE558B0}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTemplate", "Source\VisualTS\ProjectTemplate\ProjectTemplate.csproj", "{651EBED8-058E-4104-A3B5-2E06330822F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectType", "Source\VisualTS\ProjectType\ProjectType.csproj", "{D14ED547-03FF-4195-A5A0-2107C033C2EF}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TWXProxy", "Source\Installer\TWXProxy\TWXProxy.vdproj", "{1896B351-7A52-4946-9338-A1F4D558B446}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,8 +27,6 @@ Global
 		{D14ED547-03FF-4195-A5A0-2107C033C2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D14ED547-03FF-4195-A5A0-2107C033C2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D14ED547-03FF-4195-A5A0-2107C033C2EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1896B351-7A52-4946-9338-A1F4D558B446}.Debug|Any CPU.ActiveCfg = Debug
-		{1896B351-7A52-4946-9338-A1F4D558B446}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +34,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{651EBED8-058E-4104-A3B5-2E06330822F2} = {136F65CD-CA75-4AFF-B330-A4412583B481}
 		{D14ED547-03FF-4195-A5A0-2107C033C2EF} = {136F65CD-CA75-4AFF-B330-A4412583B481}
-		{1896B351-7A52-4946-9338-A1F4D558B446} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
 	EndGlobalSection
 EndGlobal
