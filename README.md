@@ -12,10 +12,18 @@ Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy
 **Boreland RAD Studio 10.2** - Delphi Starter edition is currently available for free / limited use, but can not be used to compile the Boreland Delphi 5 code.
 https://www.embarcadero.com/products/delphi/starter/
 
-## Projects
+## Active Projects
 
+* [TWXProxy-MB](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB) is an updated version of TWXProxy released by MicroBlaster (Version 3.1736).
+* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Visual Studio Code extention for editing TradewarsScript (TS)  **COMING SOON!!!***.
+
+* [PYTWX](https://bitbucket.org/mrdon/pytwx/src) a server side port of TWX to Python by Mr. Don.
+
+## Other Versions:
 * [TWXProxy-EP](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-EP) is the latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
-* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Visual Studio extention for editing TradewarsScript (TS).
+* [TWXPROXY 2.04](https://github.com/erikh/twxproxy) Windows XP Version by Elder Prophit.
+* [TWXPROXY 2.03](https://github.com/erikh/twxproxy) Mirror of an older version by Remco Mulder.
+* [TWXPROXY BBS](https://code.google.com/archive/p/twxproxy-ep/wikis/TwxBbsAdministrationGuide.wiki) A server-side proxy for TWGS based on TWXProxy 2.04.
 
 ## Active Contributers:
 
