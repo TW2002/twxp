@@ -21,9 +21,9 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Other Versions:
 * [TWXProxy 2.05](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-EP) is the latest version of TWXProxy released by Elder Prophit.
-* [TWXPROXY 2.04](https://github.com/erikh/twxproxy) Windows XP Version by Elder Prophit.
-* [TWXPROXY 2.03](https://github.com/erikh/twxproxy) Mirror of an older version by Remco Mulder.
-* [TWXPROXY BBS](https://code.google.com/archive/p/twxproxy-ep/wikis/TwxBbsAdministrationGuide.wiki) A server-side proxy for TWGS based on TWXProxy 2.04.
+* [TWXProxy 2.04](https://github.com/erikh/twxproxy) Windows XP Version by Elder Prophit.
+* [TWXProxy 2.03](https://github.com/erikh/twxproxy) Mirror of an older version by Remco Mulder.
+* [TWXProxy BBS](https://code.google.com/archive/p/twxproxy-ep/wikis/TwxBbsAdministrationGuide.wiki) A server-side proxy for TWGS based on TWXProxy 2.04.
 
 ## Active Contributers:
 
