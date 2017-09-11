@@ -20,7 +20,7 @@ https://www.embarcadero.com/products/delphi/starter/
 * [PYTWX](https://bitbucket.org/mrdon/pytwx/src) a server side port of TWX to Python by Mr. Don.
 
 ## Other Versions:
-* [TWXProxy-EP](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-EP) is the latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
+* [TWXProxy 2.05](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-EP) is the latest version of TWXProxy released by Elder Prophit.
 * [TWXPROXY 2.04](https://github.com/erikh/twxproxy) Windows XP Version by Elder Prophit.
 * [TWXPROXY 2.03](https://github.com/erikh/twxproxy) Mirror of an older version by Remco Mulder.
 * [TWXPROXY BBS](https://code.google.com/archive/p/twxproxy-ep/wikis/TwxBbsAdministrationGuide.wiki) A server-side proxy for TWGS based on TWXProxy 2.04.
