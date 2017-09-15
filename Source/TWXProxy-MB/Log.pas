@@ -284,10 +284,10 @@ begin
 
   if (IOResult <> 0) then
   begin
-    {MB - Removed Popup Message}
+    // MB - Removed Popup Message
     TWXServer.ClientMessage('Unable to open log file - logging has been disabled.' + endl + 'File: ' + LogFileName);
-    {ShowMessage('Unable to open log file - logging has been disabled.' + endl + 'File: ' + LogFileName);}
-    {LogData := FALSE;}
+    //ShowMessage('Unable to open log file - logging has been disabled.' + endl + 'File: ' + LogFileName);
+    //LogData := FALSE;
     CloseLog;
   end
   else
@@ -360,8 +360,8 @@ begin
 
     if (IOResult <> 0) then
     begin
-      {MB - Remove Popup Message}
-      {ShowMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');}
+      // MB - Remove Popup Message
+      // ShowMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
       TWXServer.ClientMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
       {LogData := FALSE;}
       CloseLog;

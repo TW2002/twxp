@@ -243,7 +243,7 @@ begin
     end
     else
       // MB - Ignore this error.
-      //raise EScriptError.Create('''' + FStrValue + ''' is not a number');
+      raise EScriptError.Create('''' + FStrValue + ''' is not a number');
 
   Result := FDecValue;
 end;
