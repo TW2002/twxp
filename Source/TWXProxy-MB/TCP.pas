@@ -773,9 +773,10 @@ begin
   end
   else
   begin
-    TWXServer.ClientMessage('Connection failure');
+    //TWXServer.ClientMessage('Connection failure');
     // EP - Only show the dialog if Reconnect = FALSE
-    MessageDlg('Error trying to connect to host ' + tcpClient.Host + ' on port ' + IntToStr(tcpClient.Port) + '.', mtWarning, [mbOk], 0);
+    // MB - Converted popup dialog to a client message
+    TWXServer.ClientMessage('Error trying to connect to host ' + tcpClient.Host + ' on port ' + IntToStr(tcpClient.Port) + '.');
   end;
 
   TWXInterpreter.ProgramEvent('Connection lost', '', FALSE);
