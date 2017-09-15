@@ -240,10 +240,9 @@ begin
 
       FIsNumeric := TRUE;
       FNumChanged := FALSE; // EP - meaning FStrValue & FDecValue are sync'd
-    end;
-    //else
-      // MB - This error occurs when the value left of > is not a number, and can safely be ignored.
-      //raise EScriptError.Create('''' + FStrValue + ''' is not a number');
+    end
+    else
+      raise EScriptError.Create('''' + FStrValue + ''' is not a number');
 
   Result := FDecValue;
 end;

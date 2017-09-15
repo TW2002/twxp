@@ -220,17 +220,11 @@ begin
   begin
     // Save current sector if not done already
     if not (FSectorSaved) then
-       SectorCompleted;
-    // Record Current Sector Index
+      SectorCompleted;
 
+    // Record Current Sector Index
     FCurrentSectorIndex := StrToIntSafe(Copy(Line, 24, (AnsiPos('(', Line) - 26)));
 
-    // MB - Display 'v' screen if stardock location is unknown.
-    if (TWXDatabase.DBHeader.Stardock = 0) then
-    begin
-      //TWXServer.ClientMessage('DEBUG: CurrentSectorIndex = ' + IntToStr(FCurrentSectorIndex));
-      TWXClient.Send('v');
-    end;
     // No displays anymore, all done
     FCurrentDisplay := dNone;
     FLastWarp := 0;
