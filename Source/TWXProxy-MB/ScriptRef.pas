@@ -242,7 +242,8 @@ begin
       FNumChanged := FALSE; // EP - meaning FStrValue & FDecValue are sync'd
     end
     else
-      raise EScriptError.Create('''' + FStrValue + ''' is not a number');
+      // MB - Ignore this error.
+      //raise EScriptError.Create('''' + FStrValue + ''' is not a number');
 
   Result := FDecValue;
 end;

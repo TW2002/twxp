@@ -169,13 +169,9 @@
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">TWXProxy</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="Comments"></VersionInfoKeys>  <VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
-    </VersionInfoKeys>  <Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\HelpLink.bpl">Help Link for Delphi</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Projects\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages>
-    </Excluded_Packages>
-  </Delphi.Personality>
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
+		</VersionInfoKeys>
+		<Excluded_Packages><Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages><Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages><Excluded_Packages Name="C:\Portable\TDLite\Bin\HelpLink.bpl">Help Link for Delphi</Excluded_Packages><Excluded_Packages Name="C:\Portable\TDLite\Projects\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages></Excluded_Packages></Delphi.Personality>
 	<ModelSupport>True</ModelSupport>
 </BorlandProject>
