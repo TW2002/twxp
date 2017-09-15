@@ -259,23 +259,31 @@ object frmSetup: TfrmSetup
         Height = 13
         Caption = 'Maximum bubble size'
       end
+      object Label21: TLabel
+        Left = 40
+        Top = 135
+        Width = 81
+        Height = 13
+        Caption = 'Remote Address '
+      end
       object cbAcceptExternal: TCheckBox
         Left = 16
-        Top = 120
+        Top = 112
         Width = 169
         Height = 17
         Caption = 'Accept external connections'
         TabOrder = 3
+        OnClick = cbAcceptExternalClick
       end
       object cbBroadcast: TCheckBox
         Left = 16
-        Top = 144
+        Top = 159
         Width = 241
         Height = 17
         Caption = 'Broadcast a message when a client connects'
         Checked = True
         State = cbChecked
-        TabOrder = 4
+        TabOrder = 5
       end
       object tbListenPort: TEdit
         Left = 168
@@ -302,21 +310,21 @@ object frmSetup: TfrmSetup
       end
       object cbReconnect: TCheckBox
         Left = 16
-        Top = 168
+        Top = 183
         Width = 169
         Height = 17
         Caption = 'Automatically reconnect'
-        TabOrder = 5
+        TabOrder = 6
       end
       object cbCache: TCheckBox
         Left = 16
-        Top = 192
+        Top = 207
         Width = 209
         Height = 17
         Caption = 'Cache database in available memory'
         Checked = True
         State = cbChecked
-        TabOrder = 6
+        TabOrder = 7
       end
       object tbBubbleSize: TEdit
         Left = 168
@@ -328,16 +336,28 @@ object frmSetup: TfrmSetup
       end
       object cbLocalEcho: TCheckBox
         Left = 16
-        Top = 216
+        Top = 231
         Width = 153
         Height = 17
         Caption = 'Local echo of outgoing text'
-        TabOrder = 7
+        TabOrder = 8
+      end
+      object tbRemoteAddress: TEdit
+        Left = 127
+        Top = 132
+        Width = 114
+        Height = 21
+        Enabled = False
+        TabOrder = 4
       end
     end
     object tabLogging: TTabSheet
       Caption = 'Logging'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label9: TLabel
         Left = 16
         Top = 112
@@ -396,6 +416,10 @@ object frmSetup: TfrmSetup
     object tabAutoRun: TTabSheet
       Caption = 'Auto Run'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lbAutoRun: TListBox
         Left = 24
         Top = 96
@@ -441,6 +465,10 @@ object frmSetup: TfrmSetup
       Caption = 'Registration'
       ImageIndex = 5
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label18: TLabel
         Left = 48
         Top = 88
@@ -535,6 +563,10 @@ object frmSetup: TfrmSetup
       Caption = 'Auth Proxy'
       ImageIndex = 4
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 56
         Top = 24
