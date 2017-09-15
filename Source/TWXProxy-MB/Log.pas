@@ -327,6 +327,7 @@ end;
 procedure TModLog.DoLogData(const Data: string; const ANSIData: string);
 var
   I: Integer;
+  Result: Integer;
 begin
   if (LogData) and (LogFileOpen) then
   begin
@@ -358,14 +359,17 @@ begin
         BlockWrite(FLogFile, PChar(Data)^, Length(Data), I);
     end;
 
-    if (IOResult <> 0) then
+    // MB - Ignorring error 2 ??? caused by mombot
+    Result := IOResult;
+    if (Result <> 0) and( Result <> 2) then
     begin
       // MB - Remove Popup Message
       // ShowMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
-      TWXServer.ClientMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
+      TWXServer.ClientMessage('TWX Proxy has encountered error ' + IntToStr(Result) + ' logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  ');
+      TWXServer.ClientMessage('Logging has been disabled.');
       {LogData := FALSE;}
       CloseLog;
-
+      Sleep(5000);
     end;
 
     {$I+}

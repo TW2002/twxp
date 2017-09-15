@@ -356,8 +356,8 @@ begin
 
   if (Copy(UpperCase(Filename), Length(Filename) - 3, 4) = '.CTS') then
   begin
-    if not (Silent) then
-      TWXServer.ClientMessage('Loading script: ' + ANSI_7 + Filename);
+    //if not (Silent) then
+      //TWXServer.ClientMessage('Loading script: ' + ANSI_7 + Filename);
 
     try
       Script.GetFromFile(Filename, FALSE);
@@ -372,8 +372,8 @@ begin
   end
   else
   begin
-    if not (Silent) then
-      TWXServer.ClientMessage('Loading and compiling script: ' + ANSI_7 + Filename);
+    //if not (Silent) then
+      //TWXServer.ClientMessage('Loading and compiling script: ' + ANSI_7 + Filename);
 
     FLastScript := Filename;
 
@@ -399,7 +399,7 @@ begin
 
     Script.Execute;
   end;
-end;
+end;                                                                
 
 procedure TModInterpreter.Stop(Index : Integer);
 var
@@ -407,8 +407,8 @@ var
   Script: TScript;
 begin
   // broadcast termination message
-  if not (Scripts[Index].Silent) then
-    TWXServer.Broadcast(endl + ANSI_15 + 'Script terminated: ' + ANSI_7 + Scripts[Index].Cmp.ScriptFile + endl + endl);
+  //if not (Scripts[Index].Silent) then
+    //TWXServer.Broadcast(endl + ANSI_15 + 'Script terminated: ' + ANSI_7 + Scripts[Index].Cmp.ScriptFile + endl + endl);
 
   Script := Scripts[Index];
   ScriptName := Script.Cmp.ScriptFile;
