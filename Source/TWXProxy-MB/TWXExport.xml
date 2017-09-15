@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="TWXExport">
+  <procedure name="ExportTWXFile" visibility="private">
+    <parameters>
+      <parameter name="Filename" type="string" />
+    </parameters>
+  </procedure>
+  <procedure name="ImportTWXFile" visibility="private">
+    <parameters>
+      <parameter name="Filename" type="string" />
+      <parameter name="KeepRecent" type="Boolean" />
+    </parameters>
+  </procedure>
+</namespace>

@@ -1,0 +1,461 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Process">
+  <const name="spNormal" type="TSectorPosition">
+    <value>
+      spNormal
+    </value>
+  </const>
+  <const name="spPorts" type="TSectorPosition">
+    <value>
+      spPorts
+    </value>
+  </const>
+  <const name="spPlanets" type="TSectorPosition">
+    <value>
+      spPlanets
+    </value>
+  </const>
+  <const name="spShips" type="TSectorPosition">
+    <value>
+      spShips
+    </value>
+  </const>
+  <const name="spMines" type="TSectorPosition">
+    <value>
+      spMines
+    </value>
+  </const>
+  <const name="spTraders" type="TSectorPosition">
+    <value>
+      spTraders
+    </value>
+  </const>
+  <enum name="TSectorPosition">
+    <element name="spNormal" />
+    <element name="spPorts" />
+    <element name="spPlanets" />
+    <element name="spShips" />
+    <element name="spMines" />
+    <element name="spTraders" />
+  </enum>
+  <const name="dNone" type="TDisplay">
+    <value>
+      dNone
+    </value>
+  </const>
+  <const name="dSector" type="TDisplay">
+    <value>
+      dSector
+    </value>
+  </const>
+  <const name="dDensity" type="TDisplay">
+    <value>
+      dDensity
+    </value>
+  </const>
+  <const name="dWarpLane" type="TDisplay">
+    <value>
+      dWarpLane
+    </value>
+  </const>
+  <const name="dCIM" type="TDisplay">
+    <value>
+      dCIM
+    </value>
+  </const>
+  <const name="dPortCIM" type="TDisplay">
+    <value>
+      dPortCIM
+    </value>
+  </const>
+  <const name="dPort" type="TDisplay">
+    <value>
+      dPort
+    </value>
+  </const>
+  <const name="dPortCR" type="TDisplay">
+    <value>
+      dPortCR
+    </value>
+  </const>
+  <const name="dWarpCIM" type="TDisplay">
+    <value>
+      dWarpCIM
+    </value>
+  </const>
+  <const name="dFigScan" type="TDisplay">
+    <value>
+      dFigScan
+    </value>
+  </const>
+  <enum name="TDisplay">
+    <element name="dNone" />
+    <element name="dSector" />
+    <element name="dDensity" />
+    <element name="dWarpLane" />
+    <element name="dCIM" />
+    <element name="dPortCIM" />
+    <element name="dPort" />
+    <element name="dPortCR" />
+    <element name="dWarpCIM" />
+    <element name="dFigScan" />
+  </enum>
+  <const name="fstPersonal" type="TFigScanType">
+    <value>
+      fstPersonal
+    </value>
+  </const>
+  <const name="fstCorp" type="TFigScanType">
+    <value>
+      fstCorp
+    </value>
+  </const>
+  <enum name="TFigScanType">
+    <element name="fstPersonal" />
+    <element name="fstCorp" />
+  </enum>
+  <class name="TModExtractor">
+    <ancestor name="TTWXModule" namespace="Core">
+      <methodref name="WriteToStream" visibility="protected" />
+      <methodref name="ReadFromStream" visibility="protected" />
+      <methodref name="Create" visibility="public" />
+      <methodref name="Destroy" visibility="public" />
+      <methodref name="GetStateValues" visibility="public" />
+      <methodref name="SetStateValues" visibility="public" />
+      <methodref name="StateValuesLoaded" visibility="public" />
+      <ancestor name="TComponent" namespace="Classes">
+        <methodref name="GetComObject" visibility="private">
+        </methodref>
+        <methodref name="GetComponent" visibility="private">
+        </methodref>
+        <methodref name="GetComponentCount" visibility="private">
+        </methodref>
+        <methodref name="GetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="Insert" visibility="private">
+        </methodref>
+        <methodref name="ReadLeft" visibility="private">
+        </methodref>
+        <methodref name="ReadTop" visibility="private">
+        </methodref>
+        <methodref name="Remove" visibility="private">
+        </methodref>
+        <methodref name="RemoveNotification" visibility="private">
+        </methodref>
+        <methodref name="SetComponentIndex" visibility="private">
+        </methodref>
+        <methodref name="SetReference" visibility="private">
+        </methodref>
+        <methodref name="WriteLeft" visibility="private">
+        </methodref>
+        <methodref name="WriteTop" visibility="private">
+        </methodref>
+        <methodref name="IntfGetComponent" visibility="private">
+        </methodref>
+        <methodref name="ChangeName" visibility="protected">
+        </methodref>
+        <methodref name="DefineProperties" visibility="protected">
+        </methodref>
+        <methodref name="GetChildren" visibility="protected">
+        </methodref>
+        <methodref name="GetChildOwner" visibility="protected">
+        </methodref>
+        <methodref name="GetChildParent" visibility="protected">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Loaded" visibility="protected">
+        </methodref>
+        <methodref name="Notification" visibility="protected">
+        </methodref>
+        <methodref name="PaletteCreated" visibility="protected">
+        </methodref>
+        <methodref name="ReadState" visibility="protected">
+        </methodref>
+        <methodref name="SetAncestor" visibility="protected">
+        </methodref>
+        <methodref name="SetDesigning" visibility="protected">
+        </methodref>
+        <methodref name="SetInline" visibility="protected">
+        </methodref>
+        <methodref name="SetDesignInstance" visibility="protected">
+        </methodref>
+        <methodref name="SetName" visibility="protected">
+        </methodref>
+        <methodref name="SetChildOrder" visibility="protected">
+        </methodref>
+        <methodref name="SetParentComponent" visibility="protected">
+        </methodref>
+        <methodref name="Updating" visibility="protected">
+        </methodref>
+        <methodref name="Updated" visibility="protected">
+        </methodref>
+        <methodref name="UpdateRegistry" visibility="protected">
+        </methodref>
+        <methodref name="ValidateRename" visibility="protected">
+        </methodref>
+        <methodref name="ValidateContainer" visibility="protected">
+        </methodref>
+        <methodref name="ValidateInsert" visibility="protected">
+        </methodref>
+        <methodref name="WriteState" visibility="protected">
+        </methodref>
+        <methodref name="QueryInterface" visibility="protected">
+        </methodref>
+        <methodref name="_AddRef" visibility="protected">
+        </methodref>
+        <methodref name="_Release" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfoCount" visibility="protected">
+        </methodref>
+        <methodref name="GetTypeInfo" visibility="protected">
+        </methodref>
+        <methodref name="GetIDsOfNames" visibility="protected">
+        </methodref>
+        <methodref name="Invoke" visibility="protected">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="DestroyComponents" visibility="public">
+        </methodref>
+        <methodref name="Destroying" visibility="public">
+        </methodref>
+        <methodref name="ExecuteAction" visibility="public">
+        </methodref>
+        <methodref name="FindComponent" visibility="public">
+        </methodref>
+        <methodref name="FreeNotification" visibility="public">
+        </methodref>
+        <methodref name="RemoveFreeNotification" visibility="public">
+        </methodref>
+        <methodref name="FreeOnRelease" visibility="public">
+        </methodref>
+        <methodref name="GetEnumerator" visibility="public">
+        </methodref>
+        <methodref name="GetParentComponent" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <methodref name="HasParent" visibility="public">
+        </methodref>
+        <methodref name="InsertComponent" visibility="public">
+        </methodref>
+        <methodref name="RemoveComponent" visibility="public">
+        </methodref>
+        <methodref name="SetSubComponent" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="UpdateAction" visibility="public">
+        </methodref>
+        <methodref name="IsImplementorOf" visibility="public">
+        </methodref>
+        <methodref name="ReferenceInterface" visibility="public">
+        </methodref>
+        <propertyref name="ComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Components" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentCount" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentIndex" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentState" visibility="public">
+        </propertyref>
+        <propertyref name="ComponentStyle" visibility="public">
+        </propertyref>
+        <propertyref name="DesignInfo" visibility="public">
+        </propertyref>
+        <propertyref name="Owner" visibility="public">
+        </propertyref>
+        <propertyref name="VCLComObject" visibility="public">
+        </propertyref>
+        <propertyref name="Name" visibility="published">
+        </propertyref>
+        <propertyref name="Tag" visibility="published">
+        </propertyref>
+        <ancestor name="TPersistent" namespace="Classes">
+          <methodref name="AssignError" visibility="private">
+          </methodref>
+          <methodref name="AssignTo" visibility="protected">
+          </methodref>
+          <methodref name="DefineProperties" visibility="protected">
+          </methodref>
+          <methodref name="GetOwner" visibility="protected">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="Assign" visibility="public">
+          </methodref>
+          <methodref name="GetNamePath" visibility="public">
+          </methodref>
+          <ancestor name="TObject" namespace="System">
+            <methodref name="Create" visibility="public">
+            </methodref>
+            <methodref name="Free" visibility="public">
+            </methodref>
+            <methodref name="InitInstance" visibility="public">
+            </methodref>
+            <methodref name="CleanupInstance" visibility="public">
+            </methodref>
+            <methodref name="ClassType" visibility="public">
+            </methodref>
+            <methodref name="ClassName" visibility="public">
+            </methodref>
+            <methodref name="ClassNameIs" visibility="public">
+            </methodref>
+            <methodref name="ClassParent" visibility="public">
+            </methodref>
+            <methodref name="ClassInfo" visibility="public">
+            </methodref>
+            <methodref name="InstanceSize" visibility="public">
+            </methodref>
+            <methodref name="InheritsFrom" visibility="public">
+            </methodref>
+            <methodref name="MethodAddress" visibility="public">
+            </methodref>
+            <methodref name="MethodName" visibility="public">
+            </methodref>
+            <methodref name="FieldAddress" visibility="public">
+            </methodref>
+            <methodref name="GetInterface" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceEntry" visibility="public">
+            </methodref>
+            <methodref name="GetInterfaceTable" visibility="public">
+            </methodref>
+            <methodref name="SafeCallException" visibility="public">
+            </methodref>
+            <methodref name="AfterConstruction" visibility="public">
+            </methodref>
+            <methodref name="BeforeDestruction" visibility="public">
+            </methodref>
+            <methodref name="Dispatch" visibility="public">
+            </methodref>
+            <methodref name="DefaultHandler" visibility="public">
+            </methodref>
+            <methodref name="NewInstance" visibility="public">
+            </methodref>
+            <methodref name="FreeInstance" visibility="public">
+            </methodref>
+            <methodref name="Destroy" visibility="public">
+            </methodref>
+          </ancestor>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <interfaces>
+      <implements name="IModExtractor" />
+    </interfaces>
+    <members>
+      <field name="FCurrentSectorIndex" type="Integer" visibility="private" />
+      <field name="FPortSectorIndex" type="Integer" visibility="private" />
+      <field name="FFigScanSector" type="Integer" visibility="private" />
+      <field name="FSectorPosition" type="TSectorPosition" visibility="private" />
+      <field name="FCurrentDisplay" type="TDisplay" visibility="private" />
+      <field name="FLastWarp" type="Integer" visibility="private" />
+      <field name="FSectorSaved" type="Boolean" visibility="private" />
+      <field name="FCurrentTrader" type="TTrader" visibility="private" />
+      <field name="FCurrentShip" type="TShip" visibility="private" />
+      <field name="FCurrentMessage" type="string" visibility="private" />
+      <field name="FTraderList" type="TList" visibility="private" />
+      <field name="FShipList" type="TList" visibility="private" />
+      <field name="FPlanetList" type="TList" visibility="private" />
+      <field name="FCurrentLine" type="string" visibility="private" />
+      <field name="FCurrentANSILine" type="string" visibility="private" />
+      <field name="FRawANSILine" type="string" visibility="private" />
+      <field name="FCurrentSector" type="TSector" visibility="private" />
+      <field name="FInAnsi" type="Boolean" visibility="private" />
+      <field name="FMenuKey" type="Char" visibility="private" />
+      <procedure name="SectorCompleted" visibility="private">
+      </procedure>
+      <procedure name="ResetSectorLists" visibility="private">
+      </procedure>
+      <procedure name="ProcessPrompt" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="AddWarp" visibility="private">
+        <parameters>
+          <parameter name="SectNum" type="Integer" />
+          <parameter name="Warp" type="Integer" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessWarpLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessCIMLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessSectorLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessPortLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="StripANSI" visibility="private">
+        <parameters>
+          <parameter name="S" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="ProcessFigScanLine" visibility="private">
+        <parameters>
+          <parameter name="Line" type="string" />
+        </parameters>
+      </procedure>
+      <procedure name="ResetFigDatabase" visibility="private">
+      </procedure>
+      <function name="GetMenuKey" visibility="protected">
+        <parameters>
+          <retval type="Char" />
+        </parameters>
+      </function>
+      <procedure name="SetMenuKey" visibility="protected">
+        <parameters>
+          <parameter name="Value" type="Char" />
+        </parameters>
+      </procedure>
+      <procedure name="AfterConstruction" visibility="public" procflags="override">
+      </procedure>
+      <procedure name="BeforeDestruction" visibility="public" procflags="override">
+      </procedure>
+      <procedure name="Reset" visibility="public">
+      </procedure>
+      <procedure name="ProcessInBound" visibility="public">
+        <parameters>
+          <parameter name="InData" type="string" paramflags="var" />
+        </parameters>
+      </procedure>
+      <function name="ProcessOutBound" visibility="public">
+        <parameters>
+          <parameter name="OutData" type="string" />
+          <parameter name="ClientIndex" type="Byte" />
+          <retval type="Boolean" />
+        </parameters>
+      </function>
+      <property name="CurrentLine" visibility="public" read="FCurrentLine" write="FCurrentLine" type="string" />
+      <property name="CurrentANSILine" visibility="public" read="FCurrentANSILine" write="FCurrentANSILine" type="string" />
+      <property name="RawANSILine" visibility="public" read="FRawANSILine" write="FRawANSILine" type="string" />
+      <property name="CurrentSector" visibility="public" read="FCurrentSectorIndex" type="Integer" />
+      <property name="MenuKey" visibility="published" read="GetMenuKey" write="SetMenuKey" type="Char" />
+    </members>
+  </class>
+</namespace>

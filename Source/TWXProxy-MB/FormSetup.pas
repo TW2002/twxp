@@ -115,6 +115,8 @@ type
     Label9: TLabel;
     tbShortenDelay: TEdit;
     Label20: TLabel;
+    Label21: TLabel;
+    tbRemoteAddress: TEdit;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -135,7 +137,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tmrRegTimer(Sender: TObject);
     procedure tbUserChange(Sender: TObject);
-
+    procedure cbAcceptExternalClick(Sender: TObject);
 
   private
     DataLinkList  : TList;
@@ -197,6 +199,8 @@ begin
   cbBroadCast.Checked := TWXServer.BroadCastMsgs;
   cbLocalEcho.Checked := TWXServer.LocalEcho;
   tbMenuKey.Text := TWXExtractor.MenuKey;
+  cbAcceptExternal.Checked :=  TWXServer.AcceptExternal;
+  tbRemoteAddress.Text := TWXServer.RemoteAddress;
 
   // load up auto run scripts
   lbAutoRun.Items.Clear;
@@ -361,6 +365,7 @@ begin
   TWXServer.ListenPort := StrToIntSafe(tbListenPort.Text);
   TWXServer.Activate;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
+  TWXServer.RemoteAddress := tbRemoteAddress.Text;
   TWXServer.BroadCastMsgs := cbBroadCast.Checked;
   TWXServer.LocalEcho := cbLocalEcho.Checked;
   TWXClient.Reconnect := cbReconnect.Checked;
@@ -380,6 +385,19 @@ procedure TfrmSetup.tbMenuKeyChange(Sender: TObject);
 begin
   if (Length(tbMenuKey.Text) > 1) then
     tbMenuKey.Text := tbMenuKey.Text[1];
+end;
+
+procedure TfrmSetup.cbAcceptExternalClick(Sender: TObject);
+begin
+  if (cbAcceptExternal.Checked) then
+  begin
+    tbRemoteAddress.Enabled := true;
+  end
+  else
+  begin
+    tbRemoteAddress.Enabled := false;
+    tbRemoteAddress.Text := '';
+  end;
 end;
 
 procedure TfrmSetup.cbGamesChange(Sender: TObject);

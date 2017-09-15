@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="ScriptRef">
+  <array name="TStringArray">
+    <element type="string" />
+  </array>
+  <const name="caNone" type="TCmdAction">
+    <value>
+      caNone
+    </value>
+  </const>
+  <const name="caStop" type="TCmdAction">
+    <value>
+      caStop
+    </value>
+  </const>
+  <const name="caPause" type="TCmdAction">
+    <value>
+      caPause
+    </value>
+  </const>
+  <const name="caAuth" type="TCmdAction">
+    <value>
+      caAuth
+    </value>
+  </const>
+  <enum name="TCmdAction">
+    <element name="caNone" />
+    <element name="caStop" />
+    <element name="caPause" />
+    <element name="caAuth" />
+  </enum>
+  <const name="pkValue" type="TParamKind">
+    <value>
+      pkValue
+    </value>
+  </const>
+  <const name="pkVar" type="TParamKind">
+    <value>
+      pkVar
+    </value>
+  </const>
+  <enum name="TParamKind">
+    <element name="pkValue" />
+    <element name="pkVar" />
+  </enum>
+  <class name="EScriptError">
+    <ancestor name="Exception" namespace="SysUtils">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="CreateFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateRes" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmt" visibility="public">
+      </methodref>
+      <methodref name="CreateHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <methodref name="CreateResFmtHelp" visibility="public">
+      </methodref>
+      <propertyref name="HelpContext" visibility="public">
+      </propertyref>
+      <propertyref name="Message" visibility="public">
+      </propertyref>
+      <ancestor name="TObject" namespace="System">
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Free" visibility="public">
+        </methodref>
+        <methodref name="InitInstance" visibility="public">
+        </methodref>
+        <methodref name="CleanupInstance" visibility="public">
+        </methodref>
+        <methodref name="ClassType" visibility="public">
+        </methodref>
+        <methodref name="ClassName" visibility="public">
+        </methodref>
+        <methodref name="ClassNameIs" visibility="public">
+        </methodref>
+        <methodref name="ClassParent" visibility="public">
+        </methodref>
+        <methodref name="ClassInfo" visibility="public">
+        </methodref>
+        <methodref name="InstanceSize" visibility="public">
+        </methodref>
+        <methodref name="InheritsFrom" visibility="public">
+        </methodref>
+        <methodref name="MethodAddress" visibility="public">
+        </methodref>
+        <methodref name="MethodName" visibility="public">
+        </methodref>
+        <methodref name="FieldAddress" visibility="public">
+        </methodref>
+        <methodref name="GetInterface" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceEntry" visibility="public">
+        </methodref>
+        <methodref name="GetInterfaceTable" visibility="public">
+        </methodref>
+        <methodref name="SafeCallException" visibility="public">
+        </methodref>
+        <methodref name="AfterConstruction" visibility="public">
+        </methodref>
+        <methodref name="BeforeDestruction" visibility="public">
+        </methodref>
+        <methodref name="Dispatch" visibility="public">
+        </methodref>
+        <methodref name="DefaultHandler" visibility="public">
+        </methodref>
+        <methodref name="NewInstance" visibility="public">
+        </methodref>
+        <methodref name="FreeInstance" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+      </ancestor>
+    </ancestor>
+  </class>
+  <class name="TCmdParam">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FStrValue" type="string" visibility="protected" />
+      <field name="FDecValue" type="Extended" visibility="protected" />
+      <field name="FSigDigits" type="Byte" visibility="protected" />
+      <field name="FIsNumeric" type="Boolean" visibility="protected" />
+      <field name="FNumChanged" type="Boolean" visibility="protected" />
+      <field name="FIsTemporary" type="Boolean" visibility="protected" />
+      <procedure name="SetStrValue" visibility="protected">
+        <parameters>
+          <parameter name="S" type="string" />
+        </parameters>
+      </procedure>
+      <function name="GetStrValue" visibility="protected">
+        <parameters>
+          <retval type="string" />
+        </parameters>
+      </function>
+      <procedure name="SetDecValue" visibility="protected">
+        <parameters>
+          <parameter name="E" type="Extended" />
+        </parameters>
+      </procedure>
+      <function name="GetDecValue" visibility="protected">
+        <parameters>
+          <retval type="Extended" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="SetBool" visibility="public">
+        <parameters>
+          <parameter name="B" type="Boolean" />
+        </parameters>
+      </procedure>
+      <property name="Value" visibility="public" read="GetStrValue" write="SetStrValue" type="string" />
+      <property name="DecValue" visibility="public" read="GetDecValue" write="SetDecValue" type="Extended" />
+      <property name="SigDigits" visibility="public" read="FSigDigits" write="FSigDigits" type="Byte" />
+      <property name="IsNumeric" visibility="public" read="FIsNumeric" type="Boolean" />
+      <property name="IsTemporary" visibility="public" read="FIsTemporary" write="FIsTemporary" type="Boolean" />
+    </members>
+  </class>
+  <class name="TScriptCmd">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FName" type="string" visibility="protected" />
+      <field name="FMinParams" type="Integer" visibility="protected" />
+      <field name="FMaxParams" type="Integer" visibility="protected" />
+      <field name="FParamKinds" type=".4" visibility="protected" />
+      <field name="FonCmd" type="TScriptCmdHandler" visibility="protected" />
+      <field name="FDefParamKind" type="TParamKind" visibility="protected" />
+      <procedure name="SetParamKinds" visibility="protected">
+        <parameters>
+          <parameter name="NewParamKinds">
+            <array name="NewParamKinds">
+              <element type="TParamKind" />
+            </array>
+          </parameter>
+        </parameters>
+      </procedure>
+      <function name="GetParamKind" visibility="protected">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <retval type="TParamKind" />
+        </parameters>
+      </function>
+      <property name="Name" visibility="public" read="FName" write="FName" type="string" />
+      <property name="MinParams" visibility="public" read="FMinParams" write="FMinParams" type="Integer" />
+      <property name="MaxParams" visibility="public" read="FMaxParams" write="FMaxParams" type="Integer" />
+      <property name="DefParamKind" visibility="public" read="FDefParamKind" write="FDefParamKind" type="TParamKind" />
+      <property name="onCmd" visibility="public" read="FonCmd" write="FonCmd" type="TCmdAction" />
+      <property name="ParamKinds" visibility="public" read="GetParamKind" type="TParamKind" />
+    </members>
+  </class>
+  <class name="TScriptSysConst">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="FName" type="string" visibility="protected" />
+      <field name="FonRead" type="TScriptConstHandler" visibility="protected" />
+      <function name="Read" visibility="public">
+        <parameters>
+          <parameter name="Indexes" type="TStringArray" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <property name="onRead" visibility="public" read="FonRead" write="FonRead" type="string" />
+      <property name="Name" visibility="public" read="FName" write="FName" type="string" />
+    </members>
+  </class>
+  <class name="TScriptRef">
+    <ancestor name="TObject" namespace="System">
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Free" visibility="public">
+      </methodref>
+      <methodref name="InitInstance" visibility="public">
+      </methodref>
+      <methodref name="CleanupInstance" visibility="public">
+      </methodref>
+      <methodref name="ClassType" visibility="public">
+      </methodref>
+      <methodref name="ClassName" visibility="public">
+      </methodref>
+      <methodref name="ClassNameIs" visibility="public">
+      </methodref>
+      <methodref name="ClassParent" visibility="public">
+      </methodref>
+      <methodref name="ClassInfo" visibility="public">
+      </methodref>
+      <methodref name="InstanceSize" visibility="public">
+      </methodref>
+      <methodref name="InheritsFrom" visibility="public">
+      </methodref>
+      <methodref name="MethodAddress" visibility="public">
+      </methodref>
+      <methodref name="MethodName" visibility="public">
+      </methodref>
+      <methodref name="FieldAddress" visibility="public">
+      </methodref>
+      <methodref name="GetInterface" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceEntry" visibility="public">
+      </methodref>
+      <methodref name="GetInterfaceTable" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="AfterConstruction" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="Dispatch" visibility="public">
+      </methodref>
+      <methodref name="DefaultHandler" visibility="public">
+      </methodref>
+      <methodref name="NewInstance" visibility="public">
+      </methodref>
+      <methodref name="FreeInstance" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+    </ancestor>
+    <members>
+      <field name="CmdList" type="TList" visibility="private" />
+      <field name="SysConstList" type="TList" visibility="private" />
+      <function name="GetScriptCmd" visibility="protected">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <retval type="TScriptCmd" />
+        </parameters>
+      </function>
+      <function name="GetScriptSysConst" visibility="protected">
+        <parameters>
+          <parameter name="Index" type="Integer" />
+          <retval type="TScriptSysConst" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="AddCommand" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+          <parameter name="MinParams" type="Integer" />
+          <parameter name="MaxParams" type="Integer" />
+          <parameter name="onCmd" type="TScriptCmdHandler" />
+          <parameter name="ParamKinds">
+            <array name="ParamKinds">
+              <element type="TParamKind" />
+            </array>
+          </parameter>
+          <parameter name="DefParamKind" type="TParamKind" />
+        </parameters>
+      </procedure>
+      <procedure name="AddSysConstant" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+          <parameter name="onRead" type="TScriptConstHandler" />
+        </parameters>
+      </procedure>
+      <function name="FindCmd" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <function name="FindSysConst" visibility="public">
+        <parameters>
+          <parameter name="Name" type="string" />
+          <retval type="Integer" />
+        </parameters>
+      </function>
+      <property name="Cmds" visibility="public" read="GetScriptCmd" type="TScriptCmd" />
+      <property name="SysConsts" visibility="public" read="GetScriptSysConst" type="TScriptSysConst" />
+    </members>
+  </class>
+</namespace>

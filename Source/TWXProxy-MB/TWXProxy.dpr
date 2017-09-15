@@ -264,7 +264,8 @@ begin
   InitProgram;
   // EP - The Server ListenPort is persisted by the database now, so load from there
   if TWXDatabase.DataBaseOpen then
-    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
+//    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
+    TWXServer.ListenPort := TWXDatabase.ServerPort
   else
     TWXServer.ListenPort := 23;
 

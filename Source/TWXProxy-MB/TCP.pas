@@ -72,6 +72,7 @@ type
     FAcceptExternal  : Boolean;
     FBroadCastMsgs   : Boolean;
     FLocalEcho       : Boolean;
+    FRemoteAddress   : string;
 
   private
     function GetClientType(Index : Integer) : TClientType;
@@ -85,6 +86,8 @@ type
     { IModServer }
     function GetAcceptExternal: Boolean;
     procedure SetAcceptExternal(Value: Boolean);
+    function GetRemoteAddress: string;
+    procedure SetRemoteAddress(Value: string);
     function GetBroadCastMsgs: Boolean;
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
@@ -121,6 +124,7 @@ type
     property AcceptExternal: Boolean read GetAcceptExternal write SetAcceptExternal;
     property BroadCastMsgs: Boolean read GetBroadCastMsgs write SetBroadCastMsgs;
     property LocalEcho: Boolean read GetLocalEcho write SetLocalEcho;
+    property RemoteAddress: string read GetRemoteAddress write SetRemoteAddress;
   end;
 
   TModClient = class(TTelnetClientSocket, IModClient)
@@ -301,7 +305,10 @@ var
   LocalClient : Boolean;
   SktIndex    : Integer;
 begin
-  if (Socket.RemoteAddress = '127.0.0.1') or (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or (Copy(Socket.RemoteAddress, 1, 3) = '10.') then
+  if (Socket.RemoteAddress = '127.0.0.1') or
+      (Copy(Socket.RemoteAddress, 1, 8) = '194.168.') or
+      (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
+      (Socket.RemoteAddress = RemoteAddress) then
     LocalClient := TRUE
   else
     LocalClient := FALSE;
@@ -309,6 +316,7 @@ begin
   if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
   begin
     // User not allowed
+    Socket.SendText(ANSI_15 + 'External connections are diabled. Disconnecting.' + ANSI_7 + endl + endl);
     Socket.Close;
   end
   else
@@ -332,7 +340,7 @@ begin
 
     // Broadcast confirmation to client
     Socket.SendText(endl + ANSI_7 +
-                      'TWX Proxy Server ' + ANSI_15 + 'v' + ProgramVersion + ANSI_7 + endl +
+                      'TWX Proxy Server ' + ANSI_15 + 'v' + ProgramVersion + ANSI_7 + 
                       '(' + ReleaseVersion + ')' + endl + endl +
                       'There are currently ' + ANSI_15 + IntToStr(tcpServer.Socket.ActiveConnections) + ANSI_7 + ' active telnet connections' + endl);
 
@@ -540,6 +548,16 @@ end;
 procedure TModServer.SetAcceptExternal(Value: Boolean);
 begin
   FAcceptExternal := Value;
+end;
+
+function TModServer.GetRemoteAddress: string;
+begin
+  Result := FRemoteAddress;
+end;
+
+procedure TModServer.SetRemoteAddress(Value: string);
+begin
+  FRemoteAddress := Value;
 end;
 
 function TModServer.GetBroadCastMsgs: Boolean;

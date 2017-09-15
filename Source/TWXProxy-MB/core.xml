@@ -1,0 +1,587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Core">
+  <const name="ProgramVersion" type="string">
+    <value>
+      3.1736
+    </value>
+  </const>
+  <const name="ReleaseVersion" type="string">
+    <value>
+      Beta
+    </value>
+  </const>
+  <const name="SetupFile" type="string">
+    <value>
+      TWXSetup.dat
+    </value>
+  </const>
+  <const name="endl" type="string">
+    <value>
+      
+
+    </value>
+  </const>
+  <const name="htFighter" type="THistoryType">
+    <value>
+      htFighter
+    </value>
+  </const>
+  <const name="htComputer" type="THistoryType">
+    <value>
+      htComputer
+    </value>
+  </const>
+  <const name="htMsg" type="THistoryType">
+    <value>
+      htMsg
+    </value>
+  </const>
+  <enum name="THistoryType">
+    <element name="htFighter" />
+    <element name="htComputer" />
+    <element name="htMsg" />
+  </enum>
+  <interface name="IPersistenceController">
+    <procedure name="RegisterModule" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Module" type="TTWXModule" />
+      </parameters>
+    </procedure>
+    <procedure name="UnregisterModule" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Module" type="TTWXModule" />
+      </parameters>
+    </procedure>
+  </interface>
+  <class name="TTWXModule">
+    <ancestor name="TComponent" namespace="Classes">
+      <methodref name="GetComObject" visibility="private">
+      </methodref>
+      <methodref name="GetComponent" visibility="private">
+      </methodref>
+      <methodref name="GetComponentCount" visibility="private">
+      </methodref>
+      <methodref name="GetComponentIndex" visibility="private">
+      </methodref>
+      <methodref name="Insert" visibility="private">
+      </methodref>
+      <methodref name="ReadLeft" visibility="private">
+      </methodref>
+      <methodref name="ReadTop" visibility="private">
+      </methodref>
+      <methodref name="Remove" visibility="private">
+      </methodref>
+      <methodref name="RemoveNotification" visibility="private">
+      </methodref>
+      <methodref name="SetComponentIndex" visibility="private">
+      </methodref>
+      <methodref name="SetReference" visibility="private">
+      </methodref>
+      <methodref name="WriteLeft" visibility="private">
+      </methodref>
+      <methodref name="WriteTop" visibility="private">
+      </methodref>
+      <methodref name="IntfGetComponent" visibility="private">
+      </methodref>
+      <methodref name="ChangeName" visibility="protected">
+      </methodref>
+      <methodref name="DefineProperties" visibility="protected">
+      </methodref>
+      <methodref name="GetChildren" visibility="protected">
+      </methodref>
+      <methodref name="GetChildOwner" visibility="protected">
+      </methodref>
+      <methodref name="GetChildParent" visibility="protected">
+      </methodref>
+      <methodref name="GetOwner" visibility="protected">
+      </methodref>
+      <methodref name="Loaded" visibility="protected">
+      </methodref>
+      <methodref name="Notification" visibility="protected">
+      </methodref>
+      <methodref name="PaletteCreated" visibility="protected">
+      </methodref>
+      <methodref name="ReadState" visibility="protected">
+      </methodref>
+      <methodref name="SetAncestor" visibility="protected">
+      </methodref>
+      <methodref name="SetDesigning" visibility="protected">
+      </methodref>
+      <methodref name="SetInline" visibility="protected">
+      </methodref>
+      <methodref name="SetDesignInstance" visibility="protected">
+      </methodref>
+      <methodref name="SetName" visibility="protected">
+      </methodref>
+      <methodref name="SetChildOrder" visibility="protected">
+      </methodref>
+      <methodref name="SetParentComponent" visibility="protected">
+      </methodref>
+      <methodref name="Updating" visibility="protected">
+      </methodref>
+      <methodref name="Updated" visibility="protected">
+      </methodref>
+      <methodref name="UpdateRegistry" visibility="protected">
+      </methodref>
+      <methodref name="ValidateRename" visibility="protected">
+      </methodref>
+      <methodref name="ValidateContainer" visibility="protected">
+      </methodref>
+      <methodref name="ValidateInsert" visibility="protected">
+      </methodref>
+      <methodref name="WriteState" visibility="protected">
+      </methodref>
+      <methodref name="QueryInterface" visibility="protected">
+      </methodref>
+      <methodref name="_AddRef" visibility="protected">
+      </methodref>
+      <methodref name="_Release" visibility="protected">
+      </methodref>
+      <methodref name="GetTypeInfoCount" visibility="protected">
+      </methodref>
+      <methodref name="GetTypeInfo" visibility="protected">
+      </methodref>
+      <methodref name="GetIDsOfNames" visibility="protected">
+      </methodref>
+      <methodref name="Invoke" visibility="protected">
+      </methodref>
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+      <methodref name="BeforeDestruction" visibility="public">
+      </methodref>
+      <methodref name="DestroyComponents" visibility="public">
+      </methodref>
+      <methodref name="Destroying" visibility="public">
+      </methodref>
+      <methodref name="ExecuteAction" visibility="public">
+      </methodref>
+      <methodref name="FindComponent" visibility="public">
+      </methodref>
+      <methodref name="FreeNotification" visibility="public">
+      </methodref>
+      <methodref name="RemoveFreeNotification" visibility="public">
+      </methodref>
+      <methodref name="FreeOnRelease" visibility="public">
+      </methodref>
+      <methodref name="GetEnumerator" visibility="public">
+      </methodref>
+      <methodref name="GetParentComponent" visibility="public">
+      </methodref>
+      <methodref name="GetNamePath" visibility="public">
+      </methodref>
+      <methodref name="HasParent" visibility="public">
+      </methodref>
+      <methodref name="InsertComponent" visibility="public">
+      </methodref>
+      <methodref name="RemoveComponent" visibility="public">
+      </methodref>
+      <methodref name="SetSubComponent" visibility="public">
+      </methodref>
+      <methodref name="SafeCallException" visibility="public">
+      </methodref>
+      <methodref name="UpdateAction" visibility="public">
+      </methodref>
+      <methodref name="IsImplementorOf" visibility="public">
+      </methodref>
+      <methodref name="ReferenceInterface" visibility="public">
+      </methodref>
+      <propertyref name="ComObject" visibility="public">
+      </propertyref>
+      <propertyref name="Components" visibility="public">
+      </propertyref>
+      <propertyref name="ComponentCount" visibility="public">
+      </propertyref>
+      <propertyref name="ComponentIndex" visibility="public">
+      </propertyref>
+      <propertyref name="ComponentState" visibility="public">
+      </propertyref>
+      <propertyref name="ComponentStyle" visibility="public">
+      </propertyref>
+      <propertyref name="DesignInfo" visibility="public">
+      </propertyref>
+      <propertyref name="Owner" visibility="public">
+      </propertyref>
+      <propertyref name="VCLComObject" visibility="public">
+      </propertyref>
+      <propertyref name="Name" visibility="published">
+      </propertyref>
+      <propertyref name="Tag" visibility="published">
+      </propertyref>
+      <ancestor name="TPersistent" namespace="Classes">
+        <methodref name="AssignError" visibility="private">
+        </methodref>
+        <methodref name="AssignTo" visibility="protected">
+        </methodref>
+        <methodref name="DefineProperties" visibility="protected">
+        </methodref>
+        <methodref name="GetOwner" visibility="protected">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="Assign" visibility="public">
+        </methodref>
+        <methodref name="GetNamePath" visibility="public">
+        </methodref>
+        <ancestor name="TObject" namespace="System">
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Free" visibility="public">
+          </methodref>
+          <methodref name="InitInstance" visibility="public">
+          </methodref>
+          <methodref name="CleanupInstance" visibility="public">
+          </methodref>
+          <methodref name="ClassType" visibility="public">
+          </methodref>
+          <methodref name="ClassName" visibility="public">
+          </methodref>
+          <methodref name="ClassNameIs" visibility="public">
+          </methodref>
+          <methodref name="ClassParent" visibility="public">
+          </methodref>
+          <methodref name="ClassInfo" visibility="public">
+          </methodref>
+          <methodref name="InstanceSize" visibility="public">
+          </methodref>
+          <methodref name="InheritsFrom" visibility="public">
+          </methodref>
+          <methodref name="MethodAddress" visibility="public">
+          </methodref>
+          <methodref name="MethodName" visibility="public">
+          </methodref>
+          <methodref name="FieldAddress" visibility="public">
+          </methodref>
+          <methodref name="GetInterface" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceEntry" visibility="public">
+          </methodref>
+          <methodref name="GetInterfaceTable" visibility="public">
+          </methodref>
+          <methodref name="SafeCallException" visibility="public">
+          </methodref>
+          <methodref name="AfterConstruction" visibility="public">
+          </methodref>
+          <methodref name="BeforeDestruction" visibility="public">
+          </methodref>
+          <methodref name="Dispatch" visibility="public">
+          </methodref>
+          <methodref name="DefaultHandler" visibility="public">
+          </methodref>
+          <methodref name="NewInstance" visibility="public">
+          </methodref>
+          <methodref name="FreeInstance" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+        </ancestor>
+      </ancestor>
+    </ancestor>
+    <members>
+      <field name="PersistenceController" type="IPersistenceController" visibility="private" />
+      <procedure name="WriteToStream" visibility="protected">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <parameter name="Value" type="string" paramflags="const" />
+        </parameters>
+      </procedure>
+      <function name="ReadFromStream" visibility="protected">
+        <parameters>
+          <parameter name="Stream" type="TStream" />
+          <retval type="string" />
+        </parameters>
+      </function>
+      <constructor name="Create" visibility="public">
+        <parameters>
+          <parameter name="AOwner" type="TComponent" />
+          <parameter name="APersistenceController" type="IPersistenceController" paramflags="const">
+            <value>
+              nil
+            </value>
+          </parameter>
+        </parameters>
+      </constructor>
+      <destructor name="Destroy" visibility="public">
+        <parameters>
+        </parameters>
+      </destructor>
+      <procedure name="GetStateValues" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Values" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="SetStateValues" visibility="public" procflags="virtual">
+        <parameters>
+          <parameter name="Values" type="TStream" />
+        </parameters>
+      </procedure>
+      <procedure name="StateValuesLoaded" visibility="public" procflags="virtual">
+      </procedure>
+    </members>
+  </class>
+  <interface name="ITWXGlobals">
+    <function name="GetProgramDir" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetProgramDir" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <property name="ProgramDir" visibility="public" read="GetProgramDir" write="SetProgramDir" type="string" />
+  </interface>
+  <interface name="IMessageListener">
+    <procedure name="AcceptMessage" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Param" type="Pointer" />
+      </parameters>
+    </procedure>
+  </interface>
+  <interface name="IModDatabase">
+    <function name="GetDatabaseName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetDatabaseName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetUseCache" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetUseCache" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetRecording" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetRecording" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <property name="DatabaseName" visibility="public" read="GetDatabaseName" write="SetDatabaseName" type="string" />
+    <property name="UseCache" visibility="public" read="GetUseCache" write="SetUseCache" type="Boolean" />
+    <property name="Recording" visibility="public" read="GetRecording" write="SetRecording" type="Boolean" />
+  </interface>
+  <interface name="IModExtractor">
+    <function name="GetMenuKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Char" />
+      </parameters>
+    </function>
+    <procedure name="SetMenuKey" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Char" />
+      </parameters>
+    </procedure>
+    <property name="MenuKey" visibility="public" read="GetMenuKey" write="SetMenuKey" type="Char" />
+  </interface>
+  <interface name="IModGUI">
+    <procedure name="ShowWarning" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="WarningText" type="string" />
+      </parameters>
+    </procedure>
+    <procedure name="SetSelectedGame" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetSelectedGame" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetToProgramDir" visibility="public" procflags="abstract virtual">
+    </procedure>
+    <property name="SelectedGame" visibility="public" read="GetSelectedGame" write="SetSelectedGame" type="string" />
+  </interface>
+  <interface name="IModServer">
+    <function name="GetAcceptExternal" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetAcceptExternal" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetRemoteAddress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetRemoteAddress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" />
+      </parameters>
+    </procedure>
+    <function name="GetBroadCastMsgs" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetBroadCastMsgs" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetLocalEcho" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetLocalEcho" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <property name="LocalEcho" visibility="public" read="GetLocalEcho" write="SetLocalEcho" type="Boolean" />
+    <property name="AcceptExternal" visibility="public" read="GetAcceptExternal" write="SetAcceptExternal" type="Boolean" />
+    <property name="RemoteAddress" visibility="public" read="GetRemoteAddress" write="SetRemoteAddress" type="string" />
+    <property name="BroadCastMsgs" visibility="public" read="GetBroadCastMsgs" write="SetBroadCastMsgs" type="Boolean" />
+  </interface>
+  <interface name="IModClient">
+    <function name="GetReconnect" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetReconnect" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <property name="Reconnect" visibility="public" read="GetReconnect" write="SetReconnect" type="Boolean" />
+  </interface>
+  <interface name="IModMenu">
+  </interface>
+  <interface name="IModInterpreter">
+  </interface>
+  <interface name="IModCompiler">
+  </interface>
+  <interface name="IModLog">
+    <function name="GetLogData" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetLogData" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetLogANSI" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetLogANSI" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <property name="LogData" visibility="public" read="GetLogData" write="SetLogData" type="Boolean" />
+    <property name="LogANSI" visibility="public" read="GetLogANSI" write="SetLogANSI" type="Boolean" />
+  </interface>
+  <interface name="IModAuth">
+    <function name="GetAuthenticate" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetAuthenticate" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetUserName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetUserName" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetUserReg" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetUserReg" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetUseAuthProxy" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Boolean" />
+      </parameters>
+    </function>
+    <procedure name="SetUseAuthProxy" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Boolean" />
+      </parameters>
+    </procedure>
+    <function name="GetProxyAddress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="string" />
+      </parameters>
+    </function>
+    <procedure name="SetProxyAddress" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="string" paramflags="const" />
+      </parameters>
+    </procedure>
+    <function name="GetProxyPort" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Word" />
+      </parameters>
+    </function>
+    <procedure name="SetProxyPort" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Word" />
+      </parameters>
+    </procedure>
+    <property name="Authenticate" visibility="public" read="GetAuthenticate" write="SetAuthenticate" type="Boolean" />
+    <property name="UserName" visibility="public" read="GetUserName" write="SetUserName" type="string" />
+    <property name="UserReg" visibility="public" read="GetUserReg" write="SetUserReg" type="string" />
+    <property name="UseAuthProxy" visibility="public" read="GetUseAuthProxy" write="SetUseAuthProxy" type="Boolean" />
+    <property name="ProxyAddress" visibility="public" read="GetProxyAddress" write="SetProxyAddress" type="string" />
+    <property name="ProxyPort" visibility="public" read="GetProxyPort" write="SetProxyPort" type="Word" />
+  </interface>
+  <interface name="IModBubble">
+    <function name="GetMaxBubbleSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <retval type="Integer" />
+      </parameters>
+    </function>
+    <procedure name="SetMaxBubbleSize" visibility="public" procflags="abstract virtual">
+      <parameters>
+        <parameter name="Value" type="Integer" />
+      </parameters>
+    </procedure>
+    <property name="MaxBubbleSize" visibility="public" read="GetMaxBubbleSize" write="SetMaxBubbleSize" type="Integer" />
+  </interface>
+  <procedure name="PostNotification" visibility="private">
+    <parameters>
+      <parameter name="Event" type="TNotificationEvent" />
+      <parameter name="Param" type="Pointer" />
+    </parameters>
+  </procedure>
+</namespace>

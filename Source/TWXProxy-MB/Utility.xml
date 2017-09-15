@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name="Utility">
+  <procedure name="SetFileExtension" visibility="private">
+    <parameters>
+      <parameter name="Filename" type="string" paramflags="var" />
+      <parameter name="Extension" type="string" />
+    </parameters>
+  </procedure>
+  <function name="GetSpace" visibility="private">
+    <parameters>
+      <parameter name="I" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StripChars" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="GetTelnetLogin" visibility="private">
+    <parameters>
+      <parameter name="InStr" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="FetchScript" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <parameter name="Include" type="Boolean" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <procedure name="CompleteFileName" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" paramflags="var" />
+      <parameter name="X" type="string" />
+    </parameters>
+  </procedure>
+  <procedure name="Replace" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" paramflags="var" />
+      <parameter name="A" type="Char" />
+      <parameter name="B" type="Char" />
+    </parameters>
+  </procedure>
+  <function name="ShortFilename" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StripFileExtension" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StrToIntSafe" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <function name="AsterixToEnter" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="Segment" visibility="private">
+    <parameters>
+      <parameter name="I" type="Integer" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="GetDirectory" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="StripChar" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" paramflags="var" />
+      <parameter name="C" type="Char" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="IsIn" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <parameter name="X" type="string" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="GetParameter" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <parameter name="Parameter" type="Word" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="GetParameterPos" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <parameter name="Parameter" type="Integer" />
+      <retval type="Integer" />
+    </parameters>
+  </function>
+  <procedure name="FreeList" visibility="private">
+    <parameters>
+      <parameter name="List" type="TList" />
+      <parameter name="MemSize" type="Integer" />
+    </parameters>
+  </procedure>
+  <function name="WordWrap" visibility="private">
+    <parameters>
+      <parameter name="S" type="string" />
+      <retval type="string" />
+    </parameters>
+  </function>
+  <function name="IsIpAddress" visibility="private">
+    <parameters>
+      <parameter name="Addr" type="string" />
+      <retval type="Boolean" />
+    </parameters>
+  </function>
+  <function name="rdtsc" visibility="private">
+    <parameters>
+      <retval type="Int64" />
+    </parameters>
+  </function>
+  <procedure name="ReverseTList" visibility="private">
+    <parameters>
+      <parameter name="List" type="TList" paramflags="var" />
+    </parameters>
+  </procedure>
+  <procedure name="Split" visibility="private">
+    <parameters>
+      <parameter name="Line" type="string" paramflags="const" />
+      <parameter name="Strings" type="TStringList" paramflags="var" />
+      <parameter name="Delimiters" type="string" paramflags="const">
+        <value>
+          
+        </value>
+      </parameter>
+    </parameters>
+  </procedure>
+</namespace>
