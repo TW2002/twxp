@@ -1,5 +1,4 @@
-# TWXProxy
-**The Veterans TradeWars helper**
+![image](https://github.com/MicroBlaster/TWXProxy/blob/master/Source/TWXProxy-MB/TWXP-Logo.jpg)
 
 ## What is TWXProxy?
 
