@@ -27,6 +27,7 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Active Contributers:
 
-* David O. McCartney (aka MicroBlaster)
+* David McCartney (aka MicroBlaster)
+* Steven Ruzicka (aka Mind Dagger)
 
 If you would like to contribute to this project, please email DMC@IT1.BIZ for further information.
