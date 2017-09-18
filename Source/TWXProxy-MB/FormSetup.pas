@@ -53,12 +53,6 @@ type
     tabServer: TTabSheet;
     btnOKMain: TButton;
     tabProgram: TTabSheet;
-    cbAcceptExternal: TCheckBox;
-    cbBroadcast: TCheckBox;
-    Label2: TLabel;
-    tbListenPort: TEdit;
-    Label11: TLabel;
-    tbMenuKey: TEdit;
     Panel1: TPanel;
     Label12: TLabel;
     Label3: TLabel;
@@ -70,9 +64,6 @@ type
     btnAdd: TButton;
     btnDelete: TButton;
     btnEdit: TButton;
-    Label13: TLabel;
-    tbLoginScript: TEdit;
-    cbUseLogin: TCheckBox;
     tbLoginName: TEdit;
     Label14: TLabel;
     tbPassword: TEdit;
@@ -83,14 +74,10 @@ type
     tbDescription: TEdit;
     btnSave: TButton;
     btnCancel: TButton;
-    cbReconnect: TCheckBox;
     tabUser: TTabSheet;
     Label18: TLabel;
     memHint2: TMemo;
     Label19: TLabel;
-    cbCache: TCheckBox;
-    tbBubbleSize: TEdit;
-    Label10: TLabel;
     tabAutoRun: TTabSheet;
     lbAutoRun: TListBox;
     memHint3: TMemo;
@@ -98,7 +85,6 @@ type
     btnRemoveAutoRun: TButton;
     OpenDialog: TOpenDialog;
     btnCancelMain: TButton;
-    cbLocalEcho: TCheckBox;
     Label4: TLabel;
     Label5: TLabel;
     btnUpgrade: TButton;
@@ -115,8 +101,58 @@ type
     Label9: TLabel;
     tbShortenDelay: TEdit;
     Label20: TLabel;
-    Label21: TLabel;
+    Label11: TLabel;
+    tbMenuKey: TEdit;
+    Label10: TLabel;
+    tbBubbleSize: TEdit;
+    cbAcceptExternal: TCheckBox;
     tbRemoteAddress: TEdit;
+    Label21: TLabel;
+    cbBroadcast: TCheckBox;
+    cbReconnect: TCheckBox;
+    cbCache: TCheckBox;
+    cbLocalEcho: TCheckBox;
+    cbUseLogin: TCheckBox;
+    tbLoginScript: TEdit;
+    Label13: TLabel;
+    Label2: TLabel;
+    tbListenPort: TEdit;
+    Label22: TLabel;
+    tbAlias: TEdit;
+    Label23: TLabel;
+    Label24: TLabel;
+    Label26: TLabel;
+    tbCorpName: TEdit;
+    Label27: TLabel;
+    tbCorpPassword: TEdit;
+    Label28: TLabel;
+    tbSubSpace: TEdit;
+    Label29: TLabel;
+    Label30: TLabel;
+    tbShipName: TEdit;
+    tbHomePlanet: TEdit;
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
+    CheckBox6: TCheckBox;
+    Edit2: TEdit;
+    Label31: TLabel;
+    cbDelayedLogin: TCheckBox;
+    CheckBox9: TCheckBox;
+    Label36: TLabel;
+    CheckBox7: TCheckBox;
+    ComboBox2: TComboBox;
+    tbLoginTime: TEdit;
+    Label37: TLabel;
+    tbDefaultBot: TEdit;
+    tbPassport: TEdit;
+    Label33: TLabel;
+    Label32: TLabel;
+    tbPrivate: TEdit;
+    cbCreateCorp: TCheckBox;
+    cbJoinCorp: TCheckBox;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -515,6 +551,33 @@ begin
   tbPassword.Enabled := FALSE;
   tbGame.Enabled := FALSE;
 
+  // MB - Added new fields for login
+  tbLoginName.Enabled := FALSE;
+  tbPassword.Enabled := FALSE;
+  tbAlias.Enabled := FALSE;
+  tbShipName.Enabled := FALSE;
+  tbHomePlanet.Enabled := FALSE;
+  tbSubSpace.Enabled := FALSE;
+
+  tbPassport.Enabled := FALSE;
+  tbPrivate.Enabled := FALSE;
+  tbCorpName.Enabled := FALSE;
+  tbCorpPassword.Enabled := FALSE;
+  cbCreateCorp.Enabled := FALSE;
+  cbJoinCorp.Enabled := FALSE;
+  tbAlias.Enabled := FALSE;
+  tbShipName.Enabled := FALSE;
+  tbHomePlanet.Enabled := FALSE;
+  tbSubSpace.Enabled := FALSE;
+
+  tbPassport.Enabled := FALSE;
+  tbPrivate.Enabled := FALSE;
+  tbCorpName.Enabled := FALSE;
+  tbCorpPassword.Enabled := FALSE;
+  cbCreateCorp.Enabled := FALSE;
+  cbJoinCorp.Enabled := FALSE;
+
+
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
   btnEdit.Enabled := TRUE;
@@ -584,18 +647,46 @@ begin
 
   tbDescription.Text := 'New Game';
   tbHost.Text := '';
-  tbPort.Text := '23';
-  tbSectors.Text := '5000';
-  cbUseLogin.Checked := FALSE;
-  tbLoginScript.Text := '1_Login.ts';
+  tbPort.Text := '2002';
+  tbSectors.Text := '30000';
+  cbUseLogin.Checked := TRUE;
+  tbLoginScript.Text := 'Login.ts';
   tbLoginName.Text := '';
   tbPassword.Text := '';
   tbGame.Text := '';
-  cbUseLoginClick(Sender);
+
+  // MB - Added new fields for login
+  tbLoginName.Text := '';
+  tbPassword.Text := '';
+  tbAlias.Text := '';
+  tbShipName.Text := '';
+  tbHomePlanet.Text := '';
+  tbSubSpace.Text := '';
+
+  tbPassport.Text := '';
+  tbPrivate.Text := '';
+  tbCorpName.Text := '';
+  tbCorpPassword.Text := '';
+  cbCreateCorp.Text := '';
+  cbJoinCorp.Text := '';
+  tbAlias.Text := '';
+  tbShipName.Text := '';
+  tbHomePlanet.Text := '';
+  tbSubSpace.Text := '';
+
+  tbPassport.Text := '';
+  tbPrivate.Text := '';
+  tbCorpName.Text := '';
+  tbCorpPassword.Text := '';
+  cbCreateCorp.Checked := FALSE;
+  cbJoinCorp.Checked := FALSE;
+
+  //cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
   btnSave.Enabled := TRUE;
-  btnCancel.Enabled := TRUE;
+  btnSave.Visable := TRUE;
+  //btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
   btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
@@ -608,7 +699,7 @@ begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
-  cbUseLoginClick(Sender);
+  //cbUseLoginClick(Sender);
 
   tbHost.SetFocus;
 

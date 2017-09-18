@@ -36,7 +36,9 @@ uses
 const
   // Version for 2.03 is 7
   // Version for 2.04 is 8
-  DATABASE_VERSION = 8;
+  // Version for 2.05 is 8
+  // Version for 3.17 is 9
+  DATABASE_VERSION = 9;
 
   Day : array[1..7] of string = ('Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat');
 
@@ -61,14 +63,29 @@ type
     Description : string[40];
     ServerPort,
     Port        : Word;
-    LoginScript : string[255];
+//    LoginScript : string[255];
     Password,
     LoginName   : string[40];
     Game        : Char;
-    UseLogin    : Boolean;
+//    UseLogin    : Boolean;
     RobFactor,
     StealFactor : Byte;
     LastPortCIM : TDateTime;
+
+    // MB - New fileds for login
+    Alias,
+    ShipName,
+    HomePlanet,
+    Passport,
+    Private,
+    CorpName,
+    CorpPassword : string[40];
+
+    SubSpace     : Word;
+
+    CreateCorp,
+    JoinCorp     : Boolean;
+
   end;
   PDataHeader = ^TDataHeader;
 

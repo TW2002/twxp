@@ -33,7 +33,6 @@ uses
   Dialogs,
   FileCtrl,
   FormMain in 'FormMain.pas' {frmMain},
-  FormSetup in 'FormSetup.pas' {frmSetup},
   Process in 'Process.pas',
   Script in 'Script.pas',
   Menu in 'Menu.pas',
@@ -55,7 +54,8 @@ uses
   Persistence in 'Persistence.pas',
   GUI in 'GUI.pas',
   Observer in 'Observer.pas',
-  Messages;
+  Messages,
+  FormSetup in 'FormSetup.pas' {frmSetup};
 
 {$R *.RES}
 

@@ -306,7 +306,7 @@ var
   SktIndex    : Integer;
 begin
   if (Socket.RemoteAddress = '127.0.0.1') or
-      (Copy(Socket.RemoteAddress, 1, 8) = '194.168.') or
+      (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or
       (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
       (Socket.RemoteAddress = RemoteAddress) then
     LocalClient := TRUE
