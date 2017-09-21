@@ -1,7 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-  <Transactions>
-    <Transaction>2017/09/17 00:13:24.428.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormSetup.pas=</Transaction>
-    <Transaction>2017/09/17 00:13:24.428.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormSetup.dfm=</Transaction>
-  </Transactions>
-</BorlandProject>
+<BorlandProject/>
