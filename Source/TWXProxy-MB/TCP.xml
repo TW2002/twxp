@@ -83,13 +83,20 @@
   </const>
   <class name="TTelnetSocket">
     <ancestor name="TTWXModule" namespace="Core">
-      <methodref name="WriteToStream" visibility="protected" />
-      <methodref name="ReadFromStream" visibility="protected" />
-      <methodref name="Create" visibility="public" />
-      <methodref name="Destroy" visibility="public" />
-      <methodref name="GetStateValues" visibility="public" />
-      <methodref name="SetStateValues" visibility="public" />
-      <methodref name="StateValuesLoaded" visibility="public" />
+      <methodref name="WriteToStream" visibility="protected">
+      </methodref>
+      <methodref name="ReadFromStream" visibility="protected">
+      </methodref>
+      <methodref name="Create" visibility="public">
+      </methodref>
+      <methodref name="Destroy" visibility="public">
+      </methodref>
+      <methodref name="GetStateValues" visibility="public">
+      </methodref>
+      <methodref name="SetStateValues" visibility="public">
+      </methodref>
+      <methodref name="StateValuesLoaded" visibility="public">
+      </methodref>
       <ancestor name="TComponent" namespace="Classes">
         <methodref name="GetComObject" visibility="private">
         </methodref>
@@ -342,13 +349,20 @@
     <ancestor name="TTelnetSocket" namespace="TCP">
       <methodref name="ProcessTelnet" visibility="private" />
       <ancestor name="TTWXModule" namespace="Core">
-        <methodref name="WriteToStream" visibility="protected" />
-        <methodref name="ReadFromStream" visibility="protected" />
-        <methodref name="Create" visibility="public" />
-        <methodref name="Destroy" visibility="public" />
-        <methodref name="GetStateValues" visibility="public" />
-        <methodref name="SetStateValues" visibility="public" />
-        <methodref name="StateValuesLoaded" visibility="public" />
+        <methodref name="WriteToStream" visibility="protected">
+        </methodref>
+        <methodref name="ReadFromStream" visibility="protected">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="GetStateValues" visibility="public">
+        </methodref>
+        <methodref name="SetStateValues" visibility="public">
+        </methodref>
+        <methodref name="StateValuesLoaded" visibility="public">
+        </methodref>
         <ancestor name="TComponent" namespace="Classes">
           <methodref name="GetComObject" visibility="private">
           </methodref>
@@ -583,13 +597,20 @@
     <ancestor name="TTelnetSocket" namespace="TCP">
       <methodref name="ProcessTelnet" visibility="private" />
       <ancestor name="TTWXModule" namespace="Core">
-        <methodref name="WriteToStream" visibility="protected" />
-        <methodref name="ReadFromStream" visibility="protected" />
-        <methodref name="Create" visibility="public" />
-        <methodref name="Destroy" visibility="public" />
-        <methodref name="GetStateValues" visibility="public" />
-        <methodref name="SetStateValues" visibility="public" />
-        <methodref name="StateValuesLoaded" visibility="public" />
+        <methodref name="WriteToStream" visibility="protected">
+        </methodref>
+        <methodref name="ReadFromStream" visibility="protected">
+        </methodref>
+        <methodref name="Create" visibility="public">
+        </methodref>
+        <methodref name="Destroy" visibility="public">
+        </methodref>
+        <methodref name="GetStateValues" visibility="public">
+        </methodref>
+        <methodref name="SetStateValues" visibility="public">
+        </methodref>
+        <methodref name="StateValuesLoaded" visibility="public">
+        </methodref>
         <ancestor name="TComponent" namespace="Classes">
           <methodref name="GetComObject" visibility="private">
           </methodref>
@@ -825,13 +846,20 @@
       <ancestor name="TTelnetSocket" namespace="TCP">
         <methodref name="ProcessTelnet" visibility="private" />
         <ancestor name="TTWXModule" namespace="Core">
-          <methodref name="WriteToStream" visibility="protected" />
-          <methodref name="ReadFromStream" visibility="protected" />
-          <methodref name="Create" visibility="public" />
-          <methodref name="Destroy" visibility="public" />
-          <methodref name="GetStateValues" visibility="public" />
-          <methodref name="SetStateValues" visibility="public" />
-          <methodref name="StateValuesLoaded" visibility="public" />
+          <methodref name="WriteToStream" visibility="protected">
+          </methodref>
+          <methodref name="ReadFromStream" visibility="protected">
+          </methodref>
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="GetStateValues" visibility="public">
+          </methodref>
+          <methodref name="SetStateValues" visibility="public">
+          </methodref>
+          <methodref name="StateValuesLoaded" visibility="public">
+          </methodref>
           <ancestor name="TComponent" namespace="Classes">
             <methodref name="GetComObject" visibility="private">
             </methodref>
@@ -1249,13 +1277,20 @@
       <ancestor name="TTelnetSocket" namespace="TCP">
         <methodref name="ProcessTelnet" visibility="private" />
         <ancestor name="TTWXModule" namespace="Core">
-          <methodref name="WriteToStream" visibility="protected" />
-          <methodref name="ReadFromStream" visibility="protected" />
-          <methodref name="Create" visibility="public" />
-          <methodref name="Destroy" visibility="public" />
-          <methodref name="GetStateValues" visibility="public" />
-          <methodref name="SetStateValues" visibility="public" />
-          <methodref name="StateValuesLoaded" visibility="public" />
+          <methodref name="WriteToStream" visibility="protected">
+          </methodref>
+          <methodref name="ReadFromStream" visibility="protected">
+          </methodref>
+          <methodref name="Create" visibility="public">
+          </methodref>
+          <methodref name="Destroy" visibility="public">
+          </methodref>
+          <methodref name="GetStateValues" visibility="public">
+          </methodref>
+          <methodref name="SetStateValues" visibility="public">
+          </methodref>
+          <methodref name="StateValuesLoaded" visibility="public">
+          </methodref>
           <ancestor name="TComponent" namespace="Classes">
             <methodref name="GetComObject" visibility="private">
             </methodref>
