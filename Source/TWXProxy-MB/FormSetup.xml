@@ -2162,72 +2162,144 @@
     <members>
       <field name="PageControl" type="TPageControl" visibility="published" />
       <field name="tabServer" type="TTabSheet" visibility="published" />
-      <field name="btnOKMain" type="TButton" visibility="published" />
+      <field name="btnOK" type="TButton" visibility="published" />
       <field name="tabProgram" type="TTabSheet" visibility="published" />
-      <field name="cbAcceptExternal" type="TCheckBox" visibility="published" />
-      <field name="cbBroadcast" type="TCheckBox" visibility="published" />
-      <field name="Label2" type="TLabel" visibility="published" />
-      <field name="tbListenPort" type="TEdit" visibility="published" />
-      <field name="Label11" type="TLabel" visibility="published" />
-      <field name="tbMenuKey" type="TEdit" visibility="published" />
-      <field name="Panel1" type="TPanel" visibility="published" />
-      <field name="Label12" type="TLabel" visibility="published" />
-      <field name="Label3" type="TLabel" visibility="published" />
-      <field name="Label1" type="TLabel" visibility="published" />
-      <field name="tbHost" type="TEdit" visibility="published" />
-      <field name="tbPort" type="TEdit" visibility="published" />
-      <field name="tbSectors" type="TEdit" visibility="published" />
-      <field name="cbGames" type="TComboBox" visibility="published" />
-      <field name="btnAdd" type="TButton" visibility="published" />
-      <field name="btnDelete" type="TButton" visibility="published" />
-      <field name="btnEdit" type="TButton" visibility="published" />
-      <field name="Label13" type="TLabel" visibility="published" />
-      <field name="tbLoginScript" type="TEdit" visibility="published" />
-      <field name="cbUseLogin" type="TCheckBox" visibility="published" />
-      <field name="tbLoginName" type="TEdit" visibility="published" />
-      <field name="Label14" type="TLabel" visibility="published" />
-      <field name="tbPassword" type="TEdit" visibility="published" />
-      <field name="Label15" type="TLabel" visibility="published" />
-      <field name="tbGame" type="TEdit" visibility="published" />
-      <field name="Label16" type="TLabel" visibility="published" />
-      <field name="Label17" type="TLabel" visibility="published" />
-      <field name="tbDescription" type="TEdit" visibility="published" />
-      <field name="btnSave" type="TButton" visibility="published" />
-      <field name="btnCancel" type="TButton" visibility="published" />
-      <field name="cbReconnect" type="TCheckBox" visibility="published" />
       <field name="tabUser" type="TTabSheet" visibility="published" />
       <field name="Label18" type="TLabel" visibility="published" />
       <field name="memHint2" type="TMemo" visibility="published" />
       <field name="Label19" type="TLabel" visibility="published" />
-      <field name="cbCache" type="TCheckBox" visibility="published" />
-      <field name="tbBubbleSize" type="TEdit" visibility="published" />
-      <field name="Label10" type="TLabel" visibility="published" />
       <field name="tabAutoRun" type="TTabSheet" visibility="published" />
-      <field name="lbAutoRun" type="TListBox" visibility="published" />
       <field name="memHint3" type="TMemo" visibility="published" />
-      <field name="btnAddAutoRun" type="TButton" visibility="published" />
-      <field name="btnRemoveAutoRun" type="TButton" visibility="published" />
       <field name="OpenDialog" type="TOpenDialog" visibility="published" />
-      <field name="btnCancelMain" type="TButton" visibility="published" />
-      <field name="cbLocalEcho" type="TCheckBox" visibility="published" />
+      <field name="btnCancel" type="TButton" visibility="published" />
       <field name="Label4" type="TLabel" visibility="published" />
       <field name="Label5" type="TLabel" visibility="published" />
       <field name="btnUpgrade" type="TButton" visibility="published" />
       <field name="tmrReg" type="TTimer" visibility="published" />
       <field name="tabProxy" type="TTabSheet" visibility="published" />
       <field name="Label6" type="TLabel" visibility="published" />
-      <field name="Label7" type="TLabel" visibility="published" />
-      <field name="Label8" type="TLabel" visibility="published" />
       <field name="tabLogging" type="TTabSheet" visibility="published" />
+      <field name="cbGames" type="TComboBox" visibility="published" />
+      <field name="btnAdd" type="TButton" visibility="published" />
+      <field name="Label22" type="TLabel" visibility="published" />
+      <field name="btnDelete" type="TButton" visibility="published" />
+      <field name="panMain" type="TPanel" visibility="published" />
+      <field name="Button1" type="TButton" visibility="published" />
+      <field name="panCorp" type="TPanel" visibility="published" />
+      <field name="panSession" type="TPanel" visibility="published" />
+      <field name="panStats" type="TPanel" visibility="published" />
+      <field name="CheckBox1" type="TCheckBox" visibility="published" />
+      <field name="GroupBox1" type="TGroupBox" visibility="published" />
+      <field name="Label12" type="TLabel" visibility="published" />
+      <field name="tbDescription" type="TEdit" visibility="published" />
+      <field name="tbSectors" type="TEdit" visibility="published" />
+      <field name="Label17" type="TLabel" visibility="published" />
+      <field name="btnSave" type="TButton" visibility="published" />
+      <field name="Label7" type="TLabel" visibility="published" />
+      <field name="tbProxyAddress" type="TEdit" visibility="published" />
+      <field name="tbProxyPort" type="TEdit" visibility="published" />
+      <field name="Label8" type="TLabel" visibility="published" />
+      <field name="cbUseAuthProxy" type="TCheckBox" visibility="published" />
+      <field name="panTerminal" type="TPanel" visibility="published" />
+      <field name="GroupBox9" type="TGroupBox" visibility="published" />
+      <field name="panAutorun" type="TPanel" visibility="published" />
+      <field name="GroupBox11" type="TGroupBox" visibility="published" />
+      <field name="panLogging" type="TPanel" visibility="published" />
+      <field name="GroupBox16" type="TGroupBox" visibility="published" />
+      <field name="panLogin" type="TPanel" visibility="published" />
+      <field name="GroupBox17" type="TGroupBox" visibility="published" />
+      <field name="cc" type="TLabel" visibility="published" />
+      <field name="tbLoginScript" type="TEdit" visibility="published" />
+      <field name="Label37" type="TLabel" visibility="published" />
+      <field name="Label38" type="TLabel" visibility="published" />
+      <field name="Label9" type="TLabel" visibility="published" />
+      <field name="Label20" type="TLabel" visibility="published" />
       <field name="cbLog" type="TCheckBox" visibility="published" />
       <field name="cbLogANSI" type="TCheckBox" visibility="published" />
       <field name="cbLogBinary" type="TCheckBox" visibility="published" />
       <field name="cbNotifyLogDelay" type="TCheckBox" visibility="published" />
-      <field name="Label9" type="TLabel" visibility="published" />
       <field name="tbShortenDelay" type="TEdit" visibility="published" />
-      <field name="Label20" type="TLabel" visibility="published" />
+      <field name="lbAutoRun" type="TListBox" visibility="published" />
+      <field name="cbUseLogin" type="TCheckBox" visibility="published" />
+      <field name="tbDefaultBot" type="TEdit" visibility="published" />
+      <field name="Label43" type="TLabel" visibility="published" />
+      <field name="btnAddAutoRun" type="TButton" visibility="published" />
+      <field name="btnRemoveAutoRun" type="TButton" visibility="published" />
+      <field name="Label11" type="TLabel" visibility="published" />
+      <field name="Label10" type="TLabel" visibility="published" />
+      <field name="cbBroadcast" type="TCheckBox" visibility="published" />
+      <field name="tbMenuKey" type="TEdit" visibility="published" />
+      <field name="cbCache" type="TCheckBox" visibility="published" />
+      <field name="tbBubbleSize" type="TEdit" visibility="published" />
+      <field name="cbLocalEcho" type="TCheckBox" visibility="published" />
+      <field name="panIdentity" type="TPanel" visibility="published" />
+      <field name="GroupBox7" type="TGroupBox" visibility="published" />
+      <field name="Label14" type="TLabel" visibility="published" />
+      <field name="Label42" type="TLabel" visibility="published" />
+      <field name="tbCorpPassword" type="TEdit" visibility="published" />
+      <field name="tbCorpName" type="TEdit" visibility="published" />
+      <field name="cbJoinCorp" type="TCheckBox" visibility="published" />
+      <field name="cbCreateCorp" type="TCheckBox" visibility="published" />
+      <field name="GroupBox2" type="TGroupBox" visibility="published" />
+      <field name="Label1" type="TLabel" visibility="published" />
+      <field name="Label3" type="TLabel" visibility="published" />
+      <field name="Label16" type="TLabel" visibility="published" />
+      <field name="Label2" type="TLabel" visibility="published" />
+      <field name="tbHost" type="TEdit" visibility="published" />
+      <field name="tbPort" type="TEdit" visibility="published" />
+      <field name="tbGame" type="TEdit" visibility="published" />
+      <field name="tbListenPort" type="TEdit" visibility="published" />
+      <field name="GroupBox5" type="TGroupBox" visibility="published" />
+      <field name="cbPostAction" type="TComboBox" visibility="published" />
+      <field name="Label36" type="TLabel" visibility="published" />
+      <field name="Edit1" type="TEdit" visibility="published" />
+      <field name="Label24" type="TLabel" visibility="published" />
+      <field name="Label47" type="TLabel" visibility="published" />
+      <field name="GroupBox18" type="TGroupBox" visibility="published" />
+      <field name="Label25" type="TLabel" visibility="published" />
+      <field name="Label26" type="TLabel" visibility="published" />
+      <field name="Label27" type="TLabel" visibility="published" />
+      <field name="Label28" type="TLabel" visibility="published" />
+      <field name="Label29" type="TLabel" visibility="published" />
+      <field name="Label30" type="TLabel" visibility="published" />
+      <field name="Label31" type="TLabel" visibility="published" />
+      <field name="Label34" type="TLabel" visibility="published" />
+      <field name="Label35" type="TLabel" visibility="published" />
+      <field name="Label39" type="TLabel" visibility="published" />
+      <field name="Label40" type="TLabel" visibility="published" />
+      <field name="Label41" type="TLabel" visibility="published" />
       <field name="Label21" type="TLabel" visibility="published" />
+      <field name="cbAcceptExternal" type="TCheckBox" visibility="published" />
       <field name="tbRemoteAddress" type="TEdit" visibility="published" />
+      <field name="GroupBox4" type="TGroupBox" visibility="published" />
+      <field name="Label13" type="TLabel" visibility="published" />
+      <field name="Label15" type="TLabel" visibility="published" />
+      <field name="Label23" type="TLabel" visibility="published" />
+      <field name="Label32" type="TLabel" visibility="published" />
+      <field name="Label33" type="TLabel" visibility="published" />
+      <field name="tbLoginName" type="TEdit" visibility="published" />
+      <field name="tbPassword" type="TEdit" visibility="published" />
+      <field name="tbAlias" type="TEdit" visibility="published" />
+      <field name="tbPrivateGame" type="TEdit" visibility="published" />
+      <field name="tbPassport" type="TEdit" visibility="published" />
+      <field name="GroupBox15" type="TGroupBox" visibility="published" />
+      <field name="cbClearAvoids" type="TCheckBox" visibility="published" />
+      <field name="cbClearMessages" type="TCheckBox" visibility="published" />
+      <field name="cbReadLog" type="TCheckBox" visibility="published" />
+      <field name="cbStopBefore" type="TCheckBox" visibility="published" />
+      <field name="cbGetSettings" type="TCheckBox" visibility="published" />
+      <field name="cbLandOnTerra" type="TCheckBox" visibility="published" />
+      <field name="CheckBox2" type="TCheckBox" visibility="published" />
+      <field name="cbReconnect" type="TCheckBox" visibility="published" />
+      <field name="Label44" type="TLabel" visibility="published" />
+      <field name="Label45" type="TLabel" visibility="published" />
+      <field name="tbShipName" type="TEdit" visibility="published" />
+      <field name="tbHomePlanet" type="TEdit" visibility="published" />
+      <field name="Label46" type="TLabel" visibility="published" />
+      <field name="tbSubSpace" type="TEdit" visibility="published" />
+      <field name="tvSetup" type="TTreeView" visibility="published" />
+      <field name="dtStartTime" type="TDateTimePicker" visibility="published" />
+      <field name="cbDelayedStart" type="TCheckBox" visibility="published" />
       <procedure name="FormHide" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
@@ -2238,7 +2310,7 @@
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
-      <procedure name="btnOKMainClick" visibility="published">
+      <procedure name="btnOKClick" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
         </parameters>
@@ -2323,6 +2395,12 @@
       <procedure name="cbAcceptExternalClick" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
+      <procedure name="tvSetupChange" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Node" type="TTreeNode" />
         </parameters>
       </procedure>
       <field name="DataLinkList" type="TList" visibility="private" />

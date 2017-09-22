@@ -51,7 +51,7 @@ type
   TfrmSetup = class(TForm)
     PageControl: TPageControl;
     tabServer: TTabSheet;
-    btnOKMain: TButton;
+    btnOK: TButton;
     tabProgram: TTabSheet;
     tabUser: TTabSheet;
     Label18: TLabel;
@@ -60,7 +60,7 @@ type
     tabAutoRun: TTabSheet;
     memHint3: TMemo;
     OpenDialog: TOpenDialog;
-    btnCancelMain: TButton;
+    btnCancel: TButton;
     Label4: TLabel;
     Label5: TLabel;
     btnUpgrade: TButton;
@@ -74,29 +74,28 @@ type
     btnDelete: TButton;
     panMain: TPanel;
     Button1: TButton;
-    ListBox1: TListBox;
-    panIdentity: TPanel;
+    panCorp: TPanel;
     panSession: TPanel;
-    panServer: TPanel;
+    panStats: TPanel;
     CheckBox1: TCheckBox;
     GroupBox1: TGroupBox;
     Label12: TLabel;
     tbDescription: TEdit;
     tbSectors: TEdit;
     Label17: TLabel;
-    btnEdit: TButton;
+    btnSave: TButton;
     Label7: TLabel;
     tbProxyAddress: TEdit;
     tbProxyPort: TEdit;
     Label8: TLabel;
     cbUseAuthProxy: TCheckBox;
-    Panel5: TPanel;
+    panTerminal: TPanel;
     GroupBox9: TGroupBox;
-    Panel6: TPanel;
+    panAutorun: TPanel;
     GroupBox11: TGroupBox;
     panLogging: TPanel;
     GroupBox16: TGroupBox;
-    Panel9: TPanel;
+    panLogin: TPanel;
     GroupBox17: TGroupBox;
     cc: TLabel;
     tbLoginScript: TEdit;
@@ -122,7 +121,7 @@ type
     cbCache: TCheckBox;
     tbBubbleSize: TEdit;
     cbLocalEcho: TCheckBox;
-    Panel1: TPanel;
+    panIdentity: TPanel;
     GroupBox7: TGroupBox;
     Label14: TLabel;
     Label42: TLabel;
@@ -187,9 +186,12 @@ type
     tbHomePlanet: TEdit;
     Label46: TLabel;
     tbSubSpace: TEdit;
+    tvSetup: TTreeView;
+    dtStartTime: TDateTimePicker;
+    cbDelayedStart: TCheckBox;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure btnOKMainClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
     procedure tbMenuKeyChange(Sender: TObject);
     procedure cbGamesChange(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
@@ -208,6 +210,7 @@ type
     procedure tmrRegTimer(Sender: TObject);
     procedure tbUserChange(Sender: TObject);
     procedure cbAcceptExternalClick(Sender: TObject);
+    procedure tvSetupChange(Sender: TObject; Node: TTreeNode);
 
   private
     DataLinkList  : TList;
@@ -247,6 +250,13 @@ begin
   Left := (Screen.Width DIV 2) - (Width DIV 2);
   Height := (Screen.Height DIV 2) - (Height DIV 2);
 
+  // Expand the TreeView
+  tvSetup.FullExpand;
+  tvSetup.Select(tvSetup.Items[0]);
+  tvSetup.SetFocus;
+  //tvSetup.Refresh;
+
+
   tbLoginScript.Enabled := FALSE;
   tbLoginName.Enabled := FALSE;
   tbPassword.Enabled := FALSE;
@@ -280,6 +290,10 @@ begin
   DataLinkList := TList.Create;
 
   UpdateGameList(TWXDatabase.DatabaseName);
+
+  if cbGames.Items.Count = 0 then
+    btnAddClick(Self);
+
 end;
 
 procedure TfrmSetup.FormHide(Sender: TObject);
@@ -361,7 +375,7 @@ begin
   cbGames.OnChange(Self);
 end;
 
-procedure TfrmSetup.btnOKMainClick(Sender: TObject);
+procedure TfrmSetup.btnOKClick(Sender: TObject);
 var
   I         : Integer;
   F         : File;
@@ -587,7 +601,7 @@ begin
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
-  btnEdit.Enabled := TRUE;
+  btnOk.Enabled := TRUE;
 
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
@@ -646,28 +660,31 @@ end;
 
 procedure TfrmSetup.btnAddClick(Sender: TObject);
 begin
+  // Enable database fields
   tbDescription.Enabled := TRUE;
   tbHost.Enabled := TRUE;
-  tbPort.Enabled := TRUE;
-  tbSectors.Enabled := TRUE;
-  cbUseLogin.Enabled := TRUE;
 
-  tbDescription.Text := 'New Game';
+  // Initialize Session Pannel
+  tbDescription.Text := '';
+  tbSectors.Text := '30,000';
   tbHost.Text := '';
-  tbPort.Text := '23';
-  tbSectors.Text := '5000';
+  tbPort.Text := '2002';
+  tbGame.Text := 'A';
+  tbListenPort.Text := '3000';
+  cbDelayedStart.Checked := FALSE;
+  dtStartTime.Visible  := FALSE;
+
   cbUseLogin.Checked := FALSE;
-  tbLoginScript.Text := '1_Login.ts';
+  tbLoginScript.Text := 'Login.ts';
   tbLoginName.Text := '';
   tbPassword.Text := '';
-  tbGame.Text := '';
   cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
   btnSave.Enabled := TRUE;
   btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
-  btnEdit.Enabled := FALSE;
+  btnOk.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
 
   Edit := FALSE;
@@ -685,7 +702,7 @@ begin
   btnSave.Enabled := TRUE;
   btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
-  btnEdit.Enabled := FALSE;
+  btnOk.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
 
   Edit := TRUE;
@@ -760,7 +777,7 @@ begin
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
-  btnEdit.Enabled := TRUE;
+  btnOk.Enabled := TRUE;
 
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
@@ -809,6 +826,26 @@ end;
 procedure TfrmSetup.tmrRegTimer(Sender: TObject);
 begin
   tmrReg.Enabled := FALSE;
+end;
+
+procedure TfrmSetup.tvSetupChange(Sender: TObject; Node: TTreeNode);
+begin
+  panSession.Visible := FALSE;
+  panLogin.Visible := FALSE;
+  panIdentity.Visible := FALSE;
+  panCorp.Visible := FALSE;
+  panTerminal.Visible := FALSE;
+  panLogging.Visible := FALSE;
+  panAutoRun.Visible := FALSE;
+  panStats.Visible := FALSE;
+
+  if tvSetup.Selected.Text = 'Session' Then
+    begin
+      panSession.Visible := TRUE;
+      tbHost.SetFocus;
+    end;
+
+
 end;
 
 procedure TfrmSetup.tbUserChange(Sender: TObject);

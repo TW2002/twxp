@@ -8,30 +8,41 @@
   resources were bound to the produced executable.
 */
 
-#define ComStrs_sTabMustBeMultiLine 65264
-#define ComStrs_sRichEditInsertError 65265
-#define ComStrs_sRichEditLoadFail 65266
-#define ComStrs_sRichEditSaveFail 65267
-#define ComStrs_sPageIndexError 65268
-#define JConsts_sChangeJPGSize 65269
-#define JConsts_sJPEGError 65270
-#define JConsts_sJPEGImageFile 65271
-#define Consts_SListBoxMustBeVirtual 65280
-#define Consts_SANSIEncoding 65281
-#define Consts_SASCIIEncoding 65282
-#define Consts_SUnicodeEncoding 65283
-#define Consts_SBigEndianEncoding 65284
-#define Consts_SUTF8Encoding 65285
-#define Consts_SUTF7Encoding 65286
-#define Consts_STrayIconRemoveError 65287
-#define Consts_STrayIconCreateError 65288
-#define Consts_SPageControlNotSet 65289
-#define ComStrs_sTabFailClear 65290
-#define ComStrs_sTabFailDelete 65291
-#define ComStrs_sTabFailRetrieve 65292
-#define ComStrs_sTabFailGetObject 65293
-#define ComStrs_sTabFailSet 65294
-#define ComStrs_sTabFailSetObject 65295
+#define JConsts_sChangeJPGSize 65248
+#define JConsts_sJPEGError 65249
+#define JConsts_sJPEGImageFile 65250
+#define ComStrs_sTabFailSetObject 65264
+#define ComStrs_sTabMustBeMultiLine 65265
+#define ComStrs_sInvalidIndex 65266
+#define ComStrs_sInsertError 65267
+#define ComStrs_sRichEditInsertError 65268
+#define ComStrs_sRichEditLoadFail 65269
+#define ComStrs_sRichEditSaveFail 65270
+#define ComStrs_sPageIndexError 65271
+#define ComStrs_sInvalidComCtl32 65272
+#define ComStrs_sDateTimeMax 65273
+#define ComStrs_sDateTimeMin 65274
+#define ComStrs_sNeedAllowNone 65275
+#define ComStrs_sFailSetCalDateTime 65276
+#define ComStrs_sFailSetCalMaxSelRange 65277
+#define ComStrs_sFailSetCalMinMaxRange 65278
+#define ComStrs_sFailsetCalSelRange 65279
+#define Consts_SErrorSettingCount 65280
+#define Consts_SListBoxMustBeVirtual 65281
+#define Consts_SANSIEncoding 65282
+#define Consts_SASCIIEncoding 65283
+#define Consts_SUnicodeEncoding 65284
+#define Consts_SBigEndianEncoding 65285
+#define Consts_SUTF8Encoding 65286
+#define Consts_SUTF7Encoding 65287
+#define Consts_STrayIconRemoveError 65288
+#define Consts_STrayIconCreateError 65289
+#define Consts_SPageControlNotSet 65290
+#define ComStrs_sTabFailClear 65291
+#define ComStrs_sTabFailDelete 65292
+#define ComStrs_sTabFailRetrieve 65293
+#define ComStrs_sTabFailGetObject 65294
+#define ComStrs_sTabFailSet 65295
 #define Consts_SmkcDel 65296
 #define Consts_SmkcShift 65297
 #define Consts_SmkcCtrl 65298
@@ -47,7 +58,7 @@
 #define Consts_SDockZoneNotFound 65308
 #define Consts_SDockZoneHasNoCtl 65309
 #define Consts_SDockZoneVersionConflict 65310
-#define Consts_SErrorSettingCount 65311
+#define Consts_SMultiSelectRequired 65311
 #define Consts_SMsgDlgNoToAll 65312
 #define Consts_SMsgDlgYesToAll 65313
 #define Consts_SmkcBkSp 65314
@@ -274,14 +285,26 @@
 #define SysConst_SInvalidInput 65535
 STRINGTABLE
 BEGIN
+	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
+	JConsts_sJPEGError,	"JPEG error #%d"
+	JConsts_sJPEGImageFile,	"JPEG Image File"
+	ComStrs_sTabFailSetObject,	"Failed to set object at index %d"
 	ComStrs_sTabMustBeMultiLine,	"MultiLine must be True when TabPosition is tpLeft or tpRight"
+	ComStrs_sInvalidIndex,	"Invalid index"
+	ComStrs_sInsertError,	"Unable to insert an item"
 	ComStrs_sRichEditInsertError,	"RichEdit line insertion error"
 	ComStrs_sRichEditLoadFail,	"Failed to Load Stream"
 	ComStrs_sRichEditSaveFail,	"Failed to Save Stream"
 	ComStrs_sPageIndexError,	"%d is an invalid PageIndex value.  PageIndex must be between 0 and %d"
-	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
-	JConsts_sJPEGError,	"JPEG error #%d"
-	JConsts_sJPEGImageFile,	"JPEG Image File"
+	ComStrs_sInvalidComCtl32,	"This control requires version 4.70 or greater of COMCTL32.DLL"
+	ComStrs_sDateTimeMax,	"Date exceeds maximum of %s"
+	ComStrs_sDateTimeMin,	"Date is less than minimum of %s"
+	ComStrs_sNeedAllowNone,	"You must be in ShowCheckbox mode to set to this date"
+	ComStrs_sFailSetCalDateTime,	"Failed to set calendar date or time"
+	ComStrs_sFailSetCalMaxSelRange,	"Failed to set maximum selection range"
+	ComStrs_sFailSetCalMinMaxRange,	"Failed to set calendar min/max range"
+	ComStrs_sFailsetCalSelRange,	"Failed to set calendar selected range"
+	Consts_SErrorSettingCount,	"Error setting %s.Count"
 	Consts_SListBoxMustBeVirtual,	"Listbox (%s) style must be virtual in order to set Count"
 	Consts_SANSIEncoding,	"ANSI"
 	Consts_SASCIIEncoding,	"ASCII"
@@ -297,7 +320,6 @@ BEGIN
 	ComStrs_sTabFailRetrieve,	"Failed to retrieve tab at index %d"
 	ComStrs_sTabFailGetObject,	"Failed to get object at index %d"
 	ComStrs_sTabFailSet,	"Failed to set tab \"%s\" at index %d"
-	ComStrs_sTabFailSetObject,	"Failed to set object at index %d"
 	Consts_SmkcDel,	"Del"
 	Consts_SmkcShift,	"Shift+"
 	Consts_SmkcCtrl,	"Ctrl+"
@@ -313,7 +335,7 @@ BEGIN
 	Consts_SDockZoneNotFound,	" - Dock zone not found"
 	Consts_SDockZoneHasNoCtl,	" - Dock zone has no control"
 	Consts_SDockZoneVersionConflict,	"Error loading dock zone from the stream. Expecting version %d, but found %d."
-	Consts_SErrorSettingCount,	"Error setting %s.Count"
+	Consts_SMultiSelectRequired,	"Multiselect mode must be on for this feature"
 	Consts_SMsgDlgNoToAll,	"N&o to All"
 	Consts_SMsgDlgYesToAll,	"Yes to &All"
 	Consts_SmkcBkSp,	"BkSp"

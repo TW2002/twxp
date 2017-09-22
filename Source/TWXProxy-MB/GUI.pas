@@ -193,14 +193,15 @@ procedure TModGUI.StateValuesLoaded;
 begin
   // show main form
   ShowForm(gfMain);
+  ShowForm(gfSetup);
 
   if (FirstLoad) then
   begin
     // Give the user a welcome message
-    MessageDlg('Welcome to TWX Proxy!  Be warned that this' + endl + 'helper does not function as usual helpers do,' + endl + 'so it is strongly recommended that you read Readme.txt before' + endl + 'continuing.', mtInformation, [mbOk], 0);
-    MessageDlg('You will need to create a new database before connecting to a server', mtInformation, [mbOk], 0);
+    //MessageDlg('Welcome to TWX Proxy!  Be warned that this' + endl + 'helper does not function as usual helpers do,' + endl + 'so it is strongly recommended that you read Readme.txt before' + endl + 'continuing.', mtInformation, [mbOk], 0);
+    //MessageDlg('You will need to create a new database before connecting to a server', mtInformation, [mbOk], 0);
     ShowForm(gfSetup);
-    ShowForm(gfLicense);
+    //ShowForm(gfLicense);
     FirstLoad := False;
   end;
 end;
