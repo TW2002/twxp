@@ -28,7 +28,6 @@ object frmSetup: TfrmSetup
   Padding.Right = 10
   Padding.Bottom = 10
   OldCreateOrder = False
-  OnClose = FormClose
   OnHide = FormHide
   OnShow = FormShow
   PixelsPerInch = 96
@@ -54,12 +53,40 @@ object frmSetup: TfrmSetup
     Height = 13
     Caption = '0'
   end
+  object panMain: TPanel
+    Left = 10
+    Top = 41
+    Width = 541
+    Height = 322
+    TabOrder = 4
+    object tvSetup: TTreeView
+      Left = 10
+      Top = 10
+      Width = 175
+      Height = 300
+      Indent = 19
+      TabOrder = 0
+      OnMouseUp = tvSetupMouseUp
+      Items.NodeData = {
+        0103000000270000000000000000000000FFFFFFFFFFFFFFFF00000000030000
+        0007530065007300730069006F006E00230000000000000000000000FFFFFFFF
+        FFFFFFFF0000000000000000054C006F00670069006E00290000000000000000
+        000000FFFFFFFFFFFFFFFF0000000000000000084900640065006E0074006900
+        74007900210000000000000000000000FFFFFFFFFFFFFFFF0000000000000000
+        0443006F0072007000290000000000000000000000FFFFFFFFFFFFFFFF000000
+        0002000000085400650072006D0069006E0061006C0027000000000000000000
+        0000FFFFFFFFFFFFFFFF0000000000000000074C006F006700670069006E0067
+        00270000000000000000000000FFFFFFFFFFFFFFFF0000000000000000074100
+        750074006F00520075006E002D0000000000000000000000FFFFFFFFFFFFFFFF
+        00000000000000000A5300740061007400690073007400690063007300}
+    end
+  end
   object panAutorun: TPanel
     Left = 201
     Top = 52
     Width = 340
     Height = 300
-    TabOrder = 14
+    TabOrder = 9
     object GroupBox11: TGroupBox
       Left = 12
       Top = 18
@@ -95,40 +122,12 @@ object frmSetup: TfrmSetup
       end
     end
   end
-  object panMain: TPanel
-    Left = 10
-    Top = 41
-    Width = 541
-    Height = 322
-    TabOrder = 6
-    object tvSetup: TTreeView
-      Left = 10
-      Top = 10
-      Width = 175
-      Height = 300
-      Indent = 19
-      TabOrder = 0
-      OnChange = tvSetupChange
-      Items.NodeData = {
-        0103000000270000000000000000000000FFFFFFFFFFFFFFFF00000000030000
-        0007530065007300730069006F006E00230000000000000000000000FFFFFFFF
-        FFFFFFFF0000000000000000054C006F00670069006E00290000000000000000
-        000000FFFFFFFFFFFFFFFF0000000000000000084900640065006E0074006900
-        74007900210000000000000000000000FFFFFFFFFFFFFFFF0000000000000000
-        0443006F0072007000290000000000000000000000FFFFFFFFFFFFFFFF000000
-        0002000000085400650072006D0069006E0061006C0027000000000000000000
-        0000FFFFFFFFFFFFFFFF0000000000000000074C006F006700670069006E0067
-        00270000000000000000000000FFFFFFFFFFFFFFFF0000000000000000074100
-        750074006F00520075006E002D0000000000000000000000FFFFFFFFFFFFFFFF
-        00000000000000000A5300740061007400690073007400690063007300}
-    end
-  end
   object panLogging: TPanel
     Left = 201
     Top = 52
     Width = 340
     Height = 300
-    TabOrder = 15
+    TabOrder = 10
     object GroupBox16: TGroupBox
       Left = 11
       Top = 15
@@ -152,7 +151,7 @@ object frmSetup: TfrmSetup
       end
       object cbLog: TCheckBox
         Left = 21
-        Top = 26
+        Top = 27
         Width = 225
         Height = 17
         Caption = 'Log data according to selected database'
@@ -180,253 +179,15 @@ object frmSetup: TfrmSetup
         Width = 241
         Height = 17
         Caption = 'Notify when a delay has been shortened'
-        TabOrder = 3
+        TabOrder = 4
       end
       object tbShortenDelay: TEdit
         Left = 192
         Top = 98
         Width = 41
         Height = 21
-        TabOrder = 4
+        TabOrder = 3
         Text = '0'
-      end
-    end
-  end
-  object panCorp: TPanel
-    Left = 201
-    Top = 52
-    Width = 340
-    Height = 300
-    TabOrder = 8
-    object GroupBox7: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 122
-      Caption = 'Corporation'
-      TabOrder = 0
-      object Label14: TLabel
-        Left = 53
-        Top = 86
-        Width = 46
-        Height = 13
-        Caption = 'Password'
-      end
-      object Label42: TLabel
-        Left = 46
-        Top = 59
-        Width = 53
-        Height = 13
-        Caption = 'Corp Name'
-      end
-      object tbCorpPassword: TEdit
-        Left = 105
-        Top = 83
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 0
-      end
-      object tbCorpName: TEdit
-        Left = 105
-        Top = 56
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-      end
-      object cbJoinCorp: TCheckBox
-        Left = 27
-        Top = 36
-        Width = 185
-        Height = 17
-        Caption = 'Join Corporatiopn'
-        TabOrder = 2
-      end
-      object cbCreateCorp: TCheckBox
-        Left = 27
-        Top = 18
-        Width = 201
-        Height = 17
-        Caption = 'Create Corporation (CEO)'
-        TabOrder = 3
-      end
-    end
-    object GroupBox5: TGroupBox
-      Left = 10
-      Top = 141
-      Width = 320
-      Height = 101
-      Caption = 'After Login'
-      TabOrder = 1
-      object Label36: TLabel
-        Left = 27
-        Top = 27
-        Width = 30
-        Height = 13
-        Caption = 'Action'
-      end
-      object Label24: TLabel
-        Left = 25
-        Top = 54
-        Width = 31
-        Height = 13
-        Caption = 'Option'
-      end
-      object Label47: TLabel
-        Left = 36
-        Top = 73
-        Width = 216
-        Height = 13
-        Caption = 'Enter as sectror number, or class 0 port name.'
-      end
-      object cbPostAction: TComboBox
-        Left = 62
-        Top = 24
-        Width = 195
-        Height = 21
-        ItemHeight = 13
-        TabOrder = 0
-        OnChange = cbGamesChange
-      end
-      object Edit1: TEdit
-        Left = 62
-        Top = 51
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-      end
-    end
-  end
-  object panIdentity: TPanel
-    Left = 201
-    Top = 52
-    Width = 340
-    Height = 300
-    TabOrder = 17
-    object GroupBox4: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 247
-      Caption = 'Identity'
-      TabOrder = 0
-      object Label13: TLabel
-        Left = 32
-        Top = 25
-        Width = 57
-        Height = 13
-        Caption = 'Login Name'
-      end
-      object Label15: TLabel
-        Left = 43
-        Top = 52
-        Width = 46
-        Height = 13
-        Caption = 'Password'
-      end
-      object Label23: TLabel
-        Left = 67
-        Top = 79
-        Width = 22
-        Height = 13
-        Caption = 'Alias'
-      end
-      object Label32: TLabel
-        Left = 25
-        Top = 133
-        Width = 64
-        Height = 13
-        Caption = 'Private Game'
-      end
-      object Label33: TLabel
-        Left = 27
-        Top = 106
-        Width = 62
-        Height = 13
-        Caption = 'TW Passport'
-      end
-      object Label44: TLabel
-        Left = 37
-        Top = 160
-        Width = 52
-        Height = 13
-        Caption = 'Ship Name'
-      end
-      object Label45: TLabel
-        Left = 28
-        Top = 187
-        Width = 61
-        Height = 13
-        Caption = 'Home Planet'
-      end
-      object Label46: TLabel
-        Left = 41
-        Top = 214
-        Width = 48
-        Height = 13
-        Caption = 'Subspace'
-      end
-      object tbLoginName: TEdit
-        Left = 95
-        Top = 22
-        Width = 120
-        Height = 21
-        Enabled = False
-        TabOrder = 0
-      end
-      object tbPassword: TEdit
-        Left = 95
-        Top = 49
-        Width = 120
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-      end
-      object tbAlias: TEdit
-        Left = 95
-        Top = 76
-        Width = 120
-        Height = 21
-        TabOrder = 2
-      end
-      object tbPrivateGame: TEdit
-        Left = 95
-        Top = 130
-        Width = 120
-        Height = 21
-        Hint = 'Password required to enter a private game.'
-        TabOrder = 3
-      end
-      object tbPassport: TEdit
-        Left = 95
-        Top = 103
-        Width = 120
-        Height = 21
-        Hint = 'Get your passport from ClassicTW.com (i.e. 001-AB-777)'
-        TabOrder = 4
-      end
-      object tbShipName: TEdit
-        Left = 95
-        Top = 157
-        Width = 121
-        Height = 21
-        TabOrder = 5
-      end
-      object tbHomePlanet: TEdit
-        Left = 95
-        Top = 184
-        Width = 121
-        Height = 21
-        TabOrder = 6
-      end
-      object tbSubSpace: TEdit
-        Left = 95
-        Top = 211
-        Width = 121
-        Height = 21
-        TabOrder = 7
       end
     end
   end
@@ -435,7 +196,7 @@ object frmSetup: TfrmSetup
     Top = 52
     Width = 340
     Height = 300
-    TabOrder = 10
+    TabOrder = 7
     object GroupBox18: TGroupBox
       Left = 10
       Top = 10
@@ -529,145 +290,12 @@ object frmSetup: TfrmSetup
       end
     end
   end
-  object panLogin: TPanel
-    Left = 201
-    Top = 51
-    Width = 340
-    Height = 300
-    TabOrder = 16
-    object GroupBox17: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 108
-      Caption = 'Login'
-      TabOrder = 0
-      object cc: TLabel
-        Left = 62
-        Top = 47
-        Width = 27
-        Height = 13
-        Caption = 'Script'
-      end
-      object Label43: TLabel
-        Left = 37
-        Top = 75
-        Width = 53
-        Height = 13
-        Caption = 'Default Bot'
-      end
-      object tbLoginScript: TEdit
-        Left = 95
-        Top = 44
-        Width = 175
-        Height = 21
-        Enabled = False
-        TabOrder = 0
-      end
-      object cbUseLogin: TCheckBox
-        Left = 21
-        Top = 21
-        Width = 185
-        Height = 17
-        Caption = 'Use Login Script.'
-        TabOrder = 1
-        OnClick = cbUseLoginClick
-      end
-      object tbDefaultBot: TEdit
-        Left = 95
-        Top = 72
-        Width = 175
-        Height = 21
-        Hint = 'Get your passport from ClassicTW.com (i.e. 001-AB-777)'
-        TabOrder = 2
-      end
-    end
-    object GroupBox15: TGroupBox
-      Left = 10
-      Top = 124
-      Width = 320
-      Height = 146
-      Caption = 'Options'
-      TabOrder = 1
-      object cbClearAvoids: TCheckBox
-        Left = 174
-        Top = 108
-        Width = 102
-        Height = 17
-        Caption = 'Clear Avoids.'
-        TabOrder = 0
-        OnClick = cbUseLoginClick
-      end
-      object cbClearMessages: TCheckBox
-        Left = 174
-        Top = 85
-        Width = 115
-        Height = 17
-        Caption = 'Clear Messages.'
-        TabOrder = 1
-        OnClick = cbUseLoginClick
-      end
-      object cbReadLog: TCheckBox
-        Left = 28
-        Top = 85
-        Width = 123
-        Height = 17
-        Caption = 'Read Today'#39's Log.'
-        TabOrder = 2
-        OnClick = cbUseLoginClick
-      end
-      object cbStopBefore: TCheckBox
-        Left = 174
-        Top = 62
-        Width = 115
-        Height = 17
-        Caption = 'Stop at '#39'T'#39' Menu.'
-        TabOrder = 3
-        OnClick = cbUseLoginClick
-      end
-      object cbGetSettings: TCheckBox
-        Left = 28
-        Top = 62
-        Width = 126
-        Height = 17
-        Caption = 'Always get settings.'
-        TabOrder = 4
-        OnClick = cbUseLoginClick
-      end
-      object cbLandOnTerra: TCheckBox
-        Left = 28
-        Top = 42
-        Width = 185
-        Height = 17
-        Caption = 'Land on Terra unless Fedsafe.'
-        TabOrder = 5
-        OnClick = cbUseLoginClick
-      end
-      object CheckBox2: TCheckBox
-        Left = 28
-        Top = 108
-        Width = 123
-        Height = 17
-        Caption = 'Read Offline Messages.'
-        TabOrder = 6
-        OnClick = cbUseLoginClick
-      end
-      object cbReconnect: TCheckBox
-        Left = 29
-        Top = 19
-        Width = 169
-        Height = 17
-        Caption = 'Automatically reconnect'
-        TabOrder = 7
-      end
-    end
-  end
   object panTerminal: TPanel
     Left = 201
     Top = 52
     Width = 340
     Height = 300
-    TabOrder = 13
+    TabOrder = 8
     object GroupBox9: TGroupBox
       Left = 11
       Top = 10
@@ -766,135 +394,6 @@ object frmSetup: TfrmSetup
       end
     end
   end
-  object panSession: TPanel
-    Left = 201
-    Top = 52
-    Width = 340
-    Height = 300
-    TabOrder = 9
-    object GroupBox1: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 79
-      Caption = 'Database'
-      TabOrder = 0
-      object Label12: TLabel
-        Left = 54
-        Top = 47
-        Width = 36
-        Height = 13
-        Caption = 'Sectors'
-      end
-      object Label17: TLabel
-        Left = 62
-        Top = 20
-        Width = 28
-        Height = 13
-        Caption = 'Name'
-      end
-      object tbDescription: TEdit
-        Left = 96
-        Top = 17
-        Width = 200
-        Height = 21
-        Enabled = False
-        TabOrder = 0
-      end
-      object tbSectors: TEdit
-        Left = 96
-        Top = 44
-        Width = 50
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-        Text = '5000'
-      end
-    end
-    object GroupBox2: TGroupBox
-      Left = 10
-      Top = 95
-      Width = 320
-      Height = 186
-      Caption = 'Server'
-      TabOrder = 1
-      object Label1: TLabel
-        Left = 52
-        Top = 22
-        Width = 38
-        Height = 13
-        Caption = 'Address'
-      end
-      object Label3: TLabel
-        Left = 71
-        Top = 49
-        Width = 19
-        Height = 13
-        Caption = 'Port'
-      end
-      object Label16: TLabel
-        Left = 62
-        Top = 76
-        Width = 28
-        Height = 13
-        Caption = 'Game'
-      end
-      object Label2: TLabel
-        Left = 25
-        Top = 100
-        Width = 140
-        Height = 13
-        Caption = 'Listen for connections on port'
-      end
-      object tbHost: TEdit
-        Left = 96
-        Top = 19
-        Width = 200
-        Height = 21
-        TabOrder = 0
-      end
-      object tbPort: TEdit
-        Left = 96
-        Top = 46
-        Width = 50
-        Height = 21
-        TabOrder = 1
-        Text = '23'
-      end
-      object tbGame: TEdit
-        Left = 96
-        Top = 73
-        Width = 50
-        Height = 21
-        TabOrder = 2
-      end
-      object tbListenPort: TEdit
-        Left = 177
-        Top = 98
-        Width = 57
-        Height = 21
-        TabOrder = 3
-        Text = '23'
-      end
-      object dtStartTime: TDateTimePicker
-        Left = 118
-        Top = 126
-        Width = 139
-        Height = 21
-        Date = 43000.213973483800000000
-        Time = 43000.213973483800000000
-        TabOrder = 4
-      end
-    end
-    object cbDelayedStart: TCheckBox
-      Left = 35
-      Top = 223
-      Width = 87
-      Height = 17
-      Caption = 'Delayed Start'
-      TabOrder = 2
-    end
-  end
   object PageControl: TPageControl
     Left = 396
     Top = 10
@@ -902,9 +401,8 @@ object frmSetup: TfrmSetup
     Height = 62
     ActivePage = tabServer
     Enabled = False
-    TabOrder = 0
+    TabOrder = 3
     Visible = False
-    OnChanging = PageControlChanging
     object tabServer: TTabSheet
       Caption = 'Server'
       ExplicitLeft = -56
@@ -1102,7 +600,7 @@ object frmSetup: TfrmSetup
     Width = 73
     Height = 25
     Caption = '&OK'
-    TabOrder = 1
+    TabOrder = 15
     OnClick = btnOKClick
   end
   object btnCancel: TButton
@@ -1111,7 +609,7 @@ object frmSetup: TfrmSetup
     Width = 73
     Height = 25
     Caption = '&Cancel'
-    TabOrder = 2
+    TabOrder = 17
     OnClick = btnCancelMainClick
   end
   object cbGames: TComboBox
@@ -1120,7 +618,7 @@ object frmSetup: TfrmSetup
     Width = 167
     Height = 21
     ItemHeight = 13
-    TabOrder = 3
+    TabOrder = 0
     OnChange = cbGamesChange
   end
   object btnAdd: TButton
@@ -1129,7 +627,7 @@ object frmSetup: TfrmSetup
     Width = 65
     Height = 25
     Caption = '&New'
-    TabOrder = 4
+    TabOrder = 1
     OnClick = btnAddClick
   end
   object btnDelete: TButton
@@ -1138,17 +636,16 @@ object frmSetup: TfrmSetup
     Width = 65
     Height = 25
     Caption = '&Delete'
-    TabOrder = 5
+    TabOrder = 2
     OnClick = btnDeleteClick
   end
-  object Button1: TButton
+  object btnAbout: TButton
     Left = 19
     Top = 369
     Width = 73
     Height = 25
     Caption = '&About'
-    TabOrder = 7
-    OnClick = btnOKClick
+    TabOrder = 13
   end
   object CheckBox1: TCheckBox
     Left = 250
@@ -1156,16 +653,542 @@ object frmSetup: TfrmSetup
     Width = 61
     Height = 17
     Caption = 'Default'
-    TabOrder = 11
+    TabOrder = 14
   end
-  object btnSave: TButton
+  object btnApply: TButton
     Left = 396
     Top = 369
     Width = 65
     Height = 25
     Caption = '&Apply'
+    TabOrder = 16
+    OnClick = btnApplyClick
+  end
+  object panCorp: TPanel
+    Left = 201
+    Top = 52
+    Width = 340
+    Height = 300
+    TabOrder = 5
+    object GroupBox7: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 122
+      Caption = 'Corporation'
+      TabOrder = 0
+      object Label14: TLabel
+        Left = 53
+        Top = 86
+        Width = 46
+        Height = 13
+        Caption = 'Password'
+      end
+      object Label42: TLabel
+        Left = 46
+        Top = 59
+        Width = 53
+        Height = 13
+        Caption = 'Corp Name'
+      end
+      object tbCorpPassword: TEdit
+        Left = 105
+        Top = 83
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 3
+      end
+      object tbCorpName: TEdit
+        Left = 105
+        Top = 56
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 2
+      end
+      object cbJoinCorp: TCheckBox
+        Left = 27
+        Top = 36
+        Width = 185
+        Height = 17
+        Caption = 'Join Corporatiopn'
+        TabOrder = 1
+      end
+      object cbCreateCorp: TCheckBox
+        Left = 27
+        Top = 18
+        Width = 201
+        Height = 17
+        Caption = 'Create Corporation (CEO)'
+        TabOrder = 0
+      end
+    end
+    object GroupBox5: TGroupBox
+      Left = 10
+      Top = 141
+      Width = 320
+      Height = 101
+      Caption = 'After Login'
+      TabOrder = 1
+      object Label36: TLabel
+        Left = 27
+        Top = 27
+        Width = 30
+        Height = 13
+        Caption = 'Action'
+      end
+      object Label24: TLabel
+        Left = 25
+        Top = 54
+        Width = 31
+        Height = 13
+        Caption = 'Option'
+      end
+      object lbPostHint: TLabel
+        Left = 36
+        Top = 73
+        Width = 216
+        Height = 13
+        Caption = 'Enter as sectror number, or class 0 port name.'
+      end
+      object cbPostAction: TComboBox
+        Left = 62
+        Top = 24
+        Width = 195
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 0
+        OnChange = cbGamesChange
+      end
+      object tbPostOption: TEdit
+        Left = 62
+        Top = 51
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 1
+      end
+    end
+  end
+  object panIdentity: TPanel
+    Left = 201
+    Top = 52
+    Width = 340
+    Height = 300
     TabOrder = 12
-    OnClick = btnEditClick
+    object GroupBox4: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 247
+      Caption = 'Identity'
+      TabOrder = 0
+      object Label13: TLabel
+        Left = 32
+        Top = 25
+        Width = 57
+        Height = 13
+        Caption = 'Login Name'
+      end
+      object Label15: TLabel
+        Left = 43
+        Top = 52
+        Width = 46
+        Height = 13
+        Caption = 'Password'
+      end
+      object Label23: TLabel
+        Left = 67
+        Top = 79
+        Width = 22
+        Height = 13
+        Caption = 'Alias'
+      end
+      object Label32: TLabel
+        Left = 25
+        Top = 133
+        Width = 64
+        Height = 13
+        Caption = 'Private Game'
+      end
+      object Label33: TLabel
+        Left = 27
+        Top = 106
+        Width = 62
+        Height = 13
+        Caption = 'TW Passport'
+      end
+      object Label44: TLabel
+        Left = 37
+        Top = 160
+        Width = 52
+        Height = 13
+        Caption = 'Ship Name'
+      end
+      object Label45: TLabel
+        Left = 28
+        Top = 187
+        Width = 61
+        Height = 13
+        Caption = 'Home Planet'
+      end
+      object Label46: TLabel
+        Left = 41
+        Top = 214
+        Width = 48
+        Height = 13
+        Caption = 'Subspace'
+      end
+      object tbLoginName: TEdit
+        Left = 95
+        Top = 22
+        Width = 120
+        Height = 21
+        TabOrder = 0
+      end
+      object tbPassword: TEdit
+        Left = 95
+        Top = 49
+        Width = 120
+        Height = 21
+        TabOrder = 1
+      end
+      object tbAlias: TEdit
+        Left = 95
+        Top = 76
+        Width = 120
+        Height = 21
+        TabOrder = 2
+      end
+      object tbPrivateGame: TEdit
+        Left = 95
+        Top = 130
+        Width = 120
+        Height = 21
+        Hint = 'Password required to enter a private game.'
+        TabOrder = 4
+      end
+      object tbPassport: TEdit
+        Left = 95
+        Top = 103
+        Width = 120
+        Height = 21
+        Hint = 'Get your passport from ClassicTW.com (i.e. 001-AB-777)'
+        TabOrder = 3
+      end
+      object tbShipName: TEdit
+        Left = 95
+        Top = 157
+        Width = 121
+        Height = 21
+        TabOrder = 5
+      end
+      object tbHomePlanet: TEdit
+        Left = 95
+        Top = 184
+        Width = 121
+        Height = 21
+        TabOrder = 6
+      end
+      object tbSubSpace: TEdit
+        Left = 95
+        Top = 211
+        Width = 121
+        Height = 21
+        TabOrder = 7
+      end
+    end
+  end
+  object panLogin: TPanel
+    Left = 201
+    Top = 51
+    Width = 340
+    Height = 300
+    Caption = '`1+'
+    TabOrder = 11
+    object GroupBox17: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 108
+      Caption = 'Login'
+      TabOrder = 0
+      object cc: TLabel
+        Left = 62
+        Top = 47
+        Width = 27
+        Height = 13
+        Caption = 'Script'
+      end
+      object Label43: TLabel
+        Left = 37
+        Top = 75
+        Width = 53
+        Height = 13
+        Caption = 'Default Bot'
+      end
+      object tbLoginScript: TEdit
+        Left = 95
+        Top = 44
+        Width = 175
+        Height = 21
+        Enabled = False
+        TabOrder = 1
+      end
+      object cbUseLogin: TCheckBox
+        Left = 21
+        Top = 21
+        Width = 185
+        Height = 17
+        Caption = 'Use Login Script.'
+        TabOrder = 0
+        OnClick = cbUseLoginClick
+      end
+      object tbDefaultBot: TEdit
+        Left = 95
+        Top = 72
+        Width = 175
+        Height = 21
+        Hint = 'Get your passport from ClassicTW.com (i.e. 001-AB-777)'
+        TabOrder = 2
+      end
+    end
+    object GroupBox15: TGroupBox
+      Left = 10
+      Top = 124
+      Width = 320
+      Height = 119
+      Caption = 'Options'
+      TabOrder = 1
+      object cbClearAvoids: TCheckBox
+        Left = 174
+        Top = 89
+        Width = 102
+        Height = 17
+        Caption = 'Clear Avoids.'
+        TabOrder = 6
+        OnClick = cbUseLoginClick
+      end
+      object cbClearMessages: TCheckBox
+        Left = 174
+        Top = 66
+        Width = 115
+        Height = 17
+        Caption = 'Clear Messages.'
+        TabOrder = 5
+        OnClick = cbUseLoginClick
+      end
+      object cbReadLog: TCheckBox
+        Left = 28
+        Top = 66
+        Width = 123
+        Height = 17
+        Caption = 'Read Today'#39's Log.'
+        TabOrder = 2
+        OnClick = cbUseLoginClick
+      end
+      object cbStopBefore: TCheckBox
+        Left = 174
+        Top = 43
+        Width = 115
+        Height = 17
+        Caption = 'Stop at '#39'T'#39' Menu.'
+        TabOrder = 4
+        OnClick = cbUseLoginClick
+      end
+      object cbGetSettings: TCheckBox
+        Left = 28
+        Top = 43
+        Width = 126
+        Height = 17
+        Caption = 'Always get settings.'
+        TabOrder = 1
+        OnClick = cbUseLoginClick
+      end
+      object cbLandOnTerra: TCheckBox
+        Left = 28
+        Top = 23
+        Width = 185
+        Height = 17
+        Caption = 'Land on Terra unless Fedsafe.'
+        TabOrder = 0
+        OnClick = cbUseLoginClick
+      end
+      object cbReadMessages: TCheckBox
+        Left = 29
+        Top = 89
+        Width = 123
+        Height = 17
+        Caption = 'Read Offline Messages.'
+        TabOrder = 3
+        OnClick = cbUseLoginClick
+      end
+    end
+  end
+  object panSession: TPanel
+    Left = 201
+    Top = 52
+    Width = 340
+    Height = 300
+    TabOrder = 6
+    object GroupBox1: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 79
+      Caption = 'Database'
+      TabOrder = 0
+      object Label12: TLabel
+        Left = 54
+        Top = 47
+        Width = 36
+        Height = 13
+        Caption = 'Sectors'
+      end
+      object Label17: TLabel
+        Left = 62
+        Top = 20
+        Width = 28
+        Height = 13
+        Caption = 'Name'
+      end
+      object tbDescription: TEdit
+        Left = 96
+        Top = 17
+        Width = 200
+        Height = 21
+        Enabled = False
+        TabOrder = 0
+      end
+      object tbSectors: TEdit
+        Left = 96
+        Top = 44
+        Width = 100
+        Height = 21
+        Enabled = False
+        TabOrder = 1
+        Text = '5000'
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 10
+      Top = 92
+      Width = 320
+      Height = 194
+      Caption = 'Server'
+      TabOrder = 1
+      object Label1: TLabel
+        Left = 52
+        Top = 22
+        Width = 38
+        Height = 13
+        Caption = 'Address'
+      end
+      object Label3: TLabel
+        Left = 71
+        Top = 49
+        Width = 19
+        Height = 13
+        Caption = 'Port'
+      end
+      object Label16: TLabel
+        Left = 62
+        Top = 76
+        Width = 28
+        Height = 13
+        Caption = 'Game'
+      end
+      object Label2: TLabel
+        Left = 32
+        Top = 103
+        Width = 140
+        Height = 13
+        Caption = 'Listen for connections on port'
+      end
+      object lbCountdown: TLabel
+        Left = 7
+        Top = 170
+        Width = 300
+        Height = 13
+        Alignment = taCenter
+        Caption = 'Game starts in 1 hour and 15 minutes.'
+        Layout = tlCenter
+        Visible = False
+      end
+      object tbHost: TEdit
+        Left = 96
+        Top = 19
+        Width = 200
+        Height = 21
+        TabOrder = 0
+      end
+      object tbPort: TEdit
+        Left = 96
+        Top = 46
+        Width = 50
+        Height = 21
+        TabOrder = 1
+        Text = '23'
+      end
+      object tbGame: TEdit
+        Left = 96
+        Top = 73
+        Width = 50
+        Height = 21
+        TabOrder = 2
+      end
+      object tbListenPort: TEdit
+        Left = 184
+        Top = 101
+        Width = 57
+        Height = 21
+        TabOrder = 3
+        Text = '23'
+      end
+      object dtStartTime: TDateTimePicker
+        Left = 212
+        Top = 147
+        Width = 91
+        Height = 21
+        Date = 43000.213973483800000000
+        Time = 43000.213973483800000000
+        DateMode = dmUpDown
+        Kind = dtkTime
+        ParseInput = True
+        TabOrder = 5
+        Visible = False
+      end
+      object cbDelayedStart: TCheckBox
+        Left = 19
+        Top = 149
+        Width = 87
+        Height = 17
+        Caption = 'Delayed Start'
+        TabOrder = 4
+        OnClick = cbDelayedStartClick
+      end
+      object dtStartDate: TDateTimePicker
+        Left = 113
+        Top = 147
+        Width = 91
+        Height = 21
+        Date = 43000.213973483800000000
+        Time = 43000.213973483800000000
+        DateMode = dmUpDown
+        ParseInput = True
+        TabOrder = 6
+        Visible = False
+      end
+    end
+    object cbReconnect: TCheckBox
+      Left = 29
+      Top = 216
+      Width = 169
+      Height = 17
+      Caption = 'Automatically reconnect'
+      TabOrder = 2
+    end
   end
   object OpenDialog: TOpenDialog
     Filter = 'TW script (*.ts, *.ets, *.es)|*.ts;*.ets;*.cts'
