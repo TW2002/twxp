@@ -2184,7 +2184,7 @@
       <field name="Label22" type="TLabel" visibility="published" />
       <field name="btnDelete" type="TButton" visibility="published" />
       <field name="panMain" type="TPanel" visibility="published" />
-      <field name="btnAbout" type="TButton" visibility="published" />
+      <field name="Button1" type="TButton" visibility="published" />
       <field name="panCorp" type="TPanel" visibility="published" />
       <field name="panSession" type="TPanel" visibility="published" />
       <field name="panStats" type="TPanel" visibility="published" />
@@ -2194,7 +2194,7 @@
       <field name="tbDescription" type="TEdit" visibility="published" />
       <field name="tbSectors" type="TEdit" visibility="published" />
       <field name="Label17" type="TLabel" visibility="published" />
-      <field name="btnApply" type="TButton" visibility="published" />
+      <field name="btnSave" type="TButton" visibility="published" />
       <field name="Label7" type="TLabel" visibility="published" />
       <field name="tbProxyAddress" type="TEdit" visibility="published" />
       <field name="tbProxyPort" type="TEdit" visibility="published" />
@@ -2252,9 +2252,9 @@
       <field name="GroupBox5" type="TGroupBox" visibility="published" />
       <field name="cbPostAction" type="TComboBox" visibility="published" />
       <field name="Label36" type="TLabel" visibility="published" />
-      <field name="tbPostOption" type="TEdit" visibility="published" />
+      <field name="Edit1" type="TEdit" visibility="published" />
       <field name="Label24" type="TLabel" visibility="published" />
-      <field name="lbPostHint" type="TLabel" visibility="published" />
+      <field name="Label47" type="TLabel" visibility="published" />
       <field name="GroupBox18" type="TGroupBox" visibility="published" />
       <field name="Label25" type="TLabel" visibility="published" />
       <field name="Label26" type="TLabel" visibility="published" />
@@ -2289,7 +2289,7 @@
       <field name="cbStopBefore" type="TCheckBox" visibility="published" />
       <field name="cbGetSettings" type="TCheckBox" visibility="published" />
       <field name="cbLandOnTerra" type="TCheckBox" visibility="published" />
-      <field name="cbReadMessages" type="TCheckBox" visibility="published" />
+      <field name="CheckBox2" type="TCheckBox" visibility="published" />
       <field name="cbReconnect" type="TCheckBox" visibility="published" />
       <field name="Label44" type="TLabel" visibility="published" />
       <field name="Label45" type="TLabel" visibility="published" />
@@ -2300,8 +2300,6 @@
       <field name="tvSetup" type="TTreeView" visibility="published" />
       <field name="dtStartTime" type="TDateTimePicker" visibility="published" />
       <field name="cbDelayedStart" type="TCheckBox" visibility="published" />
-      <field name="lbCountdown" type="TLabel" visibility="published" />
-      <field name="dtStartDate" type="TDateTimePicker" visibility="published" />
       <procedure name="FormHide" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
@@ -2332,17 +2330,22 @@
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
+      <procedure name="btnSaveClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
       <procedure name="btnDeleteClick" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
-      <procedure name="btnApplyClick" visibility="published">
+      <procedure name="cbUseLoginClick" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
-      <procedure name="cbUseLoginClick" visibility="published">
+      <procedure name="btnEditClick" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
         </parameters>
@@ -2367,6 +2370,18 @@
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
+      <procedure name="PageControlChanging" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="AllowChange" type="Boolean" paramflags="var" />
+        </parameters>
+      </procedure>
+      <procedure name="FormClose" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+          <parameter name="Action" type="TCloseAction" paramflags="var" />
+        </parameters>
+      </procedure>
       <procedure name="tmrRegTimer" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
@@ -2382,35 +2397,12 @@
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
-      <procedure name="cbDelayedStartClick" visibility="published">
+      <procedure name="tvSetupChange" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
+          <parameter name="Node" type="TTreeNode" />
         </parameters>
       </procedure>
-      <procedure name="LoadConfig" visibility="published">
-        <parameters>
-          <parameter name="Database" type="string" />
-        </parameters>
-      </procedure>
-      <procedure name="SaveConfig" visibility="published">
-        <parameters>
-          <parameter name="Database" type="string" />
-        </parameters>
-      </procedure>
-      <procedure name="tvSetupMouseUp" visibility="published">
-        <parameters>
-          <parameter name="Sender" type="TObject" />
-          <parameter name="Button" type="TMouseButton" />
-          <parameter name="Shift" type="TShiftState" />
-          <parameter name="X" type="Integer" />
-          <parameter name="Y" type="Integer" />
-        </parameters>
-      </procedure>
-      <function name="ValidateConfig" visibility="published">
-        <parameters>
-          <retval type="Boolean" />
-        </parameters>
-      </function>
       <field name="DataLinkList" type="TList" visibility="private" />
       <field name="FAuthenticate" type="Boolean" visibility="private" />
       <field name="FProgramDir" type="string" visibility="private" />

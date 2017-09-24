@@ -230,7 +230,6 @@ begin
     begin
       //TWXServer.ClientMessage('DEBUG: CurrentSectorIndex = ' + IntToStr(FCurrentSectorIndex));
       TWXClient.Send('v');
-      Sleep(1000);
     end;
 
     // No displays anymore, all done
