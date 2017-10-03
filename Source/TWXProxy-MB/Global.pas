@@ -33,7 +33,8 @@ uses
   Log,
   Process,
   Script,
-  TCP;
+  TCP,
+  Persistence;
 
 // Module variables:
 var
@@ -46,6 +47,8 @@ var
   TWXClient      : TModClient;
   TWXBubble      : TModBubble;
   TWXGUI         : TModGUI;
+
+  PersistenceManager: TPersistenceManager;
 
 implementation
 

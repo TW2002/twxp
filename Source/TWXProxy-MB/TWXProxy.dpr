@@ -75,7 +75,6 @@ const
   ModuleClasses: array[TModuleType] of TModuleClass = (TModDatabase, TModBubble, TModExtractor, TModMenu, TModServer, TModInterpreter, TModClient, TModLog, TModGUI);
 
 var
-  PersistenceManager: TPersistenceManager;
   MessageHandler: TMessageHandler;
   ProgramDir: string;
 
@@ -267,7 +266,7 @@ begin
 //    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
     TWXServer.ListenPort := TWXDatabase.ServerPort
   else
-    TWXServer.ListenPort := 23;
+    TWXServer.ListenPort := 3000;
 
   TWXServer.Activate;
 

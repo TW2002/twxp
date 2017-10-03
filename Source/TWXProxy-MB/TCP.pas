@@ -317,6 +317,7 @@ begin
   begin
     // User not allowed
     Socket.SendText(ANSI_15 + 'External connections are diabled. Disconnecting.' + ANSI_7 + endl + endl);
+    Sleep(200);
     Socket.Close;
   end
   else

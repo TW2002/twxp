@@ -904,170 +904,6 @@ object frmSetup: TfrmSetup
       end
     end
   end
-  object panSession: TPanel
-    Left = 201
-    Top = 52
-    Width = 340
-    Height = 300
-    TabOrder = 6
-    object GroupBox1: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 79
-      Caption = 'Database'
-      TabOrder = 0
-      object Label12: TLabel
-        Left = 54
-        Top = 47
-        Width = 36
-        Height = 13
-        Caption = 'Sectors'
-      end
-      object Label17: TLabel
-        Left = 62
-        Top = 20
-        Width = 28
-        Height = 13
-        Caption = 'Name'
-      end
-      object tbDescription: TEdit
-        Left = 96
-        Top = 17
-        Width = 200
-        Height = 21
-        Enabled = False
-        TabOrder = 0
-      end
-      object tbSectors: TEdit
-        Left = 96
-        Top = 44
-        Width = 100
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-        Text = '5000'
-      end
-    end
-    object GroupBox2: TGroupBox
-      Left = 10
-      Top = 92
-      Width = 320
-      Height = 194
-      Caption = 'Server'
-      TabOrder = 1
-      object Label1: TLabel
-        Left = 52
-        Top = 22
-        Width = 38
-        Height = 13
-        Caption = 'Address'
-      end
-      object Label3: TLabel
-        Left = 71
-        Top = 49
-        Width = 19
-        Height = 13
-        Caption = 'Port'
-      end
-      object Label16: TLabel
-        Left = 62
-        Top = 76
-        Width = 28
-        Height = 13
-        Caption = 'Game'
-      end
-      object Label2: TLabel
-        Left = 32
-        Top = 103
-        Width = 140
-        Height = 13
-        Caption = 'Listen for connections on port'
-      end
-      object lbCountdown: TLabel
-        Left = 5
-        Top = 170
-        Width = 310
-        Height = 13
-        Alignment = taCenter
-        Caption = 'Game starts in 1 hour and 15 minutes.'
-        Layout = tlCenter
-        Visible = False
-      end
-      object tbHost: TEdit
-        Left = 96
-        Top = 19
-        Width = 200
-        Height = 21
-        TabOrder = 0
-      end
-      object tbPort: TEdit
-        Left = 96
-        Top = 46
-        Width = 50
-        Height = 21
-        TabOrder = 1
-        Text = '23'
-      end
-      object tbGame: TEdit
-        Left = 96
-        Top = 73
-        Width = 50
-        Height = 21
-        TabOrder = 2
-      end
-      object tbListenPort: TEdit
-        Left = 184
-        Top = 101
-        Width = 57
-        Height = 21
-        TabOrder = 3
-        Text = '23'
-      end
-      object dtStartTime: TDateTimePicker
-        Left = 212
-        Top = 147
-        Width = 91
-        Height = 21
-        Date = 43000.213973483800000000
-        Time = 43000.213973483800000000
-        DateMode = dmUpDown
-        Kind = dtkTime
-        ParseInput = True
-        TabOrder = 6
-        Visible = False
-      end
-      object cbDelayedStart: TCheckBox
-        Left = 19
-        Top = 149
-        Width = 87
-        Height = 17
-        Caption = 'Delayed Start'
-        TabOrder = 4
-        OnClick = cbDelayedStartClick
-      end
-      object dtStartDate: TDateTimePicker
-        Left = 113
-        Top = 147
-        Width = 91
-        Height = 21
-        Date = 43000.213973483800000000
-        Time = 43000.213973483800000000
-        DateMode = dmUpDown
-        ParseInput = True
-        TabOrder = 7
-        Visible = False
-      end
-      object cbReconnect: TCheckBox
-        Left = 19
-        Top = 124
-        Width = 169
-        Height = 17
-        Caption = 'Automatically reconnect'
-        TabOrder = 5
-      end
-    end
-  end
   object panCorp: TPanel
     Left = 201
     Top = 52
@@ -1174,6 +1010,170 @@ object frmSetup: TfrmSetup
         Height = 21
         Enabled = False
         TabOrder = 1
+      end
+    end
+  end
+  object panSession: TPanel
+    Left = 201
+    Top = 52
+    Width = 340
+    Height = 300
+    TabOrder = 6
+    object GroupBox1: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 79
+      Caption = 'Database'
+      TabOrder = 0
+      object Label12: TLabel
+        Left = 54
+        Top = 47
+        Width = 36
+        Height = 13
+        Caption = 'Sectors'
+      end
+      object Label17: TLabel
+        Left = 62
+        Top = 20
+        Width = 28
+        Height = 13
+        Caption = 'Name'
+      end
+      object tbDescription: TEdit
+        Left = 96
+        Top = 17
+        Width = 200
+        Height = 21
+        Enabled = False
+        TabOrder = 0
+      end
+      object tbSectors: TEdit
+        Left = 96
+        Top = 44
+        Width = 100
+        Height = 21
+        Enabled = False
+        TabOrder = 1
+        Text = '30000'
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 10
+      Top = 92
+      Width = 320
+      Height = 194
+      Caption = 'Server'
+      TabOrder = 1
+      object Label1: TLabel
+        Left = 52
+        Top = 22
+        Width = 38
+        Height = 13
+        Caption = 'Address'
+      end
+      object Label3: TLabel
+        Left = 71
+        Top = 49
+        Width = 19
+        Height = 13
+        Caption = 'Port'
+      end
+      object Label16: TLabel
+        Left = 62
+        Top = 76
+        Width = 28
+        Height = 13
+        Caption = 'Game'
+      end
+      object Label2: TLabel
+        Left = 32
+        Top = 103
+        Width = 140
+        Height = 13
+        Caption = 'Listen for connections on port'
+      end
+      object lbCountdown: TLabel
+        Left = 2
+        Top = 170
+        Width = 316
+        Height = 13
+        Alignment = taCenter
+        Caption = 'Game starts in 1 hour and 15 minutes.'
+        Layout = tlCenter
+        Visible = False
+      end
+      object tbHost: TEdit
+        Left = 96
+        Top = 19
+        Width = 200
+        Height = 21
+        TabOrder = 0
+      end
+      object tbPort: TEdit
+        Left = 96
+        Top = 46
+        Width = 50
+        Height = 21
+        TabOrder = 1
+        Text = '2002'
+      end
+      object tbGame: TEdit
+        Left = 96
+        Top = 73
+        Width = 50
+        Height = 21
+        TabOrder = 2
+      end
+      object tbListenPort: TEdit
+        Left = 184
+        Top = 101
+        Width = 57
+        Height = 21
+        TabOrder = 3
+        Text = '3000'
+      end
+      object dtStartTime: TDateTimePicker
+        Left = 212
+        Top = 147
+        Width = 91
+        Height = 21
+        Date = 43000.213973483800000000
+        Time = 43000.213973483800000000
+        DateMode = dmUpDown
+        Kind = dtkTime
+        ParseInput = True
+        TabOrder = 6
+        Visible = False
+      end
+      object cbDelayedStart: TCheckBox
+        Left = 19
+        Top = 149
+        Width = 87
+        Height = 17
+        Caption = 'Delayed Start'
+        TabOrder = 4
+        OnClick = cbDelayedStartClick
+      end
+      object dtStartDate: TDateTimePicker
+        Left = 113
+        Top = 147
+        Width = 91
+        Height = 21
+        Date = 43000.213973483800000000
+        Time = 43000.213973483800000000
+        DateMode = dmUpDown
+        ParseInput = True
+        TabOrder = 7
+        Visible = False
+      end
+      object cbReconnect: TCheckBox
+        Left = 19
+        Top = 124
+        Width = 169
+        Height = 17
+        Caption = 'Automatically reconnect'
+        TabOrder = 5
       end
     end
   end

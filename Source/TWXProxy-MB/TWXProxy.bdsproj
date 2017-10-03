@@ -172,7 +172,6 @@
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
 		</VersionInfoKeys>  
-    
     <Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>

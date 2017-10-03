@@ -1937,7 +1937,7 @@ begin
   Head.Sectors := StrToIntSafe(CurrentMenu.Line);
 
   if (Head.Sectors = 0) then
-    Head.Sectors := 5000;
+    Head.Sectors := 30000;
 
   if (Pos('.', Name) = 0) then
     Name := Name + '.xdb';

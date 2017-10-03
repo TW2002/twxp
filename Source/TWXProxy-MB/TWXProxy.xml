@@ -208,7 +208,6 @@
       </procedure>
     </members>
   </class>
-  <variable name="PersistenceManager" type="TPersistenceManager" />
   <variable name="MessageHandler" type="TMessageHandler" />
   <variable name="ProgramDir" type="string" />
   <function name="ModuleFactory" visibility="private">

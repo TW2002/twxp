@@ -9,4 +9,5 @@
   <variable name="TWXClient" type="TModClient" />
   <variable name="TWXBubble" type="TModBubble" />
   <variable name="TWXGUI" type="TModGUI" />
+  <variable name="PersistenceManager" type="TPersistenceManager" />
 </namespace>

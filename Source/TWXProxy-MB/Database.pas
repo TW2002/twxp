@@ -293,9 +293,9 @@ begin
 
   Result^.ProgramName := 'TWX DATABASE';
   Result^.Version := DATABASE_VERSION;
-  Result^.Address := '<Server>';
-  Result^.Port := 23;
-  Result^.ServerPort := 23;
+  Result^.Address := '';
+  Result^.Port := 2002;
+  Result^.ServerPort := 3000;
 end;
 
 

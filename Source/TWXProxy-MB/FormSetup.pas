@@ -462,15 +462,19 @@ begin
 
 //  if (cbGames.ItemIndex > -1) then
 //  begin
-//    tbDescription.Text := cbGames.Text;
-//    tbSectors.Text := IntToStr(Head^.Sectors);
-//    tbHost.Text := Head^.Address;
-//    tbPort.Text := IntToStr(Head^.Port);
+    tbDescription.Text := cbGames.Text;
+    tbSectors.Text := IntToStr(Head^.Sectors);
+    tbHost.Text := Head^.Address;
+    tbPort.Text := IntToStr(Head^.Port);
+    tbListenPort.Text := IntToStr(Head^.ServerPort);
 //    cbUseLogin.Checked := Head^.UseLogin;
 //    tbLoginScript.Text := Head^.LoginScript;
 //    tbLoginName.Text := Head^.LoginName;
 //    tbPassword.Text := Head^.Password;
-//    tbGame.Text := Head^.Game;
+    tbGame.Text := Head^.Game;
+    //TODO: Remove extra fields from database header.
+    //TODO: Add BigBang date and StarDock location to database header
+    //TODO: Add Database protection based on BigBang, StarDock, and Current sector warps.
 //  end;
 end;
 
@@ -518,7 +522,7 @@ begin
     Error := 'You must enter a valid port number';
     Focus := tbPort;
   end;
-  tbPort.Text := IntToStr(I);
+  //tbPort.Text := IntToStr(I);
 
   Val(tbListenPort.Text, ListenPort, I);
   if (I <> 0) and (ListenPort > 1) and (ListenPort < 65535) then
@@ -572,12 +576,12 @@ begin
   INI := TINIFile.Create(Filename);
   try
     // Read Session pannel from ini
-    tbDescription.Text := INI.ReadString('Session', 'Description', '');
-    tbSectors.Text := INI.ReadString('Session', 'Sectors', '30000');
-    tbHost.Text := INI.ReadString('Session', 'Host', '');
-    tbPort.Text := INI.ReadString('Session', 'Port', '2002');
-    tbGame.Text := INI.ReadString('Session', 'Game', 'A');
-    tbListenPort.Text := INI.ReadString('Session', 'ListenPort', IntToStr(cbGames.Items.Count + 3000));
+//    tbDescription.Text := INI.ReadString('Session', 'Description', '');
+//    tbSectors.Text := INI.ReadString('Session', 'Sectors', '30000');
+//    tbHost.Text := INI.ReadString('Session', 'Host', '');
+//    tbPort.Text := INI.ReadString('Session', 'Port', '2002');
+//    tbGame.Text := INI.ReadString('Session', 'Game', 'A');
+//    tbListenPort.Text := INI.ReadString('Session', 'ListenPort', IntToStr(cbGames.Items.Count + 3000));
     cbDelayedStart.Checked := INI.ReadBool('Session', 'Description', FALSE);
 // TODO:
 //    dtStartDate.Date := INI.ReadDate('Session','StartDate', '');
@@ -640,7 +644,8 @@ begin
   // Update system state from form
   TWXBubble.MaxBubbleSize := StrToIntDef(tbBubbleSize.Text,30);
   TWXDatabase.UseCache := cbCache.Checked;
-  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text,3000);
+  //TWXClient.Port := StrToIntDef(tbListenPort.Text,2002);
+  //TWXDatabase.ServerPort := StrToIntDef(tbListenPort.Text,3000);
   TWXClient.Reconnect := cbReconnect.Checked;
   TWXLog.LogData := cbLog.Checked;
   TWXLog.LogANSI := cbLogANSI.Checked;
@@ -685,11 +690,11 @@ begin
     // Write Session pannel to ini
     if not (Database  = 'Data\Default.xdb') then
     begin
-      INI.WriteString('Session', 'Description', tbDescription.Text);
-      INI.WriteString('Session', 'Sectors', tbSectors.Text);
-      INI.WriteString('Session', 'Host', tbHost.Text);
-      INI.WriteString('Session', 'Port', tbPort.Text);
-      INI.WriteString('Session', 'Game', tbGame.Text);
+//      INI.WriteString('Session', 'Description', tbDescription.Text);
+//      INI.WriteString('Session', 'Sectors', tbSectors.Text);
+//      INI.WriteString('Session', 'Host', tbHost.Text);
+//      INI.WriteString('Session', 'Port', tbPort.Text);
+//      INI.WriteString('Session', 'Game', tbGame.Text);
       INI.WriteString('Session', 'ListenPort', tbListenPort.Text);
       INI.WriteBool('Session', 'DelayedStart', cbDelayedStart.Checked);
       INI.WriteDate('Session', 'StartDate', dtStartDate.Date);
@@ -764,12 +769,12 @@ begin
     Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader)
   end
   else
-
-  Head := GetBlankHeader;
+    Head := GetBlankHeader;
 
   Head^.Address := tbHost.Text;
   Head^.Sectors := StrToIntDef(tbSectors.Text,30000);
   Head^.Port := StrToIntDef(tbPort.Text,2002);
+  Head^.ServerPort := StrToIntDef(tbListenPort.Text,3000);
   Head^.UseLogin := cbUseLogin.Checked;
   Head^.LoginName := tbLoginName.Text;
   Head^.Password := tbPassword.Text;
@@ -842,12 +847,16 @@ begin
   else
     TWXExtractor.MenuKey := tbMenuKey.Text[1];
 
-  TWXDatabase.UseCache := cbCache.Checked;
 
   if (cbGames.ItemIndex = -1) then
     TWXDatabase.CloseDatabase // no database selected
   else
-    TWXDatabase.DatabaseName := TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename;
+  begin
+//    TWXDatabase.DatabaseName := TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename;
+    TWXDatabase.OpenDatabase(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename);
+    TWXDatabase.UseCache := cbCache.Checked;
+
+  end;
 
 
   TWXInterpreter.AutoRun.Assign(lbAutoRun.Items);
@@ -874,6 +883,9 @@ begin
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;
 
+  // Save module sates
+  PersistenceManager.SaveStateValues;
+
   // Disable database fields
   tbDescription.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
@@ -897,6 +909,11 @@ begin
 
   LoadDataConfig('Data\Default.xdb');
 
+  tbDescription.Text := '';
+  tbSectors.Text := '30000';
+  tbHost.Text := '';
+  tbPort.Text := '2002';
+  tbListenPort.Text :=  IntToStr(cbGames.Items.Count + 3000);
 
   tvSetup.Select(tvSetup.Items[0]);
   tbDescription.SetFocus;
@@ -904,6 +921,7 @@ begin
   cbGames.Items.Add('<New Game>');
   cbGames.ItemIndex := cbGames.Items.Count + -1;
   cbGames.Enabled := FALSE;
+
 
   btnOk.Enabled := TRUE;
   btnApply.Enabled := TRUE;

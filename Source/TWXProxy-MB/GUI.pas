@@ -31,6 +31,7 @@ uses
   Core,
   Dialogs,
   Script,
+  SysUtils,
   Forms,
   FormSetup,
   FormAbout,
@@ -193,14 +194,25 @@ procedure TModGUI.StateValuesLoaded;
 begin
   // show main form
   ShowForm(gfMain);
-  ShowForm(gfSetup);
+
+  // Show setup form if there are no databases.
+  if not FileExists(ProgramDir + '\Data\*.xdb') then
+    ShowForm(gfSetup);
 
   if (FirstLoad) then
   begin
     // Give the user a welcome message
-    //MessageDlg('Welcome to TWX Proxy!  Be warned that this' + endl + 'helper does not function as usual helpers do,' + endl + 'so it is strongly recommended that you read Readme.txt before' + endl + 'continuing.', mtInformation, [mbOk], 0);
+    MessageDlg('Welcome to TWX Proxy 3!  This helper is designed to work in' + endl +
+               'conjunction with your faavorite Tradewars Helper or Telnet' + endl +
+               'Terminal. It does not provide a terminal window, so you should' + endl +
+               'read the Getting Started section of the wiki before continuing' + endl +
+               '(https://github.com/MicroBlaster/TWXProxy/wiki).' + endl + endl +
+               'You will need to create a new database before connecting' + endl +
+               'to a server.', mtInformation, [mbOk], 0);
+
+               //TODO: add a hyperling to the wiki
     //MessageDlg('You will need to create a new database before connecting to a server', mtInformation, [mbOk], 0);
-    ShowForm(gfSetup);
+    //ShowForm(gfSetup);
     //ShowForm(gfLicense);
     FirstLoad := False;
   end;
