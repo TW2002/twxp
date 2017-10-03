@@ -18,13 +18,13 @@
 		<Compiler>
 			<Compiler Name="A">8</Compiler>
 			<Compiler Name="B">0</Compiler>
-			<Compiler Name="C">1</Compiler>
+			<Compiler Name="C">0</Compiler>
 			<Compiler Name="D">1</Compiler>
 			<Compiler Name="E">0</Compiler>
 			<Compiler Name="F">0</Compiler>
 			<Compiler Name="G">1</Compiler>
 			<Compiler Name="H">1</Compiler>
-			<Compiler Name="I">1</Compiler>
+			<Compiler Name="I">0</Compiler>
 			<Compiler Name="J">1</Compiler>
 			<Compiler Name="K">0</Compiler>
 			<Compiler Name="L">1</Compiler>
@@ -32,15 +32,15 @@
 			<Compiler Name="N">1</Compiler>
 			<Compiler Name="O">1</Compiler>
 			<Compiler Name="P">0</Compiler>
-			<Compiler Name="Q">1</Compiler>
-			<Compiler Name="R">1</Compiler>
+			<Compiler Name="Q">0</Compiler>
+			<Compiler Name="R">0</Compiler>
 			<Compiler Name="S">0</Compiler>
 			<Compiler Name="T">0</Compiler>
 			<Compiler Name="U">0</Compiler>
 			<Compiler Name="V">1</Compiler>
 			<Compiler Name="W">1</Compiler>
 			<Compiler Name="X">1</Compiler>
-			<Compiler Name="Y">2</Compiler>
+			<Compiler Name="Y">0</Compiler>
 			<Compiler Name="Z">1</Compiler>
 			<Compiler Name="ShowHints">True</Compiler>
 			<Compiler Name="ShowWarnings">True</Compiler>
@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir">..\DCU</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">$(BDS)\lib\Debug</Directories>
+			<Directories Name="SearchPath"></Directories>
 			<Directories Name="Packages">vclx;vcl;rtl;xmlrtl;vclie;inet;inetdbbde;inetdbxpress;adortl;dclOfficeXP;soaprtl;vclactnband;bdertl;vcldbx</Directories>
 			<Directories Name="Conditionals">DEBUG;MANIAC_DEBUG</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -145,11 +145,11 @@
 			<Language Name="RootDir"></Language>
 		</Language>
 		<VersionInfo>
-			<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-			<VersionInfo Name="MajorVer">2</VersionInfo>
+			<VersionInfo Name="MajorVer">1</VersionInfo>
 			<VersionInfo Name="MinorVer">0</VersionInfo>
-			<VersionInfo Name="Release">5</VersionInfo>
+			<VersionInfo Name="Release">0</VersionInfo>
 			<VersionInfo Name="Build">0</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
 			<VersionInfo Name="PreRelease">False</VersionInfo>
@@ -161,16 +161,16 @@
 		</VersionInfo>
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-			<VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">2.0.5.0</VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription">TWXProxy</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
-			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName">TWXProxy</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
-		</VersionInfoKeys>  <Excluded_Packages>
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>  <VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
+    </VersionInfoKeys>  <Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\HelpLink.bpl">Help Link for Delphi</Excluded_Packages>

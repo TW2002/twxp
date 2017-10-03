@@ -51,7 +51,6 @@ type
   TfrmSetup = class(TForm)
     PageControl: TPageControl;
     tabServer: TTabSheet;
-    btnOKMain: TButton;
     tabProgram: TTabSheet;
     cbAcceptExternal: TCheckBox;
     cbBroadcast: TCheckBox;
@@ -59,7 +58,6 @@ type
     tbListenPort: TEdit;
     Label11: TLabel;
     tbMenuKey: TEdit;
-    Panel1: TPanel;
     Label12: TLabel;
     Label3: TLabel;
     Label1: TLabel;
@@ -69,19 +67,13 @@ type
     cbGames: TComboBox;
     btnAdd: TButton;
     btnDelete: TButton;
-    btnEdit: TButton;
-    Label13: TLabel;
     tbLoginScript: TEdit;
     cbUseLogin: TCheckBox;
-    tbLoginName: TEdit;
     Label14: TLabel;
-    tbPassword: TEdit;
-    Label15: TLabel;
     tbGame: TEdit;
     Label16: TLabel;
     Label17: TLabel;
     tbDescription: TEdit;
-    btnSave: TButton;
     btnCancel: TButton;
     cbReconnect: TCheckBox;
     tabUser: TTabSheet;
@@ -97,7 +89,6 @@ type
     btnAddAutoRun: TButton;
     btnRemoveAutoRun: TButton;
     OpenDialog: TOpenDialog;
-    btnCancelMain: TButton;
     cbLocalEcho: TCheckBox;
     Label4: TLabel;
     Label5: TLabel;
@@ -115,6 +106,42 @@ type
     Label9: TLabel;
     tbShortenDelay: TEdit;
     Label20: TLabel;
+    GroupBox4: TGroupBox;
+    Label13: TLabel;
+    Label15: TLabel;
+    Label23: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    tbLoginName: TEdit;
+    tbPassword: TEdit;
+    tbAlias: TEdit;
+    tbPrivateGame: TEdit;
+    tbPassport: TEdit;
+    GroupBox15: TGroupBox;
+    Label44: TLabel;
+    Label45: TLabel;
+    Label46: TLabel;
+    cbClearAvoids: TCheckBox;
+    cbClearMessages: TCheckBox;
+    cbReadLog: TCheckBox;
+    cbStopBefore: TCheckBox;
+    cbGetSettings: TCheckBox;
+    cbLandOnTerra: TCheckBox;
+    cbReadMessages: TCheckBox;
+    tbShipName: TEdit;
+    tbHomePlanet: TEdit;
+    tbSubSpace: TEdit;
+    panSession: TPanel;
+    panOptions: TPanel;
+    panCorp: TPanel;
+    panTerminal: TPanel;
+    panStats: TPanel;
+    panLogging: TPanel;
+    panAutoRun: TPanel;
+    panLogin: TPanel;
+    tvMain: TTreeView;
+    dtStartDate: TDateTimePicker;
+    dtStartTime: TDateTimePicker;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -499,9 +526,9 @@ begin
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
-  btnEdit.Enabled := TRUE;
+//  btnEdit.Enabled := TRUE;
 
-  btnSave.Enabled := FALSE;
+//  btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
   if (Edit) then
@@ -576,10 +603,10 @@ begin
   cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
-  btnSave.Enabled := TRUE;
+//  btnSave.Enabled := TRUE;
   btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
-  btnEdit.Enabled := FALSE;
+//  btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
 
   Edit := FALSE;
@@ -594,10 +621,10 @@ begin
 
   tbHost.SetFocus;
 
-  btnSave.Enabled := TRUE;
+//  btnSave.Enabled := TRUE;
   btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
-  btnEdit.Enabled := FALSE;
+//  btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
 
   Edit := TRUE;
@@ -672,9 +699,9 @@ begin
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
-  btnEdit.Enabled := TRUE;
+//  btnEdit.Enabled := TRUE;
 
-  btnSave.Enabled := FALSE;
+//  btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
   cbGames.OnChange(Sender);
