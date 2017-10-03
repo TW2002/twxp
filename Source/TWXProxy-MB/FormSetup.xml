@@ -2188,7 +2188,7 @@
       <field name="panCorp" type="TPanel" visibility="published" />
       <field name="panSession" type="TPanel" visibility="published" />
       <field name="panStats" type="TPanel" visibility="published" />
-      <field name="CheckBox1" type="TCheckBox" visibility="published" />
+      <field name="cbDefault" type="TCheckBox" visibility="published" />
       <field name="GroupBox1" type="TGroupBox" visibility="published" />
       <field name="Label12" type="TLabel" visibility="published" />
       <field name="tbDescription" type="TEdit" visibility="published" />
@@ -2290,7 +2290,6 @@
       <field name="cbGetSettings" type="TCheckBox" visibility="published" />
       <field name="cbLandOnTerra" type="TCheckBox" visibility="published" />
       <field name="cbReadMessages" type="TCheckBox" visibility="published" />
-      <field name="cbReconnect" type="TCheckBox" visibility="published" />
       <field name="Label44" type="TLabel" visibility="published" />
       <field name="Label45" type="TLabel" visibility="published" />
       <field name="tbShipName" type="TEdit" visibility="published" />
@@ -2302,6 +2301,7 @@
       <field name="cbDelayedStart" type="TCheckBox" visibility="published" />
       <field name="lbCountdown" type="TLabel" visibility="published" />
       <field name="dtStartDate" type="TDateTimePicker" visibility="published" />
+      <field name="cbReconnect" type="TCheckBox" visibility="published" />
       <procedure name="FormHide" visibility="published">
         <parameters>
           <parameter name="Sender" type="TObject" />
@@ -2387,12 +2387,12 @@
           <parameter name="Sender" type="TObject" />
         </parameters>
       </procedure>
-      <procedure name="LoadConfig" visibility="published">
+      <procedure name="LoadDataConfig" visibility="published">
         <parameters>
           <parameter name="Database" type="string" />
         </parameters>
       </procedure>
-      <procedure name="SaveConfig" visibility="published">
+      <procedure name="SaveDataConfig" visibility="published">
         <parameters>
           <parameter name="Database" type="string" />
         </parameters>
@@ -2411,6 +2411,11 @@
           <retval type="Boolean" />
         </parameters>
       </function>
+      <procedure name="cbCreateCorpClick" visibility="published">
+        <parameters>
+          <parameter name="Sender" type="TObject" />
+        </parameters>
+      </procedure>
       <field name="DataLinkList" type="TList" visibility="private" />
       <field name="FAuthenticate" type="Boolean" visibility="private" />
       <field name="FProgramDir" type="string" visibility="private" />

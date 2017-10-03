@@ -132,7 +132,7 @@ type
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
     procedure SetLocalEcho(Value: Boolean);
-//    procedure Activate; // EP - SetListenPort no longer activates the server
+    //procedure Activate; // EP - SetListenPort no longer activates the server
 
     property LocalEcho: Boolean read GetLocalEcho write SetLocalEcho;
     //property ListenPort: Word read GetListenPort write SetListenPort;

@@ -405,29 +405,18 @@ object frmSetup: TfrmSetup
     Visible = False
     object tabServer: TTabSheet
       Caption = 'Server'
-      ExplicitLeft = -56
-      ExplicitTop = 36
     end
     object tabProgram: TTabSheet
       Caption = 'Program'
       ImageIndex = 4
-      ExplicitTop = 27
-      ExplicitWidth = 361
-      ExplicitHeight = 317
     end
     object tabLogging: TTabSheet
       Caption = 'Logging'
       ImageIndex = 5
-      ExplicitWidth = 361
-      ExplicitHeight = 317
     end
     object tabAutoRun: TTabSheet
       Caption = 'Auto Run'
       ImageIndex = 3
-      ExplicitLeft = -264
-      ExplicitTop = 4
-      ExplicitWidth = 361
-      ExplicitHeight = 317
       object memHint3: TMemo
         Left = 24
         Top = 8
@@ -447,8 +436,6 @@ object frmSetup: TfrmSetup
       Caption = 'Registration'
       ImageIndex = 5
       TabVisible = False
-      ExplicitWidth = 361
-      ExplicitHeight = 317
       object Label18: TLabel
         Left = 48
         Top = 88
@@ -543,8 +530,6 @@ object frmSetup: TfrmSetup
       Caption = 'Auth Proxy'
       ImageIndex = 4
       TabVisible = False
-      ExplicitWidth = 361
-      ExplicitHeight = 317
       object Label6: TLabel
         Left = 58
         Top = 25
@@ -647,7 +632,7 @@ object frmSetup: TfrmSetup
     Caption = '&About'
     TabOrder = 13
   end
-  object CheckBox1: TCheckBox
+  object cbDefault: TCheckBox
     Left = 250
     Top = 373
     Width = 61
@@ -663,113 +648,6 @@ object frmSetup: TfrmSetup
     Caption = '&Apply'
     TabOrder = 16
     OnClick = btnApplyClick
-  end
-  object panCorp: TPanel
-    Left = 201
-    Top = 52
-    Width = 340
-    Height = 300
-    TabOrder = 5
-    object GroupBox7: TGroupBox
-      Left = 10
-      Top = 10
-      Width = 320
-      Height = 122
-      Caption = 'Corporation'
-      TabOrder = 0
-      object Label14: TLabel
-        Left = 53
-        Top = 86
-        Width = 46
-        Height = 13
-        Caption = 'Password'
-      end
-      object Label42: TLabel
-        Left = 46
-        Top = 59
-        Width = 53
-        Height = 13
-        Caption = 'Corp Name'
-      end
-      object tbCorpPassword: TEdit
-        Left = 105
-        Top = 83
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 3
-      end
-      object tbCorpName: TEdit
-        Left = 105
-        Top = 56
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 2
-      end
-      object cbJoinCorp: TCheckBox
-        Left = 27
-        Top = 36
-        Width = 185
-        Height = 17
-        Caption = 'Join Corporatiopn'
-        TabOrder = 1
-      end
-      object cbCreateCorp: TCheckBox
-        Left = 27
-        Top = 18
-        Width = 201
-        Height = 17
-        Caption = 'Create Corporation (CEO)'
-        TabOrder = 0
-      end
-    end
-    object GroupBox5: TGroupBox
-      Left = 10
-      Top = 141
-      Width = 320
-      Height = 101
-      Caption = 'After Login'
-      TabOrder = 1
-      object Label36: TLabel
-        Left = 27
-        Top = 27
-        Width = 30
-        Height = 13
-        Caption = 'Action'
-      end
-      object Label24: TLabel
-        Left = 25
-        Top = 54
-        Width = 31
-        Height = 13
-        Caption = 'Option'
-      end
-      object lbPostHint: TLabel
-        Left = 36
-        Top = 73
-        Width = 216
-        Height = 13
-        Caption = 'Enter as sectror number, or class 0 port name.'
-      end
-      object cbPostAction: TComboBox
-        Left = 62
-        Top = 24
-        Width = 195
-        Height = 21
-        ItemHeight = 13
-        TabOrder = 0
-        OnChange = cbGamesChange
-      end
-      object tbPostOption: TEdit
-        Left = 62
-        Top = 51
-        Width = 121
-        Height = 21
-        Enabled = False
-        TabOrder = 1
-      end
-    end
   end
   object panIdentity: TPanel
     Left = 201
@@ -1107,9 +985,9 @@ object frmSetup: TfrmSetup
         Caption = 'Listen for connections on port'
       end
       object lbCountdown: TLabel
-        Left = 7
+        Left = 5
         Top = 170
-        Width = 300
+        Width = 310
         Height = 13
         Alignment = taCenter
         Caption = 'Game starts in 1 hour and 15 minutes.'
@@ -1156,7 +1034,7 @@ object frmSetup: TfrmSetup
         DateMode = dmUpDown
         Kind = dtkTime
         ParseInput = True
-        TabOrder = 5
+        TabOrder = 6
         Visible = False
       end
       object cbDelayedStart: TCheckBox
@@ -1177,17 +1055,126 @@ object frmSetup: TfrmSetup
         Time = 43000.213973483800000000
         DateMode = dmUpDown
         ParseInput = True
-        TabOrder = 6
+        TabOrder = 7
         Visible = False
       end
+      object cbReconnect: TCheckBox
+        Left = 19
+        Top = 124
+        Width = 169
+        Height = 17
+        Caption = 'Automatically reconnect'
+        TabOrder = 5
+      end
     end
-    object cbReconnect: TCheckBox
-      Left = 29
-      Top = 216
-      Width = 169
-      Height = 17
-      Caption = 'Automatically reconnect'
-      TabOrder = 2
+  end
+  object panCorp: TPanel
+    Left = 201
+    Top = 52
+    Width = 340
+    Height = 300
+    TabOrder = 5
+    object GroupBox7: TGroupBox
+      Left = 10
+      Top = 10
+      Width = 320
+      Height = 122
+      Caption = 'Corporation'
+      TabOrder = 0
+      object Label14: TLabel
+        Left = 53
+        Top = 86
+        Width = 46
+        Height = 13
+        Caption = 'Password'
+      end
+      object Label42: TLabel
+        Left = 46
+        Top = 59
+        Width = 53
+        Height = 13
+        Caption = 'Corp Name'
+      end
+      object tbCorpPassword: TEdit
+        Left = 105
+        Top = 83
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 3
+      end
+      object tbCorpName: TEdit
+        Left = 105
+        Top = 56
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 2
+      end
+      object cbJoinCorp: TCheckBox
+        Left = 27
+        Top = 36
+        Width = 185
+        Height = 17
+        Caption = 'Join Corporatiopn'
+        TabOrder = 1
+        OnClick = cbCreateCorpClick
+      end
+      object cbCreateCorp: TCheckBox
+        Left = 27
+        Top = 18
+        Width = 201
+        Height = 17
+        Caption = 'Create Corporation (CEO)'
+        TabOrder = 0
+        OnClick = cbCreateCorpClick
+      end
+    end
+    object GroupBox5: TGroupBox
+      Left = 10
+      Top = 141
+      Width = 320
+      Height = 101
+      Caption = 'After Login'
+      TabOrder = 1
+      object Label36: TLabel
+        Left = 27
+        Top = 27
+        Width = 30
+        Height = 13
+        Caption = 'Action'
+      end
+      object Label24: TLabel
+        Left = 25
+        Top = 54
+        Width = 31
+        Height = 13
+        Caption = 'Option'
+      end
+      object lbPostHint: TLabel
+        Left = 36
+        Top = 73
+        Width = 216
+        Height = 13
+        Caption = 'Enter as sectror number, or class 0 port name.'
+      end
+      object cbPostAction: TComboBox
+        Left = 62
+        Top = 24
+        Width = 195
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 0
+        OnChange = cbGamesChange
+      end
+      object tbPostOption: TEdit
+        Left = 62
+        Top = 51
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 1
+      end
     end
   end
   object OpenDialog: TOpenDialog

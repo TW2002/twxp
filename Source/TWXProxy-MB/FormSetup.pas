@@ -71,7 +71,7 @@ type
     panCorp: TPanel;
     panSession: TPanel;
     panStats: TPanel;
-    CheckBox1: TCheckBox;
+    cbDefault: TCheckBox;
     GroupBox1: TGroupBox;
     Label12: TLabel;
     tbDescription: TEdit;
@@ -204,11 +204,12 @@ type
     procedure tbUserChange(Sender: TObject);
     procedure cbAcceptExternalClick(Sender: TObject);
     procedure cbDelayedStartClick(Sender: TObject);
-    procedure LoadConfig(Database: string);
-    procedure SaveConfig(Database: string);
+    procedure LoadDataConfig(Database: string);
+    procedure SaveDataConfig(Database: string);
     procedure tvSetupMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
     function ValidateConfig() : Boolean;
+    procedure cbCreateCorpClick(Sender: TObject);
 
   private
     DataLinkList  : TList;
@@ -248,6 +249,10 @@ begin
   Left := (Screen.Width DIV 2) - (Width DIV 2);
   Height := (Screen.Height DIV 2) - (Height DIV 2);
 
+  // Enable database fields
+  tbDescription.Enabled := TRUE;
+  tbSectors.Enabled := TRUE;
+
   // Expand the TreeView Menu
   tvSetup.FullExpand;
   tvSetup.Select(tvSetup.Items[0]);
@@ -283,7 +288,6 @@ begin
 
   UpdateGameList(TWXDatabase.DatabaseName);
 
-
   // Cannont change database while connected.
   cbGames.Enabled := TRUE;
   if TWXClient.Connected then
@@ -297,10 +301,12 @@ begin
 
   if cbGames.Items.Count = 0 then
   begin
+    cbDefault.Checked := TRUE;
     btnAddClick(Self);
   end
   else
   begin
+    cbDefault.Checked := FALSE;
     Edit := TRUE;
   end;
 end;
@@ -409,6 +415,20 @@ begin
   end;
 end;
 
+procedure TfrmSetup.cbCreateCorpClick(Sender: TObject);
+begin
+  if (cbCreateCorp.Checked) or (cbJoinCorp.Checked) then
+  begin
+    tbCorpName.Enabled := TRUE;
+    tbCorpPassword.Enabled := TRUE;
+  end
+  else
+  begin
+    tbCorpName.Enabled := FALSE;
+    tbCorpPassword.Enabled := FALSE;
+  end;
+end;
+
 procedure TfrmSetup.cbDelayedStartClick(Sender: TObject);
 var
   h,m,s,ms : word;
@@ -431,17 +451,17 @@ begin
 end;
 
 procedure TfrmSetup.cbGamesChange(Sender: TObject);
-//var
-//  Head : PDataHeader;
+var
+  Head : PDataHeader;
 begin
   if (cbGames.ItemIndex < 0) then
     Exit;
 
-//  Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader);
+  Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader);
+  LoadDataConfig(Head^.Description);
 
-  if (cbGames.ItemIndex > -1) then
-  begin
-      LoadConfig(TWXDatabase.DatabaseName);
+//  if (cbGames.ItemIndex > -1) then
+//  begin
 //    tbDescription.Text := cbGames.Text;
 //    tbSectors.Text := IntToStr(Head^.Sectors);
 //    tbHost.Text := Head^.Address;
@@ -451,7 +471,7 @@ begin
 //    tbLoginName.Text := Head^.LoginName;
 //    tbPassword.Text := Head^.Password;
 //    tbGame.Text := Head^.Game;
-  end;
+//  end;
 end;
 
 function TfrmSetup.ValidateConfig() : Boolean;
@@ -537,15 +557,17 @@ begin
 
 end;
 
-procedure TfrmSetup.LoadConfig(Database: string);
+procedure TfrmSetup.LoadDataConfig(Database: string);
 var
   Filename : string;
   INI : TINIFile;
 begin
-  if Database  = '' then
-    Database := 'Default';
+  // Do not load if Database name is blank.
+  if (Database = '') or (Database = 'data\.xdb') then
+    exit;
+   //Database := 'Default';
 
-  Filename :=  GetCurrentDir + '\Data\' + Database + '.cfg';
+  Filename :=  GetCurrentDir + '\' + Copy(Database,0,Length(Database) - 4) + '.cfg';
 
   INI := TINIFile.Create(Filename);
   try
@@ -562,11 +584,11 @@ begin
 //    dtStartTime.Time := INI.ReadDate('Session','StartTime', '');
 
     // Read Login pannel from ini
-    cbUseLogin.Checked := INI.ReadBool('Session', 'UseLogin', FALSE);
-    tbLoginScript.Text := INI.ReadString('Session', 'LoginScript', '');
+    cbUseLogin.Checked := INI.ReadBool('Session', 'UseLogin', TRUE);
+    tbLoginScript.Text := INI.ReadString('Session', 'LoginScript', 'Login.ts');
     tbDefaultBot.Text := INI.ReadString('Session', 'DefaultBot', '');
-    cbReconnect.Checked := INI.ReadBool('Session', 'Reconnect', FALSE);
-    cbLandOnTerra.Checked := INI.ReadBool('Session', 'LandOnTerra', FALSE);
+    cbReconnect.Checked := INI.ReadBool('Session', 'Reconnect', TRUE);
+    cbLandOnTerra.Checked := INI.ReadBool('Session', 'LandOnTerra', TRUE);
     cbGetSettings.Checked := INI.ReadBool('Session', 'GetSettings', FALSE);
     cbStopBefore.Checked := INI.ReadBool('Session', 'StopBefore', FALSE);
     cbReadLog.Checked := INI.ReadBool('Session', 'ReadLog', FALSE);
@@ -593,7 +615,7 @@ begin
     tbPostOption.Text := INI.ReadString('Session', 'PostOtion', 'Stardock');
 
     // Read Terminal panel from ini
-    tbMenuKey.Text := INI.ReadString('Terminal', 'MenuKey', '');
+    tbMenuKey.Text := INI.ReadString('Terminal', 'MenuKey', '$');
     cbBroadcast.Checked := INI.ReadBool('Terminal', 'Broadcast', FALSE);
     cbCache.Checked := INI.ReadBool('Terminal', 'Cache', FALSE);
     cbLocalEcho.Checked := INI.ReadBool('Terminal', 'LocalEcho', FALSE);
@@ -616,15 +638,15 @@ begin
   end;
 
   // Update system state from form
-  TWXBubble.MaxBubbleSize := StrToIntSafe(tbBubbleSize.Text,30);
+  TWXBubble.MaxBubbleSize := StrToIntDef(tbBubbleSize.Text,30);
   TWXDatabase.UseCache := cbCache.Checked;
-  TWXServer.ListenPort := StrToInt(tbListenPort.Text);
+  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text,3000);
   TWXClient.Reconnect := cbReconnect.Checked;
   TWXLog.LogData := cbLog.Checked;
   TWXLog.LogANSI := cbLogANSI.Checked;
   TWXLog.BinaryLogs := cbLogBinary.Checked;
   TWXLog.NotifyPlayCuts := cbNotifyLogDelay.Checked;
-  TWXLog.MaxPlayDelay := StrToIntSafe(tbShortenDelay.Text) * 1000;
+  TWXLog.MaxPlayDelay := StrToIntDef(tbShortenDelay.Text,10) * 1000;
   TWXServer.BroadCastMsgs := cbBroadCast.Checked;
   TWXServer.LocalEcho := cbLocalEcho.Checked;
   TWXExtractor.MenuKey := tbMenuKey.Text[1];
@@ -632,13 +654,13 @@ begin
   TWXServer.RemoteAddress := tbRemoteAddress.Text;
 
   if not FileExists(Filename) then
-    SaveConfig(Database);
+    SaveDataConfig(Database);
 
 
 
 end;
 
-procedure TfrmSetup.SaveConfig(Database: string);
+procedure TfrmSetup.SaveDataConfig(Database: string);
 var
   INI : TINIFile;
   Filename : string;
@@ -651,30 +673,28 @@ var
   Head     : PDataHeader;
   DoCreate : Boolean;
 begin
- if Database  = '' then
+  // Do not save if Database name is blank.
+  if (Database = '') or (Database = 'data\.xdb') then
    Exit;
-//    Database := 'Default';
 
-  // Do not save config if validation fails.
-  if not (Database  = 'Default') then
-    if not ValidateConfig() then
-      Exit;
+  Filename :=  GetCurrentDir + '\' + Copy(Database,0,Length(Database) - 4) + '.cfg';
 
-  Filename :=  GetCurrentDir + '\Data\' + Database + '.cfg';
+  INI := TINIFile.Create(Filename);
 
   try
-    INI := TINIFile.Create(Filename);
-
     // Write Session pannel to ini
-    INI.WriteString('Session', 'Description', tbDescription.Text);
-    INI.WriteString('Session', 'Sectors', tbSectors.Text);
-    INI.WriteString('Session', 'Host', tbHost.Text);
-    INI.WriteString('Session', 'Port', tbPort.Text);
-    INI.WriteString('Session', 'Game', tbGame.Text);
-    INI.WriteString('Session', 'ListenPort', tbListenPort.Text);
-    INI.WriteBool('Session', 'DelayedStart', cbDelayedStart.Checked);
-    INI.WriteDate('Session', 'StartDate', dtStartDate.Date);
-    INI.WriteTime('Session', 'StartTime', dtStartTime.Time);
+    if not (Database  = 'Data\Default.xdb') then
+    begin
+      INI.WriteString('Session', 'Description', tbDescription.Text);
+      INI.WriteString('Session', 'Sectors', tbSectors.Text);
+      INI.WriteString('Session', 'Host', tbHost.Text);
+      INI.WriteString('Session', 'Port', tbPort.Text);
+      INI.WriteString('Session', 'Game', tbGame.Text);
+      INI.WriteString('Session', 'ListenPort', tbListenPort.Text);
+      INI.WriteBool('Session', 'DelayedStart', cbDelayedStart.Checked);
+      INI.WriteDate('Session', 'StartDate', dtStartDate.Date);
+      INI.WriteTime('Session', 'StartTime', dtStartTime.Time);
+    end;
 
     // Write Login pannel to ini
     INI.WriteBool('Session', 'UseLogin', cbUseLogin.Checked);
@@ -708,6 +728,8 @@ begin
     INI.WriteString('Session', 'PostOtion', tbPostOption.Text);
 
     // Write Terminal panel to ini
+    if not (Database  = 'Data\Default.xdb') then
+    begin
     INI.WriteString('Terminal', 'MenuKey', tbMenuKey.Text);
     INI.WriteBool('Terminal', 'Broadcast', cbBroadcast.Checked);
     INI.WriteBool('Terminal', 'Cache', cbCache.Checked);
@@ -723,6 +745,7 @@ begin
     INI.WriteString('Terminal', 'ShortenDelay', tbShortenDelay.Text);
     INI.WriteBool('Terminal', 'cbNotifyLogDelay', cbNotifyLogDelay.Checked);
 
+    end;
     //TODO: Write Auto-Run to ini
 
 
@@ -732,7 +755,7 @@ begin
   end;
 
   // We don't want to create a database if just saving the default config.
-  if Database  = 'Default' then
+  if Database  = 'Data\Default.xdb' then
     Exit;
 
   if (Edit) then
@@ -745,8 +768,8 @@ begin
   Head := GetBlankHeader;
 
   Head^.Address := tbHost.Text;
-  Head^.Sectors := StrToInt(tbSectors.Text);
-  Head^.Port := StrToInt(tbPort.Text);
+  Head^.Sectors := StrToIntDef(tbSectors.Text,30000);
+  Head^.Port := StrToIntDef(tbPort.Text,2002);
   Head^.UseLogin := cbUseLogin.Checked;
   Head^.LoginName := tbLoginName.Text;
   Head^.Password := tbPassword.Text;
@@ -812,7 +835,7 @@ begin
       end;
 
   // copy form settings into program setup
-  TWXBubble.MaxBubbleSize := StrToIntSafe(tbBubbleSize.Text);
+  TWXBubble.MaxBubbleSize := StrToIntDef(tbBubbleSize.Text,30);
 
   if (Length(tbMenuKey.Text) = 0) then
     TWXExtractor.MenuKey := ' '
@@ -835,12 +858,12 @@ begin
   TWXLog.NotifyPlayCuts := cbNotifyLogDelay.Checked;
 
   try
-    TWXLog.MaxPlayDelay := StrToInt(tbShortenDelay.Text) * 1000;
+    TWXLog.MaxPlayDelay := StrToIntDef(tbShortenDelay.Text,10) * 1000;
   except
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  TWXServer.ListenPort := StrToIntSafe(tbListenPort.Text);
+  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text,3000);
   TWXServer.Activate;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
   TWXServer.RemoteAddress := tbRemoteAddress.Text;
@@ -850,6 +873,20 @@ begin
 
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;
+
+  // Disable database fields
+  tbDescription.Enabled := TRUE;
+  tbSectors.Enabled := TRUE;
+  btnOk.Enabled := TRUE;
+  btnApply.Enabled := TRUE;
+  btnCancel.Enabled := TRUE;
+  cbGames.Enabled := TRUE;
+
+  btnAdd.Enabled := TRUE;
+  btnDelete.Enabled := TRUE;
+
+  Edit := TRUE;
+
 end;
 
 procedure TfrmSetup.btnAddClick(Sender: TObject);
@@ -858,7 +895,7 @@ begin
   tbDescription.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
 
-  LoadConfig('Default');
+  LoadDataConfig('Data\Default.xdb');
 
 
   tvSetup.Select(tvSetup.Items[0]);
@@ -866,7 +903,7 @@ begin
 
   cbGames.Items.Add('<New Game>');
   cbGames.ItemIndex := cbGames.Items.Count + -1;
-  //cbGames.Enabled := FALSE;
+  cbGames.Enabled := FALSE;
 
   btnOk.Enabled := TRUE;
   btnApply.Enabled := TRUE;
@@ -879,13 +916,50 @@ end;
 
 procedure TfrmSetup.btnApplyClick(Sender: TObject);
 begin
-  SaveConfig(TWXDatabase.DatabaseName);
+    if ValidateConfig() then
+    begin
+      if Edit then
+      begin
+        SaveDataConfig(TWXDatabase.DatabaseName);
+      end
+      else
+      begin
+        SaveDataConfig('Data\' + tbDescription.Text + '.xdb');
+      end;
+      if cbDefault.Checked = TRUE then
+      begin
+        SaveDataConfig('Data\Default.xdb');
+        cbDefault.Checked := FALSE;
+      end;
+
+      // Enable database fields
+      tbDescription.Enabled := FALSE;
+      tbSectors.Enabled := FALSE;
+
+      // TODO: Return focus to previous control.
+      // TODO: Disable Apply button unless changes have been made.
+    end;
 end;
 
 procedure TfrmSetup.btnOkClick(Sender: TObject);
 begin
-  SaveConfig(TWXDatabase.DatabaseName);
-  exit;
+    if ValidateConfig() then
+    begin
+      if Edit then
+      begin
+        SaveDataConfig(TWXDatabase.DatabaseName);
+      end
+      else
+      begin
+        SaveDataConfig('Data\' + tbDescription.Text + '.xdb');
+      end;
+      if cbDefault.Checked = TRUE then
+      begin
+        SaveDataConfig('Data\Default.xdb');
+      end;
+      Self.Close;
+    end;
+
 end;
 
 procedure TfrmSetup.btnDeleteClick(Sender: TObject);
