@@ -27,8 +27,12 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Active Contributers:
 
+<<<<<<< HEAD
 * David McCartney (aka MicroBlaster)
 * Steven Ruzicka (aka Mind Dagger)
 * Shawn Redman (aka LoneStar)
+=======
+* David O. McCartney (aka MicroBlaster)
+>>>>>>> parent of 185c1b0... Update README.md
 
 If you would like to contribute to this project, please email DMC@IT1.BIZ for further information.
