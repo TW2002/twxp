@@ -58,6 +58,10 @@ type
     tbListenPort: TEdit;
     Label11: TLabel;
     tbMenuKey: TEdit;
+<<<<<<< HEAD
+=======
+    Panel1: TPanel;
+>>>>>>> parent of f15a929... Added Login information to setup form.
     Label12: TLabel;
     Label3: TLabel;
     Label1: TLabel;
@@ -67,8 +71,16 @@ type
     cbGames: TComboBox;
     btnAdd: TButton;
     btnDelete: TButton;
+<<<<<<< HEAD
     tbLoginScript: TEdit;
     cbUseLogin: TCheckBox;
+=======
+    btnEdit: TButton;
+    Label13: TLabel;
+    tbLoginScript: TEdit;
+    cbUseLogin: TCheckBox;
+    tbLoginName: TEdit;
+>>>>>>> parent of f15a929... Added Login information to setup form.
     Label14: TLabel;
     tbGame: TEdit;
     Label16: TLabel;
@@ -89,6 +101,10 @@ type
     btnAddAutoRun: TButton;
     btnRemoveAutoRun: TButton;
     OpenDialog: TOpenDialog;
+<<<<<<< HEAD
+=======
+    btnCancelMain: TButton;
+>>>>>>> parent of f15a929... Added Login information to setup form.
     cbLocalEcho: TCheckBox;
     Label4: TLabel;
     Label5: TLabel;
@@ -106,6 +122,7 @@ type
     Label9: TLabel;
     tbShortenDelay: TEdit;
     Label20: TLabel;
+<<<<<<< HEAD
     GroupBox4: TGroupBox;
     Label13: TLabel;
     Label15: TLabel;
@@ -142,6 +159,10 @@ type
     tvMain: TTreeView;
     dtStartDate: TDateTimePicker;
     dtStartTime: TDateTimePicker;
+=======
+    Label21: TLabel;
+    tbRemoteAddress: TEdit;
+>>>>>>> parent of f15a929... Added Login information to setup form.
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -603,7 +624,11 @@ begin
   cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
+<<<<<<< HEAD
 //  btnSave.Enabled := TRUE;
+=======
+  btnSave.Enabled := TRUE;
+>>>>>>> parent of f15a929... Added Login information to setup form.
   btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
 //  btnEdit.Enabled := FALSE;

@@ -301,7 +301,14 @@ var
   LocalClient : Boolean;
   SktIndex    : Integer;
 begin
+<<<<<<< HEAD
   if (Socket.RemoteAddress = '127.0.0.1') or (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or (Copy(Socket.RemoteAddress, 1, 3) = '10.') then
+=======
+  if (Socket.RemoteAddress = '127.0.0.1') or
+      (Copy(Socket.RemoteAddress, 1, 8) = '194.168.') or
+      (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
+      (Socket.RemoteAddress = RemoteAddress) then
+>>>>>>> parent of f15a929... Added Login information to setup form.
     LocalClient := TRUE
   else
     LocalClient := FALSE;

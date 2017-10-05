@@ -46,7 +46,7 @@
 			<Compiler Name="ShowWarnings">True</Compiler>
 			<Compiler Name="UnitAliases">WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;</Compiler>
 			<Compiler Name="NamespacePrefix"></Compiler>
-			<Compiler Name="GenerateDocumentation">False</Compiler>
+			<Compiler Name="GenerateDocumentation">True</Compiler>
 			<Compiler Name="DefaultNamespace"></Compiler>
 			<Compiler Name="SymbolDeprecated">False</Compiler>
 			<Compiler Name="SymbolLibrary">True</Compiler>
@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir">..\DCU</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10</Directories>
 			<Directories Name="Packages">vclx;vcl;rtl;xmlrtl;vclie;inet;inetdbbde;inetdbxpress;adortl;dclOfficeXP;soaprtl;vclactnband;bdertl;vcldbx</Directories>
 			<Directories Name="Conditionals">DEBUG;MANIAC_DEBUG</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -169,8 +169,16 @@
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">TWXProxy</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+<<<<<<< HEAD
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>  <VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
     </VersionInfoKeys>  <Excluded_Packages>
+=======
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
+		</VersionInfoKeys>  
+    
+    <Excluded_Packages>
+>>>>>>> parent of f15a929... Added Login information to setup form.
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>
       <Excluded_Packages Name="C:\Portable\TDLite\Bin\HelpLink.bpl">Help Link for Delphi</Excluded_Packages>

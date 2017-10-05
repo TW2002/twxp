@@ -4,8 +4,13 @@ object frmSetup: TfrmSetup
   AutoSize = True
   BorderStyle = bsDialog
   Caption = 'Setup'
+<<<<<<< HEAD
   ClientHeight = 404
   ClientWidth = 561
+=======
+  ClientHeight = 377
+  ClientWidth = 369
+>>>>>>> parent of f15a929... Added Login information to setup form.
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,6 +37,7 @@ object frmSetup: TfrmSetup
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+<<<<<<< HEAD
   object Label22: TLabel
     Left = 25
     Top = 15
@@ -187,16 +193,202 @@ object frmSetup: TfrmSetup
         Left = 95
         Top = 49
         Width = 120
+=======
+  object PageControl: TPageControl
+    Left = 0
+    Top = 0
+    Width = 369
+    Height = 345
+    ActivePage = tabServer
+    TabOrder = 0
+    OnChanging = PageControlChanging
+    object tabServer: TTabSheet
+      Caption = 'Server'
+      object Panel1: TPanel
+        Left = 24
+        Top = 80
+        Width = 313
+        Height = 233
+        TabOrder = 0
+        object Label12: TLabel
+          Left = 8
+          Top = 73
+          Width = 36
+          Height = 13
+          Caption = 'Sectors'
+        end
+        object Label3: TLabel
+          Left = 8
+          Top = 51
+          Width = 19
+          Height = 13
+          Caption = 'Port'
+        end
+        object Label1: TLabel
+          Left = 8
+          Top = 30
+          Width = 71
+          Height = 13
+          Caption = 'Server address'
+        end
+        object Label13: TLabel
+          Left = 32
+          Top = 118
+          Width = 27
+          Height = 13
+          Caption = 'Script'
+        end
+        object Label14: TLabel
+          Left = 32
+          Top = 139
+          Width = 57
+          Height = 13
+          Caption = 'Login Name'
+        end
+        object Label15: TLabel
+          Left = 32
+          Top = 161
+          Width = 46
+          Height = 13
+          Caption = 'Password'
+        end
+        object Label16: TLabel
+          Left = 32
+          Top = 182
+          Width = 28
+          Height = 13
+          Caption = 'Game'
+        end
+        object Label17: TLabel
+          Left = 8
+          Top = 9
+          Width = 28
+          Height = 13
+          Caption = 'Name'
+        end
+        object tbHost: TEdit
+          Left = 96
+          Top = 28
+          Width = 209
+          Height = 21
+          Enabled = False
+          TabOrder = 1
+          Text = '<Server>'
+        end
+        object tbPort: TEdit
+          Left = 96
+          Top = 49
+          Width = 41
+          Height = 21
+          Enabled = False
+          TabOrder = 2
+          Text = '23'
+        end
+        object tbSectors: TEdit
+          Left = 96
+          Top = 70
+          Width = 161
+          Height = 21
+          Enabled = False
+          TabOrder = 3
+          Text = '5000'
+        end
+        object tbLoginScript: TEdit
+          Left = 96
+          Top = 116
+          Width = 161
+          Height = 21
+          Enabled = False
+          TabOrder = 5
+        end
+        object cbUseLogin: TCheckBox
+          Left = 8
+          Top = 96
+          Width = 185
+          Height = 17
+          Caption = 'Use login script'
+          Enabled = False
+          TabOrder = 4
+          OnClick = cbUseLoginClick
+        end
+        object tbLoginName: TEdit
+          Left = 96
+          Top = 137
+          Width = 121
+          Height = 21
+          Enabled = False
+          TabOrder = 6
+        end
+        object tbPassword: TEdit
+          Left = 96
+          Top = 158
+          Width = 121
+          Height = 21
+          Enabled = False
+          TabOrder = 7
+        end
+        object tbGame: TEdit
+          Left = 96
+          Top = 179
+          Width = 25
+          Height = 21
+          Enabled = False
+          TabOrder = 8
+        end
+        object tbDescription: TEdit
+          Left = 96
+          Top = 7
+          Width = 209
+          Height = 21
+          Enabled = False
+          TabOrder = 0
+        end
+        object btnSave: TButton
+          Left = 88
+          Top = 206
+          Width = 65
+          Height = 25
+          Caption = '&OK'
+          Enabled = False
+          TabOrder = 9
+          OnClick = btnSaveClick
+        end
+        object btnCancel: TButton
+          Left = 168
+          Top = 206
+          Width = 65
+          Height = 25
+          Caption = '&Cancel'
+          Enabled = False
+          TabOrder = 10
+          OnClick = btnCancelClick
+        end
+      end
+      object cbGames: TComboBox
+        Left = 64
+        Top = 16
+        Width = 209
+>>>>>>> parent of f15a929... Added Login information to setup form.
         Height = 21
         TabOrder = 1
       end
+<<<<<<< HEAD
       object tbAlias: TEdit
         Left = 95
         Top = 76
         Width = 120
         Height = 21
+=======
+      object btnAdd: TButton
+        Left = 64
+        Top = 48
+        Width = 65
+        Height = 25
+        Caption = '&Add'
+>>>>>>> parent of f15a929... Added Login information to setup form.
         TabOrder = 2
       end
+<<<<<<< HEAD
       object tbPrivateGame: TEdit
         Left = 95
         Top = 130
@@ -211,8 +403,17 @@ object frmSetup: TfrmSetup
         Width = 120
         Height = 21
         Hint = 'Get your passport from ClassicTW.com (i.e. 001-AB-777)'
+=======
+      object btnDelete: TButton
+        Left = 136
+        Top = 48
+        Width = 65
+        Height = 25
+        Caption = '&Delete'
+>>>>>>> parent of f15a929... Added Login information to setup form.
         TabOrder = 3
       end
+<<<<<<< HEAD
     end
   end
   object panAutoRun: TPanel
@@ -241,6 +442,12 @@ object frmSetup: TfrmSetup
         Left = 27
         Top = 213
         Width = 89
+=======
+      object btnEdit: TButton
+        Left = 208
+        Top = 48
+        Width = 65
+>>>>>>> parent of f15a929... Added Login information to setup form.
         Height = 25
         Caption = '&Add Script'
         TabOrder = 1
@@ -326,6 +533,7 @@ object frmSetup: TfrmSetup
         Text = '0'
       end
     end
+<<<<<<< HEAD
   end
   object panStats: TPanel
     Left = 201
@@ -816,16 +1024,153 @@ object frmSetup: TfrmSetup
         Left = 52
         Top = 22
         Width = 38
+=======
+    object tabProgram: TTabSheet
+      Caption = 'Program'
+      ImageIndex = 4
+      object Label2: TLabel
+        Left = 16
+        Top = 24
+        Width = 140
+        Height = 13
+        Caption = 'Listen for connections on port'
+      end
+      object Label11: TLabel
+        Left = 16
+        Top = 48
+        Width = 138
+        Height = 13
+        Caption = 'Terminal menu activation key'
+      end
+      object Label10: TLabel
+        Left = 16
+        Top = 72
+        Width = 100
+        Height = 13
+        Caption = 'Maximum bubble size'
+      end
+      object Label21: TLabel
+        Left = 40
+        Top = 135
+        Width = 81
+        Height = 13
+        Caption = 'Remote Address '
+      end
+      object cbAcceptExternal: TCheckBox
+        Left = 16
+        Top = 112
+        Width = 169
+        Height = 17
+        Caption = 'Accept external connections'
+        TabOrder = 3
+        OnClick = cbAcceptExternalClick
+      end
+      object cbBroadcast: TCheckBox
+        Left = 16
+        Top = 159
+        Width = 241
+        Height = 17
+        Caption = 'Broadcast a message when a client connects'
+        Checked = True
+        State = cbChecked
+        TabOrder = 5
+      end
+      object tbListenPort: TEdit
+        Left = 168
+        Top = 22
+        Width = 57
+        Height = 21
+        TabOrder = 0
+        Text = '23'
+      end
+      object tbMenuKey: TEdit
+        Left = 168
+        Top = 46
+        Width = 25
+        Height = 21
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        Text = '$'
+        OnChange = tbMenuKeyChange
+      end
+      object cbReconnect: TCheckBox
+        Left = 16
+        Top = 183
+        Width = 169
+        Height = 17
+        Caption = 'Automatically reconnect'
+        TabOrder = 6
+      end
+      object cbCache: TCheckBox
+        Left = 16
+        Top = 207
+        Width = 209
+        Height = 17
+        Caption = 'Cache database in available memory'
+        Checked = True
+        State = cbChecked
+        TabOrder = 7
+      end
+      object tbBubbleSize: TEdit
+        Left = 168
+        Top = 70
+        Width = 57
+        Height = 21
+        TabOrder = 2
+        Text = '30'
+      end
+      object cbLocalEcho: TCheckBox
+        Left = 16
+        Top = 231
+        Width = 153
+        Height = 17
+        Caption = 'Local echo of outgoing text'
+        TabOrder = 8
+      end
+      object tbRemoteAddress: TEdit
+        Left = 127
+        Top = 132
+        Width = 114
+        Height = 21
+        Enabled = False
+        TabOrder = 4
+      end
+    end
+    object tabLogging: TTabSheet
+      Caption = 'Logging'
+      ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Label9: TLabel
+        Left = 16
+        Top = 112
+        Width = 165
+>>>>>>> parent of f15a929... Added Login information to setup form.
         Height = 13
         Caption = 'Address'
       end
+<<<<<<< HEAD
       object Label3: TLabel
         Left = 71
         Top = 49
         Width = 19
+=======
+      object Label20: TLabel
+        Left = 230
+        Top = 112
+        Width = 40
+>>>>>>> parent of f15a929... Added Login information to setup form.
         Height = 13
         Caption = 'Port'
       end
+<<<<<<< HEAD
       object Label16: TLabel
         Left = 62
         Top = 76
@@ -863,16 +1208,56 @@ object frmSetup: TfrmSetup
         Top = 46
         Width = 50
         Height = 21
+=======
+      object cbLog: TCheckBox
+        Left = 16
+        Top = 16
+        Width = 225
+        Height = 17
+        Caption = 'Log data according to selected database'
+        TabOrder = 0
+      end
+      object cbLogANSI: TCheckBox
+        Left = 48
+        Top = 40
+        Width = 161
+        Height = 17
+        Caption = 'Log ANSI codes'
+>>>>>>> parent of f15a929... Added Login information to setup form.
         TabOrder = 1
         Text = '2002'
       end
+<<<<<<< HEAD
       object tbGame: TEdit
         Left = 96
         Top = 73
         Width = 50
+=======
+      object cbLogBinary: TCheckBox
+        Left = 48
+        Top = 64
+        Width = 289
+        Height = 17
+        Caption = 'Log as binary (allows extra logging and capture features)'
+        TabOrder = 2
+      end
+      object cbNotifyLogDelay: TCheckBox
+        Left = 16
+        Top = 144
+        Width = 241
+        Height = 17
+        Caption = 'Notify when a delay has been shortened'
+        TabOrder = 3
+      end
+      object tbShortenDelay: TEdit
+        Left = 184
+        Top = 110
+        Width = 41
+>>>>>>> parent of f15a929... Added Login information to setup form.
         Height = 21
         TabOrder = 2
       end
+<<<<<<< HEAD
       object tbListenPort: TEdit
         Left = 184
         Top = 101
@@ -922,6 +1307,8 @@ object frmSetup: TfrmSetup
         Caption = 'Automatically reconnect'
         TabOrder = 5
       end
+=======
+>>>>>>> parent of f15a929... Added Login information to setup form.
     end
   end
   object PageControl: TPageControl
@@ -947,6 +1334,21 @@ object frmSetup: TfrmSetup
     object tabAutoRun: TTabSheet
       Caption = 'Auto Run'
       ImageIndex = 3
+<<<<<<< HEAD
+=======
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object lbAutoRun: TListBox
+        Left = 24
+        Top = 96
+        Width = 313
+        Height = 193
+        ItemHeight = 13
+        TabOrder = 0
+      end
+>>>>>>> parent of f15a929... Added Login information to setup form.
       object memHint3: TMemo
         Left = 24
         Top = 8
@@ -966,6 +1368,10 @@ object frmSetup: TfrmSetup
       Caption = 'Registration'
       ImageIndex = 5
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label18: TLabel
         Left = 48
         Top = 88
@@ -1060,6 +1466,10 @@ object frmSetup: TfrmSetup
       Caption = 'Auth Proxy'
       ImageIndex = 4
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 58
         Top = 25
@@ -1109,17 +1519,29 @@ object frmSetup: TfrmSetup
       end
     end
   end
+<<<<<<< HEAD
   object btnOK: TButton
     Left = 317
     Top = 369
+=======
+  object btnOKMain: TButton
+    Left = 216
+    Top = 352
+>>>>>>> parent of f15a929... Added Login information to setup form.
     Width = 73
     Height = 25
     Caption = '&OK'
     TabOrder = 15
   end
+<<<<<<< HEAD
   object btnCancel: TButton
     Left = 467
     Top = 369
+=======
+  object btnCancelMain: TButton
+    Left = 296
+    Top = 352
+>>>>>>> parent of f15a929... Added Login information to setup form.
     Width = 73
     Height = 25
     Caption = '&Cancel'
@@ -1179,14 +1601,24 @@ object frmSetup: TfrmSetup
   end
   object OpenDialog: TOpenDialog
     Filter = 'TW script (*.ts, *.ets, *.es)|*.ts;*.ets;*.cts'
+<<<<<<< HEAD
     Left = 420
     Top = 8
+=======
+    Left = 332
+    Top = 24
+>>>>>>> parent of f15a929... Added Login information to setup form.
   end
   object tmrReg: TTimer
     Enabled = False
     Interval = 10000
     OnTimer = tmrRegTimer
+<<<<<<< HEAD
     Left = 448
     Top = 8
+=======
+    Left = 336
+    Top = 56
+>>>>>>> parent of f15a929... Added Login information to setup form.
   end
 end
