@@ -282,9 +282,10 @@ begin
   if (IOResult <> 0) then
     ReWrite(FLogFile, 1);
 
-  if (IOResult <> 0) then
+  // MB - Ignore reslut 2 ??? caused by mombot.
+  if (IOResult <> 0) and (IOResult <> 2) then
   begin
-    ShowMessage('Unable to open log file - logging has been disabled.' + endl + 'File: ' + LogFileName);
+    TWXServer.ClientMessage('Unable to open log file - logging has been disabled.' + endl + 'File: ' + LogFileName);
     LogData := FALSE;
   end
   else
@@ -357,7 +358,7 @@ begin
 
     if (IOResult <> 0) then
     begin
-      ShowMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
+      TWXServer.ClientMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
       LogData := FALSE;
     end;
 
