@@ -342,8 +342,10 @@ begin
   StripChar(Line, ')');
   StripChar(Line, '(');
 
+  Sectors := TStringList.Create;
+
   Split(Line, Sectors, ' >');
-  for I := 0 to Sectors.Count - 1 do
+  for I := 0 to (Sectors.Count - 1) do
   begin
     CurSect := StrToIntSafe(Sectors[I]);
 

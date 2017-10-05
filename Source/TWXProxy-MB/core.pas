@@ -33,8 +33,8 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.05.73';
-  ReleaseVersion = 'Beta Version';
+  ProgramVersion = '2.06.00';
+  ReleaseVersion = 'Beta';
   SetupFile = 'TWXSetup.dat';
 
   endl = #13 + #10;
