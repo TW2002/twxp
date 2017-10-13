@@ -1344,12 +1344,18 @@ begin
   NextRecord := FirstPos;
   InUse := 0;
 
-  while (NextRecord <> 0) do
-  begin
-    ReadData(@Size, NextRecord, 2);
-    CacheEmptyRecord(NextRecord, Size);
-    WriteData(@InUse, NextRecord + 2, 1);
-    ReadData(@NextRecord, NextRecord + 3, 4);
+
+  try
+    while (NextRecord <> 0) do
+    begin
+      ReadData(@Size, NextRecord, 2);
+      CacheEmptyRecord(NextRecord, Size);
+      WriteData(@InUse, NextRecord + 2, 1);
+      ReadData(@NextRecord, NextRecord + 3, 4);
+    end;
+  except
+    // MB - Getting out of memory here when displaying a sector with too many planets
+    TWXServer.ClientMessage('Unexpected error in PurgeRecordList Record # ' +  IntToStr(NextRecord));
   end;
 end;
 
