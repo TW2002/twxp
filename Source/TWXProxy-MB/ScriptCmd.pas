@@ -3031,6 +3031,7 @@ begin
     AddSysConstant('PORT.PERCENTORG', SCPort_PercentOrg);
     AddSysConstant('PORT.PERCENTEQUIP', SCPort_PercentEquip);
     AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
+    AddSysConstant('SECTOR.ANOMOLY', SCSector_Anomaly);
     AddSysConstant('SECTOR.BACKDOORCOUNT', SCSector_BackDoorCount);
     AddSysConstant('SECTOR.BACKDOORS', SCSector_BackDoors);
     AddSysConstant('SECTOR.DENSITY', SCSector_Density);
