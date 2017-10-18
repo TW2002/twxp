@@ -69,7 +69,9 @@ type
     FCurrentClient   : Integer;
     FBufferOut       : TStringList;
     FBufTimer        : TTimer;
+    FAllowLerkers  : Boolean;
     FAcceptExternal  : Boolean;
+    FExternalAddress : String;
     FBroadCastMsgs   : Boolean;
     FLocalEcho       : Boolean;
 
@@ -83,8 +85,12 @@ type
     procedure SetListenPort(Value: Word);
 
     { IModServer }
+    function GetAllowLerkers: Boolean;
+    procedure SetAllowLerkers(Value: Boolean);
     function GetAcceptExternal: Boolean;
     procedure SetAcceptExternal(Value: Boolean);
+    function GetExternalAddress: String;
+    procedure SetExternalAddress(Value: String);
     function GetBroadCastMsgs: Boolean;
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
@@ -118,7 +124,9 @@ type
 
   published
     property ListenPort: Word read GetListenPort write SetListenPort;
+    property AllowLerkers: Boolean read GetAllowLerkers write SetAllowLerkers;
     property AcceptExternal: Boolean read GetAcceptExternal write SetAcceptExternal;
+    property ExternalAddress: String read GetExternalAddress write SetExternalAddress;
     property BroadCastMsgs: Boolean read GetBroadCastMsgs write SetBroadCastMsgs;
     property LocalEcho: Boolean read GetLocalEcho write SetLocalEcho;
   end;
@@ -301,25 +309,47 @@ var
   LocalClient : Boolean;
   SktIndex    : Integer;
 begin
-  if (Socket.RemoteAddress = '127.0.0.1') or (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or (Copy(Socket.RemoteAddress, 1, 3) = '10.') then
+  if (Socket.RemoteAddress = '127.0.0.1') or
+  (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or
+  (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
+  (Socket.RemoteAddress = ExternalAddress)
+  then
     LocalClient := TRUE
   else
     LocalClient := FALSE;
 
-  if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
+  if (BroadCastMsgs) then
+  begin
+    ClientMessage(ANSI_7 + 'Active connection detected from: ' + ANSI_15 + Socket.RemoteAddress);
+  end;
+
+  if (not AllowLerkers) and (not LocalClient) then
   begin
     // User not allowed
+    if (BroadCastMsgs) then
+    begin
+      TWXServer.ClientMessage('Lerkers are not welcome here. Goodbye Lerker!');
+    end;
+    Sleep(500);
     Socket.Close;
+    exit;
   end
-  else
+  else if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
+  begin
+    // User not allowed
+    if (BroadCastMsgs) then
+    begin
+      TWXServer.ClientMessage('External connections are disabled. Goodbye!');
+    end;
+    Sleep(500);
+    Socket.Close;
+    exit;
+  end;
+
   begin
     // send telnet stuff - AYT
     Socket.SendText(#255 + OP_DO + #246);
 
-    if (BroadCastMsgs) then
-    begin
-      ClientMessage(ANSI_7 + 'Active connection detected from: ' + ANSI_15 + Socket.RemoteAddress);
-    end;
 
     SktIndex := GetSocketIndex(Socket);
 
@@ -348,11 +378,10 @@ begin
     begin
       Socket.SendText('Press ' + ANSI_15 + TWXExtractor.MenuKey + ANSI_7 + ' to activate terminal menu' + endl + endl);
 
-      if (AcceptExternal) then
+      if (AcceptExternal) or (AllowLerkers) then
         Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
-                                  'With external connections enabled,' + endl +
-                                  'you are open to foreign users connecting' + endl +
-                                  'to your machine and monitoring data.' + endl + endl);
+                                  'With External Connections or Allow Lerkers enabled, you are open' + endl +
+                                  'to foreign users connecting to your machine and monitoring data.' + endl + endl);
     end
     else
       Socket.SendText(ANSI_15 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
@@ -532,6 +561,16 @@ begin
   tcpServer.Active := FALSE;
 end;
 
+function TModServer.GetAllowLerkers: Boolean;
+begin
+  Result := FAllowLerkers;
+end;
+
+procedure TModServer.SetAllowLerkers(Value: Boolean);
+begin
+  FAllowLerkers := Value;
+end;
+
 function TModServer.GetAcceptExternal: Boolean;
 begin
   Result := FAcceptExternal;
@@ -540,6 +579,16 @@ end;
 procedure TModServer.SetAcceptExternal(Value: Boolean);
 begin
   FAcceptExternal := Value;
+end;
+
+function TModServer.GetExternalAddress: String;
+begin
+  Result := FExternalAddress;
+end;
+
+procedure TModServer.SetExternalAddress(Value: String);
+begin
+  FExternalAddress := Value;
 end;
 
 function TModServer.GetBroadCastMsgs: Boolean;
@@ -590,7 +639,7 @@ begin
   with (tmrReconnect) do
   begin
     Enabled := FALSE;
-    Interval := 3000;
+    Interval := 15000;
     OnTimer := tmrReconnectTimer;
   end;
 end;
@@ -652,13 +701,13 @@ begin
   except
     if (Reconnect) then
     begin
-      TWXServer.ClientMessage('Connection failure - retrying in 3 seconds...');
+      TWXServer.ClientMessage('Connection failure - retrying in 15 seconds...');
       tmrReconnect.Enabled := TRUE;
       FUserDisconnect := FALSE;
       tcpClient.Close;
     end
     else
-      TWXServer.ClientMessage('Connection failure');
+      TWXServer.ClientMessage('Connection lost');
 
     TWXInterpreter.ProgramEvent('Connection lost', '', FALSE);
     FConnecting := FALSE;
@@ -712,7 +761,7 @@ begin
   // Reconnect if supposed to
   if (Reconnect) and not (FUserDisconnect) then
   begin
-    TWXServer.ClientMessage('Connection lost - reconnecting in 3 seconds...');
+    TWXServer.ClientMessage('Connection lost - reconnecting in 15 seconds...');
     tmrReconnect.Enabled := TRUE;
   end
   else
@@ -766,7 +815,7 @@ begin
 
   if (Reconnect) then
   begin
-    TWXServer.ClientMessage('Connection failure - retrying in 3 seconds...');
+    TWXServer.ClientMessage('Connection failure - retrying in 15 seconds...');
     tmrReconnect.Enabled := TRUE;
     FUserDisconnect := FALSE;
     tcpClient.Close;

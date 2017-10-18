@@ -1410,15 +1410,22 @@ begin
 
     DataIndex := Pointer(Integer(DataCache) + Index);
 
-    // compare memory with cached data
-    if not (CompareMem(DataIndex, Data, Size)) then
-    begin
-      // data is different - update data cache and file
-      CopyMemory(DataIndex, Data, Size);
-      Seek(DataFile, Index);
-      BlockWrite(DataFile, Data^, Size);
-      DBSize := FileSize(DataFile);
+    try
+      // compare memory with cached data
+      if not (CompareMem(DataIndex, Data, Size)) then
+      begin
+        // data is different - update data cache and file
+        CopyMemory(DataIndex, Data, Size);
+        Seek(DataFile, Index);
+        BlockWrite(DataFile, Data^, Size);
+        DBSize := FileSize(DataFile);
+      end;
+    except
+      // MB - getting random file not found errors here. Cause unknown.
+      TWXServer.ClientMessage('Unexpected error in Database.WriteData - File not Found');
     end;
+
+
   end
   else
   begin

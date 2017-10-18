@@ -33,7 +33,7 @@ object frmSetup: TfrmSetup
     Top = 0
     Width = 369
     Height = 345
-    ActivePage = tabServer
+    ActivePage = tabProgram
     TabOrder = 0
     OnChanging = PageControlChanging
     object tabServer: TTabSheet
@@ -116,7 +116,7 @@ object frmSetup: TfrmSetup
           Height = 21
           Enabled = False
           TabOrder = 2
-          Text = '23'
+          Text = '2002'
         end
         object tbSectors: TEdit
           Left = 96
@@ -238,6 +238,8 @@ object frmSetup: TfrmSetup
     object tabProgram: TTabSheet
       Caption = 'Program'
       ImageIndex = 4
+      ExplicitLeft = 8
+      ExplicitTop = 29
       object Label2: TLabel
         Left = 16
         Top = 24
@@ -259,17 +261,25 @@ object frmSetup: TfrmSetup
         Height = 13
         Caption = 'Maximum bubble size'
       end
+      object Label21: TLabel
+        Left = 32
+        Top = 256
+        Width = 79
+        Height = 13
+        Caption = 'External Address'
+      end
       object cbAcceptExternal: TCheckBox
-        Left = 16
-        Top = 120
+        Left = 24
+        Top = 230
         Width = 169
         Height = 17
         Caption = 'Accept external connections'
         TabOrder = 3
+        OnClick = cbAcceptExternalClick
       end
       object cbBroadcast: TCheckBox
-        Left = 16
-        Top = 144
+        Left = 24
+        Top = 137
         Width = 241
         Height = 17
         Caption = 'Broadcast a message when a client connects'
@@ -283,7 +293,7 @@ object frmSetup: TfrmSetup
         Width = 57
         Height = 21
         TabOrder = 0
-        Text = '23'
+        Text = '3000'
       end
       object tbMenuKey: TEdit
         Left = 168
@@ -301,16 +311,16 @@ object frmSetup: TfrmSetup
         OnChange = tbMenuKeyChange
       end
       object cbReconnect: TCheckBox
-        Left = 16
-        Top = 168
+        Left = 24
+        Top = 114
         Width = 169
         Height = 17
         Caption = 'Automatically reconnect'
         TabOrder = 5
       end
       object cbCache: TCheckBox
-        Left = 16
-        Top = 192
+        Left = 24
+        Top = 160
         Width = 209
         Height = 17
         Caption = 'Cache database in available memory'
@@ -327,12 +337,27 @@ object frmSetup: TfrmSetup
         Text = '30'
       end
       object cbLocalEcho: TCheckBox
-        Left = 16
-        Top = 216
+        Left = 24
+        Top = 184
         Width = 153
         Height = 17
         Caption = 'Local echo of outgoing text'
         TabOrder = 7
+      end
+      object tbExternalAddress: TEdit
+        Left = 120
+        Top = 253
+        Width = 125
+        Height = 21
+        TabOrder = 8
+      end
+      object cbAllowLerkers: TCheckBox
+        Left = 24
+        Top = 207
+        Width = 209
+        Height = 17
+        Caption = 'Allow Lerkers (View Only Connections)'
+        TabOrder = 9
       end
     end
     object tabLogging: TTabSheet

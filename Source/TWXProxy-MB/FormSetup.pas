@@ -115,6 +115,9 @@ type
     Label9: TLabel;
     tbShortenDelay: TEdit;
     Label20: TLabel;
+    tbExternalAddress: TEdit;
+    Label21: TLabel;
+    cbAllowLerkers: TCheckBox;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -135,6 +138,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tmrRegTimer(Sender: TObject);
     procedure tbUserChange(Sender: TObject);
+    procedure cbAcceptExternalClick(Sender: TObject);
 
 
   private
@@ -188,6 +192,9 @@ begin
   tbBubbleSize.Text := IntToStr(TWXBubble.MaxBubbleSize);
   cbCache.Checked := TWXDatabase.UseCache;
   tbListenPort.Text := IntToStr(TWXServer.ListenPort);
+  cbAllowLerkers.Checked := TWXServer.AllowLerkers;
+  cbAcceptExternal.Checked := TWXServer.AcceptExternal;
+  tbExternalAddress.Text := TWXServer.ExternalAddress;
   cbReconnect.Checked := TWXClient.Reconnect;
   cbLog.Checked := TWXLog.LogData;
   cbLogANSI.Checked := TWXLog.LogANSI;
@@ -360,7 +367,9 @@ begin
 
   TWXServer.ListenPort := StrToIntSafe(tbListenPort.Text);
   TWXServer.Activate;
+  TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
+  TWXServer.ExternalAddress := tbExternalAddress.Text;
   TWXServer.BroadCastMsgs := cbBroadCast.Checked;
   TWXServer.LocalEcho := cbLocalEcho.Checked;
   TWXClient.Reconnect := cbReconnect.Checked;
@@ -380,6 +389,22 @@ procedure TfrmSetup.tbMenuKeyChange(Sender: TObject);
 begin
   if (Length(tbMenuKey.Text) > 1) then
     tbMenuKey.Text := tbMenuKey.Text[1];
+end;
+
+procedure TfrmSetup.cbAcceptExternalClick(Sender: TObject);
+begin
+  if cbAcceptExternal.Checked then
+  begin
+    tbExternalAddress.Enabled := TRUE;
+    tbExternalAddress.Text := '';
+  end
+  else
+  begin
+    tbExternalAddress.Enabled := FALSE;
+    tbExternalAddress.Text := '';
+    tbExternalAddress.Focused;
+  end;
+
 end;
 
 procedure TfrmSetup.cbGamesChange(Sender: TObject);
@@ -651,9 +676,9 @@ begin
   else
   begin
     tbLoginScript.Enabled := FALSE;
-    tbLoginName.Enabled := FALSE;
-    tbPassword.Enabled := FALSE;
-    tbGame.Enabled := FALSE;
+    tbLoginName.Enabled := TRUE;
+    tbPassword.Enabled := TRUE;
+    tbGame.Enabled := TRUE;
   end;
 end;
 

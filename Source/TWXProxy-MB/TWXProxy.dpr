@@ -24,6 +24,31 @@ received this source in.
 program TWXProxy;
 
 {%TogetherDiagram 'ModelSupport_TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Global\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Process\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Bubble\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Core\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmd\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TWXExport\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Script\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Utility\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormHistory\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\DataBase\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TCP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmp\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormSetup\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Menu\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormScript\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormAbout\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormMain\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Ansi\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\GUI\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Observer\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Persistence\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptRef\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Log\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\default.txvpck'}
 
 uses
   Forms,
