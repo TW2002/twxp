@@ -822,7 +822,7 @@ begin
   end
   else
   begin
-    TWXServer.ClientMessage('Connection failure');
+    TWXServer.ClientMessage('Connection lost');
     // EP - Only show the dialog if Reconnect = FALSE
     // MB - Converted popup to a client message
     TWXServer.ClientMessage('Error trying to connect to host ' + tcpClient.Host + ' on port ' + IntToStr(tcpClient.Port) + '.');

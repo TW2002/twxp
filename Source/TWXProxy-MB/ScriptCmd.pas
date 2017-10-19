@@ -3030,7 +3030,6 @@ begin
     AddSysConstant('PORT.PERCENTFUEL', SCPort_PercentFuel);
     AddSysConstant('PORT.PERCENTORG', SCPort_PercentOrg);
     AddSysConstant('PORT.PERCENTEQUIP', SCPort_PercentEquip);
-    AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
     AddSysConstant('SECTOR.ANOMOLY', SCSector_Anomaly);
     AddSysConstant('SECTOR.BACKDOORCOUNT', SCSector_BackDoorCount);
     AddSysConstant('SECTOR.BACKDOORS', SCSector_BackDoors);
@@ -3069,6 +3068,7 @@ begin
     AddSysConstant('SECTOR.BEACON', SCSector_Beacon);
     AddSysConstant('SECTOR.CONSTELLATION', SCSector_Constellation);
     AddSysConstant('SECTOR.FIGS.TYPE', SCSector_Figs_Type);
+    AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
 
   end;
 end;
