@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 unit Persistence;
@@ -27,6 +27,7 @@ interface
 
 uses
   SysUtils,
+  Dialogs,
   Contnrs,
   Classes,
   Core;
@@ -117,30 +118,34 @@ begin
         ModuleValues.Clear;
       end;
     end;
-
-    // calculate checksum
-    Checksum := CalcChecksum(OutputValues);
-
-    AssignFile(OutFile, OutputFile);
-    ReWrite(OutFile, 1);
-
-    try
-      // write size and checksum to file
-      DataSize := OutputValues.Size + 8;
-      BlockWrite(OutFile, DataSize, 4);
-      BlockWrite(OutFile, Checksum, 4);
-
-      // write stream to file
-      OutputValues.Seek(0, soFromBeginning);
-      BlockWrite(OutFile, OutputValues.Memory^, OutputValues.Size);
-    finally
-      CloseFile(OutFile);
-    end;
-
-  finally
-    OutputValues.Free;
-    ModuleValues.Free;
+  except
+    MessageDlg('Exception occured saving state for module # ' + IntToStr(i), mtError, [mbOK], 0);
+    exit;
+//  finally
   end;
+
+  // calculate checksum
+  Checksum := CalcChecksum(OutputValues);
+
+  AssignFile(OutFile, OutputFile);
+  ReWrite(OutFile, 1);
+
+  try
+    // write size and checksum to file
+    DataSize := OutputValues.Size + 8;
+    BlockWrite(OutFile, DataSize, 4);
+    BlockWrite(OutFile, Checksum, 4);
+
+    // write stream to file
+    OutputValues.Seek(0, soFromBeginning);
+    BlockWrite(OutFile, OutputValues.Memory^, OutputValues.Size);
+  finally
+    CloseFile(OutFile);
+  end;
+
+  OutputValues.Free;
+  ModuleValues.Free;
+
 end;
 
 function TPersistenceManager.CalcChecksum(Stream: TMemoryStream): Integer;

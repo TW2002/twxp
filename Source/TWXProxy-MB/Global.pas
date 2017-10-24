@@ -33,19 +33,21 @@ uses
   Log,
   Process,
   Script,
-  TCP;
+  TCP,
+  Persistence;
 
 // Module variables:
 var
-  TWXMenu        : TModMenu;
-  TWXDatabase    : TModDatabase;
-  TWXLog         : TModLog;
-  TWXExtractor   : TModExtractor;
-  TWXInterpreter : TModInterpreter;
-  TWXServer      : TModServer;
-  TWXClient      : TModClient;
-  TWXBubble      : TModBubble;
-  TWXGUI         : TModGUI;
+  TWXMenu           : TModMenu;
+  TWXDatabase       : TModDatabase;
+  TWXLog            : TModLog;
+  TWXExtractor      : TModExtractor;
+  TWXInterpreter    : TModInterpreter;
+  TWXServer         : TModServer;
+  TWXClient         : TModClient;
+  TWXBubble         : TModBubble;
+  TWXGUI            : TModGUI;
+  PersistenceManager: TPersistenceManager;
 
 implementation
 

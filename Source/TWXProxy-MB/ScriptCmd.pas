@@ -1317,7 +1317,7 @@ function CmdLoad(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
   // CMD: load <scriptName>
 
-  TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), FALSE);
+  TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), TRUE);
   Result := caNone;
 end;
 

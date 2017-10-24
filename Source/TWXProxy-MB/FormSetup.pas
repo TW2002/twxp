@@ -38,7 +38,8 @@ uses
   StdCtrls,
   ComCtrls,
   ExtCtrls,
-  Database;
+  Database,
+  Persistence;
 
 type
   TDatabaseLink = record
@@ -376,6 +377,13 @@ begin
 
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;
+
+  // MB - Save object states to twxsetup.dat
+  try
+    PersistenceManager.SaveStateValues;
+  except
+    TWXServer.ClientMessage('Errror - Unable to save program state.');
+  end;
 
   Close;
 end;

@@ -749,7 +749,7 @@ begin
 
   // manual event - trigger login script
   if (TWXDatabase.DBHeader.UseLogin) then
-    TWXInterpreter.Load(FetchScript(TWXDatabase.DBHeader.LoginScript, FALSE), FALSE);
+    TWXInterpreter.Load(FetchScript(TWXDatabase.DBHeader.LoginScript, FALSE), TRUE);
 end;
 
 procedure TModClient.tcpClientOnDisconnect(Sender: TObject; ScktComp: TCustomWinSocket);
@@ -817,16 +817,17 @@ begin
   begin
     TWXServer.ClientMessage('Connection failure - retrying in 15 seconds...');
     tmrReconnect.Enabled := TRUE;
-    FUserDisconnect := FALSE;
-    tcpClient.Close;
   end
   else
   begin
-    TWXServer.ClientMessage('Connection lost');
     // EP - Only show the dialog if Reconnect = FALSE
     // MB - Converted popup to a client message
-    TWXServer.ClientMessage('Error trying to connect to host ' + tcpClient.Host + ' on port ' + IntToStr(tcpClient.Port) + '.');
+    TWXServer.ClientMessage('Connection failure - Host ' + tcpClient.Host + ':' + IntToStr(tcpClient.Port));
   end;
+
+  FUserDisconnect := FALSE;
+  tcpClient.Close;
+  Sleep(3000);
 
   TWXInterpreter.ProgramEvent('Connection lost', '', FALSE);
   FConnecting := FALSE;
