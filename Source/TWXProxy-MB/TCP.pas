@@ -361,10 +361,21 @@ begin
     FClientEchoMarks[SktIndex] := FALSE;
 
     // Broadcast confirmation to client
-    Socket.SendText(endl + ANSI_7 +
-                      'TWX Proxy Server ' + ANSI_15 + 'v' + ProgramVersion + ANSI_7 + endl +
-                      '(' + ReleaseVersion + ')' + endl + endl +
-                      'There are currently ' + ANSI_15 + IntToStr(tcpServer.Socket.ActiveConnections) + ANSI_7 + ' active telnet connections' + endl);
+    Socket.SendText(endl + ANSI_7 + 'TWX Proxy Server ' + ANSI_15 + 'v' +
+                    ProgramVersion + ANSI_7 + ' (' +
+                    ReleaseVersion + ')' + endl + endl);
+
+    if (ReleaseVersion = 'Alpha') then
+      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
+                      'Alpha releases have not had sufficent testing, and may' + endl +
+                      'be unstable. Please do not distribute, and use at your own risk.' + endl + endl);
+
+    if (AcceptExternal) or (AllowLerkers) then
+      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
+                      'With External Connections and/or Allow Lerkers enabled,' + endl +
+                      'you are open to foreign users monitoring data remotely.' + endl + endl);
+
+    Socket.SendText('There are currently ' + ANSI_15 + IntToStr(tcpServer.Socket.ActiveConnections) + ANSI_7 + ' active telnet connections' + endl);
 
     if (TWXClient.Connected) then
       Socket.SendText('You are connected to server: ' + ANSI_15 + TWXDatabase.DBHeader.Address + endl + ANSI_7)
@@ -378,10 +389,6 @@ begin
     begin
       Socket.SendText('Press ' + ANSI_15 + TWXExtractor.MenuKey + ANSI_7 + ' to activate terminal menu' + endl + endl);
 
-      if (AcceptExternal) or (AllowLerkers) then
-        Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
-                                  'With External Connections or Allow Lerkers enabled, you are open' + endl +
-                                  'to foreign users connecting to your machine and monitoring data.' + endl + endl);
     end
     else
       Socket.SendText(ANSI_15 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
