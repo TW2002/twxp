@@ -3180,7 +3180,7 @@ begin
     AddCommand('GETSCRIPTVERSION', 2, 2, CmdGetScriptVersion, [pkValue, pkVar], pkValue);
     AddCommand('LISTACTIVESCRIPTS', 1, 1, CmdListActiveScripts, [pkVar], pkValue);
     AddCommand('LISTAVOIDS', 1, 1, CmdListAvoids, [pkVar], pkValue);
-    AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkValue], pkValue);
+    AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkVar], pkValue);
     AddCommand('SETAVOID', 1, 1, CmdSetAvoid, [pkValue], pkValue);
     // Commands added for 2.05beta
     AddCommand('CUTLENGTHS', 3, 3, CmdCutLengths, [pkValue, pkVar, pkValue], pkValue);
