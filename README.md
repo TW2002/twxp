@@ -14,7 +14,8 @@ https://www.embarcadero.com/products/delphi/starter/
 ## Active Projects
 
 * [TWXProxy-MB](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB) is an updated version of TWXProxy released by MicroBlaster (Version 3.1736).
-* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Visual Studio Code extention for editing TradewarsScript (TS)  **COMING SOON!!!***.
+* [TW Commander](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Control Module for [TWXProxy 2.06](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB).
+* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWC) is a Visual Studio Code extention for editing TradewarsScript (TS)  **COMING SOON!!!***.
 
 * [PYTWX](https://bitbucket.org/mrdon/pytwx/src) a server side port of TWX to Python by Mr. Don.
 
@@ -27,7 +28,6 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Active Contributers:
 
-<<<<<<< HEAD
 * David McCartney (aka MicroBlaster)
 * Steven Ruzicka (aka Mind Dagger)
 * Shawn Redman (aka LoneStar)
