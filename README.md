@@ -1,5 +1,4 @@
-# TWXProxy
-**The Veterans TradeWars helper**
+![image](https://github.com/MicroBlaster/TWXProxy/blob/master/Source/TWXProxy-MB/TWXP-Logo.jpg)
 
 ## What is TWXProxy?
 
@@ -24,9 +23,13 @@ https://www.embarcadero.com/products/delphi/starter/
 * [TWXProxy 2.04](https://github.com/erikh/twxproxy) Windows XP Version by Elder Prophit.
 * [TWXProxy 2.03](https://github.com/erikh/twxproxy) Mirror of an older version by Remco Mulder.
 * [TWXProxy BBS](https://code.google.com/archive/p/twxproxy-ep/wikis/TwxBbsAdministrationGuide.wiki) A server-side proxy for TWGS based on TWXProxy 2.04.
+* [TWXProxy PRO](https://sourceforge.net/projects/twxproxy/) This fork of TWXProxy was maintained by The [TWX Proxy Group](http://twxproxy.sourceforge.net/).
 
 ## Active Contributers:
 
-* David O. McCartney (aka MicroBlaster)
+<<<<<<< HEAD
+* David McCartney (aka MicroBlaster)
+* Steven Ruzicka (aka Mind Dagger)
+* Shawn Redman (aka LoneStar)
 
 If you would like to contribute to this project, please email DMC@IT1.BIZ for further information.

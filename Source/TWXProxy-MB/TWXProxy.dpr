@@ -24,6 +24,31 @@ received this source in.
 program TWXProxy;
 
 {%TogetherDiagram 'ModelSupport_TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Global\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Process\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Bubble\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Core\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmd\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TWXExport\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Script\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Utility\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormHistory\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\DataBase\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\TCP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmp\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormSetup\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Menu\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormScript\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormAbout\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\FormMain\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Ansi\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\GUI\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Observer\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Persistence\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptRef\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\Log\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXProxy\default.txvpck'}
 
 uses
   Forms,
@@ -75,7 +100,8 @@ const
   ModuleClasses: array[TModuleType] of TModuleClass = (TModDatabase, TModBubble, TModExtractor, TModMenu, TModServer, TModInterpreter, TModClient, TModLog, TModGUI);
 
 var
-  PersistenceManager: TPersistenceManager;
+// MB - Moved to global, so that we can save object states in Setup Form
+//  PersistenceManager: TPersistenceManager;
   MessageHandler: TMessageHandler;
   ProgramDir: string;
 
@@ -211,23 +237,45 @@ begin
 end;
 {$HINTS ON}
 procedure FinaliseProgram;
+var
+  ObjectName : String;
 begin
-  PersistenceManager.SaveStateValues;
+  try
+    PersistenceManager.SaveStateValues;
+  except
+    TWXServer.ClientMessage('Errror - Unable to save program state.');
+  end;
+
+  TWXServer.ClientMessage('TWXProxy is shutting down. Goodbye!');
+  Sleep(500);
 
   // More hacks ... force a destruction order using global variables to prevent
   // AVs on exit (some modules have extra processing on shutdown)
   // Note that modules not freed here are owned by the application object anyway -
   // so they will be freed implicitly.
-  TWXInterpreter.Free;
-  TWXGUI.Free;
-  TWXClient.Free;
-  TWXServer.Free;
-  TWXLog.Free;
-  TWXMenu.Free;
-  TWXDatabase.Free;
-  TWXBubble.Free;
-  TWXExtractor.Free;
-
+  try
+    ObjectName := 'TWXInterpreter';
+    TWXInterpreter.Free;
+    ObjectName := 'TWXGUI';
+    TWXGUI.Free;
+    ObjectName := 'TWXClient';
+    TWXClient.Free;
+    ObjectName := 'TWXServer';
+    TWXServer.Free;
+    ObjectName := 'TWXLog';
+    TWXLog.Free;
+    ObjectName := 'TWXMenu';
+    TWXMenu.Free;
+    ObjectName := 'TWXDatabase';
+    TWXDatabase.Free;
+    ObjectName := 'TWXBubble';
+    TWXBubble.Free;
+    ObjectName := 'TWXExtractor';
+    TWXExtractor.Free;
+  except
+    // MB - Trying to localize crash when closing.
+    MessageDlg('Exception occured trying to free ' + ObjectName, mtError, [mbOK], 0);
+  end;
   MessageHandler.Free;
 end;
 

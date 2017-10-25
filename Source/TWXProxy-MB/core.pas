@@ -33,8 +33,8 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.05.73';
-  ReleaseVersion = 'Beta Version';
+  ProgramVersion = '2.06.00e';
+  ReleaseVersion = 'Alpha';
   SetupFile = 'TWXSetup.dat';
 
   endl = #13 + #10;
@@ -124,8 +124,12 @@ type
     ['{03567FC6-F30E-4277-8946-012F613BF4E1}']
 //    function GetListenPort: Word;
 //    procedure SetListenPort(Value: Word);
+    function GetAllowLerkers: Boolean;
+    procedure SetAllowLerkers(Value: Boolean);
     function GetAcceptExternal: Boolean;
     procedure SetAcceptExternal(Value: Boolean);
+    function GetExternalAddress: String;
+    procedure SetExternalAddress(Value: String);
     function GetBroadCastMsgs: Boolean;
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
@@ -134,7 +138,9 @@ type
 
     property LocalEcho: Boolean read GetLocalEcho write SetLocalEcho;
     //property ListenPort: Word read GetListenPort write SetListenPort;
+    property AllowLerkers: Boolean read GetAllowLerkers write SetAllowLerkers;
     property AcceptExternal: Boolean read GetAcceptExternal write SetAcceptExternal;
+    property ExternalAddress: Boolean read GetAllowLerkers write SetAllowLerkers;
     property BroadCastMsgs: Boolean read GetBroadCastMsgs write SetBroadCastMsgs;
   end;
 

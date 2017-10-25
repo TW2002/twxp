@@ -19,7 +19,7 @@
 			<Compiler Name="A">8</Compiler>
 			<Compiler Name="B">0</Compiler>
 			<Compiler Name="C">0</Compiler>
-			<Compiler Name="D">0</Compiler>
+			<Compiler Name="D">1</Compiler>
 			<Compiler Name="E">0</Compiler>
 			<Compiler Name="F">0</Compiler>
 			<Compiler Name="G">1</Compiler>
@@ -27,7 +27,7 @@
 			<Compiler Name="I">0</Compiler>
 			<Compiler Name="J">1</Compiler>
 			<Compiler Name="K">0</Compiler>
-			<Compiler Name="L">0</Compiler>
+			<Compiler Name="L">1</Compiler>
 			<Compiler Name="M">0</Compiler>
 			<Compiler Name="N">1</Compiler>
 			<Compiler Name="O">1</Compiler>
@@ -110,7 +110,7 @@
 			<Linker Name="OutputObjs">0</Linker>
 			<Linker Name="GenerateHpps">False</Linker>
 			<Linker Name="ConsoleApp">1</Linker>
-			<Linker Name="DebugInfo">True</Linker>
+			<Linker Name="DebugInfo">False</Linker>
 			<Linker Name="RemoteSymbols">False</Linker>
 			<Linker Name="GenerateDRC">False</Linker>
 			<Linker Name="MinStackSize">16384</Linker>
@@ -123,8 +123,8 @@
 			<Directories Name="UnitOutputDir">C:\TWXProxy\DCU</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug</Directories>
-			<Directories Name="Packages">vclx;vcl;rtl;xmlrtl;vclie;inet;inetdbbde;inetdbxpress;adortl;dclOfficeXP;soaprtl;vclactnband;bdertl;vcldbx</Directories>
+			<Directories Name="SearchPath"></Directories>
+			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals">DEBUG;MANIAC_DEBUG</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">False</Directories>
@@ -145,10 +145,10 @@
 			<Language Name="RootDir"></Language>
 		</Language>
 		<VersionInfo>
-			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+			<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-			<VersionInfo Name="MajorVer">1</VersionInfo>
-			<VersionInfo Name="MinorVer">0</VersionInfo>
+			<VersionInfo Name="MajorVer">2</VersionInfo>
+			<VersionInfo Name="MinorVer">6</VersionInfo>
 			<VersionInfo Name="Release">0</VersionInfo>
 			<VersionInfo Name="Build">0</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
@@ -162,19 +162,41 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
 			<VersionInfoKeys Name="FileDescription">TWXProxy</VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">2.6.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">TWXProxy</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="Comments"></VersionInfoKeys>  <VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
-    </VersionInfoKeys>  <Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Bin\HelpLink.bpl">Help Link for Delphi</Excluded_Packages>
-      <Excluded_Packages Name="C:\Portable\TDLite\Projects\Bpl\dclshlctrls100.bpl">Shell Control Property and Component Editors</Excluded_Packages>
+			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
+		</VersionInfoKeys>  
+    
+    <Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclstd100.bpl">Borland Standard Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcldb100.bpl">Borland Database Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\bin\dclado100.bpl">Borland ADO DB Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcldbx100.bpl">Borland dbExpress Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclnet100.bpl">Borland Internet Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclsoap100.bpl">Borland SOAP Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcl31w100.bpl">Delphi 1.0 Compatibility Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclmid100.bpl">Borland MyBase DataAccess Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcldbxcds100.bpl">Borland SimpleDataset Component (DBX)</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclie100.bpl">Internet Explorer Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclsmpedit100.bpl">Borland Editor Script Enhancements</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclemacsedit100.bpl">Borland Editor Emacs Enhancements</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclmlwiz100.bpl">Borland Markup Language Wizards</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\applet100.bpl">Borland Control Panel Applet Package</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclact100.bpl">Borland ActionBar Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\bin\dclbde100.bpl">Borland BDE DB Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclib100.bpl">Borland InterBase Express Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclIntraweb_80_100.bpl">Intraweb 8.0 Design Package for Borland Development Studio 2006</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclIndyCore100.bpl">Indy 10 Core Design Time</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclsmp100.bpl">Borland Sample Components</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclIndyProtocols100.bpl">Indy 10 Protocols Design Time</Excluded_Packages>
+      <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcltee100.bpl">TeeChart Components</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>
 	<ModelSupport>True</ModelSupport>

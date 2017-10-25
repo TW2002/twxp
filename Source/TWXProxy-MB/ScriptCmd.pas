@@ -1317,7 +1317,7 @@ function CmdLoad(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
   // CMD: load <scriptName>
 
-  TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), FALSE);
+  TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), TRUE);
   Result := caNone;
 end;
 
@@ -3030,7 +3030,7 @@ begin
     AddSysConstant('PORT.PERCENTFUEL', SCPort_PercentFuel);
     AddSysConstant('PORT.PERCENTORG', SCPort_PercentOrg);
     AddSysConstant('PORT.PERCENTEQUIP', SCPort_PercentEquip);
-    AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
+    AddSysConstant('SECTOR.ANOMOLY', SCSector_Anomaly);
     AddSysConstant('SECTOR.BACKDOORCOUNT', SCSector_BackDoorCount);
     AddSysConstant('SECTOR.BACKDOORS', SCSector_BackDoors);
     AddSysConstant('SECTOR.DENSITY', SCSector_Density);
@@ -3068,6 +3068,7 @@ begin
     AddSysConstant('SECTOR.BEACON', SCSector_Beacon);
     AddSysConstant('SECTOR.CONSTELLATION', SCSector_Constellation);
     AddSysConstant('SECTOR.FIGS.TYPE', SCSector_Figs_Type);
+    AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
 
   end;
 end;
@@ -3179,7 +3180,7 @@ begin
     AddCommand('GETSCRIPTVERSION', 2, 2, CmdGetScriptVersion, [pkValue, pkVar], pkValue);
     AddCommand('LISTACTIVESCRIPTS', 1, 1, CmdListActiveScripts, [pkVar], pkValue);
     AddCommand('LISTAVOIDS', 1, 1, CmdListAvoids, [pkVar], pkValue);
-    AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkValue], pkValue);
+    AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkVar], pkValue);
     AddCommand('SETAVOID', 1, 1, CmdSetAvoid, [pkValue], pkValue);
     // Commands added for 2.05beta
     AddCommand('CUTLENGTHS', 3, 3, CmdCutLengths, [pkValue, pkVar, pkValue], pkValue);

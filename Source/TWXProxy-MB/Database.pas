@@ -1138,8 +1138,8 @@ begin
     I := 0;
     while (NextRecord > 0) do begin
       Inc(I);
-      if (I > 13) then
-        Break;
+//      if (I > 13) then
+//        Break;
       ReadData(SectorVar, NextRecord + 7, RecordSize);
       if (SectorVar.VarName <> '') then begin
         Result.Add(SectorVar.VarName);
@@ -1344,12 +1344,18 @@ begin
   NextRecord := FirstPos;
   InUse := 0;
 
-  while (NextRecord <> 0) do
-  begin
-    ReadData(@Size, NextRecord, 2);
-    CacheEmptyRecord(NextRecord, Size);
-    WriteData(@InUse, NextRecord + 2, 1);
-    ReadData(@NextRecord, NextRecord + 3, 4);
+
+  try
+    while (NextRecord <> 0) do
+    begin
+      ReadData(@Size, NextRecord, 2);
+      CacheEmptyRecord(NextRecord, Size);
+      WriteData(@InUse, NextRecord + 2, 1);
+      ReadData(@NextRecord, NextRecord + 3, 4);
+    end;
+  except
+    // MB - Getting out of memory here when displaying a sector with too many planets
+    TWXServer.ClientMessage('Unexpected error in PurgeRecordList Record # ' +  IntToStr(NextRecord));
   end;
 end;
 
@@ -1404,15 +1410,22 @@ begin
 
     DataIndex := Pointer(Integer(DataCache) + Index);
 
-    // compare memory with cached data
-    if not (CompareMem(DataIndex, Data, Size)) then
-    begin
-      // data is different - update data cache and file
-      CopyMemory(DataIndex, Data, Size);
-      Seek(DataFile, Index);
-      BlockWrite(DataFile, Data^, Size);
-      DBSize := FileSize(DataFile);
+    try
+      // compare memory with cached data
+      if not (CompareMem(DataIndex, Data, Size)) then
+      begin
+        // data is different - update data cache and file
+        CopyMemory(DataIndex, Data, Size);
+        Seek(DataFile, Index);
+        BlockWrite(DataFile, Data^, Size);
+        DBSize := FileSize(DataFile);
+      end;
+    except
+      // MB - getting random file not found errors here. Cause unknown.
+      // TWXServer.ClientMessage('Unexpected error in Database.WriteData - File not Found');
     end;
+
+
   end
   else
   begin

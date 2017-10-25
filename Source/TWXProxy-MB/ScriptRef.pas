@@ -243,6 +243,7 @@ begin
     end
     else
       raise EScriptError.Create('''' + FStrValue + ''' is not a number');
+// TODO: Add error handling for coarse plot when display is not aborted
 
   Result := FDecValue;
 end;

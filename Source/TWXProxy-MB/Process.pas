@@ -235,6 +235,18 @@ begin
     if not (FSectorSaved) then
       SectorCompleted;
 
+  //TODO: check database size on v screen
+  //TODO: Verify Stardock location on 'v' scren matches database.
+  //TODO: Veryfy game age to determin if this is a rebang
+  //TODO: Fix endless loop if stardock is hidden
+
+  // MB - Display 'v' screen if stardock location is unknown.
+  if (TWXDatabase.DBHeader.Stardock = 0) then
+  begin
+    TWXClient.Send('v');
+    Sleep(500);
+  end;
+
     // No displays anymore, all done
     FCurrentDisplay := dNone;
   end
