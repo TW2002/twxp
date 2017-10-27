@@ -13,9 +13,7 @@ https://www.embarcadero.com/products/delphi/starter/
 
 ## Active Projects
 
-* [TWXProxy-MB](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB) is an updated version of TWXProxy released by MicroBlaster (Version 3.1736).
-* [TW Commander](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/VisualTS) is a Control Module for [TWXProxy 2.06](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB).
-* [VisualTS](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWC) is a Visual Studio Code extention for editing TradewarsScript (TS)  **COMING SOON!!!***.
+* [TWXProxy-MB](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB) is an updated version of TWXProxy released by MicroBlaster (Version 2.06).
 
 * [PYTWX](https://bitbucket.org/mrdon/pytwx/src) a server side port of TWX to Python by Mr. Don.
 
