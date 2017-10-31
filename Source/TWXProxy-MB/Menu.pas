@@ -1091,7 +1091,10 @@ end;
 procedure TModMenu.miConnect(ClientIndex : Byte);
 begin
   CloseMenu(FALSE);
-  TWXClient.Connect;
+  if TWXGUI.Connected then
+    TWXClient.Disconnect
+  else
+    TWXClient.ConnectNow;
 end;
 
 procedure TModMenu.miStopScript(ClientIndex : Byte);

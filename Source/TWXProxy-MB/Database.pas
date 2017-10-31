@@ -1138,8 +1138,8 @@ begin
     I := 0;
     while (NextRecord > 0) do begin
       Inc(I);
-//      if (I > 13) then
-//        Break;
+      if (I > 64) then
+        Break;
       ReadData(SectorVar, NextRecord + 7, RecordSize);
       if (SectorVar.VarName <> '') then begin
         Result.Add(SectorVar.VarName);

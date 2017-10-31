@@ -27,6 +27,7 @@ interface
 
 uses
   SysUtils,
+  Windows,
   Dialogs,
   Contnrs,
   Classes,
@@ -100,10 +101,13 @@ begin
   OutputValues := TMemoryStream.Create;
   ModuleValues := TMemoryStream.Create;
 
+
   try
     for I := 0 to FModuleList.Count - 1 do
     begin
       Module := (FModuleList[I] as TTWXModule);
+
+      OutputDebugString(PChar('Saving Module #' + IntToStr(i) ));
 
       Module.GetStateValues(ModuleValues);
 
@@ -119,7 +123,7 @@ begin
       end;
     end;
   except
-    MessageDlg('Exception occured saving state for module # ' + IntToStr(i), mtError, [mbOK], 0);
+    MessageDlg('Exception occured saving module states.', mtError, [mbOK], 0);
     exit;
 //  finally
   end;

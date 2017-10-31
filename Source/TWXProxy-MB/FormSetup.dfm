@@ -238,10 +238,6 @@ object frmSetup: TfrmSetup
     object tabProgram: TTabSheet
       Caption = 'Program'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label2: TLabel
         Left = 16
         Top = 24
@@ -258,7 +254,7 @@ object frmSetup: TfrmSetup
       end
       object Label10: TLabel
         Left = 16
-        Top = 72
+        Top = 67
         Width = 100
         Height = 13
         Caption = 'Maximum bubble size'
@@ -269,6 +265,13 @@ object frmSetup: TfrmSetup
         Width = 79
         Height = 13
         Caption = 'External Address'
+      end
+      object Label22: TLabel
+        Left = 212
+        Top = 115
+        Width = 43
+        Height = 13
+        Caption = 'seconds.'
       end
       object cbAcceptExternal: TCheckBox
         Left = 24
@@ -317,7 +320,7 @@ object frmSetup: TfrmSetup
         Top = 114
         Width = 169
         Height = 17
-        Caption = 'Automatically reconnect'
+        Caption = 'Automatically reconnect after'
         TabOrder = 5
       end
       object cbCache: TCheckBox
@@ -360,6 +363,21 @@ object frmSetup: TfrmSetup
         Height = 17
         Caption = 'Allow Lerkers (View Only Connections)'
         TabOrder = 9
+      end
+      object tbReconnectDelay: TEdit
+        Left = 184
+        Top = 112
+        Width = 25
+        Height = 21
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 10
+        Text = '15'
+        OnChange = tbMenuKeyChange
       end
     end
     object tabLogging: TTabSheet

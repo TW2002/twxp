@@ -119,6 +119,8 @@ type
     tbExternalAddress: TEdit;
     Label21: TLabel;
     cbAllowLerkers: TCheckBox;
+    tbReconnectDelay: TEdit;
+    Label22: TLabel;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -197,6 +199,7 @@ begin
   cbAcceptExternal.Checked := TWXServer.AcceptExternal;
   tbExternalAddress.Text := TWXServer.ExternalAddress;
   cbReconnect.Checked := TWXClient.Reconnect;
+  tbReconnectDelay.Text := IntToStr(TWXClient.ReconnectDelay);
   cbLog.Checked := TWXLog.LogData;
   cbLogANSI.Checked := TWXLog.LogANSI;
   cbLogBinary.Checked := TWXLog.BinaryLogs;
@@ -366,7 +369,7 @@ begin
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  TWXServer.ListenPort := StrToIntSafe(tbListenPort.Text);
+  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
   TWXServer.Activate;
   TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
@@ -374,6 +377,7 @@ begin
   TWXServer.BroadCastMsgs := cbBroadCast.Checked;
   TWXServer.LocalEcho := cbLocalEcho.Checked;
   TWXClient.Reconnect := cbReconnect.Checked;
+  TWXClient.ReconnectDelay :=  StrToIntDef(tbReconnectDelay.Text, 15);
 
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;

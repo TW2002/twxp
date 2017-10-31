@@ -197,10 +197,18 @@ begin
   if (FirstLoad) then
   begin
     // Give the user a welcome message
-    MessageDlg('Welcome to TWX Proxy!  Be warned that this' + endl + 'helper does not function as usual helpers do,' + endl + 'so it is strongly recommended that you read Readme.txt before' + endl + 'continuing.', mtInformation, [mbOk], 0);
-    MessageDlg('You will need to create a new database before connecting to a server', mtInformation, [mbOk], 0);
+    MessageDlg('Welcome to TWX Proxy 2.06!  This helper is designed to work in' + endl +
+               'conjunction with your favorite Tradewars Helper or Telnet' + endl +
+               'Terminal. It does not provide a terminal window, so you should' + endl +
+               'read the Getting Started section of the wiki before continuing' + endl +
+               '(https://github.com/MicroBlaster/TWXProxy/wiki).' + endl + endl +
+               'You will need to create a new database before connecting' + endl +
+               'to a server.', mtInformation, [mbOk], 0);
+
+    // MB - License is displayed and accested in the setup progrsm, no need to display it here.
+    //ShowForm(gfLicense);
+
     ShowForm(gfSetup);
-    ShowForm(gfLicense);
     FirstLoad := False;
   end;
 end;

@@ -98,7 +98,6 @@ type
 
     procedure miSetupClick(Sender: TObject);
     procedure miConnectClick(Sender: TObject);
-    procedure miDisconnectClick(Sender: TObject);
     procedure miExitClick(Sender: TObject);
     procedure miRecordingClick(Sender: TObject);
     procedure miReloadClick(Sender: TObject);
@@ -202,12 +201,10 @@ end;
 
 procedure TfrmMain.miConnectClick(Sender: TObject);
 begin
-  TWXClient.Connect;
-end;
-
-procedure TfrmMain.miDisconnectClick(Sender: TObject);
-begin
-  TWXClient.Disconnect;
+  if TWXGUI.Connected then
+    TWXClient.Disconnect
+  else
+    TWXClient.ConnectNow;
 end;
 
 procedure TfrmMain.miRecordingClick(Sender: TObject);
