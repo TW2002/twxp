@@ -699,7 +699,7 @@ begin
     ConnectNow;
   end;
 
-  // MB - Now, this function only enables the reconnect timer.
+  // MB - This function only enables the reconnect timer, so that
   //      extra connect commands from Mombot will be ignored.
   if (not Connected) and (not FConnecting) and (FReconnectTock < 0) then
   begin
@@ -765,8 +765,14 @@ end;
 
 procedure TModClient.tcpClientOnConnect(Sender: TObject; ScktComp: TCustomWinSocket);
 begin
-  // We are now connected
+  // MB - Clear the buffer to prevent ##### being sent to the login prompt
+  if FSendPending then
+  begin
+    FSendPending := FALSE;
+    FUnsentString := '';
+  end;
 
+  // We are now connected
   TWXGUI.Connected := True;
 
   TWXExtractor.Reset;
