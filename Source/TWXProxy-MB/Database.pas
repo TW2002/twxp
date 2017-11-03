@@ -155,6 +155,7 @@ type
     FRecording,
     FUseCache,
     FDataBaseOpen     : Boolean;
+    FWarpCount        : Integer;
     FListenPort       : Word;
     FDataFilename     : string;
     DataFile          : File;
@@ -192,6 +193,7 @@ type
     procedure SetLastPortCIM(const Value: TDateTime);
     function GetServerPort: Word;
     procedure SetServerPort(Value: Word);
+    function GetWarpCount: Integer;
 
   protected
 
@@ -254,6 +256,7 @@ type
     property UseCache: Boolean read GetUseCache write SetUseCache;
     property Recording: Boolean read GetRecording write SetRecording;
     property ServerPort: Word read GetServerPort write SetServerPort;
+    property WarpCount: Integer read GetWarpCount;
   end;
 
 function GetBlankHeader : PDataHeader;
@@ -340,7 +343,6 @@ end;
 
 procedure TModDatabase.OpenDataBase(Filename : string);
 var
-  WarpCount,
   I,
   X,
   Index     : Integer;
@@ -400,7 +402,7 @@ begin
 
   // construct sector warp cache
   SectorWarpCache := AllocMem(DBHeader.Sectors * 4);
-  WarpCount := 0;
+  FWarpCount := 0;
 
   // create persistent structures used by getCourse
   SetLength(EPWarpCache, (DBHeader.Sectors + 1) * 7);
@@ -419,7 +421,7 @@ begin
     for X := 1 to 6 do
       if (S.Warp[X] > 0) then
       begin
-        Inc(WarpCount);
+        Inc(FWarpCount);
         AddWarpIn(S.Warp[X], I);
         // Sector 1's warp count occupies [7], and it's warps occupy [8] - [13]
         // Add one to the warp count
@@ -1520,6 +1522,12 @@ begin
   FListenPort := Value;
   FDBHeader.ServerPort := Value;
 end;
+
+function TModDatabase.GetWarpCount: Integer;
+begin
+  Result := FWarpCount;
+end;
+
 
 function TModDatabase.GetLastPortCIM: TDateTime;
 begin
