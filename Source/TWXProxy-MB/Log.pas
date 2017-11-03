@@ -85,6 +85,7 @@ type
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
+    procedure WriteLog(const Data: string);
     procedure DoLogData(const Data: string; const ANSIData: string);
     procedure DatabaseChanged;
     procedure BeginPlayLog(const Filename: string);
@@ -115,6 +116,7 @@ begin
   inherited;
 
   // set defaults
+  FLogData := True;
   FNotifyPlayCuts := True;
   FMaxPlayDelay := 10000;
 end;
@@ -322,14 +324,24 @@ begin
   FreeMem(LogEntry);
 end;
 
+procedure TModLog.WriteLog(const Data: string);
+begin
+  DoLogData(Data + endl, Data + endl);
+end;
+
+
 procedure TModLog.DoLogData(const Data: string; const ANSIData: string);
 var
   I: Integer;
 begin
-  if (LogData) and (LogFileOpen) then
+  if LogData then
   begin
     if not (TWXInterpreter.LogData) then
       Exit;
+
+    // MB - Just making sure the log file is always open.
+    if not LogFileOpen then
+      OpenLog(GetLogName);
 
     if (Trunc(Now) <> Trunc(FLastLog)) then
     begin
@@ -358,8 +370,9 @@ begin
 
     if (IOResult <> 0) then
     begin
-      TWXServer.ClientMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
-      LogData := FALSE;
+      // MB - This error seems to be non-fatal - We may need to re-visit this, but for now I am going to ignore it.
+      // TWXServer.ClientMessage('TWX Proxy has encountered an error logging data sent from the server.  ' + endl + 'This could be due to insufficient disk space or the log file is in use.  Logging has been disabled.');
+      // LogData := FALSE;
     end;
 
     {$I+}

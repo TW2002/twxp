@@ -174,7 +174,7 @@ begin
 
   // check command line values
   I := 1;
-  while (I <= ParamCount) do   
+  while (I <= ParamCount) do
   begin
     Usage := 'Usage:/ntwxproxy /p <port#> /dblist';
     Switch := UpperCase(ParamStr(I));
@@ -241,6 +241,10 @@ var
   ObjectName : String;
 begin
   try
+    // MB - Close database before saving module states to prevent unhandled exception
+    TWXGUI.DatabaseName := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName));
+    TWXDatabase.CloseDatabase;
+
     PersistenceManager.SaveStateValues;
   except
     TWXServer.ClientMessage('Errror - Unable to save program state.');
@@ -314,9 +318,12 @@ begin
   if TWXDatabase.DataBaseOpen then
     TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
   else
-    TWXServer.ListenPort := 23;
+    TWXServer.ListenPort := 3000;
 
   TWXServer.Activate;
+
+  if TWXGUI.DatabaseName <> '' then
+    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
 
   try
     // we don't use the TApplication message loop, as it requires a main form

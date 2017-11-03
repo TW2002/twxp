@@ -969,13 +969,23 @@ begin
   ConvertToNumber(Params[0].Value, Index);
   CheckSector(Index);
 
-  if (Length(Params[1].Value) > 10) then
-    raise EScriptError.Create(SCSectorParameterError);
+  // MB - Debugging issue #15
+  TWXServer.Broadcast('Debug-GSP:' + IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
 
-  if (Length(Params[2].Value) > 40) then
-    raise EScriptError.Create(SCSectorParameterValueError);
+  if (Length(Params[1].Value) > 10) then
+  begin
+     TWXServer.Broadcast('SCSectorParameterError:' + IntToStr(Length(Params[1].Value)) + ':' + Params[1].Value);
+     raise EScriptError.Create(SCSectorParameterError);
+  end;
 
   Params[2].Value := TWXDatabase.GetSectorVar(Index, Params[1].Value);
+
+  if (Length(Params[2].Value) > 40) then
+  begin
+    TWXServer.Broadcast('SCSectorParameterValueError:' + IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
+    raise EScriptError.Create(SCSectorParameterValueError);
+  end;
+
   Result := caNone;
 end;
 

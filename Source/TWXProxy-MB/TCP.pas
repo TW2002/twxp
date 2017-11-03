@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 unit TCP;
@@ -33,6 +33,7 @@ uses
   //OverbyteICSTnCnx,
   ExtCtrls,
   //OverbyteICSWSocket,
+  Database,
   Core;
 
 const
@@ -212,7 +213,7 @@ begin
   FBufTimer.Enabled := FALSE;
 
   // set defaults
- //tcpServer.Port := 23;
+ //tcpServer.Port := 3000;
  BroadCastMsgs := True;
 end;
 
@@ -333,20 +334,20 @@ begin
 
   if (BroadCastMsgs) then
   begin
-    ClientMessage(ANSI_7 + 'Active connection detected from: ' + ANSI_15 + Socket.RemoteAddress);
+    ClientMessage(#27 + '[2J' + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress);
   end;
 
   if (not AllowLerkers) and (not LocalClient) then
   begin
     // User not allowed
-    Socket.SendText('Lerkers are not welcome here. Goodbye Lerker!');
+    Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye Lerker!');
     Sleep(500);
     Socket.Close();
     exit;
   end
   else if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
   begin
-    Socket.SendText('External connections are disabled. Goodbye!');
+    Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
     Sleep(500);
     Socket.Close();
     exit;
@@ -367,37 +368,51 @@ begin
     FClientEchoMarks[SktIndex] := FALSE;
 
     // Broadcast confirmation to client
-    Socket.SendText(endl + ANSI_7 + 'TWX Proxy Server ' + ANSI_15 + 'v' +
+    Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
                     ProgramVersion + ANSI_7 + ' (' +
                     ReleaseVersion + ')' + endl + endl);
 
     if (ReleaseVersion = 'Alpha') then
-      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
+      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
                       'Alpha releases have not had sufficent testing, and may' + endl +
                       'be unstable. Please do not distribute, and use at your own risk.' + endl + endl);
 
+    if (ReleaseVersion = 'Beta') then
+      Socket.SendText(endl + ANSI_12 + 'WARNING: ' + ANSI_14 +
+                      'Beta releases are generally considered stable, but may have' + endl +
+                      'unresolved issues. Use at your own risk.' + endl + endl);
+
     if (AcceptExternal) or (AllowLerkers) then
-      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_15 +
+      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
                       'With External Connections and/or Allow Lerkers enabled,' + endl +
-                      'you are open to foreign users monitoring data remotely.' + endl + endl);
+                      'you are open to foreign users monitoring data remotely.' + endl);
 
-    Socket.SendText('There are currently ' + ANSI_15 + IntToStr(tcpServer.Socket.ActiveConnections) + ANSI_7 + ' active telnet connections' + endl);
+    Socket.SendText(endl);
 
-    if (TWXClient.Connected) then
-      Socket.SendText('You are connected to server: ' + ANSI_15 + TWXDatabase.DBHeader.Address + endl + ANSI_7)
-    else
-      Socket.SendText('No server connections detected' + endl);
+    if TWXDatabase.DataBaseOpen then
+      Socket.SendText(ANSI_10 + 'Using Database ' + ANSI_14 + TWXDatabase.DatabaseName + ANSI_10 + ' w/ ' +
+                      ANSI_14 + IntToStr(TWXDatabase.DBHeader.Sectors) + ANSI_10 + ' sectors and ' +
+                      ANSI_14 + IntToStr(TWXDatabase.WarpCount) + ANSI_10 + ' warps' + endl);
 
     if (TWXLog.LogFileOpen) then
-      Socket.SendText(endl + 'You are logging to file: ' + ANSI_15 + TWXLog.LogFilename + ANSI_7 + endl + endl);
+      Socket.SendText(ANSI_10 + 'You are logging to file: ' + ANSI_14 + TWXLog.LogFilename + endl);
+
+    Socket.SendText(endl + ANSI_13 + 'There are currently ' + ANSI_11 + IntToStr(tcpServer.Socket.ActiveConnections) +
+                           ANSI_13 + ' active telnet connections' + endl);
+
+    if (TWXClient.Connected) then
+      Socket.SendText(ANSI_13 + 'You are connected to server: ' + ANSI_11 + TWXDatabase.DBHeader.Address + endl + ANSI_7)
+    else
+      Socket.SendText(ANSI_11 + 'No' + ANSI_13 + ' server connections detected' + endl);
+
 
     if (LocalClient) then
     begin
-      Socket.SendText('Press ' + ANSI_15 + TWXExtractor.MenuKey + ANSI_7 + ' to activate terminal menu' + endl + endl);
+      Socket.SendText(endl + ANSI_2 + 'Press ' + ANSI_14 + TWXExtractor.MenuKey + ANSI_2 + ' to activate terminal menu' + endl + endl);
 
     end
     else
-      Socket.SendText(ANSI_15 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
+      Socket.SendText(ANSI_12 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
 
     TWXInterpreter.ProgramEvent('Client connected', '', FALSE);
   end;
@@ -790,6 +805,8 @@ begin
   TWXServer.ClientMessage( ANSI_10 + 'Connection accepted. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl);
 
   TWXInterpreter.ProgramEvent('Connection accepted', '', FALSE);
+  TWXLog.WriteLog(endl + endl + '--------------------------------------------------------------------------------' +
+                  endl + 'Connection accepted. (' + DateTimeToStr(Now) + ')' + endl);
 
   // manual event - trigger login script
   if (TWXDatabase.DBHeader.UseLogin) then
@@ -805,18 +822,19 @@ begin
   // Reconnect if supposed to
   if (Reconnect) and not (FUserDisconnect) then
   begin
-    TWXServer.ClientMessage( #27 + '[2J' + #27 + '[0;1;31mConnection lost.' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')');
+    TWXServer.ClientMessage( endl + endl + #27 + '[J' + #27 + '[0;1;31mConnection lost.' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')');
     TWXServer.ClientMessage( ANSI_10 + 'Reconnecting in ' + ANSI_11 + '3' + ANSI_10 + ' seconds...');
     tmrReconnect.Enabled := TRUE;
     FReconnectTock := 3;
   end
   else
   begin
-    TWXServer.ClientMessage( #27 + '[2J' + #27 + '[0;1;31mConnection lost. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl + endl);
+    TWXServer.ClientMessage( endl + endl + #27 + '[J' + #27 + '[0;1;31mConnection lost. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl + endl);
     FFirstConnect := TRUE;
   end;
 
   TWXInterpreter.ProgramEvent('Connection Lost', '', FALSE);
+  TWXLog.WriteLog(endl + 'Connection lost. (' + DateTimeToStr(Now) + ')');
 end;
 
 procedure TModClient.tcpClientOnRead(Sender: TObject; ScktComp: TCustomWinSocket);
@@ -879,6 +897,7 @@ begin
       FReconnectTock := -1;
     end;
 //    FUserDisconnect := FALSE;
+    TWXLog.WriteLog(endl + 'Failed to Connect. (' + DateTimeToStr(Now) + ')');
     FConnecting := FALSE;
     FFirstConnect := FALSE;
     CloseClient();

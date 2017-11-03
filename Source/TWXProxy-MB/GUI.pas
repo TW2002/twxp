@@ -57,6 +57,7 @@ type
     function GetFormEnabled(FormType: TGUIFormType): Boolean;
     procedure SetFormEnabled(FormType: TGUIFormType; Enabled: Boolean);
     procedure SetDatabaseName(const Value: string);
+    function GetDatabaseName: String;
     function GetRecording: Boolean;
     procedure SetRecording(Value: Boolean);
   protected
@@ -76,9 +77,9 @@ type
     property Connected: Boolean read GetConnected write SetConnected;
     property FormEnabled[FormType: TGUIFormType]: Boolean read GetFormEnabled write SetFormEnabled;
     property ProgramDir: string read GetProgramDir write SetProgramDir;
-    property DatabaseName: string read FDatabaseName write SetDatabaseName;
     property Recording: Boolean read GetRecording write SetRecording;
   published
+    property DatabaseName: string read GetDatabaseName write SetDatabaseName;
     property FirstLoad: Boolean read FFirstLoad write FFirstLoad;
   end;
 
@@ -130,7 +131,13 @@ end;
 
 procedure TModGUI.SetDatabaseName(const Value: string);
 begin
+  FDatabaseName := Value;
   TfrmMain(GUIForms[gfMain]).DatabaseName := Value;
+end;
+
+function TModGUI.GetDatabaseName: String;
+begin
+  Result := FDatabaseName;
 end;
 
 function TModGUI.GetRecording: Boolean;
@@ -211,6 +218,7 @@ begin
     ShowForm(gfSetup);
     FirstLoad := False;
   end;
+
 end;
 
 end.

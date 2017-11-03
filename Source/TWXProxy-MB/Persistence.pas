@@ -95,6 +95,7 @@ var
   ClassTag     : string;
   Checksum     : Integer;
   DataSize     : Integer;
+  //ModuleNames  : array of String;
 begin
   // Stream the state of each module to file
 
@@ -107,19 +108,25 @@ begin
     begin
       Module := (FModuleList[I] as TTWXModule);
 
+      //ModuleNames = ('mtDatabase', 'mtBubble', 'mtExtractor', 'mtMenu', 'mtServer', 'mtInterpreter', 'mtClient', 'mtLog', 'mtGUI');
       OutputDebugString(PChar('Saving Module #' + IntToStr(i) ));
 
-      Module.GetStateValues(ModuleValues);
-
-      if (ModuleValues.Size > 0) then
+      // MB - Skipping mtMenu because it is throwing exceptions.
+      if (i <> 3) then
       begin
-        ModuleValues.Seek(0, soFromBeginning);
-        ClassTag := Module.Classname;
-        DataSize := Length(ClassTag);
-        OutputValues.Write(DataSize, 4);
-        OutputValues.Write(PChar(ClassTag)^, DataSize);
-        OutputValues.CopyFrom(ModuleValues, ModuleValues.Size);
-        ModuleValues.Clear;
+        Module.GetStateValues(ModuleValues);
+        OutputDebugString(PChar('Module size:' + IntToStr(ModuleValues.Size) ));
+
+        if (ModuleValues.Size > 0) then
+        begin
+          ModuleValues.Seek(0, soFromBeginning);
+          ClassTag := Module.Classname;
+          DataSize := Length(ClassTag);
+          OutputValues.Write(DataSize, 4);
+          OutputValues.Write(PChar(ClassTag)^, DataSize);
+          OutputValues.CopyFrom(ModuleValues, ModuleValues.Size);
+          ModuleValues.Clear;
+        end;
       end;
     end;
   except

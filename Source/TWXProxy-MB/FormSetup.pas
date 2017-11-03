@@ -56,8 +56,6 @@ type
     tabProgram: TTabSheet;
     cbAcceptExternal: TCheckBox;
     cbBroadcast: TCheckBox;
-    Label2: TLabel;
-    tbListenPort: TEdit;
     Label11: TLabel;
     tbMenuKey: TEdit;
     Panel1: TPanel;
@@ -121,6 +119,8 @@ type
     cbAllowLerkers: TCheckBox;
     tbReconnectDelay: TEdit;
     Label22: TLabel;
+    tbListenPort: TEdit;
+    Label2: TLabel;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -149,8 +149,8 @@ type
     FAuthenticate : Boolean;
     FProgramDir   : string;
 
-    procedure UpdateGameList(SelectName : string);
   public
+    procedure UpdateGameList(SelectName : string);
     procedure AfterConstruction; override;
 
   end;
@@ -194,7 +194,7 @@ begin
   // populate form from system setup
   tbBubbleSize.Text := IntToStr(TWXBubble.MaxBubbleSize);
   cbCache.Checked := TWXDatabase.UseCache;
-  tbListenPort.Text := IntToStr(TWXServer.ListenPort);
+  //tbListenPort.Text := IntToStr(TWXServer.ListenPort);
   cbAllowLerkers.Checked := TWXServer.AllowLerkers;
   cbAcceptExternal.Checked := TWXServer.AcceptExternal;
   tbExternalAddress.Text := TWXServer.ExternalAddress;
@@ -216,7 +216,8 @@ begin
   // build list of data headers from databases in data\ folder
   DataLinkList := TList.Create;
 
-  UpdateGameList(TWXDatabase.DatabaseName);
+//  UpdateGameList(TWXDatabase.DatabaseName);
+  UpdateGameList('data\' + TWXGUI.DatabaseName + '.xdb');
 end;
 
 procedure TfrmSetup.FormHide(Sender: TObject);
@@ -264,7 +265,7 @@ begin
       Errored := FALSE;
 
       FileOpen := FALSE;
-      
+
       try
         AssignFile(F, Link^.Filename);
         Reset(F, 1);
@@ -300,6 +301,7 @@ end;
 
 procedure TfrmSetup.btnOKMainClick(Sender: TObject);
 var
+  DB        : String;
   I         : Integer;
   F         : File;
   FileOpen  : Boolean;
@@ -350,10 +352,10 @@ begin
 
   TWXDatabase.UseCache := cbCache.Checked;
 
-  if (cbGames.ItemIndex = -1) then
-    TWXDatabase.CloseDatabase // no database selected
-  else
-    TWXDatabase.DatabaseName := TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename;
+//  if (cbGames.ItemIndex = -1) then
+//    TWXDatabase.CloseDatabase // no database selected
+//  else
+//    TWXDatabase.DatabaseName := TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename;
 
 
   TWXInterpreter.AutoRun.Assign(lbAutoRun.Items);
@@ -369,7 +371,7 @@ begin
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
+  //TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
   TWXServer.Activate;
   TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
@@ -384,7 +386,13 @@ begin
 
   // MB - Save object states to twxsetup.dat
   try
+    DB := TWXDatabase.DatabaseName;
+    TWXDatabase.CloseDatabase;
     PersistenceManager.SaveStateValues;
+
+    if (cbGames.ItemIndex >= 0) then
+      TWXDatabase.DatabaseName := TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Filename;
+
   except
     TWXServer.ClientMessage('Errror - Unable to save program state.');
   end;
@@ -434,6 +442,7 @@ begin
     tbSectors.Text := IntToStr(Head^.Sectors);
     tbHost.Text := Head^.Address;
     tbPort.Text := IntToStr(Head^.Port);
+    tbListenPort.Text := IntToStr(Head^.ServerPort);
     cbUseLogin.Checked := Head^.UseLogin;
     tbLoginScript.Text := Head^.LoginScript;
     tbLoginName.Text := Head^.LoginName;
@@ -445,6 +454,7 @@ begin
     tbDescription.Text := '';
     tbHost.Text := '';
     tbPort.Text := '';
+    tbListenPort.Text := '';
     tbSectors.Text := '';
     cbUseLogin.Checked := FALSE;
     tbLoginScript.Text := '';
@@ -526,6 +536,7 @@ begin
   tbDescription.Enabled := FALSE;
   tbHost.Enabled := FALSE;
   tbPort.Enabled := FALSE;
+  tbListenPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
 
@@ -598,12 +609,14 @@ begin
   tbDescription.Enabled := TRUE;
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
 
   tbDescription.Text := 'New Game';
   tbHost.Text := '';
-  tbPort.Text := '23';
+  tbPort.Text := '2002';
+  tbListenPort.Text := '3000';
   tbSectors.Text := '5000';
   cbUseLogin.Checked := FALSE;
   tbLoginScript.Text := '1_Login.ts';
@@ -626,6 +639,7 @@ procedure TfrmSetup.btnEditClick(Sender: TObject);
 begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
   cbUseLoginClick(Sender);
 
@@ -643,36 +657,46 @@ end;
 procedure TfrmSetup.btnDeleteClick(Sender: TObject);
 var
   Result : Integer;
-  F      : File;
-  S      : string;
+  S, DB  : string;
 begin
   if (cbGames.ItemIndex > -1) then
   begin
     Result := MessageDlg('Are you sure you want to delete this database?', mtWarning, [mbYes, mbNo], 0);
-    
+
     if (Result = mrNo) then
       Exit;
 
-    S := 'data\' + cbGames.Text + '.xdb';
+    S := UpperCase('data\' + cbGames.Text + '.xdb');
+    DB := UpperCase(TWXDatabase.DatabaseName);
 
-    // delete selected database and refresh headers held in memory
-    if (UpperCase(S) = UpperCase(TWXDatabase.DatabaseName)) then
-      // close the current database
+    // close the current database if it is being deleted
+    if S = DB then
       TWXDatabase.CloseDataBase;
 
+    // delete selected database and refresh headers held in memory
     TWXServer.ClientMessage('Deleting database: ' + ANSI_7 + S);
     SetCurrentDir(FProgramDir);
-    AssignFile(F, S);
-    Erase(F);
+    DeleteFile(S);
 
     try
-      AssignFile(F, 'data\' + cbGames.Text + '.cfg');
-      Erase(F);
+      DeleteFile('data\' + cbGames.Text + '.cfg');
     except
       // don't throw an error if couldn't delete .cfg file
     end;
 
-    UpdateGameList('');
+    // Refresh the game list, and select current database
+    if S = DB then
+      UpdateGameList('')
+    else
+      UpdateGameList(DB);
+
+    // Select the first dabase, if the current database was deleted
+    if (cbGames.ItemIndex < 0) and (cbGames.Items.Count > 0) then
+      cbGames.ItemIndex := 0;
+
+    // Reload the header into the form.
+    cbGames.OnChange(Self);
+
   end;
 end;
 
