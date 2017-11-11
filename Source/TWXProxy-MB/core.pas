@@ -33,7 +33,7 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.06.00g';
+  ProgramVersion = '2.06.00h';
   ReleaseVersion = 'Alpha';
   SetupFile = 'TWXSetup.dat';
 

@@ -194,13 +194,13 @@ begin
   // populate form from system setup
   tbBubbleSize.Text := IntToStr(TWXBubble.MaxBubbleSize);
   cbCache.Checked := TWXDatabase.UseCache;
-  //tbListenPort.Text := IntToStr(TWXServer.ListenPort);
+  tbListenPort.Text := IntToStr(TWXServer.ListenPort);
   cbAllowLerkers.Checked := TWXServer.AllowLerkers;
   cbAcceptExternal.Checked := TWXServer.AcceptExternal;
   tbExternalAddress.Text := TWXServer.ExternalAddress;
   cbReconnect.Checked := TWXClient.Reconnect;
   tbReconnectDelay.Text := IntToStr(TWXClient.ReconnectDelay);
-  cbLog.Checked := TWXLog.LogData;
+  cbLog.Checked := TWXLog.LogEnabled;
   cbLogANSI.Checked := TWXLog.LogANSI;
   cbLogBinary.Checked := TWXLog.BinaryLogs;
   cbNotifyLogDelay.Checked := TWXLog.NotifyPlayCuts;
@@ -362,7 +362,7 @@ begin
 
   TWXLog.LogANSI := cbLogANSI.Checked and cbLog.Checked;
   TWXLog.BinaryLogs := cbLogBinary.Checked and cbLog.Checked;
-  TWXLog.LogData := cbLog.Checked;
+  TWXLog.LogEnabled := cbLog.Checked;
   TWXLog.NotifyPlayCuts := cbNotifyLogDelay.Checked;
 
   try
@@ -371,7 +371,7 @@ begin
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  //TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
+  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
   TWXServer.Activate;
   TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
@@ -442,7 +442,7 @@ begin
     tbSectors.Text := IntToStr(Head^.Sectors);
     tbHost.Text := Head^.Address;
     tbPort.Text := IntToStr(Head^.Port);
-    tbListenPort.Text := IntToStr(Head^.ServerPort);
+//    tbListenPort.Text := IntToStr(Head^.ServerPort);
     cbUseLogin.Checked := Head^.UseLogin;
     tbLoginScript.Text := Head^.LoginScript;
     tbLoginName.Text := Head^.LoginName;
@@ -454,7 +454,7 @@ begin
     tbDescription.Text := '';
     tbHost.Text := '';
     tbPort.Text := '';
-    tbListenPort.Text := '';
+//    tbListenPort.Text := '';
     tbSectors.Text := '';
     cbUseLogin.Checked := FALSE;
     tbLoginScript.Text := '';
@@ -536,7 +536,7 @@ begin
   tbDescription.Enabled := FALSE;
   tbHost.Enabled := FALSE;
   tbPort.Enabled := FALSE;
-  tbListenPort.Enabled := FALSE;
+//  tbListenPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
 
@@ -609,7 +609,7 @@ begin
   tbDescription.Enabled := TRUE;
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-  tbListenPort.Enabled := TRUE;
+//  tbListenPort.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
 
@@ -639,7 +639,7 @@ procedure TfrmSetup.btnEditClick(Sender: TObject);
 begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-  tbListenPort.Enabled := TRUE;
+//  tbListenPort.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
   cbUseLoginClick(Sender);
 

@@ -178,6 +178,7 @@
     
     
     
+    
     <Excluded_Packages>
       <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dclstd100.bpl">Borland Standard Components</Excluded_Packages>
       <Excluded_Packages Name="c:\program files (x86)\borland\bds\4.0\Bin\dcldb100.bpl">Borland Database Components</Excluded_Packages>

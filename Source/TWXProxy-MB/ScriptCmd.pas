@@ -969,9 +969,6 @@ begin
   ConvertToNumber(Params[0].Value, Index);
   CheckSector(Index);
 
-  // MB - Debugging issue #15
-  TWXServer.Broadcast('Debug-GSP:' + IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
-
   if (Length(Params[1].Value) > 10) then
   begin
      TWXServer.Broadcast('SCSectorParameterError:' + IntToStr(Length(Params[1].Value)) + ':' + Params[1].Value);
@@ -980,6 +977,11 @@ begin
 
   Params[2].Value := TWXDatabase.GetSectorVar(Index, Params[1].Value);
 
+{$ifdef TESTMODE}
+  // MB - Debugging issue #15
+  TWXLog.WriteLog(endl + 'Debug-GSP:' + IntToStr(Length(Params[1].Value)) + ':' +
+                  IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
+{$EndIf}
   if (Length(Params[2].Value) > 40) then
   begin
     TWXServer.Broadcast('SCSectorParameterValueError:' + IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
@@ -1352,7 +1354,7 @@ function CmdLogging(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
   // CMD: logging <value>
 
-  TScript(Script).LogData := (UpperCase(Params[0].Value) = 'ON') or (Params[0].Value = '1');
+  TWXLog.LogData := (UpperCase(Params[0].Value) = 'ON') or (Params[0].Value = '1');
 
   Result := caNone;
 end;
@@ -1845,6 +1847,11 @@ begin
 
   ConvertToNumber(Params[0].Value, Index);
   CheckSector(Index);
+{$ifdef TESTMODE}
+  // MB - Debugging issue #15
+  TWXLog.WriteLog(endl + 'Debug-SSP:' + IntToStr(Length(Params[1].Value)) + ':' +
+                  IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
+{$EndIf}
 
   if (Length(Params[1].Value) > 10) then
     raise EScriptError.Create(SCSectorParameterError);

@@ -1031,7 +1031,7 @@ begin
   GetMenuByName('TWX_LISTENPORT').Value := IntToStr(TWXServer.ListenPort);
   GetMenuByName('TWX_BUBBLESIZE').Value := IntToStr(TWXBubble.MaxBubbleSize);
   GetMenuByName('TWX_RECONNECT').Value := BoolToStr(TWXClient.Reconnect);
-  GetMenuByName('TWX_LOG').Value := BoolToStr(TWXLog.LogData);
+  GetMenuByName('TWX_LOG').Value := BoolToStr(TWXLog.LogEnabled);
   GetMenuByName('TWX_LOGANSI').Value := BoolToStr(TWXLog.LogANSI);
   GetMenuByName('TWX_ACCEPTEXTERNAL').Value := BoolToStr(TWXServer.AcceptExternal);
   GetMenuByName('TWX_CACHE').Value := BoolToStr(TWXDatabase.UseCache);
@@ -1818,9 +1818,9 @@ end;
 
 procedure TModMenu.miLog(ClientIndex : Byte);
 begin
-  TWXLog.LogData := not TWXLog.LogData;
+  TWXLog.LogEnabled := not TWXLog.LogEnabled;
 
-  if (TWXLog.LogData) then
+  if (TWXLog.LogEnabled) then
     CurrentMenu.Value := 'ON'
   else
     CurrentMenu.Value := 'OFF';

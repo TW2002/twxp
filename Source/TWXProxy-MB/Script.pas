@@ -112,7 +112,6 @@ type
 
     function GetScript(Index : Integer) : TScript;
     function GetCount : Integer;
-    function GetLogData : Boolean;
     function GetAutoRun: TStringList;
     function GetAutoRunText: string;
     procedure SetAutoRunText(Value: string);
@@ -145,7 +144,6 @@ type
 
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
-    property LogData : Boolean read GetLogData;
     property ScriptMenu : TMenuItem read FScriptMenu write FScriptMenu;
     property ScriptRef : TScriptRef read FScriptRef;
     property ProgramDir: string read GetProgramDir;
@@ -167,7 +165,6 @@ type
     FTriggers          : array[TTriggerType] of TList;
     FWaitingForAuth,
     FTriggersActive,
-    FLogData,
     FLocked,
     FWaitForActive,
     FSilent,
@@ -235,7 +232,6 @@ type
 
     property System : Boolean read FSystem write FSystem;
     property TriggersActive : Boolean read FTriggersActive write FTriggersActive;
-    property LogData : Boolean read FLogData write FLogData;
     property Locked : Boolean read FLocked write FLocked;
     property WaitForActive : Boolean read FWaitForActive write FWaitForActive;
     property WaitText : string read FWaitText write FWaitText;
@@ -555,21 +551,6 @@ begin
   Result := ScriptList.Count;
 end;
 
-function TModInterpreter.GetLogData : Boolean;
-var
-  I : Integer;
-begin
-  // check all scripts for logging settings
-  Result := TRUE;
-
-  for I := 0 to Count - 1 do
-    if not (Scripts[I].LogData) then
-    begin
-      Result := FALSE;
-      Break;
-    end;
-end;
-
 procedure TModInterpreter.ActivateTriggers;
 var
   I : Integer;
@@ -638,7 +619,6 @@ var
 begin
   inherited Create(Owner);
 
-  FLogData := TRUE;
   tscOwner := Owner;
   FCmp := TScriptCmp.Create(tscOwner.ScriptRef);
   FWaitForActive := FALSE;

@@ -315,10 +315,12 @@ begin
   SetCurrentDir(ExtractFilePath(Application.ExeName));
   InitProgram;
   // EP - The Server ListenPort is persisted by the database now, so load from there
-  if TWXDatabase.DataBaseOpen then
-    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
-  else
-    TWXServer.ListenPort := 3000;
+  // MB - This doesn't work. To do this, the listen port woule need to be moved to the
+  //      database tab of the setup form, and disabled unless editing database settings.
+//  if TWXDatabase.DataBaseOpen then
+//    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
+//  else
+//    TWXServer.ListenPort := 3000;
 
   TWXServer.Activate;
 
