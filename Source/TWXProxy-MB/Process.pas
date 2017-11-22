@@ -52,7 +52,9 @@ type
     FSectorSaved        : Boolean;
     FCurrentTrader      : TTrader;
     FCurrentShip        : TShip;
-    FCurrentMessage     : string;
+    FCurrentMessage,
+    FTWGSVer,
+    FTW2002Ver          : string;
     FTraderList,
     FShipList,
     FPlanetList         : TList;
@@ -216,7 +218,35 @@ begin
   // processline and processinbound, as it can come in as part of
   // a large packet or still be waiting for the user.
 
-  if (Copy(Line, 1, 12) = 'Command [TL=') then
+  // TODO - Make version availablre to scripts 
+  // MB - Added TWGS Version detection
+  if (Copy(Line, 1, 14) = 'TradeWars Game') then
+  begin
+    FTWGSVer := '1.03';
+    FTW2002Ver := '3.13';
+
+    // MB - Sending event to Mombot, since we blocked # initially.
+    if TWXClient.BlockExtended then
+    begin
+      TWXClient.BlockExtended := FALSE;
+      //Sleep(500);
+      TWXInterpreter.TextEvent('Selection (? for menu):', FALSE);
+    end;
+  end
+  else if (Copy(Line, 1, 15) = 'Trade Wars 2002') then
+  begin
+    FTWGSVer := '2.20b';
+    FTW2002Ver := '3.34';
+
+    // MB - Sending event to Mombot, since we blocked # initially.
+    if TWXClient.BlockExtended then
+    begin
+      TWXClient.BlockExtended := FALSE;
+      //Sleep(500);
+      TWXInterpreter.TextEvent('Selection (? for menu):', FALSE);
+    end;
+  end
+  else if (Copy(Line, 1, 12) = 'Command [TL=') then
   begin
     // Save current sector if not done already
     if not (FSectorSaved) then
@@ -224,6 +254,18 @@ begin
 
     // Record Current Sector Index
     FCurrentSectorIndex := StrToIntSafe(Copy(Line, 24, (AnsiPos('(', Line) - 26)));
+
+  //TODO: check database size on v screen
+  //TODO: Verify Stardock location on 'v' scren matches database.
+  //TODO: Veryfy game age to determin if this is a rebang
+  //TODO: Fix endless loop if stardock is hidden
+
+  // MB - Display 'v' screen if stardock location is unknown.
+  //if (TWXDatabase.DBHeader.Stardock = 0) then
+  //begin
+  //  TWXClient.Send('v');
+  //  Sleep(500);
+  //end;
 
     // No displays anymore, all done
     FCurrentDisplay := dNone;
@@ -235,17 +277,6 @@ begin
     if not (FSectorSaved) then
       SectorCompleted;
 
-  //TODO: check database size on v screen
-  //TODO: Verify Stardock location on 'v' scren matches database.
-  //TODO: Veryfy game age to determin if this is a rebang
-  //TODO: Fix endless loop if stardock is hidden
-
-  // MB - Display 'v' screen if stardock location is unknown.
-  if (TWXDatabase.DBHeader.Stardock = 0) then
-  begin
-    TWXClient.Send('v');
-    Sleep(500);
-  end;
 
     // No displays anymore, all done
     FCurrentDisplay := dNone;

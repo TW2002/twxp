@@ -135,16 +135,20 @@ type
 
   TModClient = class(TTelnetClientSocket, IModClient)
   private
+    tmrIdle,
     tmrReconnect    : TTimer;
     FFirstConnect,
     FReconnect,
     FUserDisconnect,
     FConnecting,
-    FSendPending    : Boolean;
+    FSendPending,
+    FBlockExtended  : Boolean;
     FBytesSent,
     FReconnectDelay,
-    FReconnectTock  : Integer;
+    FReconnectTock,
+    FreconnectCount : Integer;
     FUnsentString   : String;
+    IdleMinutes     : Integer;
 
   protected
     procedure tcpClientOnConnect(Sender: TObject; ScktComp: TCustomWinSocket);
@@ -153,6 +157,7 @@ type
     procedure tcpClientOnWrite(Sender: TObject; ScktComp: TCustomWinSocket);
     procedure tcpClientOnError(Sender: TObject; Socket: TCustomWinSocket; ErrorEvent: TErrorEvent; var ErrorCode: Integer);
     procedure tmrReconnectTimer(Sender: TObject);
+    procedure tmrIdleTimer(Sender: TObject);
 
     function GetConnected : Boolean;
 
@@ -167,8 +172,8 @@ type
     procedure BeforeDestruction; override;
 
     procedure Send(Text : string);
-    procedure Connect(IsReconnect : Boolean = FALSE);
-    procedure ConnectNow(IsReconnect : Boolean = FALSE);
+    procedure Connect();
+    procedure ConnectNow();
     procedure Disconnect;
     procedure CloseClient;
 
@@ -177,6 +182,7 @@ type
   published
     property Reconnect: Boolean read GetReconnect write SetReconnect;
     property ReconnectDelay: Integer read GetReconnectDelay write SetReconnectDelay;
+    property BlockExtended: Boolean read FBlockExtended write FBlockExtended;
   end;
 
 implementation
@@ -185,6 +191,7 @@ uses
   Global,
   Ansi,
   Utility,
+  StrUtils,
   Dialogs;
 
 
@@ -332,10 +339,14 @@ begin
   else
     LocalClient := FALSE;
 
+  Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
+                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')');
+
   if (BroadCastMsgs) then
-  begin
-    ClientMessage(#27 + '[2J' + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress);
-  end;
+    ClientMessage(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl)
+  else
+    Socket.SendText(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl);
+
 
   if (not AllowLerkers) and (not LocalClient) then
   begin
@@ -367,18 +378,13 @@ begin
 
     FClientEchoMarks[SktIndex] := FALSE;
 
-    // Broadcast confirmation to client
-    Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
-                    ProgramVersion + ANSI_7 + ' (' +
-                    ReleaseVersion + ')' + endl + endl);
-
     if (ReleaseVersion = 'Alpha') then
-      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
+      Socket.SendText(ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Alpha releases have not had sufficent testing, and may' + endl +
                       'be unstable. Please do not distribute, and use at your own risk.' + endl + endl);
 
     if (ReleaseVersion = 'Beta') then
-      Socket.SendText(endl + ANSI_12 + 'WARNING: ' + ANSI_14 +
+      Socket.SendText(endl + ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Beta releases are generally considered stable, but may have' + endl +
                       'unresolved issues. Use at your own risk.' + endl + endl);
 
@@ -438,7 +444,7 @@ begin
   // manual client message to all sockets except the one disconnecting
   for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
     if (tcpServer.Socket.Connections[I] <> Socket) then
-      tcpServer.Socket.Connections[I].SendText(endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
+      tcpServer.Socket.Connections[I].SendText( endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
 end;
 
 procedure TModServer.tcpServerClientError(Sender: TObject;
@@ -477,6 +483,13 @@ begin
 
   // process telnet commands
   InString := ProcessTelnet(InString, Socket);
+
+  // TODO Process ANSI response for cursor position, screen size, scroll region, etc...
+
+  // Ignore ANSI/VT100 Status report
+  if ContainsText(InString, #27 + '[0n') then
+    InString := StringReplace(InString, #27 + '[0n', '', [rfReplaceAll, rfIgnoreCase]);
+
 
   if (InString = '') then
     Exit;
@@ -550,7 +563,7 @@ end;
 procedure TModServer.SetListenPort(Value : Word);
 begin
   //TWXDatabase.DBHeader.ServerPort := Value;
-  TWXDatabase.ServerPort := Value;
+  //TWXDatabase.ServerPort := Value;
   if (tcpServer.Port <> Value) then
   begin
     tcpServer.Close;
@@ -652,41 +665,57 @@ begin
   FReconnectDelay := 15;
   FFirstConnect := TRUE;
   FReconnectTock := -1;
-
-  tcpClient := TClientSocket.Create(Self);
-
-  with (tcpClient) do
-  begin
-    Port := 2002;
-    OnConnect := tcpClientOnConnect;
-    OnDisconnect := tcpClientOnDisconnect;
-    OnRead := tcpClientOnRead;
-    OnError := tcpClientOnError;
-    OnWrite := tcpClientOnWrite;
-  end;
+  FReconnectCount := 0;
+  FBlockExtended := FALSE;
 
   tmrReconnect := TTimer.Create(Self);
-
   with (tmrReconnect) do
   begin
     Enabled := FALSE;
     Interval := 1000;
     OnTimer := tmrReconnectTimer;
   end;
+
+  tmrIdle := TTimer.Create(Self);
+  with (tmrIdle) do
+  begin
+    Enabled := FALSE;
+    Interval := 60 * 1000;
+    OnTimer := tmrIdleTimer;
+  end;
+
 end;
 
 procedure TModClient.BeforeDestruction;
 begin
-  tcpClient.Free;
-
+  CloseClient();
   inherited;
 end;
 
 procedure TModClient.Send(Text : string);
+var
+  I: Integer;
+  S: String;
 begin
   if (Connected) and (Text <> '') then
   begin
-    FUnsentString := FUnsentString + Text;
+    S := '';
+
+    // MB - Strip extended characters and # from string, until TWGS version is detected.
+    //      TWGS converts any extended character sent to the login prompt to '#', so
+    //      this should help login when stray kepalive/sentinal scripts are running.
+    if FBlockExtended then
+    begin
+      for I := 0 to Length(Text) do
+        if ((Text[I] >= #32) and (Text[I] <= #128) and (Text[I] <> '#')) or (Text[I] = #8) or (Text[I] = #13) then
+          S := S + Text[I];
+    end
+    else
+    begin
+      S := Text;
+    end;
+
+    FUnsentString := FUnsentString + S;
     try
       FBytesSent := tcpClient.Socket.SendText(FUnsentString);
     except
@@ -703,15 +732,18 @@ begin
       FSendPending := FALSE;
       FUnsentString := '';
     end;
+    if (Text <> #27) then
+      IdleMinutes := 0;
   end;
 end;
 
-procedure TModClient.Connect(IsReconnect : Boolean = FALSE);
+procedure TModClient.Connect();
 begin
   if FFirstConnect then
   begin
-    FFirstConnect := FALSE;                                                   
-    ConnectNow;
+    FFirstConnect := FALSE;
+    tmrReconnect.Enabled := TRUE;
+    FReconnectTock := 1;
   end;
 
   // MB - This function only enables the reconnect timer, so that
@@ -723,13 +755,10 @@ begin
   end;
 end;
 
-procedure TModClient.ConnectNow(IsReconnect : Boolean = FALSE);
+procedure TModClient.ConnectNow();
 begin
-  if (Connected or FConnecting) then
+  if (Connected or FConnecting) or (tcpClient <> nil) then
     CloseClient();
-
-  FUserDisconnect := FALSE;
-  FConnecting := TRUE;
 
   // See if we're allowed to connect
   if not (TWXDatabase.DatabaseOpen) then
@@ -738,29 +767,45 @@ begin
     Exit;
   end;
 
-  tcpClient.Port := TWXDatabase.DBHeader.Port;
-  tcpClient.Host := TWXDatabase.DBHeader.Address;
+  FUserDisconnect := FALSE;
+  FConnecting := TRUE;
+  FBlockExtended := TRUE;
+
+  // MB - Moved socket creation here, to ensure there are no unflushed buffers.
+  tcpClient := TClientSocket.Create(Self);
+  with (tcpClient) do
+  begin
+    OnConnect := tcpClientOnConnect;
+    OnDisconnect := tcpClientOnDisconnect;
+    OnRead := tcpClientOnRead;
+    OnError := tcpClientOnError;
+    OnWrite := tcpClientOnWrite;
+
+    Port := TWXDatabase.DBHeader.Port;
+    Host := TWXDatabase.DBHeader.Address;
+  end;
+
+  FreconnectCount := FreconnectCount + 1;
 
   // Broadcast operation
   TWXServer.Broadcast(#13 + #27 + '[A' + #27 + '[K' + ANSI_13 + 'Attempting to connect to: ' +
-                      ANSI_14 + tcpClient.Host + ANSI_13 + ':' + ANSI_14 + IntToStr(tcpClient.Port) + ANSI_15 );
+                      ANSI_14 + tcpClient.Host + ANSI_13 + ':' + ANSI_14 + IntToStr(tcpClient.Port) +
+                      ANSI_13 + ' (' + ANSI_12 + IntToStr(FreconnectCount) + ANSI_13 + ')' + ANSI_15 + endl + #27 + '[K');
 
-  // MB - No need for trap here. It will callback onError instead of throwing an exception.
+  // MB - No need for an exception trap here. It will callback onError instead of throwing an exception.
   tcpClient.Open;
 end;
 
 procedure TModClient.Disconnect;
 begin
-  // Broadcast operation
-  if (Connected) and not (FConnecting) then
-    TWXServer.ClientMessage(ANSI_7 + 'Disconnecting from server...')
-  else
-    TWXServer.ClientMessage(ANSI_7 + 'Connect cancelled.');
+
+  TWXServer.ClientMessage(ANSI_12 + 'Disconnecting from server...');
 
   // Make sure it doesn't try to reconnect
   FUserDisconnect := TRUE;
   tmrReconnect.Enabled := FALSE;
   FReconnectTock := -1;
+  FreconnectCount := 0;
   FConnecting := FALSE;
 
   // Deactivate client - disconnect from server
@@ -770,7 +815,12 @@ end;
 procedure TModClient.CloseClient;
 begin
   try
-    tcpClient.Close;
+    if tcpClient <> nil then
+    begin
+      tcpClient.Close;
+      tcpClient.Free;
+      tcpClient := nil;
+    end;
   except
     // MB - It is normal for this exception to be thrown if the client is already disconnected.
     TWXServer.ClientMessage('Unexpected error while closing connection.');
@@ -781,11 +831,8 @@ end;
 procedure TModClient.tcpClientOnConnect(Sender: TObject; ScktComp: TCustomWinSocket);
 begin
   // MB - Clear the buffer to prevent ##### being sent to the login prompt
-  if FSendPending then
-  begin
-    FSendPending := FALSE;
-    FUnsentString := '';
-  end;
+  FSendPending := FALSE;
+  FUnsentString := '';
 
   // We are now connected
   TWXGUI.Connected := True;
@@ -802,11 +849,15 @@ begin
   end;
 
   // Broadcast event
-  TWXServer.ClientMessage( ANSI_10 + 'Connection accepted. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl);
+  TWXServer.Broadcast( endl + ANSI_10 + 'Connection accepted. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl);
 
   TWXInterpreter.ProgramEvent('Connection accepted', '', FALSE);
   TWXLog.WriteLog(endl + endl + '--------------------------------------------------------------------------------' +
                   endl + 'Connection accepted. (' + DateTimeToStr(Now) + ')' + endl);
+
+  // Enable the idle timer.
+  tmrIdle.Enabled := TRUE;
+  IdleMinutes := 0;
 
   // manual event - trigger login script
   if (TWXDatabase.DBHeader.UseLogin) then
@@ -816,25 +867,49 @@ end;
 procedure TModClient.tcpClientOnDisconnect(Sender: TObject; ScktComp: TCustomWinSocket);
 begin
   // No longer connected
-  if (TWXGUI.Connected = True) then
-    TWXGUI.Connected := False;
+  TWXGUI.Connected := False;
+  FreconnectCount := 0;
 
-  // Reconnect if supposed to
-  if (Reconnect) and not (FUserDisconnect) then
+  if FConnecting then
   begin
-    TWXServer.ClientMessage( endl + endl + #27 + '[J' + #27 + '[0;1;31mConnection lost.' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')');
-    TWXServer.ClientMessage( ANSI_10 + 'Reconnecting in ' + ANSI_11 + '3' + ANSI_10 + ' seconds...');
-    tmrReconnect.Enabled := TRUE;
-    FReconnectTock := 3;
+    if (Reconnect) and not (FUserDisconnect) then
+    begin
+      if FReconnectDelay < 3 then
+        FReconnectDelay := 3;
+
+      TWXServer.Broadcast( ANSI_12 +'Connect Canceled. ' + ANSI_10 + 'Reconnecting in ' + ANSI_11 + IntToStr(FReconnectdelay) + ANSI_10 + ' seconds...');
+      tmrReconnect.Enabled := TRUE;
+      FReconnectTock := FReconnectDelay;
+    end
+    else
+    begin
+      TWXServer.Broadcast( ANSI_12 + 'Connect Canceled.');
+      TWXInterpreter.ProgramEvent('Connect Canceled.', '', FALSE);
+      tmrReconnect.Enabled := FALSE;
+      FReconnectTock := -1;
+    end;
+    FConnecting := FALSE;
+    FFirstConnect := FALSE;
   end
   else
   begin
-    TWXServer.ClientMessage( endl + endl + #27 + '[J' + #27 + '[0;1;31mConnection lost. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl + endl);
-    FFirstConnect := TRUE;
-  end;
+    // Reconnect if supposed to
+    if (Reconnect) and not (FUserDisconnect) then
+    begin
+      TWXServer.Broadcast( endl + endl + ANSI_12 + 'Connection lost.' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl);
+      TWXServer.Broadcast( ANSI_10 + 'Reconnecting in ' + ANSI_11 + '3' + ANSI_10 + ' seconds...');
+      tmrReconnect.Enabled := TRUE;
+      FReconnectTock := 3;
+    end
+    else
+    begin
+      TWXServer.Broadcast( endl + endl + ANSI_12 + 'Connection lost. ' + ANSI_13 + '(' + ANSI_11 + DateTimeToStr(Now)+ ANSI_13 + ')' + endl + endl);
+      FFirstConnect := TRUE;
+    end;
 
-  TWXInterpreter.ProgramEvent('Connection Lost', '', FALSE);
-  TWXLog.WriteLog(endl + 'Connection lost. (' + DateTimeToStr(Now) + ')');
+    TWXInterpreter.ProgramEvent('Connection Lost', '', FALSE);
+    TWXLog.WriteLog(endl + 'Connection lost. (' + DateTimeToStr(Now) + ')');
+  end;
 end;
 
 procedure TModClient.tcpClientOnRead(Sender: TObject; ScktComp: TCustomWinSocket);
@@ -885,19 +960,17 @@ begin
       if FReconnectDelay < 3 then
         FReconnectDelay := 3;
 
-      TWXServer.ClientMessage( #13 + #27 + '[A' + #27 + '[K' + ANSI_12 +'Failed to Connect. ' + ANSI_10 + 'Reconnecting in ' + ANSI_11 + IntToStr(FReconnectdelay) + ANSI_10 + ' seconds...');
+      TWXServer.Broadcast( ANSI_12 +'Failed to Connect. ' + ANSI_10 + 'Reconnecting in ' + ANSI_11 + IntToStr(FReconnectdelay) + ANSI_10 + ' seconds...');
       tmrReconnect.Enabled := TRUE;
       FReconnectTock := FReconnectDelay;
     end
     else
     begin
-      TWXServer.ClientMessage( #13 + #27 + '[A' + #27 + '[K' + ANSI_12 + 'Failed to Connect.');
+      TWXServer.Broadcast( ANSI_12 + 'Failed to Connect.');
       TWXInterpreter.ProgramEvent('Failed to Connect.', '', FALSE);
       tmrReconnect.Enabled := FALSE;
       FReconnectTock := -1;
     end;
-//    FUserDisconnect := FALSE;
-    TWXLog.WriteLog(endl + 'Failed to Connect. (' + DateTimeToStr(Now) + ')');
     FConnecting := FALSE;
     FFirstConnect := FALSE;
     CloseClient();
@@ -911,6 +984,31 @@ begin
   ErrorCode := 0;
 end;
 
+procedure TModClient.tmrIdleTimer(Sender: TObject);
+begin
+  IdleMinutes := IdleMinutes + 1;
+
+  if (IdleMinutes > 1) then
+  begin
+
+    // MB - Timeout a connection that is stuck in Connecting State
+    if (FConnecting = TRUE) then
+      ConnectNow();
+
+    // MB - ReEnable the log file.
+    if TWXLog.LogEnabled and (not TWXLog.LogData) then
+    begin
+      TWXLog.LogData := TRUE;
+      //TWXServer.ClientMessage(endl + 'Logging renabled. (' + DateTimeToStr(Now) + ')' + endl);
+      TWXLog.WriteLog(endl + endl + 'Logging renabled. (' + DateTimeToStr(Now) + ')' + endl + endl);
+    end;
+
+    // MB - Reverse keepalive for remote clients.
+    if TWXServer.AllowLerkers or TWXServer.AcceptExternal then
+      TWXServer.Broadcast(#27 + '[5n');  // Send ANSI/VT100 terminal status request
+  end;
+end;
+
 procedure TModClient.tmrReconnectTimer(Sender: TObject);
 begin
   if FReconnectTock > 0 then
@@ -921,7 +1019,7 @@ begin
   begin
     tmrReconnect.Enabled := FALSE;
     FReconnectTock := -1;
-    ConnectNow(TRUE);
+    ConnectNow();
   end;
 end;
 
@@ -929,7 +1027,10 @@ function TModClient.GetConnected : Boolean;
 begin
   //Result := tcpClient.IsConnected;
   try
-    Result := tcpClient.Active;
+    if tcpClient = nil then
+      Result := FALSE
+    else
+      Result := tcpClient.Active;
   except
     Result := False;
   end;
