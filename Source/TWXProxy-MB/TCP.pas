@@ -739,6 +739,7 @@ end;
 
 procedure TModClient.Connect();
 begin
+  // MB - Allow a faster reconnect if it is the first request after a disconnect.
   if FFirstConnect then
   begin
     FFirstConnect := FALSE;
@@ -763,7 +764,8 @@ begin
   // See if we're allowed to connect
   if not (TWXDatabase.DatabaseOpen) then
   begin
-    TWXServer.ClientMessage('You must have an uncorrupted database selected to connect to a server');
+    TWXServer.ClientMessage('Please create a database before attempting to connect to a server.');
+    FUserDisconnect := TRUE;
     Exit;
   end;
 
@@ -838,7 +840,6 @@ begin
   TWXGUI.Connected := True;
 
   TWXExtractor.Reset;
-//  FUserDisconnect := FALSE;
   FConnecting := FALSE;
 
   // Send Are You There
@@ -861,6 +862,7 @@ begin
 
   // manual event - trigger login script
   if (TWXDatabase.DBHeader.UseLogin) then
+    TWXInterpreter.StopAll(FALSE);
     TWXInterpreter.Load(FetchScript(TWXDatabase.DBHeader.LoginScript, FALSE), TRUE);
 end;
 
@@ -1011,15 +1013,13 @@ end;
 
 procedure TModClient.tmrReconnectTimer(Sender: TObject);
 begin
-  if FReconnectTock > 0 then
-  begin
-    FReconnectTock := FReconnectTock - 1;
-  end
-  else if FReconnectTock = 0 then
+  FReconnectTock := FReconnectTock - 1;
+  if FReconnectTock <= 0 then
   begin
     tmrReconnect.Enabled := FALSE;
     FReconnectTock := -1;
-    ConnectNow();
+    if not FUserDisconnect then
+      ConnectNow();
   end;
 end;
 

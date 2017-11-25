@@ -400,7 +400,7 @@ begin
   // CMD: disconnect
 
   if (TWXClient.Connected) then
-    TWXClient.Disconnect;
+    TWXClient.CloseClient;
 
   Result := caNone;
 end;

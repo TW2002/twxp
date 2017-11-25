@@ -1092,7 +1092,7 @@ procedure TModMenu.miConnect(ClientIndex : Byte);
 begin
   CloseMenu(FALSE);
   if TWXGUI.Connected then
-    TWXClient.Disconnect
+     TWXClient.Disconnect
   else
     TWXClient.ConnectNow;
 end;
