@@ -220,7 +220,6 @@ begin
   FBufTimer.Enabled := FALSE;
 
   // set defaults
- //tcpServer.Port := 3000;
  BroadCastMsgs := True;
 end;
 
@@ -365,7 +364,7 @@ begin
   end;
 
   begin
-    // send telnet stuff - AYT
+    // Send Telnet "Are you there"
     Socket.SendText(#255 + OP_DO + #246);
 
 
@@ -562,21 +561,18 @@ end;
 
 procedure TModServer.SetListenPort(Value : Word);
 begin
-  //TWXDatabase.DBHeader.ServerPort := Value;
-  //TWXDatabase.ServerPort := Value;
   if (tcpServer.Port <> Value) then
   begin
     tcpServer.Close;
-    tcpServer.Port := Value;
-  end;
-
-  // The server is no longer set active here, but requires a call to Activate
-  {try
-    tcpServer.Active := TRUE;
-  except
-    MessageDlg('Unable to bind a listening socket on port ' + IntToStr(Value) + endl + 'You will need to change it before you can connect to TWX Proxy.', mtWarning, [mbOk], 0);
-    tcpServer.Active := FALSE;
-  end;}
+    TWXDatabase.ListenPort := Value;
+    try
+      tcpServer.Port := TWXDatabase.ListenPort;
+      tcpServer.Active := TRUE;
+    except
+      MessageDlg('Unable to bind a listening socket on port ' + IntToStr(tcpServer.Port) + '.' + endl + 'You will need to change it before you can connect to TWX Proxy.', mtWarning, [mbOk], 0);
+      tcpServer.Active := FALSE;
+    end;
+end;
 end;
 
 function TModServer.GetListenPort : Word;
@@ -589,11 +585,12 @@ begin
   if not tcpServer.Active then
   begin
     try
-      tcpServer.Active := TRUE;  
+      tcpServer.Port := TWXDatabase.ListenPort;
+      tcpServer.Active := TRUE;
     except
       MessageDlg('Unable to bind a listening socket on port ' + IntToStr(tcpServer.Port) + '.' + endl + 'You will need to change it before you can connect to TWX Proxy.', mtWarning, [mbOk], 0);
       tcpServer.Active := FALSE;
-    end;  
+    end;
   end;
 end;
 
@@ -651,6 +648,7 @@ procedure TModServer.SetLocalEcho(Value: Boolean);
 begin
   FLocalEcho := Value;
 end;
+
 
 
 // ***************** TModClient Implementation *********************
@@ -783,7 +781,7 @@ begin
     OnError := tcpClientOnError;
     OnWrite := tcpClientOnWrite;
 
-    Port := TWXDatabase.DBHeader.Port;
+    Port := TWXDatabase.DBHeader.ServerPort;
     Host := TWXDatabase.DBHeader.Address;
   end;
 
@@ -842,9 +840,12 @@ begin
   TWXExtractor.Reset;
   FConnecting := FALSE;
 
-  // Send Are You There
   try
-    ScktComp.SendText(#255 + OP_DO + #246);
+    // Send Initial Handshake
+    if TWXDatabase.DBHeader.UseRlogin then
+      ScktComp.SendText(#0 + TWXDatabase.DBHeader.LoginName + #0 + #0 + #0)
+    else
+      ScktComp.SendText(#255 + OP_DO + #246);
   except
     OutputDebugString(PChar('Unexpected error sending telnet handshake'));
   end;
@@ -862,8 +863,10 @@ begin
 
   // manual event - trigger login script
   if (TWXDatabase.DBHeader.UseLogin) then
+  begin
     TWXInterpreter.StopAll(FALSE);
     TWXInterpreter.Load(FetchScript(TWXDatabase.DBHeader.LoginScript, FALSE), TRUE);
+  end;
 end;
 
 procedure TModClient.tcpClientOnDisconnect(Sender: TObject; ScktComp: TCustomWinSocket);

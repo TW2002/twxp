@@ -21,34 +21,36 @@ For license terms please refer to GPL.txt.
 These files should be stored in the root of the compression you 
 received this source in.
 }
-program TWXProxy;
+program TWXP;
 
-{%TogetherDiagram 'ModelSupport_TWXProxy\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Global\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Process\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Bubble\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Core\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmd\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TWXExport\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Script\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Utility\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TWXProxy\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormHistory\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\DataBase\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TCP\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmp\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormSetup\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Menu\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormScript\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormAbout\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormMain\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Ansi\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\GUI\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Observer\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Persistence\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptRef\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Log\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\default.txvpck'}
+
+
+{%TogetherDiagram 'ModelSupport_TWXP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Global\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Process\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Bubble\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Core\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptCmd\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TWXExport\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Script\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Utility\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormHistory\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\DataBase\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TCP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptCmp\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormSetup\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Menu\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormScript\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormAbout\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormMain\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Ansi\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\GUI\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Observer\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Persistence\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptRef\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Log\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\default.txvpck'}
 
 uses
   Forms,
@@ -164,7 +166,7 @@ begin
     CreateDir(ProgramDir + '\logs');
 
   PersistenceManager := TPersistenceManager.Create(Application);
-  PersistenceManager.OutputFile := 'TWXSetup.dat';
+  PersistenceManager.OutputFile := 'TWXS.dat';
 
   // call object constructors
   for ModuleType := Low(TModuleType) to High(TModuleType) do
@@ -182,7 +184,7 @@ begin
 
     if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
     begin
-      TWXServer.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
+      TWXDatabase.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
     end
 
     // EP - New Switches
@@ -210,7 +212,7 @@ begin
       // Alternate syntax for listening port, e.g. "twxproxy /p 2002"
       if Switch = '/P' then
       begin
-        TWXServer.ListenPort := StrToIntSafe(ParamStr(I));
+        TWXDatabase.ListenPort := StrToIntSafe(ParamStr(I));
       end
       else if Switch = '/DBCREATE' then // Create a new Database
       begin
@@ -243,6 +245,7 @@ begin
   try
     // MB - Close database before saving module states to prevent unhandled exception
     TWXGUI.DatabaseName := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName));
+    TWXGUI.TrayHint := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName))+ ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
     TWXDatabase.CloseDatabase;
 
     PersistenceManager.SaveStateValues;
@@ -322,10 +325,11 @@ begin
 //  else
 //    TWXServer.ListenPort := 3000;
 
-  TWXServer.Activate;
+  //if TWXGUI.DatabaseName <> '' then
+  //  TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
 
-  if TWXGUI.DatabaseName <> '' then
-    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
+  if TWXDatabase.DataBaseOpen then
+    TWXServer.Activate;
 
   try
     // we don't use the TApplication message loop, as it requires a main form

@@ -1788,8 +1788,10 @@ end;
 
 procedure TModMenu.miListenPort2(ClientIndex : Byte);
 begin
-  TWXServer.ListenPort := StrToIntSafe(CurrentMenu.Line);
-  TWXServer.Activate;
+  // MB - Moved to Database
+  //TWXServer.ListenPort := StrToIntSafe(CurrentMenu.Line);
+  //TWXServer.Activate;
+  TWXDatabase.ListenPort := StrToIntSafe(CurrentMenu.Line);
   CurrentMenu.Value := IntToStr(TWXServer.ListenPort);
 end;
 
@@ -2033,7 +2035,7 @@ begin
         Head.Address := Address;
 
       if (Integer(CurrentMenu.GetParam(2)^) <> 0) then
-        Head.Port := Integer(CurrentMenu.GetParam(2)^);
+        Head.ServerPort := Integer(CurrentMenu.GetParam(2)^);
 
       Seek(F, 0);
       BlockWrite(F, Head, SizeOf(TDataHeader));
@@ -2119,7 +2121,7 @@ begin
       Head.Address := Address;
 
     if (Integer(CurrentMenu.GetParam(2)^) <> 0) then
-      Head.Port := Integer(CurrentMenu.GetParam(2)^);
+      Head.ServerPort := Integer(CurrentMenu.GetParam(2)^);
 
     if (LoginScript <> '') then
       Head.LoginScript := LoginScript;
@@ -2314,7 +2316,7 @@ begin
   TWXServer.Broadcast(endl + endl + MENU_LIGHT + 'Details for TWX Proxy database ''' + MENU_MID + Name + MENU_LIGHT + ''':' + endl + endl);
   TWXServer.Broadcast(MENU_MID + 'Size: ' + MENU_DARK + IntToStr(Head.Sectors) + endl);
   TWXServer.Broadcast(MENU_MID + 'Server: ' + MENU_DARK + Head.Address + endl);
-  TWXServer.Broadcast(MENU_MID + 'Port: ' + MENU_DARK + IntToStr(Head.Port) + endl);
+  TWXServer.Broadcast(MENU_MID + 'Port: ' + MENU_DARK + IntToStr(Head.ServerPort) + endl);
   TWXServer.Broadcast(MENU_MID + 'Use login script: ' + MENU_DARK + UseLogin + endl);
 
   if (Head.UseLogin) then

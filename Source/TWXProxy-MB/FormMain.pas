@@ -120,12 +120,10 @@ type
 
   private
     LoadingScript : Boolean;
-    FDatabaseName,
     FProgramDir   : string;
 
     procedure OnScriptMenuItemClick(Sender: TObject);
-    procedure SetDatabaseName(const Value : string);
-    function GetDatabaseName : string;
+    procedure SetTrayHint(const Value : string);
 
   public
     constructor Create(AOwner : TComponent); override;
@@ -135,7 +133,7 @@ type
     procedure AddScriptMenu(Script: TScript);
     procedure RemoveScriptMenu(Script: TScript);
 
-    property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+    property TrayHint: string write SetTrayHint;
   end;
 
 implementation
@@ -166,16 +164,13 @@ begin
   miStop.Visible := False;
 end;
 
-procedure TfrmMain.SetDatabaseName(const Value : string);
+procedure TfrmMain.SetTrayHint(const Value : string);
 begin
-  FDatabaseName := Value;
-  trayIcon.Hint := 'TWX Proxy: ' + Value;
+  //FDatabaseName := Value;
+  //trayIcon.Hint := 'TWX Proxy: ' + Value;
+  trayIcon.Hint := Value;
 end;
 
-function TfrmMain.GetDatabaseName : string;
-begin
-  Result := FDatabaseName;
-end;
 
 
 

@@ -120,7 +120,8 @@ type
     tbReconnectDelay: TEdit;
     Label22: TLabel;
     tbListenPort: TEdit;
-    Label2: TLabel;
+    Label23: TLabel;
+    cbUseRLogin: TCheckBox;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -194,7 +195,8 @@ begin
   // populate form from system setup
   tbBubbleSize.Text := IntToStr(TWXBubble.MaxBubbleSize);
   cbCache.Checked := TWXDatabase.UseCache;
-  tbListenPort.Text := IntToStr(TWXServer.ListenPort);
+  // MB - Moved to database.
+  //tbListenPort.Text := IntToStr(TWXServer.ListenPort);
   cbAllowLerkers.Checked := TWXServer.AllowLerkers;
   cbAcceptExternal.Checked := TWXServer.AcceptExternal;
   tbExternalAddress.Text := TWXServer.ExternalAddress;
@@ -293,10 +295,17 @@ begin
 
     FindClose(S);
 
-    cbGames.ItemIndex := Found;
+    if Found <> -1 then
+    begin
+      cbGames.ItemIndex := Found;
+      cbGames.OnChange(Self);
+    end
+    else
+    begin
+      btnAddClick(Self);
+    end;
   end;
 
-  cbGames.OnChange(Self);
 end;
 
 procedure TfrmSetup.btnOKMainClick(Sender: TObject);
@@ -371,8 +380,9 @@ begin
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
-  TWXServer.Activate;
+  // MB - Moved to Database.
+  //TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
+  //TWXServer.Activate;
   TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
   TWXServer.ExternalAddress := tbExternalAddress.Text;
@@ -384,7 +394,7 @@ begin
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;
 
-  // MB - Save object states to twxsetup.dat
+  // MB - Save object states to TWXS.dat
   try
     DB := TWXDatabase.DatabaseName;
     TWXDatabase.CloseDatabase;
@@ -441,8 +451,9 @@ begin
     tbDescription.Text := cbGames.Text;
     tbSectors.Text := IntToStr(Head^.Sectors);
     tbHost.Text := Head^.Address;
-    tbPort.Text := IntToStr(Head^.Port);
-//    tbListenPort.Text := IntToStr(Head^.ServerPort);
+    tbPort.Text := IntToStr(Head^.ServerPort);
+    tbListenPort.Text := IntToStr(Head^.ListenPort);
+    cbUseRLogin.Checked := Head^.UseRLogin;
     cbUseLogin.Checked := Head^.UseLogin;
     tbLoginScript.Text := Head^.LoginScript;
     tbLoginName.Text := Head^.LoginName;
@@ -454,7 +465,7 @@ begin
     tbDescription.Text := '';
     tbHost.Text := '';
     tbPort.Text := '';
-//    tbListenPort.Text := '';
+    tbListenPort.Text := '';
     tbSectors.Text := '';
     cbUseLogin.Checked := FALSE;
     tbLoginScript.Text := '';
@@ -470,6 +481,7 @@ var
   S        : string;
   Focus    : TWinControl;
   Port,
+  ListenPort,
   Sectors  : Word;
   I        : Integer;
   Head     : PDataHeader;
@@ -506,8 +518,15 @@ begin
   Val(tbPort.Text, Port, I);
   if (I <> 0) then
   begin
-    Error := 'You must enter a valid port number';
+    Error := 'You must enter a valid server port number';
     Focus := tbPort;
+  end;
+
+  Val(tbListenPort.Text, ListenPort, I);
+  if (I <> 0) then
+  begin
+    Error := 'You must enter a valid listen port number';
+    Focus := tbListenPort;
   end;
 
   Val(tbSectors.Text, Sectors, I);
@@ -536,9 +555,10 @@ begin
   tbDescription.Enabled := FALSE;
   tbHost.Enabled := FALSE;
   tbPort.Enabled := FALSE;
-//  tbListenPort.Enabled := FALSE;
+  tbListenPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
+  cbUseRLogin.Enabled := FALSE;
 
   tbLoginScript.Enabled := FALSE;
   tbLoginName.Enabled := FALSE;
@@ -549,6 +569,9 @@ begin
   btnDelete.Enabled := TRUE;
   btnEdit.Enabled := TRUE;
 
+  cbGames.Enabled := TRUE;
+  btnOKMain.Enabled := TRUE;
+  btnCancelMain.Enabled := TRUE;
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
@@ -562,17 +585,18 @@ begin
 
   Head^.Address := tbHost.Text;
   Head^.Sectors := Sectors;
-  Head^.Port := Port;
+  Head^.ServerPort := Port;
+  Head^.ListenPort := ListenPort;
   Head^.UseLogin := cbUseLogin.Checked;
+  Head^.UseRLogin := cbUseRLogin.Checked;
   Head^.LoginName := tbLoginName.Text;
   Head^.Password := tbPassword.Text;
+  Head^.LoginScript := tbLoginScript.Text;
 
   if (Length(tbGame.Text) > 0) then
     Head^.Game := tbGame.Text[1]
   else
     Head^.Game := ' ';
-
-  Head^.LoginScript := tbLoginScript.Text;
 
   if not (Edit) then
   begin
@@ -592,7 +616,7 @@ begin
         TWXDatabase.CreateDatabase(S, Head^);
       except
         MessageDlg('An error occured while trying to create the database', mtError, [mbOK], 0);
-        cbGames.OnChange(Self);
+        cbGames.OnChange (Self);
         Exit;
       end;
 
@@ -609,28 +633,38 @@ begin
   tbDescription.Enabled := TRUE;
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-//  tbListenPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
+  cbUseRLogin.Enabled := TRUE;
+  tbLoginName.Enabled := TRUE;
+  tbPassword.Enabled := TRUE;
+  tbGame.Enabled := TRUE;
 
-  tbDescription.Text := 'New Game';
-  tbHost.Text := '';
+  tbDescription.Text := '<New Game>';
+  tbHost.Text := '<Address>';
   tbPort.Text := '2002';
-  tbListenPort.Text := '3000';
+  tbListenPort.Text := '2300';
   tbSectors.Text := '5000';
   cbUseLogin.Checked := FALSE;
-  tbLoginScript.Text := '1_Login.ts';
+  cbUseRLogin.Checked := FALSE;
+  tbLoginScript.Text := 'Login.ts';
   tbLoginName.Text := '';
   tbPassword.Text := '';
   tbGame.Text := '';
   cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
-  btnSave.Enabled := TRUE;
-  btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
   btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
+
+  cbGames.Enabled  := FALSE;
+  btnOKMain.Enabled := FALSE;
+  btnCancelMain.Enabled := FALSE;
+  btnDelete.Enabled := FALSE;
+  btnSave.Enabled := TRUE;
+  btnCancel.Enabled := TRUE;
 
   Edit := FALSE;
 end;
@@ -639,17 +673,25 @@ procedure TfrmSetup.btnEditClick(Sender: TObject);
 begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-//  tbListenPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
+  cbUseRLogin.Enabled := TRUE;
   cbUseLoginClick(Sender);
+  tbLoginName.Enabled := TRUE;
+  tbPassword.Enabled := TRUE;
+  tbGame.Enabled := TRUE;
 
   tbHost.SetFocus;
 
-  btnSave.Enabled := TRUE;
-  btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
   btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
+
+  cbGames.Enabled := FALSE;
+  btnOKMain.Enabled := FALSE;
+  btnCancelMain.Enabled := FALSE;
+  btnSave.Enabled := TRUE;
+  btnCancel.Enabled := TRUE;
 
   Edit := TRUE;
 end;
@@ -705,16 +747,10 @@ begin
   if (cbUseLogin.Checked) then
   begin
     tbLoginScript.Enabled := TRUE;
-    tbLoginName.Enabled := TRUE;
-    tbPassword.Enabled := TRUE;
-    tbGame.Enabled := TRUE;
   end
   else
   begin
     tbLoginScript.Enabled := FALSE;
-    tbLoginName.Enabled := TRUE;
-    tbPassword.Enabled := TRUE;
-    tbGame.Enabled := TRUE;
   end;
 end;
 
@@ -725,6 +761,10 @@ begin
   tbPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
+  cbUseRLogin.Enabled := FALSE;
+  tbLoginName.Enabled := FALSE;
+  tbPassword.Enabled := FALSE;
+  tbGame.Enabled := FALSE;
 
   tbLoginScript.Enabled := FALSE;
   tbLoginName.Enabled := FALSE;
@@ -735,6 +775,9 @@ begin
   btnDelete.Enabled := TRUE;
   btnEdit.Enabled := TRUE;
 
+  cbGames.Enabled := TRUE;
+  btnOKMain.Enabled := TRUE;
+  btnCancelMain.Enabled := TRUE;
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
