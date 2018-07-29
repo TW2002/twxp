@@ -42,6 +42,7 @@ uses
   ExtCtrls,
   StdCtrls,
   ComCtrls,
+  CommCtrl,
   //TrayIcon,
   ImgList,
   FileCtrl,
@@ -51,7 +52,9 @@ uses
   //OverbyteICSTnCnx,
   Core,
   Script,
-  ActnList;
+  ActnList,
+  Variants,
+  ShellAPI;
 
 type
   TScriptMenuItem = class(TMenuItem)
@@ -117,14 +120,19 @@ type
     procedure miHelpScriptClick(Sender: TObject);
     procedure miHelpPack2Click(Sender: TObject);
     procedure miPlayLogClick(Sender: TObject);
-
+const
+    WM_ICONRESPONSE = WM_USER + 1;
   private
+    FIconShown: Boolean;
+    FTrayIconData: TNotifyIconData;
     LoadingScript : Boolean;
     FProgramDir   : string;
 
     procedure OnScriptMenuItemClick(Sender: TObject);
+    procedure LoadTrayIcon(const Value : string);
     procedure SetTrayHint(const Value : string);
-
+    procedure HideTrayIcon();
+    procedure IconResponse(var Msg: TMessage); message WM_ICONRESPONSE;
   public
     constructor Create(AOwner : TComponent); override;
 
@@ -145,8 +153,7 @@ uses
   TWXExport,
   Ansi,
   Registry,
-  WinTypes,
-  ShellAPI;
+  WinTypes;
 
 {$R *.DFM}
 
@@ -164,21 +171,137 @@ begin
   miStop.Visible := False;
 end;
 
-procedure TfrmMain.SetTrayHint(const Value : string);
+//function SHGetImageList(iImageList: Integer; const riid: TGUID;
+//  var ppvObj: Pointer): HResult; stdcall; external shell32;
+
+function EnumRCDataProc(hModule: HMODULE; lpszType, lpszName: PChar; lParam:
+    NativeInt): BOOL; stdcall;
 begin
-  //FDatabaseName := Value;
-  //trayIcon.Hint := 'TWX Proxy: ' + Value;
-  trayIcon.Hint := Value;
+  TStrings(lParam).Add(lpszName);
+  Result := True;
 end;
 
+procedure TfrmMain.LoadTrayIcon(const Value : string);
+var
+    FileName : PChar;
+    Index : Integer;
+    LargeIcon: HIcon;
+    SmallIcon: HIcon;
+    Icon :Ticon;
+
+begin
+  if Value = '' then
+  begin
+    FileName := '%SystemRoot%\system32\Shell32.dll';
+    //FileName := 'twxp.exe';
+    Index := 20;
+  end
+  else
+  begin
+
+  end;
+
+  If ExtractIconEx( FileName, Index, LargeIcon, SmallIcon, 1) > 0 Then
+  Begin;
+    if not FIconShown then
+    begin
+
+      //with FTrayIconData do
+      //begin
+        //uID := 1;
+        //Wnd := Handle;
+        //cbSize := SizeOf(FTrayIconData);
+        //hIcon := LargeIcon;
+        //uCallbackMessage := WM_ICONRESPONSE;
+        //uFlags := NIF_TIP + NIF_MESSAGE + NIF_ICON;
+        //StrPCopy(szTip, 'Here is your system tray icon, at your service!');
+      //end;
+      //Shell_NotifyIcon(NIM_ADD, @FTrayIconData);
+      //FIconShown := True;
+
+      //trayIcon.icon.handle := LargeIcon;
+      //trayIcon.Icon.LoadFromFile('Icon.ico');
+
+  //trayIcon.Icons := TImageList.Create(Self);
+      Icon := TIcon.Create;
+      Icon.Handle := SmallIcon;
+//  MyIcon.LoadFromFile('icons/earth1.ico');
+  //trayIcon.Icon.Assign(Icon);
+  //trayIcon.Icons.AddIcon(Icon);
+       trayIcon.Icon := Icon;
+      //trayIcon.Icons.AddIcon(Icon);
+      trayIcon.IconIndex := 0;
+      trayIcon.Refresh;
+    end
+    else
+    begin
+      FTrayIconData.hIcon := SmallIcon;
+      Shell_NotifyIcon(NIM_MODIFY, @FTrayIconData);
+    end;
+
+    //DestroyIcon(LargeIcon);
+    //DestroyIcon(SmallIcon);
+
+    End;
+end;
+
+procedure TfrmMain.SetTrayHint(const Value : string);
+var
+  Icon: TIcon;
+  FileInfo: SHFILEINFO;
+  ImageList: HIMAGELIST;
+const
+  IID_IImageList: TGUID = '{46EB5926-582E-4017-9FDF-E8998DAA0950}';
+var
+  himl: HIMAGELIST;
+  hResFile: HMODULE;
+  ASrcFile, ADestFile: WideString;
+begin
+  if not FIconShown then
+    LoadTrayIcon('');
+
+  StrPCopy(FTrayIconData.szTip, Value);
+  Shell_NotifyIcon(NIM_MODIFY, @FTrayIconData);
+
+end;
+
+procedure TfrmMain.HideTrayIcon;
+begin
+  if FIconShown then
+  begin
+    Shell_NotifyIcon(NIM_DELETE, @FTrayIconData);
+    FIconShown := False;
+  end;
+end;
+
+procedure TfrmMain.IconResponse(var Msg: TMessage);
+var
+  pt: TPoint;
+  begin
+    case Msg.lParam of
+      WM_LBUTTONDOWN:
+      begin
+        SetForegroundWindow(Application.Handle);
+      end;
+      WM_RBUTTONDOWN:
+      begin
+        GetCursorPos(pt);
+        //pmRightClick.Popup(pt.x, pt.y);
+        //mnuPopup
+        SetForegroundWindow(Application.Handle);
+
+        if (miLoad.Default) then
+          miLoadClick(Self)
+        else if (miConnect.Default) then
+          miConnectClick(Self);
+      end;
+    end;
+  end;
 
 
 
 // ************************************************************************
 // Menu Functions
-
-
-
 
 procedure TfrmMain.miSetupClick(Sender: TObject);
 begin

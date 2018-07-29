@@ -66,6 +66,7 @@ type
     Password,
     LoginName   : string[40];
     Game        : Char;
+    IconFile    : String[255];
     UseRLogin   : Boolean;
     UseLogin    : Boolean;
     RobFactor,

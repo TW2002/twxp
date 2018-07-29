@@ -84,6 +84,8 @@ uses
   Observer in 'Observer.pas',
   Messages;
 
+//FormChangeIcon in 'FormChangeIcon.pas' {frmChangeIcon};
+
 {$R *.RES}
 
 type
@@ -165,6 +167,9 @@ begin
   if not (DirectoryExists(ProgramDir + '\logs')) then
     CreateDir(ProgramDir + '\logs');
 
+  // TODO: Register .xdb with proxy. May require Win32 API call.
+  // TODO: Set TWXProxy as the devault Telnet application in the registry.
+
   PersistenceManager := TPersistenceManager.Create(Application);
   PersistenceManager.OutputFile := 'TWXS.dat';
 
@@ -178,11 +183,17 @@ begin
   I := 1;
   while (I <= ParamCount) do
   begin
-    Usage := 'Usage:/ntwxproxy /p <port#> /dblist';
+    Usage := 'Usage:/ntwxp [database] /p <port#> /dblist';
     Switch := UpperCase(ParamStr(I));
     //WriteLn(Switch + endl);
 
-    if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
+    // MB - Set Database name from first paramater
+    //      for windows file association.
+    if (Copy(Switch, 1, 1) <> '/') and (Length(Switch) > 0) then
+    begin
+      TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Switch));
+    end
+    else if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
     begin
       TWXDatabase.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
     end
@@ -243,9 +254,10 @@ var
   ObjectName : String;
 begin
   try
-    // MB - Close database before saving module states to prevent unhandled exception
+    // MB - Save the current database name.
     TWXGUI.DatabaseName := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName));
-    TWXGUI.TrayHint := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName))+ ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
+
+    // MB - Close database before saving module states to prevent unhandled exception
     TWXDatabase.CloseDatabase;
 
     PersistenceManager.SaveStateValues;
@@ -315,21 +327,16 @@ begin
 
   Application.Initialize;
   Application.Title := 'TWX Proxy';
+  //Application.CreateForm(TfrmChangeIcon, FormChangeIcon);
   SetCurrentDir(ExtractFilePath(Application.ExeName));
   InitProgram;
-  // EP - The Server ListenPort is persisted by the database now, so load from there
-  // MB - This doesn't work. To do this, the listen port woule need to be moved to the
-  //      database tab of the setup form, and disabled unless editing database settings.
-//  if TWXDatabase.DataBaseOpen then
-//    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
-//  else
-//    TWXServer.ListenPort := 3000;
 
-  //if TWXGUI.DatabaseName <> '' then
-  //  TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
+  if TWXGUI.DatabaseName <> '' then
+    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
 
-  if TWXDatabase.DataBaseOpen then
-    TWXServer.Activate;
+  // MB - TWXServer activation is now handled by the database.
+  //if TWXDatabase.DataBaseOpen then
+  //  TWXServer.Activate;
 
   try
     // we don't use the TApplication message loop, as it requires a main form

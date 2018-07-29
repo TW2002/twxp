@@ -28,5 +28,11 @@
     <Transaction>2018/07/19 11:45:20.571.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Log\default.txaPackage=</Transaction>
     <Transaction>2018/07/19 11:45:20.581.txvpck,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\default.txvpck=</Transaction>
     <Transaction>2018/07/19 11:45:20.624.bdsproj,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\TWXProxy.bdsproj=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\TWXP.bdsproj</Transaction>
+    <Transaction>2018/07/23 13:02:54.893.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.pas</Transaction>
+    <Transaction>2018/07/23 13:02:54.893.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.dfm=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.dfm</Transaction>
+    <Transaction>2018/07/23 13:21:25.152.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.pas</Transaction>
+    <Transaction>2018/07/23 13:21:25.152.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.dfm=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm</Transaction>
+    <Transaction>2018/07/27 10:09:12.136.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.pas=</Transaction>
+    <Transaction>2018/07/27 10:09:12.136.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm=</Transaction>
   </Transactions>
 </BorlandProject>

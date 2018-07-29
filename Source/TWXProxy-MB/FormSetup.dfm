@@ -107,6 +107,20 @@ object frmSetup: TfrmSetup
           Height = 13
           Caption = 'Listening Port'
         end
+        object Label2: TLabel
+          Left = 172
+          Top = 182
+          Width = 45
+          Height = 13
+          Caption = 'Tray Icon'
+        end
+        object TrayImage: TImage
+          Left = 226
+          Top = 181
+          Width = 16
+          Height = 16
+          OnClick = TrayImageClick
+        end
         object tbHost: TEdit
           Left = 96
           Top = 28
