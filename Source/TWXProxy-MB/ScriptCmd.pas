@@ -2342,13 +2342,20 @@ begin
   if (Length(Indexes) < 1) then
     raise EScriptError.Create('Invalid parameters for PORT.CLASS[sector]');
 
-  ConvertToNumber(Indexes[0], SectIndex);
-  CheckSector(SectIndex);
+  Try
+    ConvertToNumber(Indexes[0], SectIndex);
+    CheckSector(SectIndex);
 
-  if (TWXDatabase.Sectors[SectIndex].SPort.Name = '') then
-    Result := '-1'
-  else
-    Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ClassIndex);
+    if (TWXDatabase.Sectors[SectIndex].SPort.Name = '') then
+      Result := '-1'
+    else
+        Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ClassIndex);
+  Except
+      // MB - Ignore this error and report no port found
+      Result := '-1';
+      EScriptError.Create('Invalid Sector Index (' + Indexes[0] + ')');
+  End;
+
 end;
 
 function SCPort_BuildTime(Indexes : TStringArray) : string;
@@ -2432,14 +2439,21 @@ begin
   if (Length(Indexes) < 1) then
     raise EScriptError.Create('Invalid parameters for PORT.EXISTS[sector]');
 
-  ConvertToNumber(Indexes[0], SectIndex);
-  CheckSector(SectIndex);
+  Try
+    ConvertToNumber(Indexes[0], SectIndex);
+    CheckSector(SectIndex);
 
-  if (TWXDatabase.Sectors[SectIndex].SPort.Name = '') then begin
-    Result := '0';
-  end else begin
-    Result := '1';
-  end;
+    if (TWXDatabase.Sectors[SectIndex].SPort.Name = '') then begin
+      Result := '0';
+    end else begin
+      Result := '1';
+    end;
+  Except
+      Result := '0';
+      EScriptError.Create('Invalid Sector Index (' + Indexes[0] + ')');
+  End;
+
+
 end;
 
 function SCPort_Fuel(Indexes : TStringArray) : string;

@@ -115,10 +115,10 @@ object frmSetup: TfrmSetup
           Caption = 'Tray Icon'
         end
         object TrayImage: TImage
-          Left = 226
-          Top = 181
-          Width = 16
-          Height = 16
+          Left = 224
+          Top = 167
+          Width = 32
+          Height = 32
           OnClick = TrayImageClick
         end
         object tbHost: TEdit
@@ -278,10 +278,6 @@ object frmSetup: TfrmSetup
     object tabProgram: TTabSheet
       Caption = 'Program'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label11: TLabel
         Left = 16
         Top = 48
@@ -412,10 +408,6 @@ object frmSetup: TfrmSetup
     object tabLogging: TTabSheet
       Caption = 'Logging'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label9: TLabel
         Left = 16
         Top = 112
@@ -474,10 +466,6 @@ object frmSetup: TfrmSetup
     object tabAutoRun: TTabSheet
       Caption = 'Auto Run'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object lbAutoRun: TListBox
         Left = 24
         Top = 96
@@ -523,10 +511,6 @@ object frmSetup: TfrmSetup
       Caption = 'Registration'
       ImageIndex = 5
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label18: TLabel
         Left = 48
         Top = 88
@@ -621,10 +605,6 @@ object frmSetup: TfrmSetup
       Caption = 'Auth Proxy'
       ImageIndex = 4
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 56
         Top = 24

@@ -643,7 +643,6 @@ var
     Index : Integer;
     LargeIcon: HIcon;
     SmallIcon: HIcon;
-    Icon :Ticon;
     StringList : TStringList;
 begin
   //FileName := '%SystemRoot%\system32\Shell32.dll';
@@ -655,7 +654,7 @@ begin
 
     if StringList.Count = 3 then
     begin
-      FileName := Pchar(StringList[0]) + Pchar(StringList[1]);
+      FileName := Pchar(StringList[0] + ':' + StringList[1]);
       Index := StrToInt(StringList[2]);
     end
   finally
@@ -664,31 +663,28 @@ begin
 
   If ExtractIconEx( FileName, Index, LargeIcon, SmallIcon, 1) > 0 Then
   Begin;
-      Icon := TIcon.Create;
-      Icon.Handle := SmallIcon;
+    TrayImage.Canvas.Pen.Color := clBtnFace;
+    TrayImage.Canvas.Brush.Color := clBtnFace;
+    TrayImage.Canvas.FillRect(Rect(0,0,32,32));
 
-      DrawIconEx(TrayImage.Canvas.Handle, 0, 0, SmallIcon, 16, 16, 0, 0, DI_NORMAL);
-
-    DestroyIcon(LargeIcon);
-    DestroyIcon(SmallIcon);
+    DrawIconEx(TrayImage.Canvas.Handle, 0, 0, LargeIcon, 32, 32, 0, 0, DI_NORMAL);
   End;
+  DestroyIcon(LargeIcon);
+  DestroyIcon(SmallIcon);
 end;
 
 procedure TfrmSetup.TrayImageClick(Sender: TObject);
 var
   FileName :  array[0..MAX_PATH - 1] of WideChar;
   Size, Index: LongInt;
-  hLargeIcon, hSmallIcon : HIcon;
-  Stream: TFileStream;
 begin
   Size := MAX_PATH;
   StringToWideChar(ExtractFilePath(Application.ExeName) + 'twxp.dll', FileName, MAX_PATH);
   If PickIconDlgW(Self.Handle, FileName, Size, Index) Then
-    //If (Index <> -1) Then
-    begin
-      FIconFile := WideCharToString(FileName) + ':' + IntToStr(Index);
-      LoadIconImage(FIconFile);
-    end;
+  begin
+    FIconFile := WideCharToString(FileName) + ':' + IntToStr(Index);
+    LoadIconImage(FIconFile);
+  end;
 end;
 
 procedure TfrmSetup.btnAddClick(Sender: TObject);

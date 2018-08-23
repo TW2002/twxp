@@ -441,6 +441,7 @@ begin
   TWXServer.Broadcast(endl + ANSI_15 + 'Database successfully loaded - ' + IntToStr(DBHeader.Sectors) + ' sectors, ' + IntToStr(WarpCount) + ' warps' + endl);
   TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Filename));
   TWXGUI.TrayHint := StripFileExtension(ShortFilename(Filename)) + ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
+  TWXGUI.LoadTrayIcon(DBHeader.IconFile);
 
   if TWXServer.ListenPort <> TWXDatabase.ListenPort then
   begin

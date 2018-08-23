@@ -68,6 +68,7 @@ type
 
     property GUIForms[TGUIFormType: TGUIFormType]: TForm read GUIFormFactory;
   public
+    procedure LoadTrayIcon(const Value: string);
     procedure AfterConstruction; override;
     procedure ShowForm(FormType: TGUIFormType);
     procedure AddToHistory(HistoryType: THistoryType; const Value: string);
@@ -134,7 +135,6 @@ end;
 procedure TModGUI.SetDatabaseName(const Value : string);
 begin
   FDatabaseName := Value;
-  // MB - Moved to SetTrayHint
   //TfrmMain(GUIForms[gfMain]).DatabaseName := Value;
 end;
 
@@ -147,6 +147,12 @@ procedure TModGUI.SetTrayHint(const Value : string);
 begin
   TfrmMain(GUIForms[gfMain]).TrayHint := Value;
 end;
+
+procedure TModGUI.LoadTrayIcon(const Value : string);
+begin
+  TfrmMain(GUIForms[gfMain]).LoadTrayIcon(Value);
+end;
+
 
 function TModGUI.GetRecording: Boolean;
 begin
