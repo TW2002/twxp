@@ -1670,6 +1670,14 @@ var
 begin
   // CMD: saveVar var
 
+  // MB - This is a patch for a Mombot 3.1044 / 3.1045 incorrectly storing
+  //      $MULTIPLE_PHOTONS as a string instead of bool.
+  if (TVarParam(Params[0]).Name = '$MULTIPLE_PHOTONS') then
+    if (Params[0].Value = 'True') then
+      Params[0].Value := '1'
+    else
+      Params[0].Value := '0';
+
   INI := TINIFile.Create(TScript(Script).ProgramDir + '\' + StripFileExtension(TWXDatabase.DatabaseName) + '.cfg');
 
   try
