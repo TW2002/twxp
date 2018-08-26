@@ -1481,7 +1481,7 @@ begin
   except
     on E : EScriptError do
     begin
-      TWXServer.Broadcast(ANSI_15 + 'Script run-time error in ''' + Cmp.IncludeScripts[ExecScriptID] + ''': ' + ANSI_7 + E.Message + ', line ' + IntToStr(Line) + endl);
+      TWXServer.Broadcast(ANSI_15 + 'Script run-time error in ''' + Cmp.IncludeScripts[ExecScriptID] + ''': ' + ANSI_7 + E.Message + ', line ' + IntToStr(Line) + ', cmd ' + IntToStr(Cmd) + endl);
       CmdAction := caStop;
     end;
   else

@@ -808,6 +808,12 @@ begin
 
   ConvertToNumber(Params[0].Value, Index);
 
+  // MB - Ignore invalid call with index of zero
+  if (index = 0) then begin
+    Result := caNone;
+    exit
+  end;
+
   CheckSector(Index);
 
   S := TWXDatabase.LoadSector(Index);
@@ -851,10 +857,15 @@ begin
     else
       SetVariable(VarName + '.FIGS.TYPE', 'OFFENSIVE', '');
 
-    if (S.Anomaly) then
-      SetVariable(VarName + '.ANOMALY', 'YES', '')
-    else
+    // MB - Added mispelled paramter for backwards compatability
+    if (S.Anomaly) then begin
+      SetVariable(VarName + '.ANOMALY', 'YES', '');
+      SetVariable(VarName + '.ANOMOLY', 'YES', '')
+    end
+    else begin
       SetVariable(VarName + '.ANOMALY', 'NO', '');
+      SetVariable(VarName + '.ANOMOLY', 'NO', '');
+    end;
 
     if (S.SPort.Name = '') then
     begin
@@ -967,6 +978,20 @@ begin
   // CMD: getSectorParameter <sectorIndex> <parameterName> var
 
   ConvertToNumber(Params[0].Value, Index);
+
+  // MB - Ignore invalid call with index of zero
+  if (index = 0) then begin
+    Result := caNone;
+    exit
+  end;
+
+  // MB - ignore Mombot request retrieve fighter count on sector2.
+  //      fighters cannont be placed in fedspace anyway.
+  if ((index = 2) and (Params[1].Value = 'FIG_COUNT')) then begin
+    Result := caNone;
+    exit
+  end;
+
   CheckSector(Index);
 
   if (Length(Params[1].Value) > 10) then
@@ -977,11 +1002,6 @@ begin
 
   Params[2].Value := TWXDatabase.GetSectorVar(Index, Params[1].Value);
 
-{$ifdef TESTMODE}
-  // MB - Debugging issue #15
-  TWXLog.WriteLog(endl + 'Debug-GSP:' + IntToStr(Length(Params[1].Value)) + ':' +
-                  IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
-{$EndIf}
   if (Length(Params[2].Value) > 40) then
   begin
     TWXServer.Broadcast('SCSectorParameterValueError:' + IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
