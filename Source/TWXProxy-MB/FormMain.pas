@@ -125,6 +125,10 @@ const
     LoadingScript : Boolean;
     FProgramDir   : string;
 
+    LargeIcon: HIcon;
+    SmallIcon: HIcon;
+    Icon :Ticon;
+
     procedure OnScriptMenuItemClick(Sender: TObject);
     procedure SetTrayHint(const Value : string);
   public
@@ -160,6 +164,8 @@ constructor TfrmMain.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
 
+  Icon := TIcon.Create;
+
   Top := -100;
   FProgramDir := (Owner as TModGUI).ProgramDir;
   LoadingScript := FALSE;
@@ -180,9 +186,6 @@ procedure TfrmMain.LoadTrayIcon(const Value : string);
 var
     FileName : PChar;
     Index : Integer;
-    LargeIcon: HIcon;
-    SmallIcon: HIcon;
-    Icon :Ticon;
     StringList : TStringList;
 begin
   //FileName := '%SystemRoot%\system32\Shell32.dll';
@@ -203,14 +206,11 @@ begin
 
   If ExtractIconEx( FileName, Index, LargeIcon, SmallIcon, 1) > 0 Then
   Begin;
-    Icon := TIcon.Create;
     Icon.Handle := SmallIcon;
     trayIcon.Icon := Icon;
     trayIcon.IconIndex := 0;
     trayIcon.Refresh;
   End;
-  DestroyIcon(LargeIcon);
-  DestroyIcon(SmallIcon);
 end;
 
 procedure TfrmMain.SetTrayHint(const Value : string);
@@ -231,6 +231,8 @@ end;
 procedure TfrmMain.miExitClick(Sender: TObject);
 begin
   // Exit program
+  DestroyIcon(LargeIcon);
+  DestroyIcon(SmallIcon);
 
   Application.Terminate;
 end;
