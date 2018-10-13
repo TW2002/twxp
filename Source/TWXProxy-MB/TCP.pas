@@ -183,6 +183,7 @@ type
     property Reconnect: Boolean read GetReconnect write SetReconnect;
     property ReconnectDelay: Integer read GetReconnectDelay write SetReconnectDelay;
     property BlockExtended: Boolean read FBlockExtended write FBlockExtended;
+    property UserDisconnect: Boolean read FUserDisconnect write FUserDisconnect;
   end;
 
 implementation
@@ -567,7 +568,7 @@ begin
     TWXDatabase.ListenPort := Value;
     try
       tcpServer.Port := TWXDatabase.ListenPort;
-      tcpServer.Active := TRUE;
+      //tcpServer.Active := TRUE;
     except
       MessageDlg('Unable to bind a listening socket on port ' + IntToStr(tcpServer.Port) + '.' + endl + 'You will need to change it before you can connect to TWX Proxy.', mtWarning, [mbOk], 0);
       tcpServer.Active := FALSE;

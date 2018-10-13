@@ -233,6 +233,7 @@ begin
   // Exit program
   DestroyIcon(LargeIcon);
   DestroyIcon(SmallIcon);
+  Icon.Free;
 
   Application.Terminate;
 end;

@@ -34,5 +34,6 @@
     <Transaction>2018/07/23 13:21:25.152.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.dfm=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm</Transaction>
     <Transaction>2018/07/27 10:09:12.136.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.pas=</Transaction>
     <Transaction>2018/07/27 10:09:12.136.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm=</Transaction>
+    <Transaction>2018/08/26 20:09:52.625.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ShellLink.pas</Transaction>
   </Transactions>
 </BorlandProject>

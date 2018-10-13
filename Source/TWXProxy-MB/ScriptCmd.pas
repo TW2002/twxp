@@ -985,13 +985,6 @@ begin
     exit
   end;
 
-  // MB - ignore Mombot request retrieve fighter count on sector2.
-  //      fighters cannont be placed in fedspace anyway.
-  if ((index = 2) and (Params[1].Value = 'FIG_COUNT')) then begin
-    Result := caNone;
-    exit
-  end;
-
   CheckSector(Index);
 
   if (Length(Params[1].Value) > 10) then
@@ -1000,7 +993,18 @@ begin
      raise EScriptError.Create(SCSectorParameterError);
   end;
 
-  Params[2].Value := TWXDatabase.GetSectorVar(Index, Params[1].Value);
+  try
+    Params[2].Value := TWXDatabase.GetSectorVar(Index, Params[1].Value);
+  except
+    if ((index = 2) and (Params[1].Value = 'FIG_COUNT')) then begin
+      Result := caNone;
+      exit
+    end
+    else begin
+      TWXServer.Broadcast('SCSectorParameterDatabaseError:' + Params[1].Value + ':' + Params[2].Value);
+      raise EScriptError.Create(SCSectorParameterError);
+    end;
+  end;
 
   if (Length(Params[2].Value) > 40) then
   begin
@@ -1875,11 +1879,6 @@ begin
 
   ConvertToNumber(Params[0].Value, Index);
   CheckSector(Index);
-{$ifdef TESTMODE}
-  // MB - Debugging issue #15
-  TWXLog.WriteLog(endl + 'Debug-SSP:' + IntToStr(Length(Params[1].Value)) + ':' +
-                  IntToStr(Length(Params[2].Value)) + ':' + Params[2].Value);
-{$EndIf}
 
   if (Length(Params[1].Value) > 10) then
     raise EScriptError.Create(SCSectorParameterError);
@@ -3146,6 +3145,7 @@ begin
     AddCommand('CUTTEXT', 4, 4, CmdCutText, [pkValue, pkVar, pkValue, pkValue], pkValue);
     AddCommand('DELETE', 1, 1, CmdDelete, [pkValue], pkValue);
     AddCommand('DISCONNECT', 0, 0, CmdDisconnect, [], pkValue);
+
     AddCommand('DIVIDE', 2, 2, CmdDivide, [pkVar, pkValue], pkValue);
     AddCommand('ECHO', 1, -1, CmdEcho, [pkValue], pkValue);
     AddCommand('FILEEXISTS', 2, 2, CmdFileExists, [pkVar, pkValue], pkValue);
@@ -3156,6 +3156,7 @@ begin
     AddCommand('GETDISTANCE', 3, 3, CmdGetDistance, [pkVar, pkValue, pkValue], pkValue);
     AddCommand('GETINPUT', 2, 3, CmdGetInput, [pkVar, pkValue], pkValue);
     AddCommand('GETLENGTH', 2, 2, CmdGetLength, [pkValue, pkVar], pkValue);
+
     AddCommand('GETMENUVALUE', 2, 2, CmdGetMenuValue, [pkValue, pkValue], pkValue);
     AddCommand('GETOUTTEXT', 1, 1, CmdGetOutText, [pkVar], pkValue);
     AddCommand('GETRND', 3, 3, CmdGetRnd, [pkVar, pkValue, pkValue], pkValue);
@@ -3166,6 +3167,7 @@ begin
     AddCommand('GOSUB', 1, 1, CmdGosub, [pkValue], pkValue);
     AddCommand('GOTO', 1, 1, CmdGoto, [pkValue], pkValue);
     AddCommand('GETWORD', 3, 4, CmdGetWord, [pkValue, pkVar, pkValue], pkValue);
+
     AddCommand('GETWORDPOS', 3, 3, CmdGetWordPos, [pkValue, pkVar, pkValue], pkValue);
     AddCommand('HALT', 0, 0, CmdHalt, [], pkValue);
     AddCommand('ISEQUAL', 3, 3, CmdIsEqual, [pkVar, pkValue, pkValue], pkValue);
@@ -3176,6 +3178,7 @@ begin
     AddCommand('ISNOTEQUAL', 3, 3, CmdIsNotEqual, [pkVar, pkValue, pkValue], pkValue);
     AddCommand('ISNUMBER', 2, 2, CmdIsNumber, [pkVar, pkValue], pkValue);
     AddCommand('KILLWINDOW', 1, 1, CmdKillWindow, [pkValue], pkValue);
+
     AddCommand('KILLALLTRIGGERS', 0, 0, CmdKillAllTriggers, [], pkValue);
     AddCommand('KILLTRIGGER', 1, 1, CmdKillTrigger, [pkValue], pkValue);
     AddCommand('LOAD', 1, 1, CmdLoad, [pkValue], pkValue);
@@ -3186,6 +3189,7 @@ begin
     AddCommand('MULTIPLY', 2, 2, CmdMultiply, [pkVar, pkValue], pkValue);
     AddCommand('OPENMENU', 1, 2, CmdOpenMenu, [pkValue, pkValue], pkValue);
     AddCommand('OR', 2, 2, CmdOr, [pkVar, pkValue], pkValue);
+
     AddCommand('PAUSE', 0, 0, CmdPause, [], pkValue);
     AddCommand('PROCESSIN', 2, 2, CmdProcessIn, [pkValue, pkValue], pkValue);
     AddCommand('PROCESSOUT', 1, 1, CmdProcessOut, [pkValue], pkValue);
@@ -3196,6 +3200,7 @@ begin
     AddCommand('RETURN', 0, 0, CmdReturn, [], pkValue);
     AddCommand('ROUND', 1, 2, CmdRound, [pkVar, pkValue], pkValue);
     AddCommand('SAVEVAR', 1, 1, CmdSaveVar, [pkVar], pkValue);
+
     AddCommand('SEND', 1, -1, CmdSend, [pkValue], pkValue);
     AddCommand('SETARRAY', 2, -1, CmdSetArray, [pkVar, pkValue], pkValue);
     AddCommand('SETDELAYTRIGGER', 3, 3, CmdSetDelayTrigger, [pkValue, pkValue, pkValue], pkValue);
@@ -3206,6 +3211,7 @@ begin
     AddCommand('SETPRECISION', 1, 1, CmdSetPrecision, [pkValue], pkValue);
     AddCommand('SETPROGVAR', 2, 2, CmdSetProgVar, [pkValue, pkValue], pkValue);
     AddCommand('SETSECTORPARAMETER', 3, 3, CmdSetSectorParameter, [pkValue, pkValue, pkValue], pkValue);
+
     AddCommand('SETTEXTLINETRIGGER', 2, 3, CmdSetTextLineTrigger, [pkValue, pkValue, pkValue], pkValue);
     AddCommand('SETTEXTOUTTRIGGER', 2, 3, CmdSetTextOutTrigger, [pkValue, pkValue, pkValue], pkValue);
     AddCommand('SETTEXTTRIGGER', 2, 3, CmdSetTextTrigger, [pkValue, pkValue, pkValue], pkValue);
@@ -3216,6 +3222,7 @@ begin
     AddCommand('STRIPTEXT', 2, 2, CmdStripText, [pkVar, pkValue], pkValue);
     AddCommand('SUBTRACT', 2, 2, CmdSubtract, [pkVar, pkValue], pkValue);
     AddCommand('SYS_CHECK', 0, 0, CmdSys_Check, [pkValue], pkValue);
+
     AddCommand('SYS_FAIL', 0, 0, CmdSys_Fail, [pkValue], pkValue);
     AddCommand('SYS_KILL', 0, 0, CmdSys_Kill, [pkValue], pkValue);
     AddCommand('SYS_NOAUTH', 0, 0, CmdSys_NoAuth, [pkValue], pkValue);
@@ -3226,6 +3233,7 @@ begin
     AddCommand('XOR', 2, 2, CmdXor, [pkVar, pkValue], pkValue);
     AddCommand('WAITFOR', 1, 1, CmdWaitFor, [pkValue], pkValue);
     AddCommand('WINDOW', 4, 5, CmdWindow, [pkValue, pkValue, pkValue, pkValue, pkValue], pkValue);
+
     AddCommand('WRITE', 2, 2, CmdWrite, [pkValue, pkValue], pkValue);
     // Commands added for 2.04beta
     AddCommand('GETTIMER', 1, 1, CmdGetTimer, [pkVar], pkValue);
@@ -3238,6 +3246,7 @@ begin
     AddCommand('GETNEARESTWARPS', 2, 2, CmdGetNearestWarps, [pkVar, pkValue], pkValue);
     AddCommand('GETSCRIPTVERSION', 2, 2, CmdGetScriptVersion, [pkValue, pkVar], pkValue);
     AddCommand('LISTACTIVESCRIPTS', 1, 1, CmdListActiveScripts, [pkVar], pkValue);
+
     AddCommand('LISTAVOIDS', 1, 1, CmdListAvoids, [pkVar], pkValue);
     AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkVar], pkValue);
     AddCommand('SETAVOID', 1, 1, CmdSetAvoid, [pkValue], pkValue);
@@ -3249,6 +3258,7 @@ begin
     AddCommand('MAKEDIR', 1, 1, CmdMakeDir, [pkValue], pkValue);
     AddCommand('PADLEFT', 2, 2, CmdPadLeft, [pkVar, pkValue], pkValue);
     AddCommand('PADRIGHT', 2, 2, CmdPadRight, [pkVar, pkValue], pkValue);
+
     AddCommand('REMOVEDIR', 1, 1, CmdRemoveDir, [pkValue], pkValue);
     AddCommand('SETMENUKEY', 1, 1, CmdSetMenuKey, [pkValue], pkValue);
     AddCommand('SPLITTEXT', 2, 3, CmdSplitText, [pkValue, pkVar], pkValue);

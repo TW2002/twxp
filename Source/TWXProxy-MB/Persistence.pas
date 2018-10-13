@@ -189,7 +189,9 @@ begin
       if (StateStream.Position <> Pos) then
         StateStream.Seek(Pos, soFromBeginning); // return to where we started
 
-      TTWXModule(FModuleList[I]).SetStateValues(StateStream);
+      // MB - Don't load the TCP saved state (4)
+      // if I <> 4 then
+        TTWXModule(FModuleList[I]).SetStateValues(StateStream);
     end;
 end;
 

@@ -1545,7 +1545,7 @@ begin
     TWXServer.Broadcast(ANSI_15 + 'Switching listening port to ' + IntToStr(FDBHeader.ListenPort) + '.' + endl);
 
     TWXServer.Deactivate();
-    TWXServer.Activate();
+    //TWXServer.Activate();
   end;
 
 end;

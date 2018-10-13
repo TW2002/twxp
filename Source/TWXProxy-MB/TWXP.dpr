@@ -320,6 +320,11 @@ begin
   end;
 end;
 
+var
+  S          : TSearchRec;
+  fileDate   : Integer;
+  dbFile     : string;
+  HFileRes   : HFILE;
 begin
 //{$IFNDEF RELEASE}
 //  MemChk;
@@ -332,11 +337,39 @@ begin
   InitProgram;
 
   if TWXGUI.DatabaseName <> '' then
-    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
+    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb')
+  else
+  begin
+    dbFile := '';
+    fileDate := 0;
 
-  // MB - TWXServer activation is now handled by the database.
-  //if TWXDatabase.DataBaseOpen then
-  //  TWXServer.Activate;
+    // MB - Load the last databse that isn't open
+    if (FindFirst('data\*.xdb', faAnyfile, S) = 0) then
+    begin
+    repeat
+      // MB - Check to see if the file is open
+      HFileRes := CreateFile(PChar('data\' + S.Name),GENERIC_READ or GENERIC_WRITE,0,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+      if HFileRes <>  INVALID_HANDLE_VALUE then
+      Begin
+        // MB - set the file name if it is newer
+        if FileAge('data\' + S.Name) > fileDate then
+        Begin
+          fileDate := FileAge('data\' + S.Name);
+          dbFile := 'data\' + S.Name;
+        End;
+        CloseHandle(HFileRes);
+      End;
+    until (FindNext(S) <> 0);
+    end;
+
+    if dbFile <> '' then
+      TWXDatabase.OpenDataBase(dbFile);
+  end;
+
+
+
+  if TWXDatabase.DataBaseOpen then
+    TWXServer.Activate;
 
   try
     // we don't use the TApplication message loop, as it requires a main form

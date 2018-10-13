@@ -350,6 +350,9 @@ begin
   FLastScript := Filename;
   Error := TRUE;
 
+  // MB - Allow reconnect after manual disconnect when launching a script
+  TWXClient.UserDisconnect := FALSE;
+
   if (Copy(UpperCase(Filename), Length(Filename) - 3, 4) = '.CTS') then
   begin
     if not (Silent) then
