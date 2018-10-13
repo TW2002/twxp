@@ -341,7 +341,14 @@ procedure TModInterpreter.Load(Filename : string; Silent : Boolean);
 var
   Script : TScript;
   Error  : Boolean;
+  I      : Integer;
 begin
+  // MB - Stop script if it is already running
+  if (TWXInterpreter.Count > 0) then
+    for I := 0 to TWXInterpreter.Count - 1 do
+      if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
+        TWXInterpreter.Stop(I);
+
   SetCurrentDir(FProgramDir);
   Script := TScript.Create(Self);
   Script.Silent := Silent;
