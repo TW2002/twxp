@@ -178,6 +178,7 @@ begin
     ModuleFactory(ModuleType);
 
   PersistenceManager.LoadStateValues;
+  TWXGUI.DatabaseName := '';
 
   // check command line values
   I := 1;
@@ -365,8 +366,6 @@ begin
     if dbFile <> '' then
       TWXDatabase.OpenDataBase(dbFile);
   end;
-
-
 
   if TWXDatabase.DataBaseOpen then
     TWXServer.Activate;

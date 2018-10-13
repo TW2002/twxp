@@ -315,8 +315,13 @@ var
 begin
   if (tcpServer.Socket.ActiveConnections > 0) then
     for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
+    Begin
       if (FClientEchoMarks[I]) then
         tcpServer.Socket.Connections[I].SendText(#255 + #3);
+
+      // MB - Clear the Deaf flag.
+      TWXServer.ClientTypes[I] := ctStandard;
+    End;
 end;
 
 procedure TModServer.tcpServerClientConnect(Sender: TObject;
