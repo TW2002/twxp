@@ -42,6 +42,7 @@ uses
   ExtCtrls,
   StdCtrls,
   ComCtrls,
+  CommCtrl,
   //TrayIcon,
   ImgList,
   FileCtrl,
@@ -51,7 +52,9 @@ uses
   //OverbyteICSTnCnx,
   Core,
   Script,
-  ActnList;
+  ActnList,
+  Variants,
+  ShellAPI;
 
 type
   TScriptMenuItem = class(TMenuItem)
@@ -117,17 +120,19 @@ type
     procedure miHelpScriptClick(Sender: TObject);
     procedure miHelpPack2Click(Sender: TObject);
     procedure miPlayLogClick(Sender: TObject);
-
+const
   private
     LoadingScript : Boolean;
-    FDatabaseName,
     FProgramDir   : string;
 
-    procedure OnScriptMenuItemClick(Sender: TObject);
-    procedure SetDatabaseName(const Value : string);
-    function GetDatabaseName : string;
+    LargeIcon: HIcon;
+    SmallIcon: HIcon;
+    Icon :Ticon;
 
+    procedure OnScriptMenuItemClick(Sender: TObject);
+    procedure SetTrayHint(const Value : string);
   public
+    procedure LoadTrayIcon(const Value : string);
     constructor Create(AOwner : TComponent); override;
 
     procedure AddWarp(var S : TSector; W : Word);
@@ -135,7 +140,7 @@ type
     procedure AddScriptMenu(Script: TScript);
     procedure RemoveScriptMenu(Script: TScript);
 
-    property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+    property TrayHint: string write SetTrayHint;
   end;
 
 implementation
@@ -147,8 +152,7 @@ uses
   TWXExport,
   Ansi,
   Registry,
-  WinTypes,
-  ShellAPI;
+  WinTypes;
 
 {$R *.DFM}
 
@@ -160,30 +164,62 @@ constructor TfrmMain.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
 
+  Icon := TIcon.Create;
+
   Top := -100;
   FProgramDir := (Owner as TModGUI).ProgramDir;
   LoadingScript := FALSE;
   miStop.Visible := False;
 end;
 
-procedure TfrmMain.SetDatabaseName(const Value : string);
+//function SHGetImageList(iImageList: Integer; const riid: TGUID;
+//  var ppvObj: Pointer): HResult; stdcall; external shell32;
+
+function EnumRCDataProc(hModule: HMODULE; lpszType, lpszName: PChar; lParam:
+    NativeInt): BOOL; stdcall;
 begin
-  FDatabaseName := Value;
-  trayIcon.Hint := 'TWX Proxy: ' + Value;
+  TStrings(lParam).Add(lpszName);
+  Result := True;
 end;
 
-function TfrmMain.GetDatabaseName : string;
+procedure TfrmMain.LoadTrayIcon(const Value : string);
+var
+    FileName : PChar;
+    Index : Integer;
+    StringList : TStringList;
 begin
-  Result := FDatabaseName;
+  //FileName := '%SystemRoot%\system32\Shell32.dll';
+  FileName := 'twxp.dll';
+  Index := 0;
+  StringList := TStringList.Create;
+  try
+    ExtractStrings([':'], [], PChar(Value), StringList);
+
+    if StringList.Count = 3 then
+    begin
+      FileName := Pchar(StringList[0] + ':' + StringList[1]);
+      Index := StrToInt(StringList[2]);
+    end
+  finally
+    StringList.Free;
+  end;
+
+  If ExtractIconEx( FileName, Index, LargeIcon, SmallIcon, 1) > 0 Then
+  Begin;
+    Icon.Handle := SmallIcon;
+    trayIcon.Icon := Icon;
+    trayIcon.IconIndex := 0;
+    trayIcon.Refresh;
+  End;
 end;
 
-
+procedure TfrmMain.SetTrayHint(const Value : string);
+begin
+  trayIcon.Hint := Value;
+end;
 
 // ************************************************************************
 // Menu Functions
-
-
-
 
 procedure TfrmMain.miSetupClick(Sender: TObject);
 begin
@@ -195,6 +231,9 @@ end;
 procedure TfrmMain.miExitClick(Sender: TObject);
 begin
   // Exit program
+  DestroyIcon(LargeIcon);
+  DestroyIcon(SmallIcon);
+  Icon.Free;
 
   Application.Terminate;
 end;

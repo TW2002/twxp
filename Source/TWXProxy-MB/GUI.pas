@@ -58,6 +58,7 @@ type
     procedure SetFormEnabled(FormType: TGUIFormType; Enabled: Boolean);
     procedure SetDatabaseName(const Value: string);
     function GetDatabaseName: String;
+    procedure SetTrayHint(const Value: string);
     function GetRecording: Boolean;
     procedure SetRecording(Value: Boolean);
   protected
@@ -67,6 +68,7 @@ type
 
     property GUIForms[TGUIFormType: TGUIFormType]: TForm read GUIFormFactory;
   public
+    procedure LoadTrayIcon(const Value: string);
     procedure AfterConstruction; override;
     procedure ShowForm(FormType: TGUIFormType);
     procedure AddToHistory(HistoryType: THistoryType; const Value: string);
@@ -80,6 +82,7 @@ type
     property Recording: Boolean read GetRecording write SetRecording;
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+    property TrayHint: string write SetTrayHint;
     property FirstLoad: Boolean read FFirstLoad write FFirstLoad;
   end;
 
@@ -129,16 +132,27 @@ begin
   Result := GUIForms[FormType].Enabled;
 end;
 
-procedure TModGUI.SetDatabaseName(const Value: string);
+procedure TModGUI.SetDatabaseName(const Value : string);
 begin
   FDatabaseName := Value;
-  TfrmMain(GUIForms[gfMain]).DatabaseName := Value;
+  //TfrmMain(GUIForms[gfMain]).DatabaseName := Value;
 end;
 
 function TModGUI.GetDatabaseName: String;
 begin
   Result := FDatabaseName;
 end;
+
+procedure TModGUI.SetTrayHint(const Value : string);
+begin
+  TfrmMain(GUIForms[gfMain]).TrayHint := Value;
+end;
+
+procedure TModGUI.LoadTrayIcon(const Value : string);
+begin
+  TfrmMain(GUIForms[gfMain]).LoadTrayIcon(Value);
+end;
+
 
 function TModGUI.GetRecording: Boolean;
 begin

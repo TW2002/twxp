@@ -341,7 +341,14 @@ procedure TModInterpreter.Load(Filename : string; Silent : Boolean);
 var
   Script : TScript;
   Error  : Boolean;
+  I      : Integer;
 begin
+  // MB - Stop script if it is already running
+  if (TWXInterpreter.Count > 0) then
+    for I := 0 to TWXInterpreter.Count - 1 do
+      if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
+        TWXInterpreter.Stop(I);
+
   SetCurrentDir(FProgramDir);
   Script := TScript.Create(Self);
   Script.Silent := Silent;
@@ -349,6 +356,9 @@ begin
 
   FLastScript := Filename;
   Error := TRUE;
+
+  // MB - Allow reconnect after manual disconnect when launching a script
+  TWXClient.UserDisconnect := FALSE;
 
   if (Copy(UpperCase(Filename), Length(Filename) - 3, 4) = '.CTS') then
   begin
@@ -1481,7 +1491,7 @@ begin
   except
     on E : EScriptError do
     begin
-      TWXServer.Broadcast(ANSI_15 + 'Script run-time error in ''' + Cmp.IncludeScripts[ExecScriptID] + ''': ' + ANSI_7 + E.Message + ', line ' + IntToStr(Line) + endl);
+      TWXServer.Broadcast(ANSI_15 + 'Script run-time error in ''' + Cmp.IncludeScripts[ExecScriptID] + ''': ' + ANSI_7 + E.Message + ', line ' + IntToStr(Line) + ', cmd ' + IntToStr(Cmd) + endl);
       CmdAction := caStop;
     end;
   else

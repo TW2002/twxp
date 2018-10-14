@@ -33,9 +33,9 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.06.00h';
+  ProgramVersion = '2.06.03a';
   ReleaseVersion = 'Alpha';
-  SetupFile = 'TWXSetup.dat';
+  SetupFile = 'TWXS.dat';
 
   endl = #13 + #10;
 

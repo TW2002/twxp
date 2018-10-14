@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 unit FormSetup;
@@ -26,20 +26,9 @@ unit FormSetup;
 interface
 
 uses
-  Core,
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  ComCtrls,
-  ExtCtrls,
-  Database,
-  Persistence;
+  Core, Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Database, Persistence,
+  StrUtils, ShellAPI;
 
 type
   TDatabaseLink = record
@@ -120,7 +109,10 @@ type
     tbReconnectDelay: TEdit;
     Label22: TLabel;
     tbListenPort: TEdit;
+    Label23: TLabel;
+    cbUseRLogin: TCheckBox;
     Label2: TLabel;
+    TrayImage: TImage;
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnOKMainClick(Sender: TObject);
@@ -142,18 +134,23 @@ type
     procedure tmrRegTimer(Sender: TObject);
     procedure tbUserChange(Sender: TObject);
     procedure cbAcceptExternalClick(Sender: TObject);
+    procedure LoadIconImage(IconFile: String);
+    procedure TrayImageClick(Sender: TObject);
 
 
   private
-    DataLinkList  : TList;
-    FAuthenticate : Boolean;
-    FProgramDir   : string;
+    DataLinkList      : TList;
+    FAuthenticate     : Boolean;
+    FProgramDir       : string;
+    FIconFile         : string;
 
   public
     procedure UpdateGameList(SelectName : string);
     procedure AfterConstruction; override;
 
   end;
+
+  Function PickIconDlgW(OwnerWnd: HWND; lpstrFile: PWideChar; var nMaxFile: LongInt; var lpdwIconIndex: LongInt): LongBool; stdcall; external 'SHELL32.DLL' index 62;
 
 implementation
 
@@ -163,7 +160,8 @@ uses
   Global,
   Utility,
   GUI,
-  Ansi;
+  Ansi,
+  CommCtrl;
 
 var
   Edit : Boolean;
@@ -186,6 +184,7 @@ begin
   tbLoginName.Enabled := FALSE;
   tbPassword.Enabled := FALSE;
   tbGame.Enabled := FALSE;
+  TrayImage.Enabled := FALSE;
   FAuthenticate := FALSE;
   // EP - Temp Win7 Dialog workaround
   if Win32MajorVersion > 5 then
@@ -194,7 +193,8 @@ begin
   // populate form from system setup
   tbBubbleSize.Text := IntToStr(TWXBubble.MaxBubbleSize);
   cbCache.Checked := TWXDatabase.UseCache;
-  tbListenPort.Text := IntToStr(TWXServer.ListenPort);
+  // MB - Moved to database.
+  //tbListenPort.Text := IntToStr(TWXServer.ListenPort);
   cbAllowLerkers.Checked := TWXServer.AllowLerkers;
   cbAcceptExternal.Checked := TWXServer.AcceptExternal;
   tbExternalAddress.Text := TWXServer.ExternalAddress;
@@ -209,6 +209,7 @@ begin
   cbLocalEcho.Checked := TWXServer.LocalEcho;
   tbMenuKey.Text := TWXExtractor.MenuKey;
 
+  LoadIconImage('');
   // load up auto run scripts
   lbAutoRun.Items.Clear;
   lbAutoRun.Items.Assign(TWXInterpreter.AutoRun);
@@ -293,10 +294,17 @@ begin
 
     FindClose(S);
 
-    cbGames.ItemIndex := Found;
+    if Found <> -1 then
+    begin
+      cbGames.ItemIndex := Found;
+      cbGames.OnChange(Self);
+    end
+    else
+    begin
+      btnAddClick(Self);
+    end;
   end;
 
-  cbGames.OnChange(Self);
 end;
 
 procedure TfrmSetup.btnOKMainClick(Sender: TObject);
@@ -371,8 +379,9 @@ begin
     TWXLog.MaxPlayDelay := 10;
   end;
 
-  TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
-  TWXServer.Activate;
+  // MB - Moved to Database.
+  //TWXServer.ListenPort := StrToIntDef(tbListenPort.Text, 3000);
+  //TWXServer.Activate;
   TWXServer.AllowLerkers := cbAllowLerkers.Checked;
   TWXServer.AcceptExternal := cbAcceptExternal.Checked;
   TWXServer.ExternalAddress := tbExternalAddress.Text;
@@ -384,7 +393,7 @@ begin
   // setup has changed, so update terminal menu
   TWXMenu.ApplySetup;
 
-  // MB - Save object states to twxsetup.dat
+  // MB - Save object states to TWXS.dat
   try
     DB := TWXDatabase.DatabaseName;
     TWXDatabase.CloseDatabase;
@@ -441,26 +450,30 @@ begin
     tbDescription.Text := cbGames.Text;
     tbSectors.Text := IntToStr(Head^.Sectors);
     tbHost.Text := Head^.Address;
-    tbPort.Text := IntToStr(Head^.Port);
-//    tbListenPort.Text := IntToStr(Head^.ServerPort);
+    tbPort.Text := IntToStr(Head^.ServerPort);
+    tbListenPort.Text := IntToStr(Head^.ListenPort);
+    cbUseRLogin.Checked := Head^.UseRLogin;
     cbUseLogin.Checked := Head^.UseLogin;
     tbLoginScript.Text := Head^.LoginScript;
     tbLoginName.Text := Head^.LoginName;
     tbPassword.Text := Head^.Password;
     tbGame.Text := Head^.Game;
+    FIconFile := Head^.IconFile;
+    LoadIconImage(Head^.IconFile);
   end
   else
   begin
     tbDescription.Text := '';
     tbHost.Text := '';
     tbPort.Text := '';
-//    tbListenPort.Text := '';
+    tbListenPort.Text := '';
     tbSectors.Text := '';
     cbUseLogin.Checked := FALSE;
     tbLoginScript.Text := '';
     tbLoginName.Text := '';
     tbPassword.Text := '';
     tbGame.Text := '';
+    FIconFile := '';
   end;
 end;
 
@@ -470,6 +483,7 @@ var
   S        : string;
   Focus    : TWinControl;
   Port,
+  ListenPort,
   Sectors  : Word;
   I        : Integer;
   Head     : PDataHeader;
@@ -492,12 +506,16 @@ begin
   Error := '';
   Focus := Self;
 
-  if (tbDescription.Text = '') then
+  if ((tbDescription.Text = '') or
+     (ContainsText(tbDescription.Text, '<')) or
+     (ContainsText(tbDescription.Text, '>'))) then
   begin
     Error := 'You must enter a valid name';
     Focus := tbDescription;
   end
-  else if (tbHost.Text = '') then
+  else if ((tbHost.Text = '') or
+          (ContainsText(tbDescription.Text, '<')) or
+          (ContainsText(tbDescription.Text, '>'))) then
   begin
     Error := 'You must enter a valid host';
     Focus := tbHost;
@@ -506,8 +524,15 @@ begin
   Val(tbPort.Text, Port, I);
   if (I <> 0) then
   begin
-    Error := 'You must enter a valid port number';
+    Error := 'You must enter a valid server port number';
     Focus := tbPort;
+  end;
+
+  Val(tbListenPort.Text, ListenPort, I);
+  if (I <> 0) then
+  begin
+    Error := 'You must enter a valid listen port number';
+    Focus := tbListenPort;
   end;
 
   Val(tbSectors.Text, Sectors, I);
@@ -536,19 +561,25 @@ begin
   tbDescription.Enabled := FALSE;
   tbHost.Enabled := FALSE;
   tbPort.Enabled := FALSE;
-//  tbListenPort.Enabled := FALSE;
+  tbListenPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
+  cbUseRLogin.Enabled := FALSE;
+  TrayImage.Enabled := FALSE;
 
   tbLoginScript.Enabled := FALSE;
   tbLoginName.Enabled := FALSE;
   tbPassword.Enabled := FALSE;
   tbGame.Enabled := FALSE;
+  TrayImage.Enabled := FALSE;
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
   btnEdit.Enabled := TRUE;
 
+  cbGames.Enabled := TRUE;
+  btnOKMain.Enabled := TRUE;
+  btnCancelMain.Enabled := TRUE;
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
@@ -562,17 +593,19 @@ begin
 
   Head^.Address := tbHost.Text;
   Head^.Sectors := Sectors;
-  Head^.Port := Port;
+  Head^.ServerPort := Port;
+  Head^.ListenPort := ListenPort;
   Head^.UseLogin := cbUseLogin.Checked;
+  Head^.UseRLogin := cbUseRLogin.Checked;
   Head^.LoginName := tbLoginName.Text;
   Head^.Password := tbPassword.Text;
+  Head^.LoginScript := tbLoginScript.Text;
+  Head^.IconFile := FIconFile;
 
   if (Length(tbGame.Text) > 0) then
     Head^.Game := tbGame.Text[1]
   else
     Head^.Game := ' ';
-
-  Head^.LoginScript := tbLoginScript.Text;
 
   if not (Edit) then
   begin
@@ -592,7 +625,7 @@ begin
         TWXDatabase.CreateDatabase(S, Head^);
       except
         MessageDlg('An error occured while trying to create the database', mtError, [mbOK], 0);
-        cbGames.OnChange(Self);
+        cbGames.OnChange (Self);
         Exit;
       end;
 
@@ -604,33 +637,95 @@ begin
   end;
 end;
 
+procedure TfrmSetup.LoadIconImage(IconFile: String);
+var
+    FileName : PChar;
+    Index : Integer;
+    LargeIcon: HIcon;
+    SmallIcon: HIcon;
+    StringList : TStringList;
+begin
+  //FileName := '%SystemRoot%\system32\Shell32.dll';
+  FileName := 'twxp.dll';
+  Index := 0;
+  StringList := TStringList.Create;
+  try
+    ExtractStrings([':'], [], PChar(IconFile), StringList);
+
+    if StringList.Count = 3 then
+    begin
+      FileName := Pchar(StringList[0] + ':' + StringList[1]);
+      Index := StrToInt(StringList[2]);
+    end
+  finally
+    StringList.Free;
+  end;
+
+  If ExtractIconEx( FileName, Index, LargeIcon, SmallIcon, 1) > 0 Then
+  Begin;
+    TrayImage.Canvas.Pen.Color := clBtnFace;
+    TrayImage.Canvas.Brush.Color := clBtnFace;
+    TrayImage.Canvas.FillRect(Rect(0,0,32,32));
+
+    DrawIconEx(TrayImage.Canvas.Handle, 0, 0, LargeIcon, 32, 32, 0, 0, DI_NORMAL);
+  End;
+  DestroyIcon(LargeIcon);
+  DestroyIcon(SmallIcon);
+end;
+
+procedure TfrmSetup.TrayImageClick(Sender: TObject);
+var
+  FileName :  array[0..MAX_PATH - 1] of WideChar;
+  Size, Index: LongInt;
+begin
+  Size := MAX_PATH;
+  StringToWideChar(ExtractFilePath(Application.ExeName) + 'twxp.dll', FileName, MAX_PATH);
+  If PickIconDlgW(Self.Handle, FileName, Size, Index) Then
+  begin
+    FIconFile := WideCharToString(FileName) + ':' + IntToStr(Index);
+    LoadIconImage(FIconFile);
+  end;
+end;
+
 procedure TfrmSetup.btnAddClick(Sender: TObject);
 begin
   tbDescription.Enabled := TRUE;
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-//  tbListenPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   tbSectors.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
+  cbUseRLogin.Enabled := TRUE;
+  tbLoginName.Enabled := TRUE;
+  tbPassword.Enabled := TRUE;
+  tbGame.Enabled := TRUE;
+  TrayImage.Enabled := TRUE;
 
-  tbDescription.Text := 'New Game';
-  tbHost.Text := '';
+  tbDescription.Text := '<New Game>';
+  tbHost.Text := '<Address>';
   tbPort.Text := '2002';
-  tbListenPort.Text := '3000';
+  tbListenPort.Text := '2300';
   tbSectors.Text := '5000';
   cbUseLogin.Checked := FALSE;
-  tbLoginScript.Text := '1_Login.ts';
+  cbUseRLogin.Checked := FALSE;
+  tbLoginScript.Text := 'Login.ts';
   tbLoginName.Text := '';
   tbPassword.Text := '';
   tbGame.Text := '';
+  FIconFile := '';
   cbUseLoginClick(Sender);
   tbDescription.SetFocus;
 
-  btnSave.Enabled := TRUE;
-  btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
   btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
+
+  cbGames.Enabled  := FALSE;
+  btnOKMain.Enabled := FALSE;
+  btnCancelMain.Enabled := FALSE;
+  btnDelete.Enabled := FALSE;
+  btnSave.Enabled := TRUE;
+  btnCancel.Enabled := TRUE;
 
   Edit := FALSE;
 end;
@@ -639,17 +734,26 @@ procedure TfrmSetup.btnEditClick(Sender: TObject);
 begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
-//  tbListenPort.Enabled := TRUE;
+  tbListenPort.Enabled := TRUE;
   cbUseLogin.Enabled := TRUE;
+  cbUseRLogin.Enabled := TRUE;
   cbUseLoginClick(Sender);
+  tbLoginName.Enabled := TRUE;
+  tbPassword.Enabled := TRUE;
+  tbGame.Enabled := TRUE;
+  TrayImage.Enabled := TRUE;
 
   tbHost.SetFocus;
 
-  btnSave.Enabled := TRUE;
-  btnCancel.Enabled := TRUE;
   btnAdd.Enabled := FALSE;
   btnEdit.Enabled := FALSE;
   btnDelete.Enabled := FALSE;
+
+  cbGames.Enabled := FALSE;
+  btnOKMain.Enabled := FALSE;
+  btnCancelMain.Enabled := FALSE;
+  btnSave.Enabled := TRUE;
+  btnCancel.Enabled := TRUE;
 
   Edit := TRUE;
 end;
@@ -705,16 +809,10 @@ begin
   if (cbUseLogin.Checked) then
   begin
     tbLoginScript.Enabled := TRUE;
-    tbLoginName.Enabled := TRUE;
-    tbPassword.Enabled := TRUE;
-    tbGame.Enabled := TRUE;
   end
   else
   begin
     tbLoginScript.Enabled := FALSE;
-    tbLoginName.Enabled := TRUE;
-    tbPassword.Enabled := TRUE;
-    tbGame.Enabled := TRUE;
   end;
 end;
 
@@ -725,16 +823,23 @@ begin
   tbPort.Enabled := FALSE;
   tbSectors.Enabled := FALSE;
   cbUseLogin.Enabled := FALSE;
+  cbUseRLogin.Enabled := FALSE;
+  tbLoginName.Enabled := FALSE;
+  tbPassword.Enabled := FALSE;
 
   tbLoginScript.Enabled := FALSE;
   tbLoginName.Enabled := FALSE;
   tbPassword.Enabled := FALSE;
   tbGame.Enabled := FALSE;
+  TrayImage.Enabled := FALSE;
 
   btnAdd.Enabled := TRUE;
   btnDelete.Enabled := TRUE;
   btnEdit.Enabled := TRUE;
 
+  cbGames.Enabled := TRUE;
+  btnOKMain.Enabled := TRUE;
+  btnCancelMain.Enabled := TRUE;
   btnSave.Enabled := FALSE;
   btnCancel.Enabled := FALSE;
 
@@ -783,6 +888,7 @@ procedure TfrmSetup.tmrRegTimer(Sender: TObject);
 begin
   tmrReg.Enabled := FALSE;
 end;
+
 
 procedure TfrmSetup.tbUserChange(Sender: TObject);
 begin

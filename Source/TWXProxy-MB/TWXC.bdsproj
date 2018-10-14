@@ -119,8 +119,8 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">c:\TWXProxy</Directories>
-			<Directories Name="UnitOutputDir">c:\TWXProxy\DCU</Directories>
+			<Directories Name="OutputDir">C:\TWXP</Directories>
+			<Directories Name="UnitOutputDir">C:\TWXP\DCU</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\Components\ICS\Vc32;..\Components\Misc</Directories>

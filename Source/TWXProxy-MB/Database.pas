@@ -36,7 +36,8 @@ uses
 const
   // Version for 2.03 is 7
   // Version for 2.04 is 8
-  DATABASE_VERSION = 8;
+  // Version for 2.06 is 9
+  DATABASE_VERSION = 9;
 
   Day : array[1..7] of string = ('Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat');
 
@@ -60,11 +61,13 @@ type
     Address,
     Description : string[40];
     ServerPort,
-    Port        : Word;
+    ListenPort  : Word;
     LoginScript : string[255];
     Password,
     LoginName   : string[40];
     Game        : Char;
+    IconFile    : String[255];
+    UseRLogin   : Boolean;
     UseLogin    : Boolean;
     RobFactor,
     StealFactor : Byte;
@@ -156,7 +159,6 @@ type
     FUseCache,
     FDataBaseOpen     : Boolean;
     FWarpCount        : Integer;
-    FListenPort       : Word;
     FDataFilename     : string;
     DataFile          : File;
     DataCache,
@@ -193,6 +195,8 @@ type
     procedure SetLastPortCIM(const Value: TDateTime);
     function GetServerPort: Word;
     procedure SetServerPort(Value: Word);
+    function GetListenPort: Word;
+    procedure SetListenPort(Value: Word);
     function GetWarpCount: Integer;
 
   protected
@@ -256,6 +260,7 @@ type
     property UseCache: Boolean read GetUseCache write SetUseCache;
     property Recording: Boolean read GetRecording write SetRecording;
     property ServerPort: Word read GetServerPort write SetServerPort;
+    property ListenPort: Word read GetListenPort write SetListenPort;
     property WarpCount: Integer read GetWarpCount;
   end;
 
@@ -297,8 +302,8 @@ begin
   Result^.ProgramName := 'TWX DATABASE';
   Result^.Version := DATABASE_VERSION;
   Result^.Address := '<Server>';
-  Result^.Port := 23;
-  Result^.ServerPort := 23;
+  Result^.ServerPort := 2002;
+  Result^.ListenPort := 2300;
 end;
 
 
@@ -382,12 +387,12 @@ begin
 
   if (DBHeader.Version <> DATABASE_VERSION) then
   begin
-    TWXServer.Broadcast(endl + ANSI_12 + 'Warning: Database version ' + IntToStr(DBHeader.Version) + ', expected version ' + IntToStr(DATABASE_VERSION) + ', no data will be saved/retrieved' + ANSI_7 + endl);
+    // MB - Broadcast is not visible. Need pop-up.
+    //TWXServer.Broadcast(endl + ANSI_12 + 'Warning: Database version ' + IntToStr(DBHeader.Version) + ', expected version ' + IntToStr(DATABASE_VERSION) + ', no data will be saved/retrieved' + ANSI_7 + endl);
+    ShowMessage('Warning: Database version ' + IntToStr(DBHeader.Version) + ', expected version ' + IntToStr(DATABASE_VERSION) + ', no data will be saved/retrieved');
     CloseDatabase;
     Exit;
   end;
-
-  FListenPort := DBHeader.ServerPort; // EP - Listening Port persists here now
 
   if (UseCache) then
     OpenCache
@@ -433,10 +438,19 @@ begin
   end;
 
   TWXLog.DatabaseChanged;
-
   TWXServer.Broadcast(endl + ANSI_15 + 'Database successfully loaded - ' + IntToStr(DBHeader.Sectors) + ' sectors, ' + IntToStr(WarpCount) + ' warps' + endl);
-
   TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Filename));
+  TWXGUI.TrayHint := StripFileExtension(ShortFilename(Filename)) + ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
+  TWXGUI.LoadTrayIcon(DBHeader.IconFile);
+
+  if TWXServer.ListenPort <> TWXDatabase.ListenPort then
+  begin
+    TWXServer.Broadcast(ANSI_15 + 'Switching listening port to ' + IntToStr(TWXDatabase.ListenPort) + ' for new database.' + endl);
+
+    TWXServer.Deactivate;
+    TWXServer.Activate;
+  end;
+
 end;
 
 procedure TModDatabase.CloseDataBase;
@@ -1510,13 +1524,30 @@ end;
 
 function TModDatabase.GetServerPort: Word;
 begin
-  Result := FListenPort;
+  Result := FDBHeader.ServerPort;
 end;
 
 procedure TModDatabase.SetServerPort(Value: Word);
 begin
-  FListenPort := Value;
   FDBHeader.ServerPort := Value;
+end;
+
+function TModDatabase.GetListenPort: Word;
+begin
+  Result := FDBHeader.ListenPort;
+end;
+
+procedure TModDatabase.SetListenPort(Value: Word);
+begin
+  if FDBHeader.ListenPort <> Value then
+  begin
+    FDBHeader.ListenPort := Value;
+    TWXServer.Broadcast(ANSI_15 + 'Switching listening port to ' + IntToStr(FDBHeader.ListenPort) + '.' + endl);
+
+    TWXServer.Deactivate();
+    //TWXServer.Activate();
+  end;
+
 end;
 
 function TModDatabase.GetWarpCount: Integer;

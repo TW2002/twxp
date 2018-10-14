@@ -21,34 +21,36 @@ For license terms please refer to GPL.txt.
 These files should be stored in the root of the compression you 
 received this source in.
 }
-program TWXProxy;
+program TWXP;
 
-{%TogetherDiagram 'ModelSupport_TWXProxy\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Global\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Process\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Bubble\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Core\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmd\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TWXExport\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Script\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Utility\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TWXProxy\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormHistory\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\DataBase\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\TCP\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptCmp\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormSetup\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Menu\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormScript\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormAbout\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\FormMain\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Ansi\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\GUI\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Observer\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Persistence\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\ScriptRef\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\Log\default.txaPackage'}
-{%TogetherDiagram 'ModelSupport_TWXProxy\default.txvpck'}
+
+
+{%TogetherDiagram 'ModelSupport_TWXP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Global\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Process\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Bubble\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Core\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptCmd\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TWXExport\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Script\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Utility\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TWXProxy\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormHistory\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\DataBase\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\TCP\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptCmp\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormSetup\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Menu\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormScript\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormAbout\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\FormMain\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Ansi\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\GUI\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Observer\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Persistence\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\ScriptRef\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\Log\default.txaPackage'}
+{%TogetherDiagram 'ModelSupport_TWXP\default.txvpck'}
 
 uses
   Forms,
@@ -81,6 +83,8 @@ uses
   GUI in 'GUI.pas',
   Observer in 'Observer.pas',
   Messages;
+
+//FormChangeIcon in 'FormChangeIcon.pas' {frmChangeIcon};
 
 {$R *.RES}
 
@@ -163,26 +167,36 @@ begin
   if not (DirectoryExists(ProgramDir + '\logs')) then
     CreateDir(ProgramDir + '\logs');
 
+  // TODO: Register .xdb with proxy. May require Win32 API call.
+  // TODO: Set TWXProxy as the devault Telnet application in the registry.
+
   PersistenceManager := TPersistenceManager.Create(Application);
-  PersistenceManager.OutputFile := 'TWXSetup.dat';
+  PersistenceManager.OutputFile := 'TWXS.dat';
 
   // call object constructors
   for ModuleType := Low(TModuleType) to High(TModuleType) do
     ModuleFactory(ModuleType);
 
   PersistenceManager.LoadStateValues;
+  TWXGUI.DatabaseName := '';
 
   // check command line values
   I := 1;
   while (I <= ParamCount) do
   begin
-    Usage := 'Usage:/ntwxproxy /p <port#> /dblist';
+    Usage := 'Usage:/ntwxp [database] /p <port#> /dblist';
     Switch := UpperCase(ParamStr(I));
     //WriteLn(Switch + endl);
 
-    if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
+    // MB - Set Database name from first paramater
+    //      for windows file association.
+    if (Copy(Switch, 1, 1) <> '/') and (Length(Switch) > 0) then
     begin
-      TWXServer.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
+      TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Switch));
+    end
+    else if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
+    begin
+      TWXDatabase.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
     end
 
     // EP - New Switches
@@ -210,7 +224,7 @@ begin
       // Alternate syntax for listening port, e.g. "twxproxy /p 2002"
       if Switch = '/P' then
       begin
-        TWXServer.ListenPort := StrToIntSafe(ParamStr(I));
+        TWXDatabase.ListenPort := StrToIntSafe(ParamStr(I));
       end
       else if Switch = '/DBCREATE' then // Create a new Database
       begin
@@ -241,8 +255,10 @@ var
   ObjectName : String;
 begin
   try
-    // MB - Close database before saving module states to prevent unhandled exception
+    // MB - Save the current database name.
     TWXGUI.DatabaseName := StripFileExtension(ShortFilename(TWXDatabase.DatabaseName));
+
+    // MB - Close database before saving module states to prevent unhandled exception
     TWXDatabase.CloseDatabase;
 
     PersistenceManager.SaveStateValues;
@@ -305,6 +321,11 @@ begin
   end;
 end;
 
+var
+  S          : TSearchRec;
+  fileDate   : Integer;
+  dbFile     : string;
+  HFileRes   : HFILE;
 begin
 //{$IFNDEF RELEASE}
 //  MemChk;
@@ -312,20 +333,42 @@ begin
 
   Application.Initialize;
   Application.Title := 'TWX Proxy';
+  //Application.CreateForm(TfrmChangeIcon, FormChangeIcon);
   SetCurrentDir(ExtractFilePath(Application.ExeName));
   InitProgram;
-  // EP - The Server ListenPort is persisted by the database now, so load from there
-  // MB - This doesn't work. To do this, the listen port woule need to be moved to the
-  //      database tab of the setup form, and disabled unless editing database settings.
-//  if TWXDatabase.DataBaseOpen then
-//    TWXServer.ListenPort := TWXDatabase.DBHeader.ServerPort
-//  else
-//    TWXServer.ListenPort := 3000;
-
-  TWXServer.Activate;
 
   if TWXGUI.DatabaseName <> '' then
-    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb');
+    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb')
+  else
+  begin
+    dbFile := '';
+    fileDate := 0;
+
+    // MB - Load the last databse that isn't open
+    if (FindFirst('data\*.xdb', faAnyfile, S) = 0) then
+    begin
+    repeat
+      // MB - Check to see if the file is open
+      HFileRes := CreateFile(PChar('data\' + S.Name),GENERIC_READ or GENERIC_WRITE,0,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+      if HFileRes <>  INVALID_HANDLE_VALUE then
+      Begin
+        // MB - set the file name if it is newer
+        if FileAge('data\' + S.Name) > fileDate then
+        Begin
+          fileDate := FileAge('data\' + S.Name);
+          dbFile := 'data\' + S.Name;
+        End;
+        CloseHandle(HFileRes);
+      End;
+    until (FindNext(S) <> 0);
+    end;
+
+    if dbFile <> '' then
+      TWXDatabase.OpenDataBase(dbFile);
+  end;
+
+  if TWXDatabase.DataBaseOpen then
+    TWXServer.Activate;
 
   try
     // we don't use the TApplication message loop, as it requires a main form
