@@ -434,7 +434,7 @@ begin
     EchoText := EchoText + Params[I].Value;
 
   // #13 on its own will warp the terminal display - add a linefeed with it
-  TWXServer.Broadcast(StringReplace(EchoText, #13, #13 + #10, [rfReplaceAll]));
+  TWXServer.Broadcast(StringReplace(EchoText, #13, #13 + #10, [rfReplaceAll]),TRUE,TRUE);
 
   Result := caNone;
 end;
@@ -1260,7 +1260,7 @@ var
 begin
   try
     F := Params[1].DecValue;
-    Params[0].DecValue := 1;  
+    Params[0].DecValue := 1;
   except on E: Exception do
     Params[0].DecValue := 0;
   end;
@@ -2216,6 +2216,57 @@ begin
 end;
 
 // *****************************************************************************
+//                      COMMANDS ADDED FOR 2.06
+// *****************************************************************************
+
+function CmdGetDeafClients(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I          : integer;
+begin
+  Params[0].DecValue := 0;
+
+  for I := 0 to TWXServer.ClientCount - 1 do
+  begin
+    if TWXServer.ClientTypes[I] = ctDeaf then
+       Params[0].DecValue := 1
+  end;
+
+  Result := caNone;
+end;
+
+
+function CmdSilenceClients(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I : Integer;
+begin
+  // CMD: SilenceClients var
+  if (Length(Params) > 0) and (Params[0].Value = '0') then
+  begin
+    if (TWXServer.ClientCount > 0) then
+    begin
+      for I := 0 to TWXServer.ClientCount - 1 do
+      begin
+        if TWXServer.ClientTypes[I] = ctDeaf then
+          TWXServer.ClientTypes[I] := ctStandard
+      end
+    end
+  end
+  else
+  begin
+    if (TWXServer.ClientCount > 0) then
+    begin
+      for I := 0 to TWXServer.ClientCount - 1 do
+      begin
+        if TWXServer.ClientTypes[I] = ctStandard then
+          TWXServer.ClientTypes[I] := ctDeaf
+      end
+    end;
+  end;
+
+  Result := caNone;
+end;
+
+// *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
 // *****************************************************************************
 
@@ -3042,6 +3093,212 @@ begin
   Result := '1';
 end;
 
+function SCcurrentTurns(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentTurns);
+end;
+
+function SCCurrentCredits(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentCredits)
+end;
+
+function SCCurrentFighters(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentFighters)
+end;
+
+function SCCurrentShields(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentShields)
+end;
+
+function SCCurrentTotalHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentTotalHolds)
+end;
+
+function SCCurrentOreHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentOreHolds)
+end;
+
+function SCCurrentOrgHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentOrgHolds)
+end;
+
+function SCCurrentEquHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentEquHolds)
+end;
+
+function SCCurrentColHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentColHolds)
+end;
+
+function SCCurrentEmptyHolds(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentTotalHolds -
+                     TWXExtractor.CurrentOreHolds -
+                     TWXExtractor.CurrentOrgHolds -
+                     TWXExtractor.CurrentEquHolds -
+                     TWXExtractor.CurrentColHolds)
+end;
+
+function SCCurrentPhotons(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentPhotons)
+end;
+
+function SCCurrentArmids(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentArmids)
+end;
+
+function SCCurrentLimpets(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentLimpets)
+end;
+
+function SCCurrentGenTorps(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentGenTorps)
+end;
+
+function SCCurrentTwarpType(Indexes : TStringArray) : string;
+begin
+  if TWXExtractor.CurrentTwarpType = 0 then
+    Result := 'No'
+else
+    Result := IntToStr(TWXExtractor.CurrentTwarpType)
+end;
+
+function SCCurrentCloaks(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentCloaks)
+end;
+
+function SCCurrentBeacons(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentBeacons)
+end;
+
+function SCCurrentAtomics(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentAtomics)
+end;
+
+function SCCurrentCorbomite(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentCorbomite)
+end;
+
+function SCCurrentEprobes(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentEprobes)
+end;
+
+function SCCurrentMineDisr(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentMineDisr)
+end;
+
+function SCCurrentPsychicProbe(Indexes : TStringArray) : string;
+begin
+  if TWXExtractor.CurrentPsychicProbe then
+      Result := 'Yes'
+  else
+      Result := 'No'
+end;
+
+function SCCurrentPlanetScanner(Indexes : TStringArray) : string;
+begin
+  if TWXExtractor.CurrentPlanetScanner then
+      Result := 'Yes'
+  else
+      Result := 'No'
+end;
+
+function SCCurrentScanType(Indexes : TStringArray) : string;
+begin
+  if TWXExtractor.CurrentScanType = 0 then
+      Result := 'None'
+  else if TWXExtractor.CurrentScanType = 1 then
+      Result := 'Dens'
+  else if TWXExtractor.CurrentScanType = 2 then
+      Result := 'Holo'
+end;
+
+function SCCurrentAlignment(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentAlignment)
+end;
+
+function SCCurrentExperience(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentExperience)
+end;
+
+function SCCurrentCorp(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentCorp)
+end;
+
+function SCCurrentShipNumber(Indexes : TStringArray) : string;
+begin
+  Result := IntToStr(TWXExtractor.CurrentShipNumber)
+end;
+
+function SCCurrentShipClass(Indexes : TStringArray) : string;
+begin
+  Result := TWXExtractor.CurrentShipClass
+end;
+
+function SCCurrentQuickStats(Indexes : TStringArray) : string;
+begin
+
+ Result := Format(
+   'SECT  = %-11s|HLD = %-4s|FIGS = %-6s|ARMID = %-4s|TWARP = %s'+#13+
+   'TURNS = %-11s|ORE = %-4s|SHLD = %-6s|LMPIT = %-4s|PLSCN = %s'+#13+
+   'CREDS = %-11s|ORG = %-4s|PHOT = %-6s|GTORP = %-4s|LRS   = %s'+#13+
+   'ALN   = %-11s|EQU = %-4s|CRBO = %-6s|ATMDT = %-4s|PSPRB = %s'+#13+
+   'EXP   = %-11s|COL = %-4s|MDIS = %-6s|BEACN = %-4s|EPRB  = %s'+#13+
+   'SHIP  = %-4s '+#13,
+  [SCCurrentSector(Indexes),
+  SCCurrentTotalHolds(Indexes),
+  SCCurrentFighters(Indexes),
+  SCCurrentArmids(Indexes),
+  SCCurrentTwarpType(Indexes),
+
+  SCCurrentTurns(Indexes),
+  SCCurrentOreHolds(Indexes),
+  SCCurrentShields(Indexes),
+  SCCurrentLimpets(Indexes),
+  SCCurrentPlanetScanner(Indexes),
+
+  SCCurrentCredits(Indexes),
+  SCCurrentOrgHolds(Indexes),
+  SCCurrentPhotons(Indexes),
+  SCCurrentGenTorps(Indexes),
+  SCCurrentScanType(Indexes),
+
+  SCCurrentAlignment(Indexes),
+  SCCurrentEquHolds(Indexes),
+  SCCurrentCorbomite(Indexes),
+  SCCurrentAtomics(Indexes),
+  SCCurrentPsychicProbe(Indexes),
+
+  SCCurrentExperience(Indexes),
+  SCCurrentColHolds(Indexes),
+  SCCurrentMineDisr(Indexes),
+  SCCurrentBeacons(Indexes),
+  SCCurrentEprobes(Indexes),
+
+  SCCurrentShipNumber(Indexes)]);
+end;
+
 // *****************************************************************************
 //                             LIST BUILDER METHODS
 // *****************************************************************************
@@ -3128,6 +3385,37 @@ begin
     AddSysConstant('SECTOR.FIGS.TYPE', SCSector_Figs_Type);
     AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
 
+    // Added in 2.06
+    AddSysConstant('CURRENTTURNS', SCCurrentTurns);
+    AddSysConstant('CURRENTCREDITS', SCCurrentCredits);
+    AddSysConstant('CURRENTFIGHTERS', SCCurrentFighters);
+    AddSysConstant('CURRENTSHIELDS', SCCurrentShields);
+    AddSysConstant('CURRENTTOTAL_HOLDS', SCCurrentTotalHolds);
+    AddSysConstant('CURRENTOREHOLDS', SCCurrentOreHolds);
+    AddSysConstant('CURRENTORGHOLDS', SCCurrentOrgHolds);
+    AddSysConstant('CURRENTEQUHOLDS', SCCurrentEquHolds);
+    AddSysConstant('CURRENTCOLHOLDS', SCCurrentColHolds);
+    AddSysConstant('CURRENTEMPTYHOLDS', SCCurrentEmptyHolds);
+    AddSysConstant('CURRENTPHOTONS', SCCurrentPhotons);
+    AddSysConstant('CURRENTARMIDS', SCCurrentArmids);
+    AddSysConstant('CURRENTLIMPETS', SCCurrentLimpets);
+    AddSysConstant('CURRENTGENTORPS', SCCurrentGenTorps);
+    AddSysConstant('CURRENTTWARPTYPE', SCCurrentTwarpType);
+    AddSysConstant('CURRENTCLOAKS', SCCurrentCloaks);
+    AddSysConstant('CURRENTBEACONS', SCCurrentBeacons);
+    AddSysConstant('CURRENTATOMICS', SCCurrentAtomics);
+    AddSysConstant('CURRENTCORBOMITE', SCCurrentCorbomite);
+    AddSysConstant('CURRENTEPROBES', SCCurrentEprobes);
+    AddSysConstant('CURRENTMINEDISR', SCCurrentMineDisr);
+    AddSysConstant('CURRENTPSYCHICPROBE', SCCurrentPsychicProbe);
+    AddSysConstant('CURRENTPLANETSCANNER', SCCurrentPlanetScanner);
+    AddSysConstant('CURRENTSCANTYPE', SCCurrentScanType);
+    AddSysConstant('CURRENTALIGNMENT', SCCurrentAlignment);
+    AddSysConstant('CURRENTEXPERIENCE', SCCurrentExperience);
+    AddSysConstant('CURRENTCORP', SCCurrentCorp);
+    AddSysConstant('CURRENTSHIPNUMBER', SCCurrentShipNumber);
+    AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
+    AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
   end;
 end;
 
@@ -3264,6 +3552,11 @@ begin
     AddCommand('SPLITTEXT', 2, 3, CmdSplitText, [pkValue, pkVar], pkValue);
     AddCommand('TRIM', 1, 1, CmdTrim, [pkVar], pkValue);
     AddCommand('TRUNCATE', 1, 1, CmdTruncate, [pkVar], pkValue);
+
+    // Commands added for 2.06
+    AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [], pkValue);
+    AddCommand('SILENCECLIENTS', 0, 1, CmdSilenceClients, [pkValue], pkValue);
+
   end;
 end;
 

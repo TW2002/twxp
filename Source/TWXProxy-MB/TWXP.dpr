@@ -82,7 +82,8 @@ uses
   Persistence in 'Persistence.pas',
   GUI in 'GUI.pas',
   Observer in 'Observer.pas',
-  Messages;
+  Messages,
+  Encryptor in 'Encryptor.pas';
 
 //FormChangeIcon in 'FormChangeIcon.pas' {frmChangeIcon};
 

@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 // This unit controls all processing and recording of data
@@ -66,12 +66,43 @@ type
     FInAnsi             : Boolean;
     FMenuKey            : Char;
 
+    // MB - Addeded in 2.06
+    FCurrentTurns,
+    FCurrentCredits,
+    FCurrentFighters,
+    FCurrentShields,
+    FCurrentTotalHolds,
+    FCurrentOreHolds,
+    FCurrentOrgHolds,
+    FCurrentEquHolds,
+    FCurrentColHolds,
+    FCurrentPhotons,
+    FCurrentArmids,
+    FCurrentLimpets,
+    FCurrentGenTorps,
+    FCurrentTwarpType,
+    FCurrentCloaks,
+    FCurrentBeacons,
+    FCurrentAtomics,
+    FCurrentCorbomite,
+    FCurrentEprobes,
+    FCurrentMineDisr,
+    FCurrentAlignment,
+    FCurrentExperience,
+    FCurrentCorp,
+    FCurrentShipNumber     : Integer;
+    FCurrentPsychicProbe,
+    FCurrentPlanetScanner  : Boolean;
+    FCurrentScanType       : Word;
+    FCurrentShipClass      : String;
+
     procedure SectorCompleted;
     procedure ResetSectorLists;
     procedure ProcessPrompt(Line : string);
     procedure AddWarp(SectNum, Warp : Integer);
     procedure ProcessWarpLine(Line : String);
     procedure ProcessCIMLine(Line : String);
+    procedure ProcessQuickStats(Line : String);
     procedure ProcessSectorLine(Line : String);
     procedure ProcessLine(Line : String);
     procedure ProcessPortLine(Line : String);
@@ -95,6 +126,36 @@ type
     property CurrentANSILine: string read FCurrentANSILine write FCurrentANSILine;
     property RawANSILine: string read FRawANSILine write FRawANSILine;
     property CurrentSector: integer read FCurrentSectorIndex;
+
+    // MB - Addeded in 2.06
+    property CurrentTurns: integer read FCurrentTurns;
+    property CurrentCredits: integer read FCurrentCredits;
+    property CurrentFighters: integer read FCurrentFighters;
+    property CurrentShields: integer read FCurrentShields;
+    property CurrentTotalHolds: integer read FCurrentTotalHolds;
+    property CurrentOreHolds: integer read FCurrentOreHolds;
+    property CurrentOrgHolds: integer read FCurrentOrgHolds;
+    property CurrentEquHolds: integer read FCurrentEquHolds;
+    property CurrentColHolds: integer read FCurrentColHolds;
+    property CurrentPhotons: integer read FCurrentPhotons;
+    property CurrentArmids: integer read FCurrentArmids;
+    property CurrentLimpets: integer read FCurrentLimpets;
+    property CurrentGenTorps: integer read FCurrentGenTorps;
+    property CurrentTwarpType: integer read FCurrentTwarpType;
+    property CurrentCloaks: integer read FCurrentCloaks;
+    property CurrentBeacons: integer read FCurrentBeacons;
+    property CurrentAtomics: integer read FCurrentAtomics;
+    property CurrentCorbomite: integer read FCurrentCorbomite;
+    property CurrentEprobes: integer read FCurrentEprobes;
+    property CurrentMineDisr: integer read FCurrentMineDisr;
+    property CurrentAlignment: integer read FCurrentAlignment;
+    property CurrentExperience: integer read FCurrentExperience;
+    property CurrentCorp: integer read FCurrentCorp;
+    property CurrentShipNumber: integer read FCurrentShipNumber;
+    property CurrentPsychicProbe: Boolean read FCurrentPsychicProbe;
+    property CurrentPlanetScanner: Boolean read FCurrentPlanetScanner;
+    property CurrentScanType: Word    read FCurrentScanType;
+    property CurrentShipClass: String  read FCurrentShipClass;
 
   published
     property MenuKey: Char read GetMenuKey write SetMenuKey;
@@ -140,6 +201,8 @@ begin
   RawANSILine := '';
   FInAnsi := FALSE;
   ResetSectorLists;
+
+
 end;
 
 function TModExtractor.GetMenuKey: Char;
@@ -218,7 +281,7 @@ begin
   // processline and processinbound, as it can come in as part of
   // a large packet or still be waiting for the user.
 
-  // TODO - Make version availablre to scripts 
+  // TODO - Make version availablre to scripts
   // MB - Added TWGS Version detection
   if (Copy(Line, 1, 14) = 'TradeWars Game') then
   begin
@@ -773,7 +836,7 @@ begin
     end;
   end
   else if (Copy(Line, 9, 1) = ':') then
-    FSectorPosition := spNormal  
+    FSectorPosition := spNormal
   else if (Copy(Line, 1, 20) = 'Warps to Sector(s) :') then
   begin
     StripChar(Line, '(');
@@ -796,6 +859,118 @@ begin
     FSectorPosition := spNormal;
   end;
 end;
+
+// MB - Parse QuickStats added in 2.06
+// Sect 1?Turns 1,600?Creds 10,000?Figs 30?Shlds 0?Hlds 40?Ore 0?Org 0?Equ 0
+// Col 0?Phot 0?Armd 0?Lmpt 0?GTorp 0?TWarp No?Clks 0?Beacns 0?AtmDt 0?Crbo 0
+// EPrb 0?MDis 0?PsPrb No?PlScn No?LRS None,Dens,Holo?Aln 0?Exp 0?Ship 1 MerCru
+procedure TModExtractor.ProcessQuickStats(Line : String);
+var
+  I      : Integer;
+  Values,
+  Parts  : TStringList;
+begin
+  if (Copy(line,1,1) = ' ') then
+  begin
+    Values := TStringList.Create;
+    Parts  := TStringList.Create;
+
+    Split(Copy(Line,2,Length(Line)-1), Values, '³');
+    for I := 0 to (Values.Count - 1) do
+    begin
+      Parts.Clear;
+      Split(Values[I], Parts, ' ');
+      if (Parts.Count = 2) then
+      begin
+        if Parts[0] = 'Turns' then
+        begin
+          // No corp is displayed if player is not a member of a corp
+          FCurrentCorp := 0;
+          FCurrentTurns := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        end
+        else if Parts[0] = 'Creds' then
+          FCurrentCredits := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Figs' then
+          FCurrentFighters := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Shlds' then
+          FCurrentShields := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Crbo' then
+          FCurrentCorbomite := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Hlds' then
+          FCurrentTotalHolds := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Ore' then
+          FCurrentOreHolds := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Org' then
+          FCurrentOrgHolds := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Equ' then
+          FCurrentEquHolds := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Col' then
+          FCurrentColHolds := StrToIntSafe(Parts[1])
+
+        else if Parts[0] = 'Phot' then
+          FCurrentPhotons := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Armd' then
+          FCurrentArmids := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Lmpt' then
+          FCurrentLimpets := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'GTorp' then
+          FCurrentGenTorps := StrToIntSafe(Parts[1])
+
+        else if Parts[0] = 'Clks' then
+          FCurrentCloaks := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'Beacns' then
+          FCurrentBeacons := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'AtmDt' then
+          FCurrentAtomics := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'EPrb' then
+          FCurrentEprobes := StrToIntSafe(Parts[1])
+        else if Parts[0] = 'MDis' then
+          FCurrentMineDisr := StrToIntSafe(Parts[1])
+
+        else if Parts[0] = 'Aln' then
+          FCurrentAlignment := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Exp' then
+          FCurrentExperience := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'Corp' then
+          FCurrentCorp := StrToIntSafe(Parts[1])
+
+        else if Parts[0] = 'TWarp' then
+          FCurrentTwarpType := StrToIntSafe(stringreplace(Parts[1],'No','0',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        else if Parts[0] = 'PsPrb' then
+          FCurrentPsychicProbe := Parts[1] = 'Yes'
+        else if Parts[0] = 'PlScn' then
+          FCurrentPlanetScanner := Parts[1] = 'Yes'
+
+        else if Parts[0] = 'LRS' then
+        begin
+          if Parts[1] = 'None' then
+            FCurrentScanType := 0
+          else if Parts[1] = 'Dens' then
+            FCurrentScanType := 1
+          else if Parts[1] = 'Holo' then
+            FCurrentScanType := 2;
+        end;
+      end;
+      if parts.Count > 2 then
+      begin
+        if Parts[0] = 'Ship' then
+        begin
+          FCurrentShipNumber := StrToIntSafe(Parts[1]);
+          FCurrentShipClass  := Parts[2];
+        end;
+      end;
+    end;
+  end;
+end;
+
 
 procedure TModExtractor.ProcessPortLine(Line : String);
 var
@@ -862,7 +1037,7 @@ begin
     // All Products have been seen, so process the data
     // Timestamp the Port data
     FCurrentSector.SPort.UpDate := Now;
-    
+
     // Only determine the class if it's unknown (-1)
     if not (FCurrentSector.SPort.ClassIndex > 0) then
     begin
@@ -1094,6 +1269,11 @@ begin
 
       ProcessCIMLine(Line);
     end;
+  end
+  else if (ContainsText(Line, '³')) or (Copy(Line, 1, 5) = ' Ship') then
+  begin
+    // MB - Process QuickStats Line
+    ProcessQuickStats(Line);
   end
   else if (Copy(Line, 1, 10) = 'Sector  : ') then
   begin
