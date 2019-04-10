@@ -2239,7 +2239,6 @@ function CmdSilenceClients(Script : TObject; Params : array of TCmdParam) : TCmd
 var
   I : Integer;
 begin
-  // CMD: SilenceClients var
   if (Length(Params) > 0) and (Params[0].Value = '0') then
   begin
     if (TWXServer.ClientCount > 0) then
@@ -2265,6 +2264,55 @@ begin
 
   Result := caNone;
 end;
+
+function CmdSaveGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Found : Boolean;
+  I     : Integer;
+begin
+  Found := False;
+
+  // Search for an existing item and update if found
+  for I := 0 to TWXGlobalVars.Count - 1 do
+  begin
+    if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
+    begin
+      TGlobalVarItem(TWXGlobalVars[I]).Value := Params[0].Value;
+      Found := True;
+    end;
+  end;
+
+  // Create a new item if no items were found
+  if not Found then
+    TWXGlobalVars.Add(TGlobalVarItem.Create(TVarParam(Params[0]).Name, Params[0].Value));
+
+  Result := caNone;
+end;
+
+function CmdLoadGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I : Integer;
+begin
+  // Search for an existing item and return value
+  for I := 0 to TWXGlobalVars.Count - 1 do
+  begin
+    if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
+    begin
+      Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
+    end;
+  end;
+
+  Result := caNone;
+end;
+
+function CmdClearGlobals(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+
+  TWXGlobalVars.Clear;
+
+  Result := caNone;
+end;
+
 
 // *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
@@ -3556,6 +3604,10 @@ begin
     // Commands added for 2.06
     AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [], pkValue);
     AddCommand('SILENCECLIENTS', 0, 1, CmdSilenceClients, [pkValue], pkValue);
+
+    AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
+    AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
+    AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
 
   end;
 end;

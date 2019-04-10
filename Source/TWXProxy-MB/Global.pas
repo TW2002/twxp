@@ -27,6 +27,7 @@ interface
 
 uses
   GUI,
+  Classes,
   Bubble,
   Menu,
   Database,
@@ -35,6 +36,19 @@ uses
   Script,
   TCP,
   Persistence;
+
+type
+  TGlobalVarItem = class(TObject)
+  public
+    constructor Create(Name, Value : String);
+
+  protected
+    FName, FValue : string;
+
+  published
+    property Name : string read FName write FName;
+    property Value : string read FValue write FValue;
+  end;
 
 // Module variables:
 var
@@ -49,6 +63,16 @@ var
   TWXGUI            : TModGUI;
   PersistenceManager: TPersistenceManager;
 
+  TWXGlobalVars     : TList;
+
 implementation
+
+constructor TGlobalVarItem.Create(Name, Value : String);
+begin
+  FName  := Name;
+  FValue := Value;
+end;
+
+
 
 end.

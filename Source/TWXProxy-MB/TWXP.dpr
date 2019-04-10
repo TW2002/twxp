@@ -155,6 +155,8 @@ begin
   Randomize;
   ProgramDir := GetCurrentDir;
 
+  TWXGlobalVars := TList.Create;
+
   MessageHandler := TMessageHandler.Create;
   Application.OnMessage := MessageHandler.OnApplicationMessage;
 
@@ -293,10 +295,14 @@ begin
     TWXBubble.Free;
     ObjectName := 'TWXExtractor';
     TWXExtractor.Free;
+
   except
     // MB - Trying to localize crash when closing.
     MessageDlg('Exception occured trying to free ' + ObjectName, mtError, [mbOK], 0);
   end;
+
+  TWXGlobalVars.Free;
+
   MessageHandler.Free;
 end;
 
