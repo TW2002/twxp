@@ -38,7 +38,8 @@ const
   // TWX Proxy 2.03Final is version 3
   // TWX Proxy 2.04 is version 4
   // TWX Proxy 2.05 is version 5
-  COMPILED_SCRIPT_VERSION = 5;
+  // TWX Proxy 2.05 is version 6
+  COMPILED_SCRIPT_VERSION = 6;
 
   PARAM_CMD = 0;
   PARAM_VAR = 1; // User variable prefix
@@ -1383,6 +1384,36 @@ begin
       RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), ParamLine[1]], Line, ScriptID);
       RecurseCmd(['PAUSE'], Line, ScriptID);
       RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+    end
+    // MB - Macro added for 2.06
+    else if (ParamLine[0] = 'UPDATEQUICKSTATS') then
+    begin
+      Inc(WaitOnCount);
+
+      RecurseCmd(['SETVAR','$LastLine','CURRENTLINE'], Line, ScriptID);
+
+      if (ParamLine.Count > 1) then
+      begin
+        if (ParamLine[1] = 'SILENT') then
+        begin
+          RecurseCmd(['GETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
+          RecurseCmd(['SILENCECLIENTS'], Line, ScriptID);
+
+          RecurseCmd(['SEND','"/"'], Line, ScriptID);
+          RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
+          RecurseCmd(['PAUSE'], Line, ScriptID);
+          RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+
+          RecurseCmd(['SILENCECLIENTS','$LastDeaf'], Line, ScriptID);
+        end
+      end
+      else
+      begin
+        RecurseCmd(['SEND','"/"'], Line, ScriptID);
+        RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
+        RecurseCmd(['PAUSE'], Line, ScriptID);
+        RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+      end;
     end
     else
     begin

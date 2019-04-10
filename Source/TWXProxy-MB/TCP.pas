@@ -45,6 +45,7 @@ const
 
 type
   TClientType = (ctStandard, ctDeaf, ctUnauthorised, ctMute);
+  TDisplayMode = (ctSilent, ctQuiet, ctNormal, ctVerbose);
 
   TTelnetSocket = class(TTWXModule)
   type
@@ -110,7 +111,7 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
-    procedure Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = TRUE; Buffered : Boolean = FALSE);
+    procedure Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
     procedure ClientMessage(MessageText : string);
     procedure AddBuffer(Text : string);
     procedure StopVarDump;
@@ -233,7 +234,7 @@ begin
   inherited;
 end;
 
-procedure TModServer.Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = TRUE; Buffered : Boolean = FALSE);
+procedure TModServer.Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
 var
   I : Integer;
 begin
@@ -319,8 +320,9 @@ begin
       if (FClientEchoMarks[I]) then
         tcpServer.Socket.Connections[I].SendText(#255 + #3);
 
-      // MB - Clear the Deaf flag.
-      TWXServer.ClientTypes[I] := ctStandard;
+      // MB - Clear the Deaf flag if there are no other scripts running.
+      if (TWXInterpreter.Count = 0) then
+        TWXServer.ClientTypes[I] := ctStandard;
     End;
 end;
 
@@ -518,7 +520,7 @@ procedure TModServer.OnBufTimer(Sender : TObject);
 begin
   if (FBufferOut.Count > 0) then
   begin
-    Broadcast(FBufferOut[0], TRUE, TRUE, TRUE);
+    Broadcast(FBufferOut[0], TRUE, FALSE, TRUE);
     FBufferOut.Delete(0);
   end
   else

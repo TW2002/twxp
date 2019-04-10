@@ -82,7 +82,8 @@ uses
   Persistence in 'Persistence.pas',
   GUI in 'GUI.pas',
   Observer in 'Observer.pas',
-  Messages;
+  Messages,
+  Encryptor in 'Encryptor.pas';
 
 //FormChangeIcon in 'FormChangeIcon.pas' {frmChangeIcon};
 
@@ -153,6 +154,8 @@ begin
   ReportMemoryLeaksOnShutdown := DebugHook <> 0;  // EP - Enables new mem-manager to report leaks if Debug=TRUE
   Randomize;
   ProgramDir := GetCurrentDir;
+
+  TWXGlobalVars := TList.Create;
 
   MessageHandler := TMessageHandler.Create;
   Application.OnMessage := MessageHandler.OnApplicationMessage;
@@ -292,10 +295,14 @@ begin
     TWXBubble.Free;
     ObjectName := 'TWXExtractor';
     TWXExtractor.Free;
+
   except
     // MB - Trying to localize crash when closing.
     MessageDlg('Exception occured trying to free ' + ObjectName, mtError, [mbOK], 0);
   end;
+
+  TWXGlobalVars.Free;
+
   MessageHandler.Free;
 end;
 
