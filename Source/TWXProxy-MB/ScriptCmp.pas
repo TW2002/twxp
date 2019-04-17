@@ -1397,14 +1397,14 @@ begin
         if (ParamLine[1] = 'SILENT') then
         begin
           RecurseCmd(['GETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
-          RecurseCmd(['SILENCECLIENTS'], Line, ScriptID);
+          RecurseCmd(['SETDEAFCLIENTS'], Line, ScriptID);
 
           RecurseCmd(['SEND','"/"'], Line, ScriptID);
           RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
           RecurseCmd(['PAUSE'], Line, ScriptID);
           RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
 
-          RecurseCmd(['SILENCECLIENTS','$LastDeaf'], Line, ScriptID);
+          RecurseCmd(['SETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
         end
       end
       else

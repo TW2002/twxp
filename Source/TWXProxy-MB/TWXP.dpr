@@ -256,6 +256,7 @@ end;
 procedure FinaliseProgram;
 var
   ObjectName : String;
+  I          : Integer;
 begin
   try
     // MB - Save the current database name.
@@ -301,6 +302,8 @@ begin
     MessageDlg('Exception occured trying to free ' + ObjectName, mtError, [mbOK], 0);
   end;
 
+  for I := 0 to TWXGlobalVars.Count - 1 do
+    TGlobalVarItem(TWXGlobalVars[I]).Destroy;
   TWXGlobalVars.Free;
 
   MessageHandler.Free;
