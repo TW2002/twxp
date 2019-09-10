@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TWXProxy", "TWXProxy", "{0B71F460-A6F6-4609-8687-8C11EAE558B0}"
 EndProject
@@ -11,24 +11,38 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commander", "Commander", "{6803FEA8-762D-43BC-A397-B9A343066339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commander", "Source\Commander\Commander.csproj", "{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "TWXP26", "Source\Installer\TWXP26\TWXP26.wixproj", "{B114C312-665B-46DE-888F-4ECA9918B677}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "CoreMSI", "Source\Installer\CoreMSI\CoreMSI.wixproj", "{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Mombot", "Source\Installer\Mombot\Mombot.wixproj", "{A41C0733-8A97-4425-9A29-FE68611B6644}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B114C312-665B-46DE-888F-4ECA9918B677}.Debug|x86.ActiveCfg = Debug|x86
+		{B114C312-665B-46DE-888F-4ECA9918B677}.Debug|x86.Build.0 = Debug|x86
+		{B114C312-665B-46DE-888F-4ECA9918B677}.Release|x86.ActiveCfg = Release|x86
+		{B114C312-665B-46DE-888F-4ECA9918B677}.Release|x86.Build.0 = Release|x86
+		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Debug|x86.ActiveCfg = Debug|x86
+		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Debug|x86.Build.0 = Debug|x86
+		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Release|x86.ActiveCfg = Release|x86
+		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Release|x86.Build.0 = Release|x86
+		{A41C0733-8A97-4425-9A29-FE68611B6644}.Debug|x86.ActiveCfg = Debug|x86
+		{A41C0733-8A97-4425-9A29-FE68611B6644}.Debug|x86.Build.0 = Debug|x86
+		{A41C0733-8A97-4425-9A29-FE68611B6644}.Release|x86.ActiveCfg = Release|x86
+		{A41C0733-8A97-4425-9A29-FE68611B6644}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5E087DAA-D0D1-44BA-90D8-ABB05432AAA0} = {6803FEA8-762D-43BC-A397-B9A343066339}
+		{B114C312-665B-46DE-888F-4ECA9918B677} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
+		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
+		{A41C0733-8A97-4425-9A29-FE68611B6644} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {53CC47FC-96D0-4264-8FBE-14C7C5CA2776}

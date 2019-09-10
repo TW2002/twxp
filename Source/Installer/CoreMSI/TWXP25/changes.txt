@@ -1,0 +1,732 @@
+TWX PROXY v2.05.73 Changes
+
+Progarm:
+
+* TERMINAL MENU SYSTEM
+
+* MENU SYSTEM: The Export Bubble List function now creates a text file (as well 
+  as dumps to screen).  The file is saved to the TWX Program directory, ansd is
+  named <DatabaseName>_Bubbles.txt.
+
+* DATABASE: Listening port is now stored in the database of each game.
+
+* CORE: All numerical variables are handled as a decimal, with all the necessary
+  support functions in place.  This prevents constant (and costly) conversions
+  to and from strings.  This improves math functions, but also loops and boolean
+  functions.
+
+* CORE: The spelling of Anomaly has been changed (from Anomoly).  This affects 
+  associated system values and constants.
+
+* CORE: All code is compiled with Turbo Delphi 2006. Third party tray icon
+  replaced with native Delphi component.  Third party telnet libs replaced with
+  custom code.
+
+* INTERFACE: Created a workaround for Windows 7 dialog boxes.
+
+* AUTHENTICATION: All authentication code has been commented out or removed from
+  the TWX source.
+
+* EXTRACTOR: Corrected an issue caused by parsing port data for a Class 0.
+
+* EXTRACTOR: A blank fighter refresh resets the fig count on all sectors.
+
+* EXTRACTOR: During a fighter refresh, if an estimated value is reported (eg. 2T),
+  and the current value for that sector is within the margin of error (eg. 1886), 
+  the more specific value will not be replaced.
+
+* EXTRACTOR: The bell character (#7) is now removed before text processing.  There 
+  were occassional instances when this character would be present, preventing text
+  matches when everything seemed in order.
+
+* MENU SYSTEM: Pressing the Escape key will now cancel any active variable dumps.
+  Previously, there was no way to stop a very long variable dump.
+
+* MENU SYSTEM: A variable dump is now followed by the following message:
+  'Variable Dump Complete.'
+
+* INTERPRETER/COMPILER: Low-level optimizations were applied to reduce array
+  resizing for script execution, improving performance significantly.
+
+* INTERPRETER/COMPILER: Numerical comparisons (such as Equals or GreaterThan) now
+  take into account the current Precision value (if specified via setPrecision).
+  So if Precision is set to 2, the maximum variance will be 5*10E-3 (.005).
+  Therefore .998 and 1.002 evaluate as Equal, since the variance = 0.004.
+
+* INTERPRETER/COMPILER: The Delete command can't be called against a parent directory.
+
+* INTERPRETER/COMPILER: Added command 'Format', which can be used to convert
+  variables to Numbers, DateTimes, etc.
+
+* INTERPRETER/COMPILER: Added command 'getDirList', which behaves like getFileList,
+  only for Directories.  Only subdirectories can be parsed.
+
+* INTERPRETER/COMPILER: Added command 'makeDir', which creates a subdirectory in
+  the TWX program folder.
+
+* INTERPRETER/COMPILER: Added command 'removeDir', which removes a subdirectory in
+  the TWX program folder.
+
+* INTERPRETER/COMPILER: Added command 'getWordCount', which returns the number of
+  words in a line of text.
+
+* INTERPRETER/COMPILER: Optimized the 'Read' command so that repetitive reads to
+  the same file do not incur the overhead of opening and closing the file each
+  time, so long as the file remains unmodified between reads.
+
+* INTERPRETER/COMPILER: Improved the accuracy of the 'round' command, when a
+  Precision is specified.
+
+* INTERPRETER/COMPILER: Added command 'setMenuKey', which allows the TWX_MENUKEY
+  (normally $) to be changed.
+
+* INTERPRETER/COMPILER: Added command 'trim', which removes control and space
+  characters.
+
+* INTERPRETER/COMPILER: Added command 'truncate', which truncates the decimal
+  portion of a variable's value.
+
+* INTERPRETER/COMPILER: Added in-line comments, using the \\ symbol to indicate 
+  the comment text.
+
+* NETCODE: Complete rewrite of the Telnet Socket.  Removed dependancy on a 3rd
+  party library, and unified the Client and Server Telnet handling code.
+
+* NETCODE: Improved handling for very large send requests.
+
+
+TWX PROXY v2.04 (aka 2.04_Final) Changes
+
+Program:
+
+* CORE: Fixed an issue which could cause TWX to crash on exit, caused by
+  misconfiguration of the TrayIcon and Extractor components.
+
+* DATABASE: Fixed an issue which could cause repetitive calls to setSectorParameter
+  or getSectorParameter to fail.  Changed they way these lists are linked together
+  and freed.
+
+* DATABASE: Rewrote the PlotWarpCourse routine, improving speed and adding the
+  ability to take avoids into account for 'getCourse' and 'getDistance' plots.
+
+* INTERPRETER/COMPILER: Added command 'AddAvoid', which adds a sector to
+  TWX's new internal Avoid list, which is now used for course plots.
+
+* INTERPRETER/COMPILER: Added command 'ClearAvoid', which removes a specified
+  sector from the internal Avoid list.
+
+* INTERPRETER/COMPILER: Added command 'ClearAllAvoids', which removes all
+  existing sectors from the internal Avoid list.
+
+* INTERPRETER/COMPILER: Added command 'ListAvoids', which populates a user-
+  specified array with the sectors of the internal Avoid list.
+
+* INTERPRETER/COMPILER: Added command 'GetNearestWarps', which populates a
+  user-specified array with all sectors ordered by distance, as in a breadth-
+  first search.
+
+* INTERPRETER/COMPILER: Added command 'GetAllCourses', which populates a user-
+  specified array with all course plots from the specified start sector.
+
+* DATABASE: Fixed a bug causing Traders/Planets/Ships data to be deleted from the
+  database anytime the sector info was updated.
+
+* INTERPRETER: Changed the 'GetText' command to only search for EndText after
+  StartText.
+
+* INTERPRETER/COMPILER: Added command 'ListSectorParameters', which populates
+  a user-specified array with all Sector Parameters for the specified sector.
+
+* INTERPRETER: Changed the array returned by 'GetCourse' from dynamic to static.
+
+* COMPILER: Optimized the 'SetArray' procedure.  It is now substantially faster
+  on subsequent calls for an existing array.
+
+* INTERPRETER/COMPILER: Added SysConstant 'SECTOR.BEACON', which returns the
+  name of any known beacons in a specified sector.
+
+* NETCODE: Fixed a bug that would cause TWX to report a port conflict if Port 23
+  was unavailable, even if TWX was configured for a different Listen Port.
+
+* INTERPRETER/COMPILER: Added SysConstant, 'RAWPACKET', which is an unprocessed
+  representation of the last data packet received.
+
+* DATABASE: Improved parsing of Port data, while porting, as introduced in the
+  2.04_Beta.  The Database is now updated with the port's current status as soon
+  as the 3 product stats are seen.
+
+* IMPORT/EXPORT: Sector warp data is now merged, assimilating existing and
+  imported warps, regardless of timestamp.  The Explored status is adjusted
+  appropriately.
+
+* IMPORT/EXPORT: Fixed several bugs that could cause corruption if the imported
+  data was unknown, and represented by a negative value.
+
+* INTERPRETER/COMPILER: Added command 'ListActiveScripts', which populates the
+  specified array with all currently acive scripts.
+
+* INTERPRETER/COMPILER: Added command 'GetScriptVersion', which reads the version
+  of the compiler used to create a .CTS compiled script.
+
+* INTERPRETER/COMPILER: Added command 'GetFileList', which populates a specified
+  array with any files that match a specified mask (like *.ts).
+
+* INTERFACE: Changed the Tray Icon's right-click menu to only show 'Stop Script'
+  if there are scripts active.
+
+* INTERPRETER/COMPILER: Added SysConstant 'PORT.BUILDTIME', which returns the 
+  number of days remaining until Port completion, as recorded at last Port update.
+
+* INTERPRETER/COMPILER: Added SysConstant 'PORT.UPDATED', which returns the
+  date and timestamp that a port was last updated in the database.
+
+* INTERPRETER/COMPILER: Added SysConstant 'SECTOR.CONSTELLATION', which returns
+  the name of the nebulae of which the sector is a part.
+
+* INTERPRETER/COMPILER: Added SysConstant 'SECTOR.FIGS.TYPE', which returns the
+  type of fighter present in the sector: Offensive, Defensive, or Toll.
+
+
+
+TWX PROXY v2.04_Beta Changes
+
+Program:
+
+* INTERPRETER: The 'OPENMENU' command was modified in v2.03, but not completed
+  properly.  It now accepts an optional 2nd parameter, 'TRUE' or 'FALSE',
+  telling it to pause or not. (E.g. 'openMenu TWX_SHOWSPECIALPORT FALSE')
+
+* INTERPRETER: Corrected 'SETSECTORPARAMETER' value length.  Corrected to accept
+  a value 40 characters long.
+
+* DATABASE: Fixed an issue where 'SETSECTORPARAMETER' sector values were being
+  erased when that sector was revisited or redisplayed.
+
+* AUTHENTICATION: Removed authentication checks from Pack 2 scripts and includes.
+
+* INTERFACE: Changed the font used in Script Windows to Lucida Console.
+
+* INTERFACE: Changed Script Windows so that they are now resizeable using the mouse.
+
+* INTERPRETER/COMPILER: Added new command 'ReadToArray'.  This overcomes the severe
+  performance penalty encountered when reading in text files with many lines
+  (E.g. 20,000).  <Syntax: readToArray Filename $arrayName>
+
+* INTERPRETER/COMPILER: Added new System Constants, 'RYLOS' and 'ALPHACENTAURI'.
+
+* INTERPRETER/COMPILER: Added new System Constant, 'CURRENTSECTOR', which returns
+  the current sector as last seen at the Command or Computer Command lines.
+
+* INTERPRETER/COMPILER: Corrected improper rounding of floating point numbers when
+  Precision is set to zero.  Add, Subtract, Multiply, Divide, and Round now truncate
+  results when Precision is set to zero.
+
+* INTERPRETER: Added parsing of Fighter Refresh (thanks to help from Tweety).
+  Fighter info is now updated from a fig refresh.  N.B. Precise data may be
+  replaced by imprecise data for sectors with large numbers of figs
+  (E.g. 20,475 replaced by 20,000).
+
+* INTERPRETER: Added parsing of Port data, as seen when Docking, and from the
+  Computer menu's Port Report, even for ports not in the current sector.
+
+* INTERPRETER: Added new command, 'GetTimer'.  <Syntax: getTimer $ticks>  This
+  returns the number of ticks (or Hertz) since the CPU was powered on.  The
+  difference between a starting value and ending value should be devided by the
+  Hertz (Hz) of the CPU (E.g. 2,200,000,000 for a 2.2 GHz CPU).  The result is a
+  time measurement accurate to a few microSeconds (10^-6).
+
+* INTERPRETER: Stardock's sector info is now captured from the V-Screen.
+
+* INTERPRETER: Changed 'CURRENTANSILINE' so that it includes the Carriage Return (#13)
+  at the end.
+
+* IMPORT/EXPORT: Added additional checks to avoid program errors on Import/Export
+  caused by blank port data.
+
+
+Scripts/Subs:
+
+* Pack2 Scripts: Both the 2_* files and their includes have been left in their
+  uncompiled, unencrypted forms.
+
+* Pack2 Scripts: Removed or Remarked the calls to sys_check, so no attempt to
+  verify the registration is made.
+
+
+
+TWX PROXY v2.03 Changes
+
+Program:
+
+* INTERPRETER: Modified the command, 'OPENMENU', it was causing the script to
+  pause execution as soon as the menu was opened.  This is now optional by
+  specifying a second parameter to the command.
+
+* LOGGING: Added support for binary capture file recording and playback.  When
+  enabled from the setup form, binary logs will automatically be stored by TWX
+  in the same manner as the old text logs.  Its possible to make extracts from
+  these capture files using the CapEdit program and then play them back at the
+  speed they were recorded back within TWX.
+
+* INTERPRETER: Added the commands, 'SETSECTORPARAMETER' and 'GETSECTORPARAMETER'
+  which can be used to set sector specific values in the database.  These values
+  persist between scripts and can be accessed at any time.
+
+* DATABASE: Added support for dynamic sector variables.  These can now be accessed
+  via the scripting language.
+
+* INTERFACE: Fixed an issue with the script file filtering when adding a script
+  to the auto run list.  It should now allow .cts scripts to be added instead
+  of the old .es files.
+
+* AUTHENTICATION: Scripts containing the pack2 subroutines will now attempt to
+  authenticate if authentication hasn't taken place and the authentication process
+  is enabled.  This means people won't need to restart the program in order to
+  force it to authenticate (if they happened to be offline when it was first started).
+
+* CORE: Resolved several minor memory leaks.
+
+* CORE: Resolved several memory corruption issues that should generally improve 
+  program stability.
+
+* MENU SYSTEM: Added a search feature to variable dumps.  This will allow the
+  dumping of a specific group of variables instead of the whole lot.
+
+* INTERFACE: Adjusted the way the Game letter is entered into the setup
+  form.  People were having problems involving spaces before the letter preventing
+  it from reaching scripts properly.  Spaces will now be stripped out of the
+  contents of this box when the OK button is pressed.
+
+* COMPILER: Added checking for IF/END structure mismatches.  These were causing
+  obscure errors during runtime with system assigned goto labels.  These errors
+  will now be trapped and displayed at the end of compilation.
+
+* INTERPRETER: Fixed a bug that was causing the 'STOP' command to terminate
+  the script with an unknown error if the specified script was not found.
+
+* INTERPRETER: Added support for script windows as they were in 1.09b.
+
+* INTERPRETER: Added support for decimal calculations.
+
+* INTERPRETER/COMPILER: Added a new command, 'SETPRECISION', that allows
+  the decimal precision to be set for calculations.  The default precision
+  is 0, to allow compability with older scripts.
+
+* INTERPRETER/COMPILER: Added support for a new command, 'ROUND', that can
+  be used to round a decimal value to a specified precision.
+
+* INTERPRETER/COMPILER: Added a new system value, PORT.NAME.  This will
+  return the name of a port in the specified sector.
+
+* INTERPRETER/COMPILER: Added a new system value, PORT.EXISTS.  This will
+  return 1 (TRUE) or 0 (FALSE) depending upon if the specified sector has
+  a port or not.
+
+* INTERPRETER/COMPILER: Added a new system value, SECTOR.UPDATED.  This
+  will return the date/time stamp that a sector was last updated (as in the
+  getSector command).
+
+* INTERPRETER/COMPILER: Added a new system value, SECTOR.ANOMOLY.  This will
+  return 1 (TRUE) or 0 (FALSE) depending upon if the specified sector has
+  an anomoly in it.
+
+
+Scripts/Subs:
+
+* 1_MOVEFIG: Fixed a bug that was causing the script to bug out if the ship being
+  used to transport fighters had max capacity of 100,000 or more.
+
+* 1_SSM: Fixed a bug that was causing the script to bug out when it should have
+  been upgrading the port as a player's experience increases.
+
+* 2_MASSCOLONISE: Fixed a problem that was giving trigger errors instead of resuming the
+  script after a disconnection/relog.
+
+* SSM: Fixed a bug that was causing the script to drop a toll fig under only one of the
+  ports it works at.
+
+* SELLSTEAL: This routine will now check for a steal factor of zero when it initialises.
+  This will prevent the obscure 'Unknown error on line 69' that was being caused by
+  a divide-by-zero.
+
+* SST: Fixed a recursive include problem that was preventing the script from properly
+  compiling.
+
+
+TWX PROXY v2.02 Changes
+
+Program:
+
+* MENU SYSTEM: Fixed a bug that was causing access violations when multiple menu-command
+  macros were being sent to the terminal menu.
+
+* INTERFACE: Added a tooltip to the TWX icon in the taskbar.  It now displays the name of
+  the selected game.
+
+* INTERFACE: Now when a database is deleted, its .cfg file containing saved script variables will
+  also be removed.
+
+* NETCODE: Doubled the downstream buffer size from 2048 to 4096 in the hope that this may
+  solve the IRQL BSOD problems on some installations of Windows.
+
+* NETCODE: Fixed a recursive protocol negotiation problem that was causing severe CPU overload
+  when connecting to TWX Proxy with certain telnet clients (including Windows XP telnet).  Standardisation
+  of code may also improve usability on other clients.
+
+* COMPILER/INTERPRETER: Implemented the 'STOP' command that was originally available in 1.09.
+
+* DOCUMENTATION: Documented the new 'STOP' command.
+
+* DOCUMENTATION: Adjusted the documentation for the 'GetCourse' command.  It was showing the returned array
+  as being zero based - this is not true.
+
+* COMPILER/INTERPRETER: Fixed a bug that was causing the 'LowerCase' command to function like the 'Logging'
+  command.
+
+* AUTHENTICATION: Added support for the backup authentication server now hosted in New Zealand.
+
+* TWX FILE IMPORT/EXPORT: Fixed a problem that was causing certain values within the export files to be
+  written out of network byte order.
+
+* TERMINAL MENU: Fixed a menu linking problem that was causing access violations when menu items belonging
+  to a terminated script were not being released properly from their parent menus.
+
+
+Scripts/Subs:
+
+* GAMEPREFS: Adjusted this subroutine so that it no longer locks up scripts running in
+  older versions of TWGS.
+
+* 2_SENTINEL: Fixed problem with 'Inactivity mode' not starting properly while disconnected.
+
+* 2_SENTINEL: Fixed the menu option name for CLV checks.
+
+* SDF, SDT, SSF, SST, SSM: Added support for game setting checks when these subroutines
+  are invoked.  This will prevent the Red pack2 scripts from bugging out if a player's in-game
+  settings are not correct for the script.
+
+* WORLDTRADE: Fixed a bug that was causing the script to disable the 'Page on messages' game preference
+  without purpose.
+
+* PLANETINFO: Fixed a problem that was causing the script to error on line 65 if the target planet
+  has no name.
+
+* 2_PROBE: Fixed a problem that was causing the script to bug out if you tried to change the sector
+  to start probing from.
+
+* CHECKCIM: Fixed a problem that was causing the script to report the sector number of closed ports
+  incorrectly.  It was reporting the sector number of the port in the list AFTER the one that actually
+  closed.
+
+* CHECKCLV: Fixed a potential division by zero error when tracing a corp that has a total of 0 alignment.
+
+* PPT: Added cycle control to prevent the script from overflowing the remote server while PPTing.  This should
+  have no negative effect on script speed.
+
+
+TWX PROXY v2.01 Changes
+
+Program:
+
+* COMPILER: Fixed a problem with parameter count mismatching for the 
+  "setMenuOptions" command.
+
+* INTERFACE: Removed the "Data->Select database" option from the taskbar
+  menu - it was causing problems that could not be easily corrected.  You
+  should select the database through the terminal menu or the setup form
+  instead.
+
+* AUTHENTICATION: Made adjustments to HTTP cache specifications that I
+  believe will solve the strange cache problems people have been encountering
+  while trying to authenticate.
+
+* AUTHENTICATION: Adjusted the setup form to automatically re-authenticate
+  when the proxy configuration is changed.
+
+* AUTHENTICATION: Fixed a problem where error messages were being thrown in
+  a bad way when the program couldn't find the authentication server.
+
+* DOCUMENTATION: Fixed hyperlink problem.
+
+
+Scripts/Subs:
+
+* PLANETINFO: Fixed a problem where 100,000 or more colonists producing
+  equipment on a planet was causing the script to screw up on a trigger.
+
+* PLANETINFO: Fixed a problem where a planet that had no creator/owner
+  line was causing the script to bug out with a cutText error.
+
+* PROBE: Fixed a problem with the turn limiter shutting off the script
+  in unlimited turn games.
+
+* PROBE: Fixed a problem where unreached sectors were not being recorded
+  properly.
+
+
+
+Version 1.09b:
+
+*	Fixed serious CPU usage problems when a sector was displayed.  The cause of this
+	was the backdoor index that was blocking up the data 'dump' at the end of the database.
+	The backdoor index has now been moved into memory and is calculated when the database
+	is loaded.  Unfortunately this means a change in database structure, so 1.08b databases
+	are not compatible.
+
+*	Fixed double line spacing in the history window.
+
+*	Fixed the out of sync display in the history window when the
+	program is first loaded.
+
+*	Fixed a bug where sectors picked up in the port CIM display
+	were not being flagged as calculated/explored.  This meant
+	that the port details were there, but they were not being 
+	displayed in the $PL and $PU lists.
+
+*	Fixed a bug that was causing the setProgVar command to set
+	bogus variables.
+
+*	Fixed a bug that was causing scripts to exit with an unknown
+	error when an unexplored sector was retrieved with the getSector command
+
+*	Fixed a bug where aliens were being saved in the database as
+	corrupted planets.
+
+*	Fixed a bug that was causing access violations when attempting
+	to simulate a holoscan next to a sector that had not been explored.
+
+
+Version 1.08b:
+
+*	Fixed an error message 'List index out of bounds' that was appearing
+	when a game's setup was changed twice in a row.
+
+*	Fixed a problem where the scripts in the Event List were not
+	being shown until the event list was switched over/changed.
+
+*	Added a backdoor index to the database.  This allowed the adding of several new
+	features.  Including:
+
+	- Faster backdoor checks ($D-)
+	- A red '(backdoors)' displayed in the $DD sector display if the sector has backdoors
+	  leading into it
+	- Backdoor checks on all bubbles and deadends
+	- New variables added to the getSector command allowing the retrieval of backdoor info
+
+*	Exported deadend checks now contain 'true' deadends, rather than
+	all sectors with only one warp out.
+
+*	Fixed a minor problem where an error dialog would keep being displayed
+	when a database was used in a larger game than it was designed for.
+
+*	Made serious rearrangements to much of the code.  This should improve performance
+	somewhat.
+
+*	Made improvements to the bubble finder.  It can now locate bubbles of a near limitless
+	size, and display all their details in the terminal menu.  The max bubble size can be
+	configured in the setup dialog (defaults to 30).  Note that higher bubble sizes will
+	result in longer calculation times.  Bubbles with backdoors leading into them are
+	shown in red for reference purposes.
+
+*	Added the option to do a variable dump for all active scripts.  This can be done
+	by pressing V from the Script menu.
+
+*	Added the ability to handle port CIM data.  Port CIM data is saved automatically
+	when the user presses R from the game's CIM prompt.  This data can be queried in
+	the new 'Port' menu in the terminal menu.  Port displays can be reconstructed as
+	last seen and a summary of port details displayed.
+
+*	Added a new scripting constant by the name of 'CURRENTANSILINE', this
+	constant behaves the same as the 'CURRENTLINE' constant, only it
+	returns the line without its ANSI codes stripped.
+
+*	The Burst option from the terminal menu is now displayed with its own unique prompt.
+
+*	Made changes to the display of the terminal menu.  All text displayed
+	when leaving the terminal will now be in colour (rather than black and white).
+
+*	Improved the density searching option in the terminal menu.  It now
+	searches for sectors within a given density range, rather than just being
+	higher than a given number.
+
+*	Made some adjustments to protocol handling with connected clients.  This should
+	solve several problems with display and key handling with certain terminals.
+
+*	Message history now picks up continuous hails when messages are off.
+
+*	Exported warp CIM data is now tabulated as in the game.  This should
+	help provide support for other programs that make use of it.
+
+*	Script variables no longer have a 255 character limit - they are
+	limited by available memory.
+
+*	Fixed problems with tabs messing up goto/trigger labels in scripts.
+
+*	Setup data, including program variables, are now saved properly when the program
+	is closed, not just when the user hits OK in the setup dialog.
+
+*	Log files will now be saved according to the actual date the data was received rather
+	than the date the program was started.
+
+*	Fixed a small bug associated with trying to break connection while already connecting.
+
+*	Fixed problems with ANSI stripping which was preventing triggers
+	from being activated on the first few lines of text received from
+	some systems.
+
+*	Added the ability to plot warp courses internally.  You can do this
+	either through option C in the Data> menu or through one of two
+	new scripting commands, getDistance and getCourse.
+
+*	Fixed a problem with the storage of warp information, where sometimes
+	warp courses plotted from the computer were being fitted to previous
+	courses plotted, causing invalid data.
+
+*	Added a database cache option - this has greatly improved the efficiency 
+	of all database activity.
+
+*	Fixed problems with aliens and federals corrupting sector recording.
+
+*	Warps out from sectors are now stored incrementally (as they are in TW), 
+	rather than in order of detection.
+
+*	CIM warp data will now be logged if it is listed from the CIM prompt.
+
+*	Fixed a problem where the bottom of sectors displayed from the terminal menu
+	were being overlapped by in game messages.
+
+*	Fixed data corruption problems related to doing sector displays while in
+	a planet's citadel.
+
+*	Fixed data corruption problems related to ether probes.
+
+*	Fixed a scripting problem where the program would give unknown errors when
+	a script would jump into a large block of conditions and encounter a series
+	of endif/else statements.
+
+*	The 'IsNumber' scripting command was working with its results around the wrong way.
+	This has been adjusted to work the way it was originally intended.
+
+*	If the program fails to find a script when it is loaded, it will now report the
+	error in the terminal rather than in an exception dialog.
+
+*	Fixed a bug that was recording 'P indicates Trader is on a planet in that sector' in
+	the chat history when the corp member list was displayed.
+
+*	Fixed a problem where empty program variables were not being read properly in scripts
+
+*	Added the following new scripting commands: getDistance, getCourse, fileExists,
+	upperCase, lowerCase, rename
+
+*	Made the following changes to the getSector command:
+
+	- Added variable $SECTOR.FIGS.TYPE
+	- Added variable $SECTOR.UPDATED
+	- Added variable $SECTOR.PORT.BUILDTIME
+	- Added variable $SECTOR.PORT.PERC_ORE
+	- Added variable $SECTOR.PORT.PERC_ORG
+	- Added variable $SECTOR.PORT.PERC_EQUIP
+	- Added variable $SECTOR.PORT.BUY_ORE
+	- Added variable $SECTOR.PORT.BUY_ORG
+	- Added variable $SECTOR.PORT.BUY_EQUIP
+	- Added variable $SECTOR.PORT.ORE
+	- Added variable $SECTOR.PORT.ORG
+	- Added variable $SECTOR.PORT.EQUIP
+	- Added variable $SECTOR.PORT.UPDATED
+	- Added variable set $SECTOR.TRADER[x].FIGS
+	- Added variable set $SECTOR.SHIP[x].NAME
+	- Added variable set $SECTOR.SHIP[x].SHIP
+	- Added variable set $SECTOR.SHIP[x].OWNER
+	- Added variable set $SECTOR.SHIP[x].FIGS
+	- Added variable $SECTOR.SHIPS
+	- Added variable set $SECTOR.BACKDOOR[x]
+	- Removed variable $SECTOR.HASBACKDOORS (it was only in for testing)
+
+
+Version 1.07b:
+
+*	Replaced the icon with something much better looking.
+
+*	Rewrote telnet connection handling - it should now be much
+	more stable, especially when using multiple clients off a
+	single TWX server.
+
+*	Rewrote half the script interpreter - it will now work much
+	more efficiently and be much more stable in general.
+
+*	Users connecting using LAN IP addresses will no longer be locked
+	in view only mode.
+
+*	Log files will no longer be recorded in 'chunks' of data,
+	but instead will be saved by their date and the description
+	of the database used.
+
+*	Made format changes to the database - it now handles data
+	much more efficiently and will be able to cope with later
+	features.
+
+*	Added binary search methods to variable data handling in
+	scripts.  Estimated script processing speed increase of roughly
+	400% (depending on script size).
+
+*	Text will no longer be sent if there is an attached trigger
+	to it.  This makes it possible for users to attach their
+	scripts to macros or keys for single-key activation.  It also
+	means scripts can have a much more flexible interface.
+
+*	Added the ability for users to encrypt their scripts using
+	ENCRYPT.EXE and distribute them without their script code being
+	disclosed.
+
+*	Removed support for the 'Text Received' script trigger in scripts -
+	it can be handled much more efficiently with TextLineTriggers.
+
+*	Fixed double-triggering problems with the 'Text Sent'
+	script trigger.
+
+*	Fixed all text concatenation problems in scripts using the '&' character.
+	Added support for character references using the '#' character.
+
+*	Setup changes will now be saved as soon as the OK button is
+	clicked on the dialog - not when the program exits.  People
+	were having problems with their databases not being saved
+	if the program errored out.
+
+*	Added the 'systemscript' script command.  This command prevents
+	the script from being quick-terminated from the terminal menu.
+
+*	Added the ability to set and clear program variables through
+	the 'setprogvar' and 'clearprogvar' script commands.
+
+*	Added a 'getdate' script command (acts in the same way as 'gettime').
+
+*	Script triggers can now be named according to variable references rather
+	than static names.  I.e. you could have a trigger named by the value
+	held in $variable.
+
+*	Script triggers can now have goto labels according to variable references
+	rather than static labels.
+
+*	Fixed multiple prompt displays when messages were received in the terminal.
+
+*	Fixed a problem with values containing brackets in IF statements in scripts.
+
+*	Fixed problem with view only locks on clients being disconnected
+
+*	Added the ability to monitor connected clients by pressing the '-' key from the
+	terminal menu.
+
+*	Fixed a problem with the 'delete' command screwing up logging.
+
+*	Fixed a problem with input text being broken up by incoming text from the server.
+
+*	Fixed some line processing problems on server connection which were causing login
+	scripts to mess up.
+
+*	.ets files can now be quickloaded when renamed to 1.ets, 2.ets, etc
+
+*	The auto-reconnect feature has been re-enabled.  I'm convinced it was not responsible
+	for earlier problems with TWGS.
+
+*	Fixed a problem to do with IF statement structures in the scripting language - nested
+	conditions with a certain sequence were causing bazzaire problems.

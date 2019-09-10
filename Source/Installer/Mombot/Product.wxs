@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Mind Over Matter Bot" Language="1033" Version="3.5.0.0" Manufacturer="Mombot" UpgradeCode="7d904f57-df1d-4190-b654-d3b1c5082257">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate />
+
+    <Feature Id="ProductFeature" Title="Mombot" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="TWXPoxy" >
+          <Directory Id="SCRIPTS" Name="Scripts" >
+            <Directory Id="MOMBOT" Name="mombot">
+              <Directory Id="COMMANDS" Name="commands">
+                <Directory Id="CCASHING" Name="cashing" />
+                <Directory Id="CDATA" Name="data" />
+                <Directory Id="CDEFENSE" Name="defense" />
+                <Directory Id="CGENERAL" Name="general" />
+                <Directory Id="CGRID" Name="grid" />
+                <Directory Id="COFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="MODES" Name="modes">
+                <Directory Id="MCASHING" Name="cashing" />
+                <Directory Id="MDATA" Name="data" />
+                <Directory Id="MDEFENSE" Name="defense" />
+                <Directory Id="MGENERAL" Name="general" />
+                <Directory Id="MGRID" Name="grid" />
+                <Directory Id="MOFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="HELP" Name="help" />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="TWX Proxy" />
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut">
+        <Shortcut Id="MombotStartMenuShortcut"
+                  Name="Mombot Reference"
+                  Description="Mind Over Matter Bot"
+                  Target="[INSTALLFOLDER]scripts\mombot\mombot.html"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <Component Id="ProductComponent" Directory="MOMBOT" Guid="6f1c0907-d30b-42c2-8747-40c660cac7f4" >
+        <File Id="MainExe" Source="Mombot\__mom_bot3_5b.cts"/>
+        <File Source="Mombot\mombot.html" />
+      </Component>
+      <Component Id="CommandsComponent" Directory="CGENERAL">
+        <File Source="Mombot\Commands\General\tow.cts"/>
+      </Component>
+      <Component Id="HelpComponent" Directory="HELP">
+        <File Source="Mombot\Help\tow.txt"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
