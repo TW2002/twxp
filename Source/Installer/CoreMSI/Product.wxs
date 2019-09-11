@@ -10,18 +10,38 @@
 			<ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="DesktopShortcut" />
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="Mombot" />
     </Feature>
 	</Product>
 
 	<Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="TWXPoxy" >
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="TWXPoxy" >
           <Directory Id="SCRIPTS" Name="Scripts" >
-            <Directory Id="INCLUDE" Name="Include" />
+            <Directory Id="MOMBOT" Name="mombot">
+              <Directory Id="COMMANDS" Name="commands">
+                <Directory Id="CCASHING" Name="cashing" />
+                <Directory Id="CDATA" Name="data" />
+                <Directory Id="CDEFENSE" Name="defense" />
+                <Directory Id="CGENERAL" Name="general" />
+                <Directory Id="CGRID" Name="grid" />
+                <Directory Id="COFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="MODES" Name="modes">
+                <Directory Id="MCASHING" Name="cashing" />
+                <Directory Id="MDATA" Name="data" />
+                <Directory Id="MDEFENSE" Name="defense" />
+                <Directory Id="MGENERAL" Name="general" />
+                <Directory Id="MGRID" Name="grid" />
+                <Directory Id="MOFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="HELP" Name="help" />
             </Directory>
+          </Directory>
         </Directory>
       </Directory>
+
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="TWX Proxy" />
       </Directory>
@@ -54,6 +74,11 @@
                   Name="Script Pack2 Reference"
                   Description="Script Pack2 Reference"
                   Target="[INSTALLFOLDER]pack2.html"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <Shortcut Id="MombotStartMenuShortcut"
+                  Name="Mombot Reference"
+                  Description="Mind Over Matter Bot"
+                  Target="[INSTALLFOLDER]scripts\mombot\mombot.html"
                   WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
         <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
@@ -173,4 +198,22 @@
       </Component>
     </ComponentGroup>
   </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="MombotComponents">
+      <Component Id="Mombot" Directory="MOMBOT" Guid="6f1c0907-d30b-42c2-8747-40c660cac7f4" >
+        <File Id="MainExe" Source="Mombot\__mom_bot3_5b.cts"/>
+        <File Source="Mombot\mombot.html" />
+      </Component>
+      <Component Id="CommandsComponent" Directory="CGENERAL">
+        <File Source="Mombot\Commands\General\tow.cts"/>
+      </Component>
+      <Component Id="HelpComponent" Directory="HELP">
+        <File Source="Mombot\Help\tow.txt"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+
+
 </Wix>
