@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.1.1" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="TWX Proxy" Level="1" Absent="disallow" ConfigurableDirectory="TWXPROXY" Description="Installs the main TWX Proxy program, including Pack 1 / 2">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="DesktopShortcut" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+    <Feature Id="PublicFeature" Title="Public Scripts" Level="1" Description="Installs common public scripts. These scripts are provided 'as-is' with no documentation. Use at your own risk.">
+      <ComponentGroupRef Id="PublicComponents" />
+    </Feature>
+    <Feature Id="MombotFeature" Title="Mombot" Level="1" Description="Installs Mombot 3.5">
+      <ComponentGroupRef Id="MombotComponents" />
+    </Feature>
+      <Feature Id="ZedbotFeature" Title="Zedbot" Level="1" Description="Installs ZedBot 2.1.5 - This is the final version Archie released.">
+    <ComponentGroupRef Id="ZedbotComponents" />
+
+    </Feature>
+
+    <UIRef Id="WixUI_FeatureTree" />
+  </Product>
+
+	<Fragment>
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    <Property Id="ApplicationFolderName" Value="TWXProxy" />
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\banner.jpg" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\sidelogo.jpg" />
+    <SetDirectory Id="APPLICATIONFOLDER" Value="[WindowsVolume]" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="APPLICATIONFOLDER" Name="AppFolder">
+          <Directory Id="TWXPROXY" Name="TWXProxy" >
+            <Directory Id="SCRIPTS" Name="Scripts" >
+              <Directory Id="INCLUDE" Name="Include" />
+            <Directory Id="SUPG" Name="SupG" >
+              <Directory Id="SUPGI" Name="SupGInclude" />
+            </Directory>
+            <Directory Id="MOMBOT" Name="mombot">
+              <Directory Id="MCOMMANDS" Name="commands">
+                <Directory Id="MCCASHING" Name="cashing" />
+                <Directory Id="MCDATA" Name="data" />
+                <Directory Id="MCDEFENSE" Name="defense" />
+                <Directory Id="MCGENERAL" Name="general" />
+                <Directory Id="MCGRID" Name="grid" />
+                <Directory Id="MCOFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="MODES" Name="modes">
+                <Directory Id="MMCASHING" Name="cashing" />
+                <Directory Id="MMDATA" Name="data" />
+                <Directory Id="MMDEFENSE" Name="defense" />
+                <Directory Id="MMGENERAL" Name="general" />
+                <Directory Id="MMGRID" Name="grid" />
+                <Directory Id="MMOFFENSE" Name="offense" />
+              </Directory>
+              <Directory Id="MHELP" Name="help" />
+            </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="TWX Proxy" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id="DesktopShortcut">
+          <Shortcut Id="ApplicationDesktopShortcut"
+                    Name="TWX Proxy"
+                    Description="The Veteran's Trade Wars Helper"
+                    Target="[TWXPROXY]twxp.exe"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+          <RemoveFolder Id="CleanUpDesktopShortCut" Directory="DesktopFolder" On="uninstall"/>
+          <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        </Component>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="a80ea87e-bc43-4fda-847a-d7ace2071a08">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="TWX Proxy"
+                  Description="The Veteran's Trade Wars Helper"
+                  Target="[TWXPROXY]twxp.exe"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <Shortcut Id="ScriptRefStartMenuShortcut"
+                  Name="Script Reference"
+                  Description="Script Reference v2.06"
+                  Target="[TWXPROXY]script.html"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <Shortcut Id="ScriptPack2StartMenuShortcut"
+                  Name="Script Pack2 Reference"
+                  Description="Script Pack2 Reference"
+                  Target="[TWXPROXY]pack2.html"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <Shortcut Id="MombotStartMenuShortcut"
+                  Name="Mombot Reference"
+                  Description="Mind Over Matter Bot"
+                  Target="[TWXPROXY]scripts\mombot\mombot.html"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+  </Fragment>
+
+	<Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <Component Id="ProductComponent" Directory="TWXPROXY" Guid="36d4d996-21c0-4cd5-b943-4bd3effa00fe" >
+        <ProgId Id="TWXP" Description="The Veteran's Trade Wars Helper">
+          <Extension Id="xdb">
+            <Verb Id="open" TargetFile="MainExe" Argument="&quot;%1&quot;" />
+          </Extension>
+        </ProgId>
+        <File Id="MainExe" Source="TWXP26\twxp.exe"/>
+        <File Source="TWXP26\twxp.dll"/>
+        <File Source="TWXP26\script.html"/>
+
+        <File Source="TWXP25\twxc.exe"/>
+        <File Source="TWXP25\CapEdit.exe"/>
+        <File Source="TWXP25\changes.txt"/>
+        <File Source="TWXP25\GPL.txt"/>
+        <File Source="TWXP25\pack2.html"/>
+        <File Source="TWXP25\Readme.txt"/>
+      </Component>
+      <Component Id="ScriptsComponent" Directory="SCRIPTS" Guid="6bc774d9-13ba-4194-b4f9-fd316a9905a5">
+        <File Source="TWXP25\Scripts\1_ECol.ts"/>
+        <File Source="TWXP25\Scripts\1_KeepAlive.ts"/>
+        <File Source="TWXP25\Scripts\1_Login.ts"/>
+        <File Source="TWXP25\Scripts\1_Move.ts"/>
+        <File Source="TWXP25\Scripts\1_MoveCol.ts"/>
+        <File Source="TWXP25\Scripts\1_MoveFig.ts"/>
+        <File Source="TWXP25\Scripts\1_Port.ts"/>
+        <File Source="TWXP25\Scripts\1_PortFast.ts"/>
+        <File Source="TWXP25\Scripts\1_Scout.ts"/>
+        <File Source="TWXP25\Scripts\1_SSM.ts"/>
+        <File Source="TWXP25\Scripts\1_SST.ts"/>
+        <File Source="TWXP25\Scripts\1_TCOL.ts"/>
+        <File Source="TWXP25\Scripts\1_Trade.ts"/>
+        <File Source="TWXP25\Scripts\1_ZTM.ts"/>
+        <File Source="TWXP25\Scripts\1_ZTMFast.ts"/>
+        <File Source="TWXP25\Scripts\2_Build.ts"/>
+        <File Source="TWXP25\Scripts\2_BuyDown.ts"/>
+        <File Source="TWXP25\Scripts\2_Col.ts"/>
+        <File Source="TWXP25\Scripts\2_Evil.ts"/>
+        <File Source="TWXP25\Scripts\2_Find.ts"/>
+        <File Source="TWXP25\Scripts\2_Gather.ts"/>
+        <File Source="TWXP25\Scripts\2_MassColonise.ts"/>
+        <File Source="TWXP25\Scripts\2_MassUpgrade.ts"/>
+        <File Source="TWXP25\Scripts\2_Ping.ts"/>
+        <File Source="TWXP25\Scripts\2_Probe.ts"/>
+        <File Source="TWXP25\Scripts\2_Query.ts"/>
+        <File Source="TWXP25\Scripts\2_SDF.ts"/>
+        <File Source="TWXP25\Scripts\2_SDT.ts"/>
+        <File Source="TWXP25\Scripts\2_Sentinel.ts"/>
+        <File Source="TWXP25\Scripts\2_SSF.ts"/>
+        <File Source="TWXP25\Scripts\2_SST.ts"/>
+        <File Source="TWXP25\Scripts\2_WorldSSM.ts"/>
+        <File Source="TWXP25\Scripts\2_WorldTrade.ts"/>
+        <File Source="TWXP25\Scripts\_EP_Haggle2019.cts"/>
+        <File Source="TWXP25\Scripts\_EP_Haggle2019_ReadMe.txt"/>
+      </Component>
+      <Component Id="IncludeComponent" Directory="INCLUDE" Guid="a1a5311e-8e93-433c-b333-ec694165e65b">
+        <File Source="TWXP25\Scripts\Include\Approach.ts"/>
+        <File Source="TWXP25\Scripts\Include\Cache.ts"/>
+        <File Source="TWXP25\Scripts\Include\Capture.ts"/>
+        <File Source="TWXP25\Scripts\Include\CheckCIM.ts"/>
+        <File Source="TWXP25\Scripts\Include\CheckCLV.ts"/>
+        <File Source="TWXP25\Scripts\Include\CheckOnline.ts"/>
+        <File Source="TWXP25\Scripts\Include\Colonise.ts"/>
+        <File Source="TWXP25\Scripts\Include\Evil.ts"/>
+        <File Source="TWXP25\Scripts\Include\FastSST.ts"/>
+        <File Source="TWXP25\Scripts\Include\FindProduct.ts"/>
+        <File Source="TWXP25\Scripts\Include\GamePrefs.ts"/>
+        <File Source="TWXP25\Scripts\Include\Gather.ts"/>
+        <File Source="TWXP25\Scripts\Include\GetAttack.ts"/>
+        <File Source="TWXP25\Scripts\Include\GetTarget.ts"/>
+        <File Source="TWXP25\Scripts\Include\Haggle.ts"/>
+        <File Source="TWXP25\Scripts\Include\Haggle.old"/>
+        <File Source="TWXP25\Scripts\Include\Header.ts"/>
+        <File Source="TWXP25\Scripts\Include\Land.ts"/>
+        <File Source="TWXP25\Scripts\Include\MakePlanet.ts"/>
+        <File Source="TWXP25\Scripts\Include\MassColonise.ts"/>
+        <File Source="TWXP25\Scripts\Include\MassUpgrade.ts"/>
+        <File Source="TWXP25\Scripts\Include\Move.ts"/>
+        <File Source="TWXP25\Scripts\Include\MoveProduct.ts"/>
+        <File Source="TWXP25\Scripts\Include\MoveShip.ts"/>
+        <File Source="TWXP25\Scripts\Include\NearFig.ts"/>
+        <File Source="TWXP25\Scripts\Include\PlanetCheck.ts"/>
+        <File Source="TWXP25\Scripts\Include\PlanetInfo.ts"/>
+        <File Source="TWXP25\Scripts\Include\PlanetLoop.ts"/>
+        <File Source="TWXP25\Scripts\Include\PlanetUpgrade.ts"/>
+        <File Source="TWXP25\Scripts\Include\PlayerInfo.ts"/>
+        <File Source="TWXP25\Scripts\Include\PortCheck.ts"/>
+        <File Source="TWXP25\Scripts\Include\PPT.ts"/>
+        <File Source="TWXP25\Scripts\Include\Probe.ts"/>
+        <File Source="TWXP25\Scripts\Include\Refurb.ts"/>
+        <File Source="TWXP25\Scripts\Include\Rob.ts"/>
+        <File Source="TWXP25\Scripts\Include\Routes.ts"/>
+        <File Source="TWXP25\Scripts\Include\SDF.ts"/>
+        <File Source="TWXP25\Scripts\Include\SDT.ts"/>
+        <File Source="TWXP25\Scripts\Include\SeekProduct.ts"/>
+        <File Source="TWXP25\Scripts\Include\SeekTarget.ts"/>
+        <File Source="TWXP25\Scripts\Include\SellSteal.ts"/>
+        <File Source="TWXP25\Scripts\Include\ShipStats.ts"/>
+        <File Source="TWXP25\Scripts\Include\SSF.ts"/>
+        <File Source="TWXP25\Scripts\Include\SSM.ts"/>
+        <File Source="TWXP25\Scripts\Include\SST.ts"/>
+        <File Source="TWXP25\Scripts\Include\SSTScout.ts"/>
+        <File Source="TWXP25\Scripts\Include\StealDump.ts"/>
+        <File Source="TWXP25\Scripts\Include\StripCorp.ts"/>
+        <File Source="TWXP25\Scripts\Include\StripRank.ts"/>
+        <File Source="TWXP25\Scripts\Include\TestSector.ts"/>
+        <File Source="TWXP25\Scripts\Include\Warp.ts"/>
+        <File Source="TWXP25\Scripts\Include\WorldSSM.ts"/>
+        <File Source="TWXP25\Scripts\Include\WorldSST.ts"/>
+        <File Source="TWXP25\Scripts\Include\WorldTrade.ts"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="PublicComponents" >
+      <Component Id="PublicComponent" Directory="SCRIPTS" Guid="f6547010-0143-4b3f-a0f8-0461edf27a99">
+        <File Source="Public\Alexio_Auto_Login.cts"/>
+        <File Source="Public\Alexio_Cit_Evac_2.cts"/>
+        <File Source="Public\Alexio_Pbuster_2.cts"/>
+        <File Source="Public\Alexio_Pdrop_2.cts"/>
+        <File Source="Public\Alexio_Planet_Creation_2.11.cts"/>
+        <File Source="Public\Alexio_Planet_Creation_2.cts"/>
+        <File Source="Public\Alexio_Probe_Hunter_2.cts"/>
+        <File Source="Public\Alexio_Quick_Kill_2.cts"/>
+        <File Source="Public\Alexio_Seek_Out_2.01.cts"/>
+        <File Source="Public\Alexio_Surround_Photon_2.cts"/>
+        <File Source="Public\ck_2ship_grid.cts"/>
+        <File Source="Public\ck_buydown.cts"/>
+        <File Source="Public\ck_callsaveme.cts"/>
+        <File Source="Public\ck_equip_haggle_tracker.cts"/>
+        <File Source="Public\ck_exit_enter.cts"/>
+        <File Source="Public\ck_furb.cts"/>
+        <File Source="Public\ck_gamesettings.cts"/>
+        <File Source="Public\ck_lawnmow.cts"/>
+        <File Source="Public\ck_mine_deploy.cts"/>
+        <File Source="Public\ck_move_surround.cts"/>
+        <File Source="Public\ck_overload_checker.cts"/>
+        <File Source="Public\ck_pdrop.cts"/>
+        <File Source="Public\ck_perslimp_deploy.cts"/>
+        <File Source="Public\ck_ping.cts"/>
+        <File Source="Public\ck_planet_nego.cts"/>
+        <File Source="Public\ck_refresh_figs.cts"/>
+        <File Source="Public\ck_relog.cts"/>
+        <File Source="Public\ck_saveme.cts"/>
+        <File Source="Public\ck_SDT.cts"/>
+        <File Source="Public\ck_ship_cap.cts"/>
+        <File Source="Public\ck_ship_stats.cts"/>
+        <File Source="Public\ck_SST+JET.cts"/>
+        <File Source="Public\ck_superphoton.cts"/>
+        <File Source="Public\ck_surround.cts"/>
+        <File Source="Public\ck_ztm.cts"/>
+        <File Source="Public\dny_adj_fig_hit_killa.ts"/>
+        <File Source="Public\dny_casual_grid.ts"/>
+        <File Source="Public\dny_casual_gridmow.ts"/>
+        <File Source="Public\dny_citkilla.ts"/>
+        <File Source="Public\dny_coordinator.ts"/>
+        <File Source="Public\dny_counter_torp.ts"/>
+        <File Source="Public\dny_dock_kit.ts"/>
+        <File Source="Public\dny_easy_gridder.ts"/>
+        <File Source="Public\dny_fed_echo.ts"/>
+        <File Source="Public\dny_fighit_snippet.ts"/>
+        <File Source="Public\dny_holokilla.ts"/>
+        <File Source="Public\dny_holokilla_v2.ts"/>
+        <File Source="Public\dny_invisible_keepalive.ts"/>
+        <File Source="Public\dny_killfig.ts"/>
+        <File Source="Public\dny_planet_vacuum.ts"/>
+        <File Source="Public\dny_print_alien_spaces.ts"/>
+        <File Source="Public\dny_public_ugridder-docs.txt"/>
+        <File Source="Public\dny_public_ugridder.cts"/>
+        <File Source="Public\dny_quicklogs.ts"/>
+        <File Source="Public\dny_quick_figs.ts"/>
+        <File Source="Public\dny_quick_foton.ts"/>
+        <File Source="Public\dny_refiller.ts"/>
+        <File Source="Public\dny_simple_pgridder.ts"/>
+        <File Source="Public\dny_target.ts"/>
+        <File Source="Public\DU_Seek_Out_2.31.cts"/>
+        <File Source="Public\ender_bd.ts"/>
+        <File Source="Public\ender_dp.ts"/>
+        <File Source="Public\ender_erp.ts"/>
+        <File Source="Public\ender_ne.ts"/>
+        <File Source="Public\ender_pg.ts"/>
+        <File Source="Public\ender_qx.ts"/>
+        <File Source="Public\ender_re.ts"/>
+        <File Source="Public\ender_rer.ts"/>
+        <File Source="Public\ender_rt.ts"/>
+        <File Source="Public\ender_sd.ts"/>
+        <File Source="Public\ender_sst.ts"/>
+        <File Source="Public\ender_xpd.ts"/>
+        <File Source="Public\EP_ansi.ts"/>
+        <File Source="Public\EP_CinemaViewer.ts"/>
+        <File Source="Public\EP_Class_0.ts"/>
+        <File Source="Public\EP_displayAnsiLine.ts"/>
+        <File Source="Public\EP_FindSin.ts"/>
+        <File Source="Public\EP_no_mugging.ts"/>
+        <File Source="Public\EP_Sin.ts"/>
+        <File Source="Public\EP_TunnelReport.ts"/>
+        <File Source="Public\Kaus_Borg_GPMakerPub.ts"/>
+        <File Source="Public\Kaus_Inefficent Tmilker.ts"/>
+        <File Source="Public\Kaus_SS_Crawler.cts"/>
+        <File Source="Public\Kaus_TerraFarmer.cts"/>
+        <File Source="Public\ls_0__Index.txt"/>
+        <File Source="Public\ls_0__Scripts.txt"/>
+        <File Source="Public\ls_Alien411.ts"/>
+        <File Source="Public\ls_BeRightBack_v1.ts"/>
+        <File Source="Public\ls_Boton_v13.ts"/>
+        <File Source="Public\ls_BRBv1.ts"/>
+        <File Source="Public\ls_Bust_Manager.ts"/>
+        <File Source="Public\ls_CIMHunter_v20.ts"/>
+        <File Source="Public\ls_CLV.ts"/>
+        <File Source="Public\ls_CLV_Sort.ts"/>
+        <File Source="Public\ls_Combined_Mover_v11.ts"/>
+        <File Source="Public\ls_deFILER_v1.ts"/>
+        <File Source="Public\ls_Dock_Me.ts"/>
+        <File Source="Public\ls_Dock_Shopper_v33.ts"/>
+        <File Source="Public\ls_DTorp_v1.ts"/>
+        <File Source="Public\ls_finderv1.cts"/>
+        <File Source="Public\ls_FURBY.ts"/>
+        <File Source="Public\ls_Grid_Maker_v104.ts"/>
+        <File Source="Public\ls_Invader.ts"/>
+        <File Source="Public\ls_Limp_pDrop_3.ts"/>
+        <File Source="Public\ls_Load_v30.ts"/>
+        <File Source="Public\ls_LOZIP304.cts"/>
+        <File Source="Public\ls_LSECTv162.ts"/>
+        <File Source="Public\ls_LSPassiveGridder.010.ts"/>
+        <File Source="Public\ls_LSurroundv2.ts"/>
+        <File Source="Public\ls_LSZTM_11.ts"/>
+        <File Source="Public\ls_MapArt.ts"/>
+        <File Source="Public\ls_MCIC.001.ts"/>
+        <File Source="Public\ls_merc.ts"/>
+        <File Source="Public\ls_Move_Helper.ts"/>
+        <File Source="Public\ls_New_Game_v192.ts"/>
+        <File Source="Public\ls_ORE_v162.ts"/>
+        <File Source="Public\ls_ozip212.cts"/>
+        <File Source="Public\ls_ozip212.txt"/>
+        <File Source="Public\ls_PassiveGridder.010.ts"/>
+        <File Source="Public\ls_PGRiDDER06.ts"/>
+        <File Source="Public\ls_planet.ts"/>
+        <File Source="Public\ls_planet_creation_v10.cts"/>
+        <File Source="Public\ls_planet_creation_v10a.ts"/>
+        <File Source="Public\ls_Planet_Stripper_v103.ts"/>
+        <File Source="Public\ls_Ports.ts"/>
+        <File Source="Public\ls_SafeMow.ts"/>
+        <File Source="Public\ls_Scout_v20.ts"/>
+        <File Source="Public\ls_SECTv162.ts"/>
+        <File Source="Public\ls_sload10.cts"/>
+        <File Source="Public\ls_sload10.readme.txt"/>
+        <File Source="Public\ls_Speed_Mow.ts"/>
+        <File Source="Public\ls_Surroundv2.ts"/>
+        <File Source="Public\ls_SWAT_v10.ts"/>
+        <File Source="Public\ls_Terra ALARM.ts"/>
+        <File Source="Public\ls_tfinderv11.ts"/>
+        <File Source="Public\ls_Traffic.ts"/>
+        <File Source="Public\ls_TRv103.ts"/>
+        <File Source="Public\ls_Tunnel_Finder_v10.ts"/>
+        <File Source="Public\ls_txt_spitter.ts"/>
+        <File Source="Public\ls_UnExScout_v3.ts"/>
+        <File Source="Public\ls_WarpFinderv13.ts"/>
+        <File Source="Public\ls_WARPSpec.ts"/>
+        <File Source="Public\ls_Who.002.ts"/>
+        <File Source="Public\ls_YourItv360.ts"/>
+        <File Source="Public\ls_ZTM_11.ts"/>
+        <File Source="Public\ls__ShipManifest.ts"/>
+        <File Source="Public\man_alienhunt.ts"/>
+        <File Source="Public\mdest_PtorpSupG.ts"/>
+        <File Source="Public\mdest_RinBot.ts"/>
+        <File Source="Public\mdest_Rintaliation.ts"/>
+        <File Source="Public\mdest_Rin_burst_and_retreat.ts"/>
+        <File Source="Public\mdest_Rin_figme.ts"/>
+        <File Source="Public\mdest_Rin_loader.ts"/>
+        <File Source="Public\mdest_Rin_minedeploy.ts"/>
+        <File Source="Public\mdest_Rin_plocker.ts"/>
+        <File Source="Public\mdest_Rin_quick_pgridder.ts"/>
+        <File Source="Public\mdest_Rin_Team_SDT.ts"/>
+        <File Source="Public\mdest_Rin_Team_SST.ts"/>
+        <File Source="Public\mdest_Saarfin.ts"/>
+        <File Source="Public\mdest_Saarfurb.ts"/>
+        <File Source="Public\mdest_SaarZTM.ts"/>
+        <File Source="Public\mdest_surround.ts"/>
+        <File Source="Public\mdest__oz-planet-trade_best.ts"/>
+        <File Source="Public\mdest__oz-planet-trade_speed.ts"/>
+        <File Source="Public\mdest__oz_improved_foton.ts"/>
+        <File Source="Public\mdest__PlanetSectorFigDump.ts"/>
+        <File Source="Public\mdest___st-bot_109b.ts"/>
+        <File Source="Public\md_LawnMow.ts"/>
+        <File Source="Public\md_PlanetStripper.ts"/>
+        <File Source="Public\misc_ANS Code Generator.ts"/>
+        <File Source="Public\misc_Changes.cts"/>
+        <File Source="Public\misc_data_aliens.cts"/>
+        <File Source="Public\misc_data_explored.cts"/>
+        <File Source="Public\misc_data_ferrengispace.cts"/>
+        <File Source="Public\misc_data_findbeacon.cts"/>
+        <File Source="Public\misc_data_finddensity.cts"/>
+        <File Source="Public\misc_data_ships.cts"/>
+        <File Source="Public\misc_data_trader.cts"/>
+        <File Source="Public\misc_data_unexplored.cts"/>
+        <File Source="Public\misc_IDC_Drain.cts"/>
+        <File Source="Public\misc_Optimizer.ts"/>
+        <File Source="Public\misc_quickstat.ts"/>
+        <File Source="Public\misc_Reader.ts"/>
+        <File Source="Public\misc_StripTrailing.ts"/>
+        <File Source="Public\misc__Deploy.ts"/>
+        <File Source="Public\misc__gem_mrob.cts"/>
+        <File Source="Public\misc__gem_quick_dock.cts"/>
+        <File Source="Public\misc__kl_limpet_watcher1.ts"/>
+        <File Source="Public\misc__kl_no_aln_upgrade.ts"/>
+        <File Source="Public\mob_shipscrubberv18.ts"/>
+        <File Source="Public\ozz-cit-killa.ts"/>
+        <File Source="Public\ozz-flex-foton.ts"/>
+        <File Source="Public\ozz-foton.ts"/>
+        <File Source="Public\ozz-planet-grid.ts"/>
+        <File Source="Public\ozz-pre-foton.ts"/>
+        <File Source="Public\ozz_improved_foton.ts"/>
+        <File Source="Public\ozz_twarp_saveme_botver.ts"/>
+        <File Source="Public\phhs_pdrop.cts"/>
+        <File Source="Public\phhs_pdrop.ts"/>
+        <File Source="Public\phh_alienspace.cts"/>
+        <File Source="Public\phh_filereader.ts"/>
+        <File Source="Public\phh_klearsector.cts"/>
+        <File Source="Public\phh_klearsector.ts"/>
+        <File Source="Public\phh_menu.ts"/>
+        <File Source="Public\phh_menumask.txt"/>
+        <File Source="Public\phh_mine_deploy.cts"/>
+        <File Source="Public\phh_msl_echo.cts"/>
+        <File Source="Public\phh_msl_echo.ts"/>
+        <File Source="Public\phh_pdrop.cts"/>
+        <File Source="Public\phh_pdrop.ts"/>
+        <File Source="Public\phh_perslimp_deploy.cts"/>
+        <File Source="Public\phh_qss.cts"/>
+        <File Source="Public\phh_readme_menu.txt"/>
+        <File Source="Public\phh_runawaytracker_standalone.cts"/>
+        <File Source="Public\phh_savevoids.cts"/>
+        <File Source="Public\phh_scrolling banner.ts"/>
+        <File Source="Public\phh_setvoids.cts"/>
+        <File Source="Public\phx_AFK.ts"/>
+        <File Source="Public\phx_figmover.ts"/>
+        <File Source="Public\phx_InCommunicado.ts"/>
+        <File Source="Public\phx_MacroLoop.ts"/>
+        <File Source="Public\phx_QuickDraw.ts"/>
+        <File Source="Public\phx_SectorList.ts"/>
+        <File Source="Public\phx_Stats.ts"/>
+        <File Source="Public\pro_AdjacentSpeedBuy.ts"/>
+        <File Source="Public\pro_AssetCheck.ts"/>
+        <File Source="Public\pro_BaseMove.cts"/>
+        <File Source="Public\pro_Bubble.cts"/>
+        <File Source="Public\pro_cannondamage.cts"/>
+        <File Source="Public\pro_ecolonizer5.cts"/>
+        <File Source="Public\pro_EprobeRemote.cts"/>
+        <File Source="Public\pro_fueler.cts"/>
+        <File Source="Public\pro_gameassets.cts"/>
+        <File Source="Public\pro_GameInfo_4.cts"/>
+        <File Source="Public\pro_GameOpen.cts"/>
+        <File Source="Public\pro_gd.cts"/>
+        <File Source="Public\pro_gt.cts"/>
+        <File Source="Public\pro_masscitbuilderv09.ts"/>
+        <File Source="Public\pro_md.cts"/>
+        <File Source="Public\pro_Monitor.cts"/>
+        <File Source="Public\pro_mt.cts"/>
+        <File Source="Public\pro_Ping.cts"/>
+        <File Source="Public\pro_Ping.ts"/>
+        <File Source="Public\pro_planet_display.ts"/>
+        <File Source="Public\pro_Relog.cts"/>
+        <File Source="Public\pro_ScriptPack.txt"/>
+        <File Source="Public\pro_ShipAnalysis.cts"/>
+        <File Source="Public\pro_SSWarpSpec.ts"/>
+        <File Source="Public\pro_ZTM4.ts"/>
+        <File Source="Public\pro_ZTMSpeed20.cts"/>
+        <File Source="Public\pro_ZTM_Speed.ts"/>
+        <File Source="Public\psii_AvoidMgr.ts"/>
+        <File Source="Public\psii_MSLCheck.ts"/>
+        <File Source="Public\psii_PLander.ts"/>
+        <File Source="Public\psii_PMove.ts"/>
+        <File Source="Public\ram_P-Grid.cts"/>
+        <File Source="Public\ram_P-Grid_Readme.txt"/>
+        <File Source="Public\ram_Path-Blast.cts"/>
+        <File Source="Public\ram_Path-Blast_Readme.txt"/>
+        <File Source="Public\ram_pgrid_driver.ts"/>
+        <File Source="Public\ram_Prober.cts"/>
+        <File Source="Public\ram_Prober_Readme.txt"/>
+        <File Source="Public\ram_Pwarp_Density_Scout.cts"/>
+        <File Source="Public\ram_Pwarp_Density_Scout_Readme.txt"/>
+        <File Source="Public\ram_Team_SDT.cts"/>
+        <File Source="Public\ram_Twarp_Grid.cts"/>
+        <File Source="Public\ram_Twarp_Grid_Readme.txt"/>
+        <File Source="Public\ram_Unfigged_Gridder.cts"/>
+        <File Source="Public\Ryder_GPM.ts"/>
+        <File Source="Public\tt_0_0_02_dataminer.ts"/>
+        <File Source="Public\tt_0_0_2_dock_kill.ts"/>
+        <File Source="Public\tt_0_0_Lurk_Offline_Photoner.ts"/>
+        <File Source="Public\tt_3_4_5_public_move_helper.cts"/>
+        <File Source="Public\tt_auto_extern_login.ts"/>
+        <File Source="Public\tt_buster.ts"/>
+        <File Source="Public\tt_cit_killah.ts"/>
+        <File Source="Public\tt_CommWatch.ts"/>
+        <File Source="Public\tt_dock_killah_3.ts"/>
+        <File Source="Public\tt_eq_buy_MCIC.ts"/>
+        <File Source="Public\tt_macro_mgr.ts"/>
+        <File Source="Public\tt_q_probe.ts"/>
+        <File Source="Public\TurboSST.ts"/>
+        <File Source="Public\vidd_clrmess.ts"/>
+        <File Source="Public\vidd_cr_check.ts"/>
+        <File Source="Public\vidd_figchanger.cts"/>
+        <File Source="Public\vidd_fighits.cts"/>
+        <File Source="Public\vidd_JetCols.cts"/>
+        <File Source="Public\vidd_quickfigs_ck.cts"/>
+        <File Source="Public\vidd_quickfigs_rm.cts"/>
+        <File Source="Public\vidd_quickfigs_sg.cts"/>
+        <File Source="Public\vidd_SetAvoids.cts"/>
+        <File Source="Public\vidd_startup.ts"/>
+        <File Source="Public\vidd_timecheck.ts"/>
+        <File Source="Public\vidd_universal_figs.cts"/>
+        <File Source="Public\vidd_UpPort2.cts"/>
+        <File Source="Public\Wildstar's Class O Buydown.cts"/>
+        <File Source="Public\Wildstar's Colonizer V2.03.cts"/>
+        <File Source="Public\Wildstar's Combined Mover.cts"/>
+        <File Source="Public\Wildstar's Corpie Grabber.cts"/>
+        <File Source="Public\wilildstar's Colonists Dump.cts"/>
+        <File Source="Public\wilildstar's Colonizer.cts"/>
+        <File Source="Public\wilildstar's Game Stats.cts"/>
+        <File Source="Public\wilildstar's Ore Whore  V2.03.cts"/>
+        <File Source="Public\wilildstar's Ore Whore.cts"/>
+        <File Source="Public\wilildstar's Red Colonizer.cts"/>
+        <File Source="Public\wilildstar's SDrop.cts"/>
+        <File Source="Public\wilildstar's Sector Fighters To Planet Script.cts"/>
+        <File Source="Public\wilildstar's Ship Mover.cts"/>
+        <File Source="Public\wilildstar's Unexplored Sector Scout.cts"/>
+        <File Source="Public\wilildstar's UnexploredSectorScout204.cts"/>
+        <File Source="Public\wilildstar's_Lawnmower.cts"/>
+        <File Source="Public\xan_amtrak.ts"/>
+        <File Source="Public\XBot.ts"/>
+        <File Source="Public\XBotCmd.ts"/>
+        <File Source="Public\Zen-PlanetCreation3.cts"/>
+      </Component>
+      <Component Id="SupgComponent" Directory="SUPG" Guid="a2993c51-f412-49c1-83fb-364273517eac">
+        <File Source="Public\Supg\1ShipClearSupG.ts"/>
+        <File Source="Public\Supg\1ShipClearTU.cts"/>
+        <File Source="Public\Supg\2shipclear.ts"/>
+        <File Source="Public\Supg\amtrak.cts"/>
+        <File Source="Public\Supg\amtrak.ts"/>
+        <File Source="Public\Supg\Attack.ts"/>
+        <File Source="Public\Supg\botSupG.ts"/>
+        <File Source="Public\Supg\busttrack.ts"/>
+        <File Source="Public\Supg\buydown.cts"/>
+        <File Source="Public\Supg\BuyDownSupG.ts"/>
+        <File Source="Public\Supg\CimHunter.cts"/>
+        <File Source="Public\Supg\Class0.cts"/>
+        <File Source="Public\Supg\Class0SupG.ts"/>
+        <File Source="Public\Supg\clear.ts"/>
+        <File Source="Public\Supg\Colo.cts"/>
+        <File Source="Public\Supg\ColoSupG.ts"/>
+        <File Source="Public\Supg\dataman.ts"/>
+        <File Source="Public\Supg\dedendkiller.ts"/>
+        <File Source="Public\Supg\dedendtrapper.ts"/>
+        <File Source="Public\Supg\Furb.cts"/>
+        <File Source="Public\Supg\FurbSupG.ts"/>
+        <File Source="Public\Supg\hello.ts"/>
+        <File Source="Public\Supg\IG.ts"/>
+        <File Source="Public\Supg\Lawnmower.cts"/>
+        <File Source="Public\Supg\LawnMowerSupG.ts"/>
+        <File Source="Public\Supg\nearfig.cts"/>
+        <File Source="Public\Supg\NearFigSupG.ts"/>
+        <File Source="Public\Supg\pairfinder.cts"/>
+        <File Source="Public\Supg\PairFinderSupG.ts"/>
+        <File Source="Public\Supg\PBust.cts"/>
+        <File Source="Public\Supg\Pdrop.ts"/>
+        <File Source="Public\Supg\Prober.ts"/>
+        <File Source="Public\Supg\Ptorp.cts"/>
+        <File Source="Public\Supg\PtorpSupG.ts"/>
+        <File Source="Public\Supg\QuikPanel.cts"/>
+        <File Source="Public\Supg\QuikPanelSupG.ts"/>
+        <File Source="Public\Supg\Refill.ts"/>
+        <File Source="Public\Supg\Rescue.ts"/>
+        <File Source="Public\Supg\saveme.ts"/>
+        <File Source="Public\Supg\SDT.cts"/>
+        <File Source="Public\Supg\SDTSupG.ts"/>
+        <File Source="Public\Supg\ShipCap.cts"/>
+        <File Source="Public\Supg\ShipCapSupG.ts"/>
+        <File Source="Public\Supg\SST.cts"/>
+        <File Source="Public\Supg\SSTSupG.ts"/>
+        <File Source="Public\Supg\surround.ts"/>
+        <File Source="Public\Supg\TandemPtorp.cts"/>
+        <File Source="Public\Supg\Target.ts"/>
+        <File Source="Public\Supg\TripDistance.ts"/>
+        <File Source="Public\Supg\TripDistanceSupG.ts"/>
+        <File Source="Public\Supg\TUCimHunter.ts"/>
+        <File Source="Public\Supg\tunnellist.cts"/>
+        <File Source="Public\Supg\TunnelListSupG.ts"/>
+        <File Source="Public\Supg\TUPbuster.ts"/>
+        <File Source="Public\Supg\TUTandemPtorp.ts"/>
+        <File Source="Public\Supg\twowaytorp.cts"/>
+        <File Source="Public\Supg\twowaytorp.ts"/>
+        <File Source="Public\Supg\WorldPtrade.cts"/>
+        <File Source="Public\Supg\WorldPTrade.ts"/>
+        <File Source="Public\Supg\WorldSSM.cts"/>
+        <File Source="Public\Supg\WorldSSMSupG.ts"/>
+        <File Source="Public\Supg\ZTM.cts"/>
+        <File Source="Public\Supg\ZTMSupG.ts"/>
+      </Component>
+      <Component Id="SupgIncludeComponent" Directory="SUPGI" Guid="c2031bc2-74e3-4c48-8216-3710d8c26d85">
+        <File Source="Public\Supg\SupgInclude\cimhunt_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\clv_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\corp_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\db_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\gameinfo_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\haggle_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\moveai_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\nearfig_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\nearfig_incnew.ts"/>
+        <File Source="Public\Supg\SupgInclude\parseansi_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\phaggle_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\planet_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\port_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\ppt_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\promptcheck_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\shipinfo_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\ship_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\signature_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\ssm_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\stardock_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\SupGBot_inc.ts"/>
+        <File Source="Public\Supg\SupgInclude\trim_inc.ts"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="MombotComponents" >
+      <Component Id="MombotComponent" Directory="MOMBOT" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
+        <File Source="Mombot\__mom_bot3_5b.cts"/>
+        <File Source="Mombot\mombot.html" />
+      </Component>
+      <Component Id="MombotCommandsComponent" Directory="MCGENERAL">
+        <File Source="Mombot\Commands\General\tow.cts"/>
+      </Component>
+      <Component Id="MombotHelpComponent" Directory="MHELP">
+        <File Source="Mombot\Help\tow.txt"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ZedbotComponents" >
+      <Component Id="ZedbotComponent" Directory="SCRIPTS" Guid="c760a58e-8f18-458c-9ea0-8ad79ba4f1f0">
+        <File Source="Zedbot\Scripts\2_ECol.cts"/>
+        <File Source="Zedbot\Scripts\z-armourer.cts"/>
+        <File Source="Zedbot\Scripts\z-backdoor.cts"/>
+        <File Source="Zedbot\Scripts\z-bot.cts"/>
+        <File Source="Zedbot\Scripts\z-call.cts"/>
+        <File Source="Zedbot\Scripts\z-coloniser.cts"/>
+        <File Source="Zedbot\Scripts\z-commsguard.cts"/>
+        <File Source="Zedbot\Scripts\z-decash.cts"/>
+        <File Source="Zedbot\Scripts\z-fetch.cts"/>
+        <File Source="Zedbot\Scripts\z-figmon.cts"/>
+        <File Source="Zedbot\Scripts\z-figs.cts"/>
+        <File Source="Zedbot\Scripts\z-limps.cts"/>
+        <File Source="Zedbot\Scripts\z-listgridder.cts"/>
+        <File Source="Zedbot\Scripts\z-login.cts"/>
+        <File Source="Zedbot\Scripts\z-mines.cts"/>
+        <File Source="Zedbot\Scripts\z-ontime.cts"/>
+        <File Source="Zedbot\Scripts\z-oreup.cts"/>
+        <File Source="Zedbot\Scripts\z-panel.cts"/>
+        <File Source="Zedbot\Scripts\Z-PDriver.cts"/>
+        <File Source="Zedbot\Scripts\z-rescue.cts"/>
+        <File Source="Zedbot\Scripts\z-safetynet.cts"/>
+        <File Source="Zedbot\Scripts\z-scout.cts"/>
+        <File Source="Zedbot\Scripts\z-sectorlister.cts"/>
+        <File Source="Zedbot\Scripts\z-sptool.cts"/>
+        <File Source="Zedbot\Scripts\z-strip.cts"/>
+        <File Source="Zedbot\Scripts\z-switchbot.cts"/>
+        <File Source="Zedbot\Scripts\z-transcash.cts"/>
+        <File Source="Zedbot\Scripts\z-unload.cts"/>
+        <File Source="Zedbot\Scripts\z-watch.cts"/>
+        <File Source="Zedbot\Scripts\z2_worldtrade.cts"/>
+        <File Source="Zedbot\Scripts\zkazi.cts"/>
+        <File Source="Zedbot\Scripts\zmerch.cts"/>
+        <File Source="Zedbot\Scripts\zminesweep.cts"/>
+        <File Source="Zedbot\Scripts\zpimp.cts"/>
+        <File Source="Zedbot\Scripts\zpsst.cts"/>
+        <File Source="Zedbot\Scripts\zugrid.cts"/>
+        <File Source="Zedbot\Scripts\zupgrade.cts"/>
+        <File Source="Zedbot\Scripts\zwsst.cts"/>
+        <File Source="Zedbot\Scripts\z_ck_buydown.cts"/>
+        <File Source="Zedbot\Scripts\_ck_overload_checker.cts"/>
+        <File Source="Zedbot\Scripts\_DU_Seek_Out_2.31.cts"/>
+      </Component>
+      <Component Id="SoundsComponent" Directory="TWXPROXY" Guid="0fcdc5f3-153a-40f2-b78d-744b00535589">
+        <File Source="zedbot\alert.wav"/>
+        <File Source="zedbot\cuckoclk.wav"/>
+        <File Source="zedbot\ding.wav"/>
+        <File Source="zedbot\failed.wav"/>
+        <File Source="zedbot\pdropalert.wav"/>
+        <File Source="zedbot\proximity.wav"/>
+        <File Source="zedbot\z_page.wav"/>
+        <File Source="zedbot\Z-Bot Installation Notes.txt"/>
+        <File Source="zedbot\ZedPack-Readme.zip"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+
+
+</Wix>

@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commander", "Commander", "{6803FEA8-762D-43BC-A397-B9A343066339}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "CoreMSI", "Source\Installer\CoreMSI\CoreMSI.wixproj", "{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Source\Installer\Installer.wixproj", "{1CE35394-0421-448C-BF9C-12F60C832CD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,16 +19,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Debug|x86.ActiveCfg = Debug|x86
-		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Debug|x86.Build.0 = Debug|x86
-		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Release|x86.ActiveCfg = Release|x86
-		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1}.Release|x86.Build.0 = Release|x86
+		{1CE35394-0421-448C-BF9C-12F60C832CD2}.Debug|x86.ActiveCfg = Debug|x86
+		{1CE35394-0421-448C-BF9C-12F60C832CD2}.Debug|x86.Build.0 = Debug|x86
+		{1CE35394-0421-448C-BF9C-12F60C832CD2}.Release|x86.ActiveCfg = Release|x86
+		{1CE35394-0421-448C-BF9C-12F60C832CD2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BA6663B2-CA5E-47F2-81F6-5E30EACB22D1} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
+		{1CE35394-0421-448C-BF9C-12F60C832CD2} = {E9AF1227-CC2A-45C2-9EDF-BCBDB57D580B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {53CC47FC-96D0-4264-8FBE-14C7C5CA2776}

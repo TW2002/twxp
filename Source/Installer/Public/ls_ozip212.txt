@@ -1,0 +1,83 @@
+LSOZiP Version 2.0 for TWX 2.04
+http://www.grimytrader.com/
+
+
+I am taking an extended break from TradeWars, and am leaving ‘my’ script for the public as a ways of saying thanks for all the fun and high drama. I say ‘my’ script because it’s really a culmination of other people’s hard work with a dash of my own thrown in:
+
+Credits:
+Big12OZHog – for the initial photon script
+Singularity – Holo Torp, Holo Kill Scripts and Macro White Paper
+Mind Dagger/Bounty Hunter – QuikStat and Twarp Routines
+Cherokee – CN9 setting checking, and Fighter List Routines
+
+
+LSOZiP, or “LoneStar’s OZ Improved Photon” script is based largely on Big12OZHog’s Improved Photon script –the best photon script I have yet come across. I feel it necessary to leave this manual/explanation of what LSOZiP does. As it is, this script has Podded and/or #SD#’s a lot of people and is somewhat battle-tested. As with most things in reality, this script isn’t entirely ‘free’, please read the endnote for the Consideration of using it.
+
+For the sake of experienced players I’ll start out with the pertinent details to save a lot of unnecessary reading, and then get more specific later on. What does LSZiP do? Starting either from Sector or Citadel prompt, it waits for a fig hit, Warps to an adjacent sector fires a photon, moves immediately into sector and launches an attack. However, LSOZiP can be much more complicated than that. Here is the Main Menu break down:
+
+
+Main Menu – in Brief:
+1 - Send Waves: this is the number of fighter waves that is sent out in the photon’d sector. This only pertains to the initial attack; there is a secondary attack option later on;
+2 - Attack Method: Macro based or Automated-Targeting;
+3 – CallSaveMe: Exit enter is performed if necessary followed by a SaveMe call. This process is inherent to the script, no external script(s)are utilized;
+4 - Targetting. This can be either an entire Corp, an individual player, or Alien Filtering;
+5 – Emergency Export: Ship exported to once initial attack is completed;
+6 – Holo Torp & Kill: Secondary attack.
+7 – Check IG Status: Turns on IG on initial attack ship
+8 – Defender Bonus?: Pops a planet immediately before attack sequence;
+9 – Refresh Fig List: Updates fig array, ck’s method.
+
+Runtime Options:
+Self Commands sent via Subspace
+target=[Player Name]
+tcorp=[Corp Number]
+waves=[Number of Waves]
+
+Self/Sub-Space Command:
+figd=[Sector Number]
+
+pressing ‘M’ will reopen main menu
+
+
+Now for some explanation of the menu options as well as the scripts features…
+
+Send Waves. The script calculates the maximum number of waves you can send out base on Fighters on-hand and the number wave-max setting. If set to zero, it wont send out any waves upon entering the enemy sector. During the fighter wave, be it Macro based or Automatic Targeting, it detects if a fighter was deployed upon entering the sector (under the photon wave), this is important as if the CallSaveMe option is turned on then an ExitEnter isn’t necessary to clear the enemy sector fig. If a beacon is detected, an additional wave is sent to compensate.
+
+Attack Method. The absolute fastest method to attack is via burst-macro (fyi, this method has beaten SaveMe calls, many times during Battle Tests). This has its flaws with respect to actually hitting a real-player as opposed to anything else in sector (including federals, which will not be attacked in any case). To better hit the intended target the Automated Targeting can be turned on, thus guaranteeing an accurate attack. Of course the cost is speed.
+
+CallSaveMe. After a sector is photon’d, you’ve entered and issued any attack waves, the script will issue a CallSaveMe. An Exit/Enter is only performed if necessary. If an Exit/Enter is performed while still within a photon-wave, it is repeated until the wave dissipates. Naturally, you don’t want to do this after expending all your figs on someone, so this is where a setting of zero-waves comes in handy.
+
+Targetting. Three possible settings: Player, Corp, or Alien Filtering. When Targeting a player the spelling IS case sensitive; so target=NooBie is not the same as target=Noobie. Targeting a Corp requires only a Corp number and the Corp-members are obtained via a CLV, to a maximum of 10. In a game with Aliens, filtering can be turned on to save A LOT of Ore. Also. If anyone decides to play under the alias of an Alien Race (ie. Player Ferrengi destroys fighter… etc), will find that tactic obsolete. Targeting can be changed on the fly w/o having to reload the script and/or fighter array –incase someone changes their name while gridding. Note: Targeting is spoof proofed.
+
+
+Emergency Export. As safe as I’ve tried to make this script, there is still the very real possibility of something going wrong. To this end, if this option isn’t selected and something does go wrong, the script will pull up the Export list and leave you at the ‘Choose Which ship to beam to’ prompt. However. When a ship is selected the script will immediately export you to that ship once the initial attack is completed and Twarp you back to the adjacent sector and plop you in the cit of your planet if you started from one. This is where the script gets a little dangerous --You must be mindful of export ranges. If your ship has a range of 10, but you attack someone 20 sectors away… well you can see how this might be bad. A solution to the export range issue is to start the script at the Sector prompt lock the ship in-tow you want to export too and fire away –bare in mind that firing a photon breaks the tow-lock. Naturally, this wont work if running form the citadel prompt.
+
+
+Holo Torp & Kill. After all of the above is completed.. the script will perform a Holo-Scan of surrounding sectors and launch a photon into any one of them that contains an enemy player. This secondary attack avoids shielded planets and utilizes the Automated Targeting method. Upon completion, it will attempt to retreat and land you on your planet if you started from one. I should point out that this secondary attack stands the greatest chance of begetting you a podding or worse case scenario #Ship Destroyed# because of all the variable possibilities of what the enemy will do. There is a sub option/setting: Hot Tube detection, when turned on the script will detect an existing Photon wave and fire again exactly when the initial wave dissipates. If this is left off, the script will macro burst a firing b4 entry and not care if a wave just ended or still in progress. This can be useful for those 4 second or longer waves.
+
+IG Check. Simply ensures your Interdictor Control (if there is one), is turned on.
+
+Defender Bonus. If your attack ship gets a defender bonus, the turning this on will enable the script to pop a planet immediately upon entering the target Sector. This is especially handy if you enter the sector with zero fig waves and perform a CallSaveNe to bring in a Corpie running a citkill script.
+
+Refresh Fig List. Simply deletes the fighter list file and (re)loads the data into memory.
+
+Runtime Options
+
+Self Commands (a cmd you send via SubSpace)
+
+Player Targeting. Send a ‘target=JoeBlow or ‘target=Jow Blow etc on subspace and the script will begin scanning for that trader. Remember spelling and Case is sensitive. Also to switch to from targeting a single player to targeting everyone simply send via Sub Space ‘target=      …without any text after the ‘=’ and the script will hit anything that moves.
+
+Corp Targeting. Works essentially the same as player targeting. And yes, you can Target your own corp.
+
+Attack Waves. Change the number waves. A value form 0 to max number of waves you can physically send is valid. If you send via Sub Space: waves=100 ..and your ship in reality can only send a max of 5 waves, then the script adjusts accordingly.
+
+Add Fig To Array. This command can be issued by yourself or anyone on your Sub Space channel. I added this because many a time I’ve been out manually gridding and thought ‘wouldn’t it be nice if the guy on photons could cover me and not have to reload the script. Send via Sub Space ‘figd=1234 .. and Sector 1234 will be added to the array in memory, not the physical file.
+
+And Finally, the ‘M’ command. While the script is running you can press the M key any time (when not attacking), and adjust options in the Menu as when initially loaded. One benefit to this is that the Fighter data does not get reloaded from file again (unless you select option 9 when revisiting the Main Menu).
+
+Well, there it is. My contribution to the game I’ve lived and breathed the past year. I mentioned at the outset that this script isn’t entirely ‘free’. In kind consideration of using this script you not only agree and understand that in using it, there’s the real possibility of getting #Ship Destoryed#, but realize the this script will not attack players by the name of: LoneStar, Bob, and/or Filthy Maggot. Reasons for this are my own. However, suffice it to say that I have had the most fun playing with (and on occasion against) Bob and Filthy Maggot and would not hesitate to join their Corp’s or perform a ZTM for them. Thanks to Bob for the tips and suggestions, and to Filthy for doing a lot of the debugging and testing. You guys Rock!
+
+Ciao.
+
+
+(the best way to reach me to report bugs will be via email: myoptik@yahoo.com)

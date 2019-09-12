@@ -1,0 +1,16 @@
+MACRO - dnyarri macro trigger
+Triggered grid kill and retreat. Anti-ptorp and pdrop macro.
+0
+vs. theirs: 1
+5
+A %0 ^M <
+Attack with how many figs?
+Leave how many figs?
+Variable %2
+Variable %3
+Variable %4
+Variable %5
+Variable %6
+Variable %7
+Variable %8
+Variable %9

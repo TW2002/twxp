@@ -1,0 +1,17 @@
+As Promised, I created a new script called LS_SLoad10.cts  aka LoneStar's Script Loader v1.0 ...posted on Grimy's
+
+on initial run, it creates a blank template to be populated with your favorite scripts.  There are 5 categories of scripts, for a grand total of 50 maximum scripts that can be inputted.
+
+Once you've setup the LS_Scripts.txt file, the script runs as a system script and can be accessed at anytime by double tapping X  ..that's SHIFT-X-X
+
+Of course it's up to the user to make sure that you are at the correct prompt required by the script being executed.
+
+Here's an example of how the LS_Scripts.txt should be setup:
+
+http://ca.geocities.com/myoptik/images/template.jpg
+
+[scripts/path][TAB TAB][Custom Menu Text]
+
+...you can put in as many TAB's as you like between script's path and its 'title'
+
+ 

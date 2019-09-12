@@ -1,0 +1,38 @@
+[+COMBATDEFENSE+]
+scripts\LoneStar_pack\CIM Hunter_v20.ts			CIM Hunter
+scripts\LoneStar_pack\SafeMow.ts			Safe Mow for Pods
+scripts\LoneStar_pack\Ship Buy Out Beater.000.ts	Buyout Beater (Reentry)
+scripts\LoneStar_pack\Ship Buy Out.003.ts		Ship Buyout
+scripts\LoneStar_pack\YourItv360.ts			You're It
+scripts\LoneStar_pack\LSurroundv2.ts			Surround PDrop
+scripts\LoneStar_pack\PGRiDDER06.ts			Planet Gridder
+[+GRID+]
+scripts\LoneStar_pack\Grid Maker v104.ts		Gridder List Maker
+scripts\LoneStar_pack\LSPassiveGridder.010.ts		Passive Gridder
+scripts\LoneStar_pack\MapArt.ts				Map Fighter Grid Only
+scripts\LoneStar_pack\Tunnel Finder v10.ts		Tunnel Finder
+scripts\LoneStar_pack\UnExScout_v3.ts			Unexplored Sector Scout
+scripts\LoneStar_pack\WarpFinderv13.ts			Closest Warp Finder
+scripts\LoneStar_pack\WARPSpec.ts			WarpSpec Import/Export
+[+MAINT+]
+scripts\LoneStar_pack\Combined Mover v11.ts		Combined Mover
+scripts\LoneStar_pack\deFILER_v1.ts			TWX Game File Clean-up
+scripts\LoneStar_pack\LSECTv161.ts			Express Col & Tow
+scripts\LoneStar_pack\ORE v16.ts			LS's ORE-Whore
+scripts\LoneStar_pack\OREerator.ts			ORE Calcualtor
+scripts\LoneStar_pack\Planet Creation v10.cts		Planet Creation
+scripts\LoneStar_pack\Planet Stripper v103.ts		Sector Planet Stripper
+[+CASHING+]
+scripts\LoneStar_pack\Bust Manager.ts			Import/Export Busts
+scripts\LoneStar_pack\FURBY.ts				Self Furber (Terra)
+scripts\LoneStar_pack\Port Emporium.002.ts		Port Emporium
+scripts\LoneStar_pack\MCIC.001.ts			Equipment MCIC Filter
+scripts\LoneStar_pack\TL03.ts				Planet Inventory Report
+[+MISC+]
+scripts\__mom_bot3_1031.cts				M()MBot 3.1031
+scripts\LoneStar_pack\Alien411.ts			Alien Space Look Up
+scripts\LoneStar_pack\CLV.ts				Personal CLV Monitor
+scripts\LoneStar_pack\Dock Me.ts			Dock Me
+scripts\LoneStar_pack\Dock Shopper v33.ts		Dock Shopper
+scripts\LoneStar_pack\New Game v191.ts			New Game Script
+scripts\LoneStar_pack\Who.001.ts			Who's Online Monitor
