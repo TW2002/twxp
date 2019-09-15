@@ -6,7 +6,7 @@
 
 Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled using Turbo Delphi 2006 Explorer which is no longer available. 
 
-Special thanks to *Steven Ruzicka (aka Mind Dagger)* for helping me get setup, I am now able to compile TWX proxy
+Special thanks to *Steven Ruzicka (aka Mind Dagger)* for helping me get setup, I am now able to compile TWX Proxy
 
 ## Active Projects
 
