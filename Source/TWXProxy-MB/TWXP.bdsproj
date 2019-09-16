@@ -168,7 +168,7 @@
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">TWXProxy</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">2.6.4.3</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
 		</VersionInfoKeys>  <Excluded_Packages>

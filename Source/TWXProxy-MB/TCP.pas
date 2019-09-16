@@ -44,7 +44,7 @@ const
   OP_DONT = #254;
 
 type
-  TClientType = (ctStandard, ctDeaf, ctUnauthorised, ctMute);
+  TClientType = (ctStandard, ctDeaf, ctRejected, ctMute);
   TDisplayMode = (ctSilent, ctQuiet, ctNormal, ctVerbose);
 
   TTelnetSocket = class(TTWXModule)
@@ -140,6 +140,7 @@ type
     tmrReconnect    : TTimer;
     FFirstConnect,
     FReconnect,
+    FRejected,
     FUserDisconnect,
     FConnecting,
     FSendPending,
@@ -161,6 +162,8 @@ type
     procedure tmrIdleTimer(Sender: TObject);
 
     function GetConnected : Boolean;
+    function GetRejected: Boolean;
+    procedure SetRejected(Value: Boolean);
 
     { IModClient }
     function GetReconnect: Boolean;
@@ -179,6 +182,7 @@ type
     procedure CloseClient;
 
     property Connected : Boolean read GetConnected;
+    property Rejected : Boolean read GetRejected write SetRejected;
 
   published
     property Reconnect: Boolean read GetReconnect write SetReconnect;
@@ -334,66 +338,74 @@ const
   T_DO = #255 + #253;
   T_DONT = #255 + #254;
 var
-  LocalClient : Boolean;
-  SktIndex    : Integer;
+  LocalClient   : Boolean;
+  Index      : Integer;
+  RemoteAddress : String;
 begin
-  if (Socket.RemoteAddress = '127.0.0.1') or
-  (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or
-  (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
-  (Socket.RemoteAddress = ExternalAddress)
+  RemoteAddress := Socket.RemoteAddress;
+  Index := GetSocketIndex(Socket);
+
+  if (RemoteAddress = '127.0.0.1') or
+  (Copy(RemoteAddress, 1, 8) = '192.168.') or
+  (Copy(RemoteAddress, 1, 3) = '10.') or
+  (RemoteAddress = ExternalAddress)
   then
     LocalClient := TRUE
   else
     LocalClient := FALSE;
-
-  Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
-                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')');
-
-  if (BroadCastMsgs) then
-    ClientMessage(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl)
-  else
-    Socket.SendText(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl);
-
 
   if (not AllowLerkers) and (not LocalClient) then
   begin
     // User not allowed
     Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye Lerker!');
     Sleep(500);
+    FClientTypes[Index] := ctRejected;
     Socket.Close();
+    if (BroadCastMsgs) then
+      Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
     exit;
   end
   else if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
   begin
     Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
     Sleep(500);
+    FClientTypes[Index] := ctRejected;
     Socket.Close();
+    if (BroadCastMsgs) then
+      Broadcast(endl + ANSI_12 + 'Remote connection rehected from: ' + ANSI_14 + RemoteAddress + endl);
     exit;
   end;
+
+  Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
+                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')' + endl);
+
+  if (BroadCastMsgs) then
+    Broadcast(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + RemoteAddress + endl + endl)
+  else
+    Socket.SendText(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + RemoteAddress + endl);
+
 
   begin
     // Send Telnet "Are you there"
     Socket.SendText(#255 + OP_DO + #246);
 
 
-    SktIndex := GetSocketIndex(Socket);
-
     if (LocalClient) then
-      FClientTypes[SktIndex] := ctStandard
+      FClientTypes[Index] := ctStandard
     else
-      FClientTypes[SktIndex] := ctMute;
+      FClientTypes[Index] := ctMute;
 
-    FClientEchoMarks[SktIndex] := FALSE;
+    FClientEchoMarks[Index] := FALSE;
 
     if (ReleaseVersion = 'Alpha') then
       Socket.SendText(ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Alpha releases have not had sufficent testing, and may' + endl +
-                      'be unstable. Please do not distribute, and use at your own risk.' + endl + endl);
+                      'be unstable. Please do not distribute, and use at your own risk.' + endl);
 
     if (ReleaseVersion = 'Beta') then
       Socket.SendText(endl + ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Beta releases are generally considered stable, but may have' + endl +
-                      'unresolved issues. Use at your own risk.' + endl + endl);
+                      'unresolved issues. Use at your own risk.' + endl);
 
     if (AcceptExternal) or (AllowLerkers) then
       Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
@@ -439,6 +451,12 @@ var
 begin
   Index := GetSocketIndex(Socket);
 
+  // manual client message to all sockets except the one disconnecting
+  if (FClientTypes[Index] <> ctRejected) then
+    for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
+      if (tcpServer.Socket.Connections[I] <> Socket) then
+        tcpServer.Socket.Connections[I].SendText( endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
+
   // remove client from list
   for I := Index to 254 do
   begin
@@ -448,10 +466,6 @@ begin
 
   TWXInterpreter.ProgramEvent('Client disconnected', '', FALSE);
 
-  // manual client message to all sockets except the one disconnecting
-  for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
-    if (tcpServer.Socket.Connections[I] <> Socket) then
-      tcpServer.Socket.Connections[I].SendText( endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
 end;
 
 procedure TModServer.tcpServerClientError(Sender: TObject;
@@ -667,6 +681,7 @@ begin
   inherited;
 
   FConnecting := FALSE;
+  FRejected := FALSE;
   FUserDisconnect := FALSE;
   FReconnectDelay := 15;
   FFirstConnect := TRUE;
@@ -1055,6 +1070,16 @@ end;
 procedure TModClient.SetReconnect(Value: Boolean);
 begin
   FReconnect := Value;
+end;
+
+function TModClient.GetRejected: Boolean;
+begin
+  Result := FRejected;
+end;
+
+procedure TModClient.SetRejected(Value: Boolean);
+begin
+  FRejected := Value;
 end;
 
 function TModClient.GetReconnectDelay: Integer;
