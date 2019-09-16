@@ -140,7 +140,6 @@ type
     tmrReconnect    : TTimer;
     FFirstConnect,
     FReconnect,
-    FRejected,
     FUserDisconnect,
     FConnecting,
     FSendPending,
@@ -162,8 +161,6 @@ type
     procedure tmrIdleTimer(Sender: TObject);
 
     function GetConnected : Boolean;
-    function GetRejected: Boolean;
-    procedure SetRejected(Value: Boolean);
 
     { IModClient }
     function GetReconnect: Boolean;
@@ -182,7 +179,6 @@ type
     procedure CloseClient;
 
     property Connected : Boolean read GetConnected;
-    property Rejected : Boolean read GetRejected write SetRejected;
 
   published
     property Reconnect: Boolean read GetReconnect write SetReconnect;
@@ -354,27 +350,27 @@ begin
   else
     LocalClient := FALSE;
 
-  if (not AllowLerkers) and (not LocalClient) then
-  begin
-    // User not allowed
-    Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye Lerker!');
-    Sleep(500);
-    FClientTypes[Index] := ctRejected;
-    Socket.Close();
-    if (BroadCastMsgs) then
-      Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
-    exit;
-  end
-  else if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
-  begin
-    Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
-    Sleep(500);
-    FClientTypes[Index] := ctRejected;
-    Socket.Close();
-    if (BroadCastMsgs) then
-      Broadcast(endl + ANSI_12 + 'Remote connection rehected from: ' + ANSI_14 + RemoteAddress + endl);
-    exit;
-  end;
+  if (not AcceptExternal) and (not AllowLerkers) and (RemoteAddress <> '127.0.0.1') then
+    begin
+      // User not allowed
+      Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
+      Sleep(500);
+      FClientTypes[Index] := ctRejected;
+      Socket.Close();
+      if (BroadCastMsgs) then
+        Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
+      exit;
+    end
+  else if ((AcceptExternal) or (AllowLerkers)) and (not LocalClient) then
+    begin
+      Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye!');
+      Sleep(500);
+      FClientTypes[Index] := ctRejected;
+      Socket.Close();
+      if (BroadCastMsgs) then
+        Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
+      exit;
+    end;
 
   Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
                   ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')' + endl);
@@ -388,13 +384,6 @@ begin
   begin
     // Send Telnet "Are you there"
     Socket.SendText(#255 + OP_DO + #246);
-
-
-    if (LocalClient) then
-      FClientTypes[Index] := ctStandard
-    else
-      FClientTypes[Index] := ctMute;
-
     FClientEchoMarks[Index] := FALSE;
 
     if (ReleaseVersion = 'Alpha') then
@@ -408,7 +397,7 @@ begin
                       'unresolved issues. Use at your own risk.' + endl);
 
     if (AcceptExternal) or (AllowLerkers) then
-      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
+      Socket.SendText(endl + ANSI_12 + 'WARNING: ' + ANSI_14 +
                       'With External Connections and/or Allow Lerkers enabled,' + endl +
                       'you are open to foreign users monitoring data remotely.' + endl);
 
@@ -430,14 +419,16 @@ begin
     else
       Socket.SendText(ANSI_11 + 'No' + ANSI_13 + ' server connections detected' + endl);
 
-
-    if (LocalClient) then
+    if ((LocalClient) and (AcceptExternal)) or (RemoteAddress = '127.0.0.1')then
     begin
+      FClientTypes[Index] := ctStandard;
       Socket.SendText(endl + ANSI_2 + 'Press ' + ANSI_14 + TWXExtractor.MenuKey + ANSI_2 + ' to activate terminal menu' + endl + endl);
-
     end
     else
+    begin
+      FClientTypes[Index] := ctMute;
       Socket.SendText(ANSI_12 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
+    end;
 
     TWXInterpreter.ProgramEvent('Client connected', '', FALSE);
   end;
@@ -681,7 +672,6 @@ begin
   inherited;
 
   FConnecting := FALSE;
-  FRejected := FALSE;
   FUserDisconnect := FALSE;
   FReconnectDelay := 15;
   FFirstConnect := TRUE;
@@ -1070,16 +1060,6 @@ end;
 procedure TModClient.SetReconnect(Value: Boolean);
 begin
   FReconnect := Value;
-end;
-
-function TModClient.GetRejected: Boolean;
-begin
-  Result := FRejected;
-end;
-
-procedure TModClient.SetRejected(Value: Boolean);
-begin
-  FRejected := Value;
 end;
 
 function TModClient.GetReconnectDelay: Integer;
