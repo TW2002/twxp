@@ -335,20 +335,37 @@ const
   T_DONT = #255 + #254;
 var
   LocalClient   : Boolean;
-  Index      : Integer;
-  RemoteAddress : String;
+  Index         : Integer;
+  RemoteAddress,
+  Address,
+  TempAddress   : String;
+  AddressList   : TStringList;
 begin
   RemoteAddress := Socket.RemoteAddress;
+  AddressList := TStringList.Create;
   Index := GetSocketIndex(Socket);
 
   if (RemoteAddress = '127.0.0.1') or
   (Copy(RemoteAddress, 1, 8) = '192.168.') or
-  (Copy(RemoteAddress, 1, 3) = '10.') or
-  (RemoteAddress = ExternalAddress)
+  (Copy(RemoteAddress, 1, 3) = '10.')
   then
     LocalClient := TRUE
   else
     LocalClient := FALSE;
+
+   try
+     ExtractStrings([' '],[], pchar(ExternalAddress), AddressList);
+
+     for Address in AddressList do
+     begin
+        TempAddress := stringreplace(Address, '.*', '',[rfReplaceAll, rfIgnoreCase]);
+        if (Copy(ExternalAddress,1,length(TempAddress)) = TempAddress)
+        then
+          LocalClient := TRUE
+     end;
+   finally
+     AddressList.Free;
+   end;
 
   if (not AcceptExternal) and (not AllowLerkers) and (RemoteAddress <> '127.0.0.1') then
     begin
