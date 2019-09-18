@@ -70,7 +70,6 @@ var
   PersistenceManager: TPersistenceManager;
 
   TWXGlobalVars     : TList;
-
 implementation
 
 constructor TGlobalVarItem.Create(Name, Value : String);

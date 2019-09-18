@@ -2341,6 +2341,91 @@ begin
   Result := caNone;
 end;
 
+function CmdSwitchBot(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+   IniFile     : TIniFile;
+   BotScript,
+   NextBot,
+   Section     : String;
+   BotList,
+   SectionList : TStringList;
+   I : Integer;
+begin
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\config.ini');
+  NextBot := '';
+
+  if(Length(Params) = 1) then
+  begin
+  try
+    SectionList := TStringList.Create;
+    try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if (Pos('bot:', LowerCase(Section)) = 1) and
+           (Pos(LowerCase(Params[0].Value), LowerCase(Section)) > 0)then
+        begin
+          BotScript  := IniFile.ReadString(Section, 'Script', '');
+
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + BotScript) then
+            NextBot := BotScript;
+        end;
+      end;
+    finally
+      SectionList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+  end
+  else
+  begin
+  try
+    SectionList := TStringList.Create;
+    BotList := TStringList.Create;
+    try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if (Pos('bot:', LowerCase(Section)) = 1) then
+        begin
+          BotScript  := IniFile.ReadString(Section, 'Script', '');
+
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + BotScript) then
+          begin
+            BotList.add(BotScript);
+          end;
+        end;
+      end;
+
+      for I := 0 to BotList.Count - 1 do
+      begin
+        if BotList[I] = TWXGUI.ActiveBot then
+        begin
+          if I < BotList.Count -1 then
+            NextBot := BotList[I + 1]
+          else
+            NextBot := BotList[0];
+        end;
+      end;
+    finally
+      SectionList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+
+  end;
+  if (NextBot <> '') then
+  begin
+    // Kill all running scripts, including system scripts
+    TWXInterpreter.StopAll(True);
+
+    // Load the selected bot
+    TWXInterpreter.Load('scripts\' + NextBot, FALSE);
+    TWXGUI.ActiveBot := NextBot;
+  end;
+end;
 
 // *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
@@ -3375,6 +3460,11 @@ begin
   SCCurrentShipNumber(Indexes)]);
 end;
 
+function SCCurrentBot(Indexes : TStringArray) : string;
+begin
+  Result := TWXGUI.ActiveBot;
+end;
+
 // *****************************************************************************
 //                             LIST BUILDER METHODS
 // *****************************************************************************
@@ -3491,7 +3581,9 @@ begin
     AddSysConstant('CURRENTCORP', SCCurrentCorp);
     AddSysConstant('CURRENTSHIPNUMBER', SCCurrentShipNumber);
     AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
+    AddSysConstant('CURRENTANSIQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
+    AddSysConstant('ACTIVEBOTSCRIPT',SCCurrentQuickStats);
   end;
 end;
 
@@ -3636,6 +3728,8 @@ begin
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
     AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
     AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
+
+    AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
 
   end;
 end;

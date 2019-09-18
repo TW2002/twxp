@@ -47,6 +47,8 @@ object frmMain: TfrmMain
   end
   object mnuPopup: TPopupMenu
     Images = imageList
+    OnChange = popupChanged
+    OnPopup = popupShown
     Left = 40
     Top = 8
     object miConnect: TMenuItem
@@ -63,6 +65,12 @@ object frmMain: TfrmMain
     end
     object miStop: TMenuItem
       Caption = '&Stop Script'
+    end
+    object miQuick: TMenuItem
+      Caption = '&Quick Load'
+    end
+    object miBot: TMenuItem
+      Caption = 'Load &Bot'
     end
     object N3: TMenuItem
       Caption = '-'

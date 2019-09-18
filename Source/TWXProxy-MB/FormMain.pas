@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 // This unit controls the interface (frmMain)
@@ -64,12 +64,21 @@ type
     property Script: TScript read FScript write FScript;
   end;
 
+  TQuickMenuItem = class(TMenuItem)
+  private
+    FScriptName: string;
+  public
+    property ScriptName: string read FScriptName write FScriptName;
+  end;
+
   TfrmMain = class(TForm)
     OpenDialog: TOpenDialog;
     mnuPopup: TPopupMenu;
     miExit: TMenuItem;
     miView: TMenuItem;
     miStop: TMenuItem;
+    miQuick:TMenuItem;
+    miBot:  TMenuItem;
     miLoad: TMenuItem;
     miData: TMenuItem;
     miRecording: TMenuItem;
@@ -120,6 +129,9 @@ type
     procedure miHelpScriptClick(Sender: TObject);
     procedure miHelpPack2Click(Sender: TObject);
     procedure miPlayLogClick(Sender: TObject);
+    procedure popupChanged(Sender: TObject; Source: TMenuItem;
+      Rebuild: Boolean);
+    procedure popupShown(Sender: TObject);
 const
   private
     LoadingScript : Boolean;
@@ -128,7 +140,10 @@ const
     LargeIcon: HIcon;
     SmallIcon: HIcon;
     Icon :Ticon;
+    popupVisable : Boolean;
 
+    procedure OnBotMenuItemClick(Sender: TObject);
+    procedure OnQuickMenuItemClick(Sender: TObject);
     procedure OnScriptMenuItemClick(Sender: TObject);
     procedure SetTrayHint(const Value : string);
   public
@@ -137,6 +152,10 @@ const
 
     procedure AddWarp(var S : TSector; W : Word);
     procedure SetToolTip(ToolTip : string);
+    procedure LoadBotMenu();
+    procedure LoadQuickMenu();
+    procedure AddBotMenu(BotName: string; ScriptName: string);
+    procedure AddQuickMenu(QuickName: string; ScriptName: string);
     procedure AddScriptMenu(Script: TScript);
     procedure RemoveScriptMenu(Script: TScript);
 
@@ -152,7 +171,8 @@ uses
   TWXExport,
   Ansi,
   Registry,
-  WinTypes;
+  WinTypes,
+  inifiles;
 
 {$R *.DFM}
 
@@ -170,6 +190,10 @@ begin
   FProgramDir := (Owner as TModGUI).ProgramDir;
   LoadingScript := FALSE;
   miStop.Visible := False;
+  miQuick.Visible := False;
+
+  LoadBotMenu();
+  LoadQuickMenu();
 end;
 
 //function SHGetImageList(iImageList: Integer; const riid: TGUID;
@@ -181,6 +205,45 @@ begin
   TStrings(lParam).Add(lpszName);
   Result := True;
 end;
+
+procedure TfrmMain.LoadBotMenu();
+var
+   IniFile     : TIniFile;
+   BotName,
+   Script,
+   Section     : String;
+   SectionList : TStringList;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\config.ini');
+
+
+  try
+    SectionList := TStringList.Create;
+    try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if Pos('bot:', LowerCase(Section)) = 1 then begin
+          BotName := IniFile.ReadString(Section, 'Name', '');
+          Script  := IniFile.ReadString(Section, 'Script', '');
+
+          if FileExists (FProgramDir + '\scripts\' + Script) then
+            AddBotMenu(BotName, Script);
+        end;
+      end;
+    finally
+      SectionList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+end;
+
+procedure TfrmMain.LoadQuickMenu();
+begin
+
+end;
+
 
 procedure TfrmMain.LoadTrayIcon(const Value : string);
 var
@@ -739,6 +802,30 @@ begin
   SetForegroundWindow(Application.Handle);
 end;
 
+procedure TfrmMain.AddBotMenu(BotName: string; ScriptName: string);
+var
+  MenuItem: TQuickMenuItem;
+begin
+  MenuItem := TQuickMenuItem.Create(Self);
+  MenuItem.Caption := BotName;
+  MenuItem.OnClick := OnBotMenuItemClick;
+  MenuItem.ScriptName := ScriptName;
+
+  miBot.Add(MenuItem);
+end;
+
+procedure TfrmMain.AddQuickMenu(QuickName: string; ScriptName: string);
+var
+  MenuItem: TQuickMenuItem;
+begin
+  MenuItem := TQuickMenuItem.Create(Self);
+  MenuItem.Caption := ScriptName;
+  MenuItem.OnClick := OnQuickMenuItemClick;
+  MenuItem.ScriptName := ScriptName;
+
+  miBot.Add(MenuItem);
+end;
+
 procedure TfrmMain.AddScriptMenu(Script: TScript);
 var
   MenuItem: TScriptMenuItem;
@@ -768,9 +855,48 @@ begin
   miStop.Visible := (miStop.Count > 0);
 end;
 
+procedure TfrmMain.OnBotMenuItemClick(Sender: TObject);
+begin
+  // Kill all running scripts, including system scripts
+ TWXInterpreter.StopAll(True);
+
+  // Load the selected bot
+  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, FALSE);
+  (Owner as TModGUI).ActiveBot := TQuickMenuItem(Sender).ScriptName;
+end;
+
+procedure TfrmMain.OnQuickMenuItemClick(Sender: TObject);
+begin
+  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, FALSE);
+end;
+
+
 procedure TfrmMain.OnScriptMenuItemClick(Sender: TObject);
 begin
   TWXInterpreter.StopByHandle(TScriptMenuItem(Sender).Script);
+end;
+
+procedure TfrmMain.popupChanged(Sender: TObject; Source: TMenuItem;
+  Rebuild: Boolean);
+begin
+    popupVisable := false;
+end;
+
+procedure TfrmMain.popupShown(Sender: TObject);
+begin
+  // MB - Moved from GUI to prevent menu filcker cause when a server is down
+  if (TWXGUI.Connected) then
+  begin
+    miConnect.Caption := 'Dis&connect';
+    miConnect.Default := FALSE;
+    miLoad.Default := TRUE;
+  end
+  else
+  begin
+    miConnect.Caption := '&Connect';
+    miConnect.Default := TRUE;
+    miLoad.Default := FALSE;
+  end;
 end;
 
 end.

@@ -715,6 +715,9 @@ begin
   // script menu options
   with (SptMenu) do
   begin
+//    Menu := TTWXMenuItem.Create(Self, 'TWX_LOADBOT', miLoadBot, 'Bot Load / Switch', 'Bot Load / Switch', 'B');
+//    Menu.Help := 'This option will load / switch the active Bot. This will also terminate ALL active scripts.';
+//    AddItem(Menu);
     Menu := TTWXMenuItem.Create(Self, 'TWX_LOADSCRIPT', miLoad, 'Load script', 'Load Script', 'S');
     Menu.Help := 'The load script option will load and begin execution of a TWX Proxy script.';
     AddItem(Menu);

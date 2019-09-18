@@ -46,6 +46,7 @@ type
   TModGUI = class(TTWXModule, ITWXGlobals)
   private
     FProgramDir: string;
+    FActiveBot: string;
     FDatabaseName: string;
     FGUIForms: array[TGUIFormType] of TForm;
     FConnected: Boolean;
@@ -79,6 +80,7 @@ type
     property Connected: Boolean read GetConnected write SetConnected;
     property FormEnabled[FormType: TGUIFormType]: Boolean read GetFormEnabled write SetFormEnabled;
     property ProgramDir: string read GetProgramDir write SetProgramDir;
+    property ActiveBot: string read FActiveBot write FActiveBot;
     property Recording: Boolean read GetRecording write SetRecording;
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
@@ -175,22 +177,6 @@ begin
   if (Value <> FConnected) then
   begin
     FConnected := Value;
-
-    with (TfrmMain(GUIForms[gfMain])) do
-    begin
-      if (FConnected) then
-      begin
-        miConnect.Default := FALSE;
-        miLoad.Default := TRUE;
-        miConnect.Caption := 'Dis&connect';
-      end
-      else
-      begin
-        miConnect.Caption := '&Connect';
-        miConnect.Default := TRUE;
-        miLoad.Default := FALSE;
-      end;
-    end;
   end;
 end;
 
