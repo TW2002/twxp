@@ -3583,7 +3583,7 @@ begin
     AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
     AddSysConstant('CURRENTANSIQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
-    AddSysConstant('ACTIVEBOTS',SCActiveBot);
+    AddSysConstant('ACTIVEBOT',SCActiveBot);
   end;
 end;
 
