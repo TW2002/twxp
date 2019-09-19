@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.1.1" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
+	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.3.1" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <!-- This code would bind the version to the product file, but I dont want to do that at this time...
+      <Product Version="!(bind.FileVersion.MyAssemblyDll)" ...="">
+      <File Id="MyAssemblyDll" Name="$(var.001_Application.MyAssembly.TargetFileName)" Source="$(var.001_Application.MyAssembly.TargetPath)" />-->
+      
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of [ProductName] is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features." />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <Feature Id="ProductFeature" Title="TWX Proxy" Level="1" Absent="disallow" ConfigurableDirectory="TWXPROXY" Description="Installs the main TWX Proxy program, including Pack 1 / 2">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="DesktopShortcut" />
-      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcut" /> 
     </Feature>
     <Feature Id="PublicFeature" Title="Public Scripts" Level="1" Description="Installs common public scripts. These scripts are provided 'as-is' with no documentation. Use at your own risk.">
       <ComponentGroupRef Id="PublicComponents" />
@@ -36,7 +41,11 @@
     <SetDirectory Id="APPLICATIONFOLDER" Value="[WindowsVolume]" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONFOLDER" />
-    
+
+    <Property Id="TWXPROXY" Secure="yes">
+      <RegistrySearch Id="ApplicationFolderSearch" Type="raw" Root="HKCU" Key="Software\eXide\TWXP" Name="InstallPath"/>
+    </Property>
+
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="APPLICATIONFOLDER" Name="AppFolder">
@@ -118,6 +127,7 @@
 	<Fragment>
     <ComponentGroup Id="ProductComponents">
       <Component Id="ProductComponent" Directory="TWXPROXY" Guid="36d4d996-21c0-4cd5-b943-4bd3effa00fe" >
+        <RegistryValue Id="InstallPath" Root="HKCU" Key="Software\eXide\TWXP"  Name="InstallPath" Type="string" Value="[TWXPROXY]" />
         <ProgId Id="TWXP" Description="The Veteran's Trade Wars Helper">
           <Extension Id="xdb">
             <Verb Id="open" TargetFile="MainExe" Argument="&quot;%1&quot;" />
