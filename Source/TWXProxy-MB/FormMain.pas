@@ -397,6 +397,9 @@ begin
       MessageDlg('Unable to open file for export', mtError, [mbOk], 0)
     else
     begin
+      // MB - write : to the beginning od the file for Swath compatablilty.
+      Write(F, ':' + endl);
+
       for I := 1 to TWXDatabase.DBHeader.Sectors do
       begin
         S := TWXDatabase.LoadSector(I);
@@ -419,6 +422,9 @@ begin
           Write(F, endl);
         end;
       end;
+
+      // MB - write : to the end of the file for Swath compatablilty.
+      Write(F, ':' + endl);
 
       CloseFile(F);
       ShowMessage('Warp data successfully exported');
@@ -507,57 +513,62 @@ begin
       while not eof(F) do
       begin
         ReadLn(F, Line);
-        X := StrToIntSafe(GetParameter(Line, 1));
+        // MB - added for import compatability from swath - ignore ':' and blank lines
+        if (Line <> ':') and (Line <> '') and (Line <> ': ENDINTERROG') then
+        Begin
+          X := StrToIntSafe(GetParameter(Line, 1));
 
-        if (X = 0) then
-        begin
-          MessageDlg('Error importing warp data - corrupt?', mtError, [mbOk], 0);
-          CloseFile(F);
-          Exit;
-        end;
+          if (X = 0) then
+          begin
+            MessageDlg('Error importing warp data - corrupt?', mtError, [mbOk], 0);
+            CloseFile(F);
+             Exit;
+         end;
 
-        S := TWXDatabase.LoadSector(X);
+          S := TWXDatabase.LoadSector(X);
 
-        I := StrToIntSafe(GetParameter(Line, 2));
-        if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
-        begin
-          AddWarp(S, I);
-
-          I := StrToIntSafe(GetParameter(Line, 3));
+          I := StrToIntSafe(GetParameter(Line, 2));
           if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
           begin
             AddWarp(S, I);
 
-            I := StrToIntSafe(GetParameter(Line, 4));
+            I := StrToIntSafe(GetParameter(Line, 3));
             if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
             begin
               AddWarp(S, I);
 
-              I := StrToIntSafe(GetParameter(Line, 5));
+              I := StrToIntSafe(GetParameter(Line, 4));
               if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
               begin
                 AddWarp(S, I);
 
-                I := StrToIntSafe(GetParameter(Line, 6));
+                I := StrToIntSafe(GetParameter(Line, 5));
                 if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
                 begin
                   AddWarp(S, I);
 
-                  I := StrToIntSafe(GetParameter(Line, 7));
+                  I := StrToIntSafe(GetParameter(Line, 6));
                   if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
+                  begin
                     AddWarp(S, I);
+
+                    I := StrToIntSafe(GetParameter(Line, 7));
+                    if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
+                      AddWarp(S, I);
+                  end;
                 end;
               end;
             end;
           end;
+
+          if (S.Explored = etNo) then
+            S.Explored := etCalc;
+
+          TWXDatabase.SaveSector(S, X, nil, nil, nil);
+          TWXDatabase.UpdateWarps(X);
         end;
 
-        if (S.Explored = etNo) then
-          S.Explored := etCalc;
-
-        TWXDatabase.SaveSector(S, X, nil, nil, nil);
-        TWXDatabase.UpdateWarps(X);
-      end;
+      End;
 
       CloseFile(F);
 
