@@ -1,6 +1,6 @@
-# TWXProxy-EP
+# TWXProxy 2.6
 
-The latest version of TWXProxy released by Elder Prophit (Version 2.5.73).
+The latest version of TWXProxy released by MicroBlaster.
 
 ## TWXProxy is free and open source
 
