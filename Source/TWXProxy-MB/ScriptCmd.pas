@@ -3460,7 +3460,7 @@ begin
   SCCurrentShipNumber(Indexes)]);
 end;
 
-function SCCurrentBot(Indexes : TStringArray) : string;
+function SCActiveBot(Indexes : TStringArray) : string;
 begin
   Result := TWXGUI.ActiveBot;
 end;
@@ -3583,7 +3583,7 @@ begin
     AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
     AddSysConstant('CURRENTANSIQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
-    AddSysConstant('ACTIVEBOTSCRIPT',SCCurrentQuickStats);
+    AddSysConstant('ACTIVEBOTS',SCActiveBot);
   end;
 end;
 
