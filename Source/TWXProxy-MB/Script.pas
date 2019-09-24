@@ -75,7 +75,8 @@ uses
   Observer,
   ScriptCmp,
   ScriptRef,
-  FormScript;
+  FormScript,
+  inifiles;
 
 type
   TScript = class;
@@ -102,12 +103,13 @@ type
   TModInterpreter = class(TTWXModule, ITWXGlobals)
   private
     ScriptList: TList;
-    FLastScript: string;
     FScriptMenu: TMenuItem;
     FScriptRef: TScriptRef;
     FAutoRun: TStringList;
     FtmrTime: TTimer;
     FTimerEventCount: Integer;
+    FLastScript,
+    FActiveBot,
     FProgramDir: string;
 
     function GetScript(Index : Integer) : TScript;
@@ -128,9 +130,11 @@ type
     procedure StateValuesLoaded; override;
 
     procedure Load(Filename : string; Silent : Boolean);
+    procedure LoadScript(Filename : string; Silent : Boolean);
     procedure Stop(Index : Integer);
     procedure StopByHandle(Script : TScript);
     procedure StopAll(StopSysScripts : Boolean);
+    procedure SwitchBot(ScriptName : String; StopBotScripts : Boolean);
     procedure ProgramEvent(EventName, MatchText : string; Exclusive : Boolean);
     function TextOutEvent(Text : string; StartScript : TScript) : Boolean;
     procedure TextEvent(Text : string; ForceTrigger : Boolean);
@@ -144,6 +148,7 @@ type
 
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
+    property ActiveBot : string read FActiveBot;
     property ScriptMenu : TMenuItem read FScriptMenu write FScriptMenu;
     property ScriptRef : TScriptRef read FScriptRef;
     property ProgramDir: string read GetProgramDir;
@@ -338,6 +343,18 @@ begin
 end;
 
 procedure TModInterpreter.Load(Filename : string; Silent : Boolean);
+begin
+  // MB - Catch added to detech when a user is loading
+  //      a bot without using the "Load Bot" menu.
+  if (Pos('bot', LowerCase(ExtractFileName(Filename))) > 0) and
+     (Pos('switchbot', LowerCase(ExtractFileName(Filename))) = 0)
+  then
+    switchbot(Filename, True)
+  else
+    LoadScript(Filename, Silent);
+end;
+
+procedure TModInterpreter.LoadScript(Filename : string; Silent : Boolean);
 var
   Script : TScript;
   Error  : Boolean;
@@ -448,10 +465,35 @@ begin
 
   while (I < ScriptList.Count) do
   begin
-    if (StopSysScripts) or not (TScript(ScriptList.Items[I]).System) then
+    if (StopSysScripts) or not (TScript(ScriptList.Items[I]).System)
+    then
       Stop(I)
     else
       Inc(I);
+  end;
+end;
+
+procedure TModInterpreter.SwitchBot(ScriptName : String; StopBotScripts : Boolean);
+var
+   I : Integer;
+begin
+  if (ScriptName <> '') then
+  begin
+    // Kill all running scripts, including system scripts
+    // Use StopBotScripts = False from switchbot command to
+    // preent killing the active bot and throwing exceptions
+    I := 0;
+    while (I < TWXInterpreter.Count) do
+     if (Pos('bot', LowerCase(Scripts[I].ScriptName)) = 0) or
+        (StopBotScripts = True)
+     then
+       TWXInterpreter.Stop(I)
+     else
+       Inc(I);
+
+    // Load the selected bot
+    LoadScript(ScriptName, FALSE);
+    FActiveBot := ScriptName;
   end;
 end;
 

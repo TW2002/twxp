@@ -214,7 +214,7 @@ var
    Section     : String;
    SectionList : TStringList;
 begin
-  IniFile := TIniFile.Create(FProgramDir + '\config.ini');
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
 
 
   try
@@ -868,17 +868,14 @@ end;
 
 procedure TfrmMain.OnBotMenuItemClick(Sender: TObject);
 begin
-  // Kill all running scripts, including system scripts
- TWXInterpreter.StopAll(True);
-
-  // Load the selected bot
-  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, FALSE);
-  (Owner as TModGUI).ActiveBot := TQuickMenuItem(Sender).ScriptName;
+  // MB - Load the new bot. Load has bot detection and
+  //      will close all other scripts automatically.
+  TWXInterpreter.SwitchBot('scripts\' + TQuickMenuItem(Sender).ScriptName, True);
 end;
 
 procedure TfrmMain.OnQuickMenuItemClick(Sender: TObject);
 begin
-  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, FALSE);
+  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, False);
 end;
 
 

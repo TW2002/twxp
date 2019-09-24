@@ -1354,7 +1354,12 @@ begin
   // CMD: load <scriptName>
 
   TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), TRUE);
-  Result := caNone;
+
+  // MB - if the script ending is switchbot, then kill parent.
+  if Pos('switchbot', LowerCase(Params[0].Value)) > 0 then
+    Result := caStop
+  else
+    Result := caNone;
 end;
 
 function CmdLoadVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
@@ -2351,10 +2356,10 @@ var
    SectionList : TStringList;
    I : Integer;
 begin
-  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\config.ini');
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
   NextBot := '';
 
-  if(Length(Params) = 1) then
+  if (Length(Params) = 1) and (Params[0].Value <> '') and (Params[0].Value <> '0') then
   begin
   try
     SectionList := TStringList.Create;
@@ -2400,7 +2405,7 @@ begin
 
       for I := 0 to BotList.Count - 1 do
       begin
-        if BotList[I] = TWXGUI.ActiveBot then
+        if Pos(LowerCase(BotList[I]), LowerCase(TWXInterpreter.ActiveBot)) > 0 then
         begin
           if I < BotList.Count -1 then
             NextBot := BotList[I + 1]
@@ -2419,12 +2424,21 @@ begin
   if (NextBot <> '') then
   begin
     // Kill all running scripts, including system scripts
-    TWXInterpreter.StopAll(True);
+    //TWXInterpreter.StopAll(True);
+    I := 0;
+    while (I < TWXInterpreter.Count - 1) do
+     if (Pos('mombot', LowerCase(TWXInterpreter.Scripts[I].ScriptName)) = 0) and
+        (Pos('switchbot', LowerCase(TWXInterpreter.Scripts[I].ScriptName)) = 0)
+     then
+       TWXInterpreter.Stop(I)
+     else
+       Inc(I);
 
     // Load the selected bot
-    TWXInterpreter.Load('scripts\' + NextBot, FALSE);
-    TWXGUI.ActiveBot := NextBot;
+    TWXInterpreter.SwitchBot('scripts\' + NextBot, FALSE);
   end;
+
+  Result := caNone;
 end;
 
 // *****************************************************************************
@@ -3462,7 +3476,7 @@ end;
 
 function SCActiveBot(Indexes : TStringArray) : string;
 begin
-  Result := TWXGUI.ActiveBot;
+  Result := TWXInterpreter.ActiveBot;
 end;
 
 // *****************************************************************************

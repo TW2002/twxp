@@ -59,6 +59,7 @@ uses
   SysUtils,
   Dialogs,
   FileCtrl,
+  inifiles,
   FormMain in 'FormMain.pas' {frmMain},
   FormSetup in 'FormSetup.pas' {frmSetup},
   Process in 'Process.pas',
@@ -331,6 +332,53 @@ begin
   end;
 end;
 
+procedure CreateConfig();
+var
+   IniFile     : TIniFile;
+   BotName,
+   Script,
+   Section     : String;
+   SectionList : TStringList;
+begin
+  ProgramDir := GetCurrentDir;
+
+  if not fileexists(ProgramDir + '\twxp.cfg') then
+  begin
+    IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
+
+    try
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '1939.1939.1939.1939');
+
+      IniFile.WriteString('Bot:Mom', 'Name', 'Mind Over Matter Bot');
+      IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');
+      IniFile.WriteString('Bot:Mom1045', 'Name', 'Legacy Mombot 3.1045');
+      IniFile.WriteString('Bot:Mom1045', 'Script', 'Mombot\mombot3_1045.cts');
+      IniFile.WriteString('Bot:Zed', 'Name', 'Zed Bot');
+      IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.cts');
+
+      IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
+      IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');
+      IniFile.WriteString('QuickLoad', 'Alexio_', 'Alexio');
+      IniFile.WriteString('QuickLoad', 'ender', 'Ender');
+      IniFile.WriteString('QuickLoad', 'ep_', 'ElderProphit');
+      IniFile.WriteString('QuickLoad', 'ck_', 'Cherokee');
+      IniFile.WriteString('QuickLoad', 'dny_', 'Dynarri');
+      IniFile.WriteString('QuickLoad', 'Kaus_', 'Kaus');
+      IniFile.WriteString('QuickLoad', 'ls_', 'Lonestar');
+      IniFile.WriteString('QuickLoad', 'ozz_', 'Ozz');
+      IniFile.WriteString('QuickLoad', 'ph_', 'Parrothead');
+      IniFile.WriteString('QuickLoad', 'mob_', 'Mob');
+      IniFile.WriteString('QuickLoad', 'pro_', 'Promethies');
+      IniFile.WriteString('QuickLoad', 'ram', 'Rammer');
+      IniFile.WriteString('QuickLoad', 'vid_', 'Vid Kid');
+      IniFile.WriteString('QuickLoad', 'xan_', 'Xanos');
+      IniFile.WriteString('QuickLoad', 'z', 'Zed / Archie');
+    finally
+      IniFile.Free;
+    end;
+  end;
+end;
+
 var
   S          : TSearchRec;
   fileDate   : Integer;
@@ -345,6 +393,7 @@ begin
   Application.Title := 'TWX Proxy';
   //Application.CreateForm(TfrmChangeIcon, FormChangeIcon);
   SetCurrentDir(ExtractFilePath(Application.ExeName));
+  CreateConfig();
   InitProgram;
 
   if TWXGUI.DatabaseName <> '' then
@@ -388,4 +437,6 @@ begin
   finally
     FinaliseProgram;
   end;
+
+
 end.

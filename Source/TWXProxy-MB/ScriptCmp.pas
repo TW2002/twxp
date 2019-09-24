@@ -38,7 +38,7 @@ const
   // TWX Proxy 2.03Final is version 3
   // TWX Proxy 2.04 is version 4
   // TWX Proxy 2.05 is version 5
-  // TWX Proxy 2.05 is version 6
+  // TWX Proxy 2.06 is version 6
   COMPILED_SCRIPT_VERSION = 6;
 
   PARAM_CMD = 0;
