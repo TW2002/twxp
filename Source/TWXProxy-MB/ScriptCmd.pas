@@ -2353,6 +2353,7 @@ var
    NextBot,
    Section     : String;
    BotList,
+   ScriptList,
    SectionList : TStringList;
    I : Integer;
 begin
@@ -2363,7 +2364,8 @@ begin
   begin
   try
     SectionList := TStringList.Create;
-    try
+    ScriptList := TStringList.Create;
+   try
       IniFile.ReadSections(SectionList);
       for Section in SectionList do
       begin
@@ -2372,12 +2374,14 @@ begin
         begin
           BotScript  := IniFile.ReadString(Section, 'Script', '');
 
-          if FileExists (TWXGUI.ProgramDir + '\scripts\' + BotScript) then
+          ExtractStrings([','], [], PChar(BotScript), ScriptList);
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + ScriptList[0]) then
             NextBot := BotScript;
         end;
       end;
     finally
       SectionList.Free;
+      ScriptList.Free;
     end;
   finally
     IniFile.Free;
@@ -2387,6 +2391,7 @@ begin
   begin
   try
     SectionList := TStringList.Create;
+    ScriptList := TStringList.Create;
     BotList := TStringList.Create;
     try
       IniFile.ReadSections(SectionList);
@@ -2396,7 +2401,8 @@ begin
         begin
           BotScript  := IniFile.ReadString(Section, 'Script', '');
 
-          if FileExists (TWXGUI.ProgramDir + '\scripts\' + BotScript) then
+          ExtractStrings([','], [], PChar(BotScript), ScriptList);
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + ScriptList[0]) then
           begin
             BotList.add(BotScript);
           end;
@@ -2415,28 +2421,18 @@ begin
       end;
     finally
       SectionList.Free;
+      ScriptList.Free;
+      BotList.Free;
     end;
   finally
     IniFile.Free;
   end;
 
   end;
-  if (NextBot <> '') then
-  begin
-    // Kill all running scripts, including system scripts
-    //TWXInterpreter.StopAll(True);
-    I := 0;
-    while (I < TWXInterpreter.Count - 1) do
-     if (Pos('mombot', LowerCase(TWXInterpreter.Scripts[I].ScriptName)) = 0) and
-        (Pos('switchbot', LowerCase(TWXInterpreter.Scripts[I].ScriptName)) = 0)
-     then
-       TWXInterpreter.Stop(I)
-     else
-       Inc(I);
 
-    // Load the selected bot
-    TWXInterpreter.SwitchBot('scripts\' + NextBot, FALSE);
-  end;
+  // Load the selected bot
+  if (NextBot <> '') then
+    TWXInterpreter.SwitchBot(NextBot, FALSE);
 
   Result := caNone;
 end;

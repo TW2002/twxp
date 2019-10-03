@@ -130,7 +130,6 @@ type
     procedure StateValuesLoaded; override;
 
     procedure Load(Filename : string; Silent : Boolean);
-    procedure LoadScript(Filename : string; Silent : Boolean);
     procedure Stop(Index : Integer);
     procedure StopByHandle(Script : TScript);
     procedure StopAll(StopSysScripts : Boolean);
@@ -343,24 +342,20 @@ begin
 end;
 
 procedure TModInterpreter.Load(Filename : string; Silent : Boolean);
-begin
-  // MB - Catch added to detech when a user is loading
-  //      a bot without using the "Load Bot" menu.
-  if (Pos('bot', LowerCase(ExtractFileName(Filename))) > 0) and
-     (Pos('switchbot', LowerCase(ExtractFileName(Filename))) = 0)
-  then
-    switchbot(Filename, True)
-  else
-    LoadScript(Filename, Silent);
-end;
-
-procedure TModInterpreter.LoadScript(Filename : string; Silent : Boolean);
 var
   Script : TScript;
   Error  : Boolean;
   I      : Integer;
 begin
   // MB - Stop script if it is already running
+  I := 0;
+  while (I < TWXInterpreter.Count) do
+    if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
+      TWXInterpreter.Stop(I)
+    else
+      Inc(I);
+
+
   if (TWXInterpreter.Count > 0) then
     for I := 0 to TWXInterpreter.Count - 1 do
       if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
@@ -476,24 +471,46 @@ end;
 procedure TModInterpreter.SwitchBot(ScriptName : String; StopBotScripts : Boolean);
 var
    I : Integer;
+   Script     : String;
+   ScriptList : TStringList;
 begin
+  ScriptList := TStringList.Create;
+
   if (ScriptName <> '') then
   begin
     // Kill all running scripts, including system scripts
     // Use StopBotScripts = False from switchbot command to
     // preent killing the active bot and throwing exceptions
-    I := 0;
-    while (I < TWXInterpreter.Count) do
-     if (Pos('bot', LowerCase(Scripts[I].ScriptName)) = 0) or
-        (StopBotScripts = True)
-     then
-       TWXInterpreter.Stop(I)
-     else
-       Inc(I);
+    try
+      I := 0;
+      while (I < TWXInterpreter.Count) do
+       if (Pos('authorise', LowerCase(Scripts[I].ScriptName)) = 0) and
+         ((Pos('bot', LowerCase(Scripts[I].ScriptName)) = 0) or
+         (StopBotScripts = True))
+      then
+        TWXInterpreter.Stop(I)
+      else
+        Inc(I);
 
-    // Load the selected bot
-    LoadScript(ScriptName, FALSE);
-    FActiveBot := ScriptName;
+    finally
+
+    end;
+
+    // Load the selected bot files(S)
+    try
+     ExtractStrings([','], [], PChar(ScriptName), ScriptList);
+     for script in ScriptList do
+     begin
+       if (pos('scripts\', LowerCase(script)) > 0) then
+         Load(script, FALSE)
+       else
+         Load('scripts\' + script, FALSE);
+     end;
+      FActiveBot := ScriptName;
+
+    finally
+      ScriptList.free();
+    end;
   end;
 end;
 

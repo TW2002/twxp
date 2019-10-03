@@ -353,8 +353,10 @@ begin
       IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');
       IniFile.WriteString('Bot:Mom1045', 'Name', 'Legacy Mombot 3.1045');
       IniFile.WriteString('Bot:Mom1045', 'Script', 'Mombot\mombot3_1045.cts');
-      IniFile.WriteString('Bot:Zed', 'Name', 'Zed Bot');
-      IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.cts');
+      IniFile.WriteString('Bot:Qu', 'Name', 'Quantum Qubot');
+      IniFile.WriteString('Bot:Qu', 'Script', 'Quantum\Qubot.cts');
+      IniFile.WriteString('Bot:Zed', 'Name', 'Zed Bot Unleashed');
+      IniFile.WriteString('Bot:Zed', 'Script', 'z-authorise.cts,z-bot.cts');
 
       IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
       IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');

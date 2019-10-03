@@ -212,7 +212,8 @@ var
    BotName,
    Script,
    Section     : String;
-   SectionList : TStringList;
+   SectionList,
+   ScriptList  : TStringList;
 begin
   IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
 
@@ -220,6 +221,7 @@ begin
   try
     SectionList := TStringList.Create;
     try
+      ScriptList := TStringList.Create;
       IniFile.ReadSections(SectionList);
       for Section in SectionList do
       begin
@@ -227,7 +229,9 @@ begin
           BotName := IniFile.ReadString(Section, 'Name', '');
           Script  := IniFile.ReadString(Section, 'Script', '');
 
-          if FileExists (FProgramDir + '\scripts\' + Script) then
+          ExtractStrings([','], [], PChar(Script), ScriptList);
+
+          if FileExists (FProgramDir + '\scripts\' + ScriptList[0]) then
             AddBotMenu(BotName, Script);
         end;
       end;
@@ -344,8 +348,16 @@ begin
   begin
     Filename := OpenDialog.Filename;
     CompleteFileName(Filename, 'ts');
-    TWXInterpreter.Load(Filename, FALSE);
-  end;
+
+    // MB - Catch when a user is loading a bot without
+   //      using the "Load Bot" menu.
+   if (Pos('bot', LowerCase(ExtractFileName(Filename))) > 0) and
+      (Pos('switchbot', LowerCase(ExtractFileName(Filename))) = 0)
+   then
+     TWXInterpreter.SwitchBot(Filename, True)
+   else
+     TWXInterpreter.Load(Filename, False);
+   end;
 
   // Reset current directory
   SetCurrentDir(FProgramDir);
@@ -870,7 +882,7 @@ procedure TfrmMain.OnBotMenuItemClick(Sender: TObject);
 begin
   // MB - Load the new bot. Load has bot detection and
   //      will close all other scripts automatically.
-  TWXInterpreter.SwitchBot('scripts\' + TQuickMenuItem(Sender).ScriptName, True);
+  TWXInterpreter.SwitchBot(TQuickMenuItem(Sender).ScriptName, True);
 end;
 
 procedure TfrmMain.OnQuickMenuItemClick(Sender: TObject);
