@@ -347,7 +347,7 @@ begin
     IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
 
     try
-      IniFile.WriteString('TWX Proxy', 'Upgrade', '1939.1939.1939.1939');
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '1939.1939.1939.1939.1939');
 
       IniFile.WriteString('Bot:Mom', 'Name', 'Mind Over Matter Bot');
       IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');

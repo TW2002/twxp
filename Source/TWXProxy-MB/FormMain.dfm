@@ -56,6 +56,10 @@ object frmMain: TfrmMain
       Default = True
       OnClick = miConnectClick
     end
+    object miUpdateNow: TMenuItem
+      Caption = '&Update Now!'
+      OnClick = miUpdateNowClick
+    end
     object N1: TMenuItem
       Caption = '-'
     end
@@ -132,6 +136,10 @@ object frmMain: TfrmMain
     object miHelp: TMenuItem
       Caption = '&Help'
       ImageIndex = 0
+      object miUpdateCheck: TMenuItem
+        Caption = '&Check for Updates'
+        OnClick = miUpdateCheckClick
+      end
       object miHelpScript: TMenuItem
         Caption = '&Scripting Reference'
         OnClick = miHelpScriptClick
@@ -581,6 +589,12 @@ object frmMain: TfrmMain
     OnClick = trayIconClick
     OnDblClick = trayIconDblClick
     Left = 8
+    Top = 8
+  end
+  object updateTimer: TTimer
+    Interval = 1500000
+    OnTimer = updateTimerTick
+    Left = 168
     Top = 8
   end
 end

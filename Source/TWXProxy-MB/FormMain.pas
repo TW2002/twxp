@@ -32,6 +32,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  DateUtils,
   Classes,
   Graphics,
   Controls,
@@ -54,7 +55,8 @@ uses
   Script,
   ActnList,
   Variants,
-  ShellAPI;
+  ShellAPI,
+  WinInet;
 
 type
   TScriptMenuItem = class(TMenuItem)
@@ -107,6 +109,9 @@ type
     miHelpAbout: TMenuItem;
     miHelpPack2: TMenuItem;
     miPlayLog: TMenuItem;
+    miUpdateCheck: TMenuItem;
+    miUpdateNow: TMenuItem;
+    updateTimer: TTimer;
 
     procedure miSetupClick(Sender: TObject);
     procedure miConnectClick(Sender: TObject);
@@ -132,6 +137,9 @@ type
     procedure popupChanged(Sender: TObject; Source: TMenuItem;
       Rebuild: Boolean);
     procedure popupShown(Sender: TObject);
+    procedure miUpdateNowClick(Sender: TObject);
+    procedure miUpdateCheckClick(Sender: TObject);
+    procedure updateTimerTick(Sender: TObject);
 const
   private
     LoadingScript : Boolean;
@@ -191,6 +199,7 @@ begin
   LoadingScript := FALSE;
   miStop.Visible := False;
   miQuick.Visible := False;
+  miUpdateNow.Visible := False;
 
   LoadBotMenu();
   LoadQuickMenu();
@@ -799,6 +808,70 @@ begin
   ShellExecute(0, nil, PChar('pack2.html'), nil, nil, SW_NORMAL);
 end;
 
+procedure TfrmMain.miUpdateCheckClick(Sender: TObject);
+var
+  IniFile   : TIniFile;
+  NetHandle : HINTERNET;
+  UrlHandle : HINTERNET;
+  Buffer    : array[0..1024] of Char;
+  BytesRead : dWord;
+  Result,
+  Update    : string;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  Result := '';
+  NetHandle := InternetOpen('Delphi 5.x', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+
+  if Assigned(NetHandle) then 
+  begin
+    UrlHandle := InternetOpenUrl(NetHandle, PChar('http://twxu.twfm.net'), nil, 0, INTERNET_FLAG_RELOAD, 0);
+
+    if Assigned(UrlHandle) then
+    begin
+      FillChar(Buffer, SizeOf(Buffer), 0);
+      repeat
+        Result := Result + Buffer;
+        FillChar(Buffer, SizeOf(Buffer), 0);
+        InternetReadFile(UrlHandle, @Buffer, SizeOf(Buffer), BytesRead);
+      until BytesRead = 0;
+      InternetCloseHandle(UrlHandle);
+    end
+    else
+      { UrlHandle is not valid. Raise an exception. }
+      //raise Exception.CreateFmt('Cannot open URL %s', [Url]);
+
+    InternetCloseHandle(NetHandle);
+  end;
+  //else
+    { NetHandle is not valid. Raise an exception }
+    //raise Exception.Create('Unable to initialize Wininet');
+
+  if Result <> '' then
+  begin
+    try
+      Update := IniFile.ReadString('TWX Proxy', 'Upgrade', '---');
+      if (Pos(Update, Result) = 0) then
+      begin
+        IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'True');
+        miUpdateNow.Visible := True;
+        TWXServer.Broadcast(endl + endl + ANSI_15 + endl +
+          'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
+          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+      end;
+  finally
+    IniFile.Free;
+  end;
+
+  end;
+end;
+
+
+procedure TfrmMain.miUpdateNowClick(Sender: TObject);
+begin
+  miUpdateNow.Visible := False;
+  ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+end;
 
 // ************************************************************************
 // Other
@@ -812,6 +885,25 @@ begin
     miLoadClick(Sender)
   else if (miConnect.Default) then
     miConnectClick(Sender);
+end;
+
+procedure TfrmMain.updateTimerTick(Sender: TObject);
+var
+   IniFile     : TIniFile;
+   LastUpdateCheck : String;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  try
+    LastUpdateCheck := IniFile.ReadString('TWX Proxy', 'LastUpdateCheck', '');
+    if LastUpdateCheck <> DateTimeToStr(Date) then
+    begin
+      IniFile.WriteString('TWX Proxy', 'LastUpdateCheck', DateTimeToStr(Date));
+      miUpdateCheckClick(Sender);
+    end;
+  finally
+    IniFile.Free;
+  end;
 end;
 
 procedure TfrmMain.tmrHideFormTimer(Sender: TObject);
@@ -903,7 +995,18 @@ begin
 end;
 
 procedure TfrmMain.popupShown(Sender: TObject);
+var
+  IniFile   : TIniFile;
 begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  try
+    if IniFile.ReadString('TWX Proxy', 'UpdateAvailable', '') = 'True' then
+      miUpdateNow.Visible := True;
+  finally
+    IniFile.Free;
+  end;
+
   // MB - Moved from GUI to prevent menu filcker cause when a server is down
   if (TWXGUI.Connected) then
   begin

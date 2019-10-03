@@ -194,7 +194,8 @@ uses
   Ansi,
   Utility,
   StrUtils,
-  Dialogs;
+  Dialogs,
+  inifiles;
 
 
 // ***************** TModServer Implementation *********************
@@ -334,6 +335,7 @@ const
   T_DO = #255 + #253;
   T_DONT = #255 + #254;
 var
+  IniFile       : TIniFile;
   LocalClient   : Boolean;
   Index         : Integer;
   RemoteAddress,
@@ -341,6 +343,8 @@ var
   TempAddress   : String;
   AddressList   : TStringList;
 begin
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
+
   RemoteAddress := Socket.RemoteAddress;
   AddressList := TStringList.Create;
   Index := GetSocketIndex(Socket);
@@ -419,6 +423,16 @@ begin
                       'you are open to foreign users monitoring data remotely.' + endl);
 
     Socket.SendText(endl);
+    try
+      if IniFile.ReadString('TWX Proxy', 'UpdateAvailable', 'False') = 'True' then
+      begin
+        Socket.SendText(ANSI_15 +
+          'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
+          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+      end;
+    finally
+      IniFile.Free;
+    end;
 
     if TWXDatabase.DataBaseOpen then
       Socket.SendText(ANSI_10 + 'Using Database ' + ANSI_14 + TWXDatabase.DatabaseName + ANSI_10 + ' w/ ' +
