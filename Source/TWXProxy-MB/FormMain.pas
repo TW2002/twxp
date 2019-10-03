@@ -858,6 +858,21 @@ begin
         TWXServer.Broadcast(endl + endl + ANSI_15 + endl +
           'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
           'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+        if Sender <> nil then
+        begin
+          if Application.MessageBox('An updated verion of TWX Proxy is available.'  + endl +
+          'Would you like to download it now?',
+			    'Checking for Updates', MB_YESNO) = IDYES then
+          ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+        end;
+      end
+      else
+      begin
+        if Sender <> nil then
+        begin
+          Application.MessageBox('You are running the latest version of TWX Proxy.',
+			    'Checking for Updates', MB_OK)
+        end;
       end;
   finally
     IniFile.Free;
@@ -899,7 +914,7 @@ begin
     if LastUpdateCheck <> DateTimeToStr(Date) then
     begin
       IniFile.WriteString('TWX Proxy', 'LastUpdateCheck', DateTimeToStr(Date));
-      miUpdateCheckClick(Sender);
+      miUpdateCheckClick(nil);
     end;
   finally
     IniFile.Free;
