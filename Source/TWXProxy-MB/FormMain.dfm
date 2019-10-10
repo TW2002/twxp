@@ -47,12 +47,18 @@ object frmMain: TfrmMain
   end
   object mnuPopup: TPopupMenu
     Images = imageList
+    OnChange = popupChanged
+    OnPopup = popupShown
     Left = 40
     Top = 8
     object miConnect: TMenuItem
       Caption = 'C&onnect'
       Default = True
       OnClick = miConnectClick
+    end
+    object miUpdateNow: TMenuItem
+      Caption = '&Update Now!'
+      OnClick = miUpdateNowClick
     end
     object N1: TMenuItem
       Caption = '-'
@@ -63,6 +69,12 @@ object frmMain: TfrmMain
     end
     object miStop: TMenuItem
       Caption = '&Stop Script'
+    end
+    object miQuick: TMenuItem
+      Caption = '&Quick Load'
+    end
+    object miBot: TMenuItem
+      Caption = 'Load &Bot'
     end
     object N3: TMenuItem
       Caption = '-'
@@ -124,6 +136,10 @@ object frmMain: TfrmMain
     object miHelp: TMenuItem
       Caption = '&Help'
       ImageIndex = 0
+      object miUpdateCheck: TMenuItem
+        Caption = '&Check for Updates'
+        OnClick = miUpdateCheckClick
+      end
       object miHelpScript: TMenuItem
         Caption = '&Scripting Reference'
         OnClick = miHelpScriptClick
@@ -573,6 +589,12 @@ object frmMain: TfrmMain
     OnClick = trayIconClick
     OnDblClick = trayIconDblClick
     Left = 8
+    Top = 8
+  end
+  object updateTimer: TTimer
+    Interval = 1500000
+    OnTimer = updateTimerTick
+    Left = 168
     Top = 8
   end
 end

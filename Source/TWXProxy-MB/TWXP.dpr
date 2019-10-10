@@ -59,6 +59,7 @@ uses
   SysUtils,
   Dialogs,
   FileCtrl,
+  inifiles,
   FormMain in 'FormMain.pas' {frmMain},
   FormSetup in 'FormSetup.pas' {frmSetup},
   Process in 'Process.pas',
@@ -256,6 +257,7 @@ end;
 procedure FinaliseProgram;
 var
   ObjectName : String;
+  I          : Integer;
 begin
   try
     // MB - Save the current database name.
@@ -301,6 +303,8 @@ begin
     MessageDlg('Exception occured trying to free ' + ObjectName, mtError, [mbOK], 0);
   end;
 
+  for I := 0 to TWXGlobalVars.Count - 1 do
+    TGlobalVarItem(TWXGlobalVars[I]).Destroy;
   TWXGlobalVars.Free;
 
   MessageHandler.Free;
@@ -328,6 +332,55 @@ begin
   end;
 end;
 
+procedure CreateConfig();
+var
+   IniFile     : TIniFile;
+   BotName,
+   Script,
+   Section     : String;
+   SectionList : TStringList;
+begin
+  ProgramDir := GetCurrentDir;
+
+  if not fileexists(ProgramDir + '\twxp.cfg') then
+  begin
+    IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
+
+    try
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '1939.1939.1939.1939.1939');
+
+      IniFile.WriteString('Bot:Mom', 'Name', 'Mind Over Matter Bot');
+      IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');
+      IniFile.WriteString('Bot:Mom1045', 'Name', 'Legacy Mombot 3.1045');
+      IniFile.WriteString('Bot:Mom1045', 'Script', 'Mombot\mombot3_1045.cts');
+      IniFile.WriteString('Bot:Qu', 'Name', 'Quantum Qubot');
+      IniFile.WriteString('Bot:Qu', 'Script', 'Quantum\Qubot.cts');
+      IniFile.WriteString('Bot:Zed', 'Name', 'Zed Bot Unleashed');
+      IniFile.WriteString('Bot:Zed', 'Script', 'z-authorise.cts,z-bot.cts');
+
+      IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
+      IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');
+      IniFile.WriteString('QuickLoad', 'Al_', 'Alexio');
+      IniFile.WriteString('QuickLoad', 'end_', 'Ender');
+      IniFile.WriteString('QuickLoad', 'ep_', 'ElderProphit');
+      IniFile.WriteString('QuickLoad', 'ck_', 'Cherokee');
+      IniFile.WriteString('QuickLoad', 'dny_', 'Dynarri');
+      IniFile.WriteString('QuickLoad', 'Kaus_', 'Kaus');
+      IniFile.WriteString('QuickLoad', 'ls_', 'Lonestar');
+      IniFile.WriteString('QuickLoad', 'oz_', 'Ozz');
+      IniFile.WriteString('QuickLoad', 'ph_', 'Parrothead');
+      IniFile.WriteString('QuickLoad', 'pro_', 'Promethies');
+      IniFile.WriteString('QuickLoad', 'ram_', 'Rammer');
+      IniFile.WriteString('QuickLoad', 'rin_', 'Rincrast');
+      IniFile.WriteString('QuickLoad', 'vid_', 'Vid Kid');
+      IniFile.WriteString('QuickLoad', 'wild_', 'Wildstar');
+      IniFile.WriteString('QuickLoad', 'z_', 'Zed / Archie');
+    finally
+      IniFile.Free;
+    end;
+  end;
+end;
+
 var
   S          : TSearchRec;
   fileDate   : Integer;
@@ -342,6 +395,7 @@ begin
   Application.Title := 'TWX Proxy';
   //Application.CreateForm(TfrmChangeIcon, FormChangeIcon);
   SetCurrentDir(ExtractFilePath(Application.ExeName));
+  CreateConfig();
   InitProgram;
 
   if TWXGUI.DatabaseName <> '' then
@@ -385,4 +439,6 @@ begin
   finally
     FinaliseProgram;
   end;
+
+
 end.

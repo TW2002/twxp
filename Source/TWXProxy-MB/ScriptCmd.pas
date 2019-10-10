@@ -1354,7 +1354,12 @@ begin
   // CMD: load <scriptName>
 
   TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), TRUE);
-  Result := caNone;
+
+  // MB - if the script ending is switchbot, then kill parent.
+  if Pos('switchbot', LowerCase(Params[0].Value)) > 0 then
+    Result := caStop
+  else
+    Result := caNone;
 end;
 
 function CmdLoadVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
@@ -2235,7 +2240,7 @@ begin
 end;
 
 
-function CmdSilenceClients(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdSetDeafClients(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I : Integer;
 begin
@@ -2269,22 +2274,47 @@ function CmdSaveGlobal(Script : TObject; Params : array of TCmdParam) : TCmdActi
 var
   Found : Boolean;
   I     : Integer;
+  Data  : TStringList;
+  Param   : TVarParam;
+  Indexes : TStringArray;
 begin
   Found := False;
+
+  if TVarParam(Params[0]).ArraySize > 0 then
+  begin
+    Data :=  TStringList.Create;
+
+    for I := 1 to TVarParam(Params[0]).ArraySize do
+    begin
+      SetLength(Indexes, 1);
+      Indexes[0] := IntToStr(I);
+
+      Data.Add(TVarParam(Params[0]).GetIndexVar(Indexes).Value)
+    end;
+  end;
 
   // Search for an existing item and update if found
   for I := 0 to TWXGlobalVars.Count - 1 do
   begin
     if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
     begin
-      TGlobalVarItem(TWXGlobalVars[I]).Value := Params[0].Value;
+      if TVarParam(Params[0]).ArraySize > 0 then
+      begin
+        TGlobalVarItem(TWXGlobalVars[I]).Value := '';
+        TGlobalVarItem(TWXGlobalVars[I]).Data := Data;
+      end
+      else
+        TGlobalVarItem(TWXGlobalVars[I]).Value := Params[0].Value;
       Found := True;
     end;
   end;
 
   // Create a new item if no items were found
   if not Found then
-    TWXGlobalVars.Add(TGlobalVarItem.Create(TVarParam(Params[0]).Name, Params[0].Value));
+    if TVarParam(Params[0]).ArraySize > 0 then
+      TWXGlobalVars.Add(TGlobalVarItem.Create(TVarParam(Params[0]).Name, Data))
+    else
+      TWXGlobalVars.Add(TGlobalVarItem.Create(TVarParam(Params[0]).Name, Params[0].Value));
 
   Result := caNone;
 end;
@@ -2298,7 +2328,10 @@ begin
   begin
     if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
     begin
-      Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
+      if TGlobalVarItem(TWXGlobalVars[I]).ArrayCount > 0 then
+        TVarParam(Params[0]).SetArrayFromStrings(TGlobalVarItem(TWXGlobalVars[I]).Data)
+      else
+        Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
     end;
   end;
 
@@ -2313,6 +2346,96 @@ begin
   Result := caNone;
 end;
 
+function CmdSwitchBot(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+   IniFile     : TIniFile;
+   BotScript,
+   NextBot,
+   Section     : String;
+   BotList,
+   ScriptList,
+   SectionList : TStringList;
+   I : Integer;
+begin
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
+  NextBot := '';
+
+  if (Length(Params) = 1) and (Params[0].Value <> '') and (Params[0].Value <> '0') then
+  begin
+  try
+    SectionList := TStringList.Create;
+    ScriptList := TStringList.Create;
+   try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if (Pos('bot:', LowerCase(Section)) = 1) and
+           (Pos(LowerCase(Params[0].Value), LowerCase(Section)) > 0)then
+        begin
+          BotScript  := IniFile.ReadString(Section, 'Script', '');
+
+          ExtractStrings([','], [], PChar(BotScript), ScriptList);
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + ScriptList[0]) then
+            NextBot := BotScript;
+        end;
+      end;
+    finally
+      SectionList.Free;
+      ScriptList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+  end
+  else
+  begin
+  try
+    SectionList := TStringList.Create;
+    ScriptList := TStringList.Create;
+    BotList := TStringList.Create;
+    try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if (Pos('bot:', LowerCase(Section)) = 1) then
+        begin
+          BotScript  := IniFile.ReadString(Section, 'Script', '');
+
+          ExtractStrings([','], [], PChar(BotScript), ScriptList);
+          if FileExists (TWXGUI.ProgramDir + '\scripts\' + ScriptList[0]) then
+          begin
+            BotList.add(BotScript);
+          end;
+        end;
+      end;
+
+      for I := 0 to BotList.Count - 1 do
+      begin
+        if Pos(LowerCase(BotList[I]), LowerCase(TWXInterpreter.ActiveBot)) > 0 then
+        begin
+          if I < BotList.Count -1 then
+            NextBot := BotList[I + 1]
+          else
+            NextBot := BotList[0];
+        end;
+      end;
+    finally
+      SectionList.Free;
+      ScriptList.Free;
+      BotList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+
+  end;
+
+  // Load the selected bot
+  if (NextBot <> '') then
+    TWXInterpreter.SwitchBot(NextBot, FALSE);
+
+  Result := caNone;
+end;
 
 // *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
@@ -3347,6 +3470,11 @@ begin
   SCCurrentShipNumber(Indexes)]);
 end;
 
+function SCActiveBot(Indexes : TStringArray) : string;
+begin
+  Result := TWXInterpreter.ActiveBot;
+end;
+
 // *****************************************************************************
 //                             LIST BUILDER METHODS
 // *****************************************************************************
@@ -3438,7 +3566,7 @@ begin
     AddSysConstant('CURRENTCREDITS', SCCurrentCredits);
     AddSysConstant('CURRENTFIGHTERS', SCCurrentFighters);
     AddSysConstant('CURRENTSHIELDS', SCCurrentShields);
-    AddSysConstant('CURRENTTOTAL_HOLDS', SCCurrentTotalHolds);
+    AddSysConstant('CURRENTTOTALHOLDS', SCCurrentTotalHolds);
     AddSysConstant('CURRENTOREHOLDS', SCCurrentOreHolds);
     AddSysConstant('CURRENTORGHOLDS', SCCurrentOrgHolds);
     AddSysConstant('CURRENTEQUHOLDS', SCCurrentEquHolds);
@@ -3463,7 +3591,9 @@ begin
     AddSysConstant('CURRENTCORP', SCCurrentCorp);
     AddSysConstant('CURRENTSHIPNUMBER', SCCurrentShipNumber);
     AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
+    AddSysConstant('CURRENTANSIQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
+    AddSysConstant('ACTIVEBOT',SCActiveBot);
   end;
 end;
 
@@ -3603,11 +3733,13 @@ begin
 
     // Commands added for 2.06
     AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [], pkValue);
-    AddCommand('SILENCECLIENTS', 0, 1, CmdSilenceClients, [pkValue], pkValue);
+    AddCommand('SETDEAFCLIENTS', 0, 1, CmdSetDeafClients, [pkValue], pkValue);
 
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
     AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
     AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
+
+    AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
 
   end;
 end;

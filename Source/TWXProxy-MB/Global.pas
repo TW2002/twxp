@@ -40,14 +40,20 @@ uses
 type
   TGlobalVarItem = class(TObject)
   public
-    constructor Create(Name, Value : String);
+    constructor Create(Name, Value : String); overload;
+    constructor Create(Name : String; Data : TStringList);  overload;
+    destructor Destroy(); override;
 
   protected
     FName, FValue : string;
+    FArray        : TStringList;
+    FArrayCount   : Integer;
 
   published
     property Name : string read FName write FName;
     property Value : string read FValue write FValue;
+    property Data : TStringList read FArray write FArray;
+    property ArrayCount : Integer read FArrayCount write FArrayCount;
   end;
 
 // Module variables:
@@ -64,13 +70,28 @@ var
   PersistenceManager: TPersistenceManager;
 
   TWXGlobalVars     : TList;
-
 implementation
 
 constructor TGlobalVarItem.Create(Name, Value : String);
 begin
   FName  := Name;
   FValue := Value;
+  FArrayCount := 0;
+end;
+
+constructor TGlobalVarItem.Create(Name : String; Data : TStringList);
+begin
+  FName  := Name;
+  FValue := '';
+
+  //FArray := TStringList.Create;
+  FArray := Data;
+  FArrayCount := Data.Count;
+end;
+
+destructor TGlobalVarItem.Destroy();
+begin
+  Data.Free;
 end;
 
 

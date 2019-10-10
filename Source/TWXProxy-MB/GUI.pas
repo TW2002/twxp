@@ -175,22 +175,6 @@ begin
   if (Value <> FConnected) then
   begin
     FConnected := Value;
-
-    with (TfrmMain(GUIForms[gfMain])) do
-    begin
-      if (FConnected) then
-      begin
-        miConnect.Default := FALSE;
-        miLoad.Default := TRUE;
-        miConnect.Caption := 'Dis&connect';
-      end
-      else
-      begin
-        miConnect.Caption := '&Connect';
-        miConnect.Default := TRUE;
-        miLoad.Default := FALSE;
-      end;
-    end;
   end;
 end;
 

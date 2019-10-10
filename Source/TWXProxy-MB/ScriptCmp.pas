@@ -38,7 +38,7 @@ const
   // TWX Proxy 2.03Final is version 3
   // TWX Proxy 2.04 is version 4
   // TWX Proxy 2.05 is version 5
-  // TWX Proxy 2.05 is version 6
+  // TWX Proxy 2.06 is version 6
   COMPILED_SCRIPT_VERSION = 6;
 
   PARAM_CMD = 0;
@@ -1397,14 +1397,14 @@ begin
         if (ParamLine[1] = 'SILENT') then
         begin
           RecurseCmd(['GETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
-          RecurseCmd(['SILENCECLIENTS'], Line, ScriptID);
+          RecurseCmd(['SETDEAFCLIENTS'], Line, ScriptID);
 
           RecurseCmd(['SEND','"/"'], Line, ScriptID);
           RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
           RecurseCmd(['PAUSE'], Line, ScriptID);
           RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
 
-          RecurseCmd(['SILENCECLIENTS','$LastDeaf'], Line, ScriptID);
+          RecurseCmd(['SETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
         end
       end
       else

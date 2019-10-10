@@ -75,7 +75,8 @@ uses
   Observer,
   ScriptCmp,
   ScriptRef,
-  FormScript;
+  FormScript,
+  inifiles;
 
 type
   TScript = class;
@@ -102,12 +103,13 @@ type
   TModInterpreter = class(TTWXModule, ITWXGlobals)
   private
     ScriptList: TList;
-    FLastScript: string;
     FScriptMenu: TMenuItem;
     FScriptRef: TScriptRef;
     FAutoRun: TStringList;
     FtmrTime: TTimer;
     FTimerEventCount: Integer;
+    FLastScript,
+    FActiveBot,
     FProgramDir: string;
 
     function GetScript(Index : Integer) : TScript;
@@ -131,6 +133,7 @@ type
     procedure Stop(Index : Integer);
     procedure StopByHandle(Script : TScript);
     procedure StopAll(StopSysScripts : Boolean);
+    procedure SwitchBot(ScriptName : String; StopBotScripts : Boolean);
     procedure ProgramEvent(EventName, MatchText : string; Exclusive : Boolean);
     function TextOutEvent(Text : string; StartScript : TScript) : Boolean;
     procedure TextEvent(Text : string; ForceTrigger : Boolean);
@@ -144,6 +147,7 @@ type
 
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
+    property ActiveBot : string read FActiveBot;
     property ScriptMenu : TMenuItem read FScriptMenu write FScriptMenu;
     property ScriptRef : TScriptRef read FScriptRef;
     property ProgramDir: string read GetProgramDir;
@@ -343,7 +347,18 @@ var
   Error  : Boolean;
   I      : Integer;
 begin
+  // MB - Cleanup extra backslashes
+  Filename := StringReplace(Filename, '\\', '\', [rfReplaceAll]);
+
   // MB - Stop script if it is already running
+  I := 0;
+  while (I < TWXInterpreter.Count) do
+    if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
+      TWXInterpreter.Stop(I)
+    else
+      Inc(I);
+
+
   if (TWXInterpreter.Count > 0) then
     for I := 0 to TWXInterpreter.Count - 1 do
       if (TWXInterpreter.Scripts[I].Cmp.ScriptFile = Filename) then
@@ -448,10 +463,57 @@ begin
 
   while (I < ScriptList.Count) do
   begin
-    if (StopSysScripts) or not (TScript(ScriptList.Items[I]).System) then
+    if (StopSysScripts) or not (TScript(ScriptList.Items[I]).System)
+    then
       Stop(I)
     else
       Inc(I);
+  end;
+end;
+
+procedure TModInterpreter.SwitchBot(ScriptName : String; StopBotScripts : Boolean);
+var
+   I : Integer;
+   Script     : String;
+   ScriptList : TStringList;
+begin
+  ScriptList := TStringList.Create;
+
+  if (ScriptName <> '') then
+  begin
+    // Kill all running scripts, including system scripts
+    // Use StopBotScripts = False from switchbot command to
+    // preent killing the active bot and throwing exceptions
+    try
+      I := 0;
+      while (I < TWXInterpreter.Count) do
+       if (Pos('authorise', LowerCase(Scripts[I].ScriptName)) = 0) and
+         ((Pos('bot', LowerCase(Scripts[I].ScriptName)) = 0) or
+         (StopBotScripts = True))
+      then
+        TWXInterpreter.Stop(I)
+      else
+        Inc(I);
+
+    finally
+
+    end;
+
+    // Load the selected bot files(S)
+    try
+     ExtractStrings([','], [], PChar(ScriptName), ScriptList);
+     for script in ScriptList do
+     begin
+       if (pos('scripts\', LowerCase(script)) > 0) then
+         Load(script, FALSE)
+       else
+         Load('scripts\' + script, FALSE);
+     end;
+      FActiveBot := ScriptName;
+
+    finally
+      ScriptList.free();
+    end;
   end;
 end;
 

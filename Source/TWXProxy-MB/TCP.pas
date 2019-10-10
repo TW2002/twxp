@@ -44,7 +44,7 @@ const
   OP_DONT = #254;
 
 type
-  TClientType = (ctStandard, ctDeaf, ctUnauthorised, ctMute);
+  TClientType = (ctStandard, ctDeaf, ctRejected, ctMute);
   TDisplayMode = (ctSilent, ctQuiet, ctNormal, ctVerbose);
 
   TTelnetSocket = class(TTWXModule)
@@ -194,7 +194,8 @@ uses
   Ansi,
   Utility,
   StrUtils,
-  Dialogs;
+  Dialogs,
+  inifiles;
 
 
 // ***************** TModServer Implementation *********************
@@ -334,73 +335,104 @@ const
   T_DO = #255 + #253;
   T_DONT = #255 + #254;
 var
-  LocalClient : Boolean;
-  SktIndex    : Integer;
+  IniFile       : TIniFile;
+  LocalClient   : Boolean;
+  Index         : Integer;
+  RemoteAddress,
+  Address,
+  TempAddress   : String;
+  AddressList   : TStringList;
 begin
-  if (Socket.RemoteAddress = '127.0.0.1') or
-  (Copy(Socket.RemoteAddress, 1, 8) = '192.168.') or
-  (Copy(Socket.RemoteAddress, 1, 3) = '10.') or
-  (Socket.RemoteAddress = ExternalAddress)
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
+
+  RemoteAddress := Socket.RemoteAddress;
+  AddressList := TStringList.Create;
+  Index := GetSocketIndex(Socket);
+
+  if (RemoteAddress = '127.0.0.1') or
+  (Copy(RemoteAddress, 1, 8) = '192.168.') or
+  (Copy(RemoteAddress, 1, 3) = '10.')
   then
     LocalClient := TRUE
   else
     LocalClient := FALSE;
 
+   try
+     ExtractStrings([' '],[], pchar(ExternalAddress), AddressList);
+
+     for Address in AddressList do
+     begin
+        TempAddress := stringreplace(Address, '.*', '',[rfReplaceAll, rfIgnoreCase]);
+        if (Copy(ExternalAddress,1,length(TempAddress)) = TempAddress)
+        then
+          LocalClient := TRUE
+     end;
+   finally
+     AddressList.Free;
+   end;
+
+  if (not AcceptExternal) and (not AllowLerkers) and (RemoteAddress <> '127.0.0.1') then
+    begin
+      // User not allowed
+      Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
+      Sleep(500);
+      FClientTypes[Index] := ctRejected;
+      Socket.Close();
+      if (BroadCastMsgs) then
+        Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
+      exit;
+    end
+  else if ((AcceptExternal) or (AllowLerkers)) and (not LocalClient) then
+    begin
+      Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye!');
+      Sleep(500);
+      FClientTypes[Index] := ctRejected;
+      Socket.Close();
+      if (BroadCastMsgs) then
+        Broadcast(endl + ANSI_12 + 'Remote connection rejected from: ' + ANSI_14 + RemoteAddress + endl);
+      exit;
+    end;
+
   Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
-                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')');
+                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')' + endl);
 
   if (BroadCastMsgs) then
-    ClientMessage(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl)
+    Broadcast(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + RemoteAddress + endl + endl)
   else
-    Socket.SendText(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + Socket.RemoteAddress + endl);
+    Socket.SendText(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + RemoteAddress + endl);
 
-
-  if (not AllowLerkers) and (not LocalClient) then
-  begin
-    // User not allowed
-    Socket.SendText(ANSI_12 + 'Lerkers are not welcome here. Goodbye Lerker!');
-    Sleep(500);
-    Socket.Close();
-    exit;
-  end
-  else if (not AcceptExternal) and (Socket.RemoteAddress <> '127.0.0.1') then
-  begin
-    Socket.SendText(ANSI_12 + 'External connections are disabled. Goodbye!');
-    Sleep(500);
-    Socket.Close();
-    exit;
-  end;
 
   begin
     // Send Telnet "Are you there"
     Socket.SendText(#255 + OP_DO + #246);
-
-
-    SktIndex := GetSocketIndex(Socket);
-
-    if (LocalClient) then
-      FClientTypes[SktIndex] := ctStandard
-    else
-      FClientTypes[SktIndex] := ctMute;
-
-    FClientEchoMarks[SktIndex] := FALSE;
+    FClientEchoMarks[Index] := FALSE;
 
     if (ReleaseVersion = 'Alpha') then
       Socket.SendText(ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Alpha releases have not had sufficent testing, and may' + endl +
-                      'be unstable. Please do not distribute, and use at your own risk.' + endl + endl);
+                      'be unstable. Please do not distribute, and use at your own risk.' + endl);
 
     if (ReleaseVersion = 'Beta') then
       Socket.SendText(endl + ANSI_11 + 'NOTICE: ' + ANSI_13 +
                       'Beta releases are generally considered stable, but may have' + endl +
-                      'unresolved issues. Use at your own risk.' + endl + endl);
+                      'unresolved issues. Use at your own risk.' + endl);
 
     if (AcceptExternal) or (AllowLerkers) then
-      Socket.SendText(ANSI_12 + 'WARNING: ' + ANSI_14 +
+      Socket.SendText(endl + ANSI_12 + 'WARNING: ' + ANSI_14 +
                       'With External Connections and/or Allow Lerkers enabled,' + endl +
                       'you are open to foreign users monitoring data remotely.' + endl);
 
     Socket.SendText(endl);
+    try
+      if IniFile.ReadString('TWX Proxy', 'UpdateAvailable', 'False') = 'True' then
+      begin
+        Socket.SendText(ANSI_15 +
+          'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
+          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+      end;
+    finally
+      IniFile.Free;
+    end;
 
     if TWXDatabase.DataBaseOpen then
       Socket.SendText(ANSI_10 + 'Using Database ' + ANSI_14 + TWXDatabase.DatabaseName + ANSI_10 + ' w/ ' +
@@ -418,14 +450,16 @@ begin
     else
       Socket.SendText(ANSI_11 + 'No' + ANSI_13 + ' server connections detected' + endl);
 
-
-    if (LocalClient) then
+    if ((LocalClient) and (AcceptExternal)) or (RemoteAddress = '127.0.0.1')then
     begin
+      FClientTypes[Index] := ctStandard;
       Socket.SendText(endl + ANSI_2 + 'Press ' + ANSI_14 + TWXExtractor.MenuKey + ANSI_2 + ' to activate terminal menu' + endl + endl);
-
     end
     else
+    begin
+      FClientTypes[Index] := ctMute;
       Socket.SendText(ANSI_12 + 'You are locked in view only mode' + ANSI_7 + endl + endl);
+    end;
 
     TWXInterpreter.ProgramEvent('Client connected', '', FALSE);
   end;
@@ -439,6 +473,12 @@ var
 begin
   Index := GetSocketIndex(Socket);
 
+  // manual client message to all sockets except the one disconnecting
+  if (FClientTypes[Index] <> ctRejected) then
+    for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
+      if (tcpServer.Socket.Connections[I] <> Socket) then
+        tcpServer.Socket.Connections[I].SendText( endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
+
   // remove client from list
   for I := Index to 254 do
   begin
@@ -448,10 +488,6 @@ begin
 
   TWXInterpreter.ProgramEvent('Client disconnected', '', FALSE);
 
-  // manual client message to all sockets except the one disconnecting
-  for I := 0 to tcpServer.Socket.ActiveConnections - 1 do
-    if (tcpServer.Socket.Connections[I] <> Socket) then
-      tcpServer.Socket.Connections[I].SendText( endl + ANSI_7 + 'Connection lost from: ' + ANSI_15 + Socket.RemoteAddress + ANSI_7 + endl);
 end;
 
 procedure TModServer.tcpServerClientError(Sender: TObject;

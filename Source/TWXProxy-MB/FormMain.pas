@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 For source notes please refer to Notes.txt
 For license terms please refer to GPL.txt.
 
-These files should be stored in the root of the compression you 
+These files should be stored in the root of the compression you
 received this source in.
 }
 // This unit controls the interface (frmMain)
@@ -30,8 +30,9 @@ interface
 
 uses
   Windows,
-  Messages,
   SysUtils,
+  Messages,
+  DateUtils,
   Classes,
   Graphics,
   Controls,
@@ -54,7 +55,8 @@ uses
   Script,
   ActnList,
   Variants,
-  ShellAPI;
+  ShellAPI,
+  WinInet;
 
 type
   TScriptMenuItem = class(TMenuItem)
@@ -64,12 +66,21 @@ type
     property Script: TScript read FScript write FScript;
   end;
 
+  TQuickMenuItem = class(TMenuItem)
+  private
+    FScriptName: string;
+  public
+    property ScriptName: string read FScriptName write FScriptName;
+  end;
+
   TfrmMain = class(TForm)
     OpenDialog: TOpenDialog;
     mnuPopup: TPopupMenu;
     miExit: TMenuItem;
     miView: TMenuItem;
     miStop: TMenuItem;
+    miQuick:TMenuItem;
+    miBot:  TMenuItem;
     miLoad: TMenuItem;
     miData: TMenuItem;
     miRecording: TMenuItem;
@@ -98,6 +109,9 @@ type
     miHelpAbout: TMenuItem;
     miHelpPack2: TMenuItem;
     miPlayLog: TMenuItem;
+    miUpdateCheck: TMenuItem;
+    miUpdateNow: TMenuItem;
+    updateTimer: TTimer;
 
     procedure miSetupClick(Sender: TObject);
     procedure miConnectClick(Sender: TObject);
@@ -120,6 +134,12 @@ type
     procedure miHelpScriptClick(Sender: TObject);
     procedure miHelpPack2Click(Sender: TObject);
     procedure miPlayLogClick(Sender: TObject);
+    procedure popupChanged(Sender: TObject; Source: TMenuItem;
+      Rebuild: Boolean);
+    procedure popupShown(Sender: TObject);
+    procedure miUpdateNowClick(Sender: TObject);
+    procedure miUpdateCheckClick(Sender: TObject);
+    procedure updateTimerTick(Sender: TObject);
 const
   private
     LoadingScript : Boolean;
@@ -128,7 +148,10 @@ const
     LargeIcon: HIcon;
     SmallIcon: HIcon;
     Icon :Ticon;
+    popupVisable : Boolean;
 
+    procedure OnBotMenuItemClick(Sender: TObject);
+    procedure OnQuickMenuItemClick(Sender: TObject);
     procedure OnScriptMenuItemClick(Sender: TObject);
     procedure SetTrayHint(const Value : string);
   public
@@ -137,6 +160,10 @@ const
 
     procedure AddWarp(var S : TSector; W : Word);
     procedure SetToolTip(ToolTip : string);
+    procedure LoadBotMenu();
+    procedure LoadQuickMenu();
+    procedure AddBotMenu(BotName: string; ScriptName: string);
+    procedure AddQuickMenu(QuickName: string; ScriptName: string);
     procedure AddScriptMenu(Script: TScript);
     procedure RemoveScriptMenu(Script: TScript);
 
@@ -152,7 +179,8 @@ uses
   TWXExport,
   Ansi,
   Registry,
-  WinTypes;
+  inifiles,
+  strutils;
 
 {$R *.DFM}
 
@@ -170,6 +198,11 @@ begin
   FProgramDir := (Owner as TModGUI).ProgramDir;
   LoadingScript := FALSE;
   miStop.Visible := False;
+  miQuick.Visible := True;
+  miUpdateNow.Visible := False;
+
+  LoadBotMenu();
+  LoadQuickMenu();
 end;
 
 //function SHGetImageList(iImageList: Integer; const riid: TGUID;
@@ -181,6 +214,192 @@ begin
   TStrings(lParam).Add(lpszName);
   Result := True;
 end;
+
+procedure TfrmMain.LoadBotMenu();
+var
+   IniFile     : TIniFile;
+   BotName,
+   Script,
+   Section     : String;
+   SectionList,
+   ScriptList  : TStringList;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+
+  try
+    SectionList := TStringList.Create;
+    try
+      IniFile.ReadSections(SectionList);
+      for Section in SectionList do
+      begin
+        if Pos('bot:', LowerCase(Section)) = 1 then begin
+          BotName := IniFile.ReadString(Section, 'Name', '');
+          Script  := IniFile.ReadString(Section, 'Script', '');
+
+          ScriptList := TStringList.Create;
+          ExtractStrings([','], [], PChar(Script), ScriptList);
+
+          if FileExists (FProgramDir + '\scripts\' + ScriptList[0]) then
+            AddBotMenu(BotName, Script);
+
+          ScriptList.Free;
+        end;
+      end;
+    finally
+      SectionList.Free;
+    end;
+  finally
+    IniFile.Free;
+  end;
+end;
+
+procedure TfrmMain.LoadQuickMenu();
+var
+  IniFile    : TIniFile;
+  searchDir,
+  searchFile : TSearchRec;
+  virtualName,
+  virtualDir,
+  dirName    : String;
+  dirList    : TStringList;
+  Item       : TMenuItem;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  dirList := TStringList.Create;
+  dirList.Sorted := true;
+  try
+    // Process virtual directories based on 'name_' = 'virtual name' from twxp.cfg
+    if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
+    repeat
+      // skip directories
+      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      begin
+        virtualDir := 'Misc';
+
+        if pos('_',searchFile.Name) > 0 then
+        begin
+          if LeftStr(searchFile.Name,1) = '_' then
+            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+          else
+            virtualName := searchFile.Name;
+
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
+
+        if LeftStr(searchFile.Name, 2) = '__' then
+          virtualDir := '_Favorite';
+
+        if LeftStr(searchFile.Name, 2) = 'z-' then
+          virtualDir := 'Zed / Archie';
+
+        if dirList.IndexOf(virtualDir) = -1 then
+          dirList.add(virtualDir);
+
+      end;
+      until FindNext(searchFile) <> 0;
+
+  finally
+    FindClose(searchFile);
+  end;
+
+  try
+    // Process real file directories under scripts
+    if findfirst(FProgramDir + '\scripts\*', faDirectory, searchDir) = 0 then
+    repeat
+      // Only show directories
+      if (searchDir.attr and faDirectory) = faDirectory then
+      begin
+        // Exclude undesired directories
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        begin
+          if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
+          repeat
+            // skip directories
+            if not ((searchFile.attr and faDirectory) = faDirectory) then
+              if dirList.IndexOf(searchDir.Name) = -1 then
+                dirList.add(searchDir.Name);
+          until FindNext(searchFile) <> 0;
+        end;
+      end;
+        //then ShowMessage('Directory = '+searchResult.Name);
+    until FindNext(searchDir) <> 0;
+  finally
+    FindClose(searchDir);
+    FindClose(searchFile);
+  end;
+
+  for dirName in dirList do
+  begin
+      Item := TMenuItem.Create(Self);
+      Item.Caption := dirName;
+      miQuick.Add(Item);
+  end;
+
+  try
+    // Process virtual directories based on 'name_' = 'virtual name' from twxp.cfg
+    if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
+    repeat
+      // skip directories
+      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      begin
+        virtualDir := 'Misc';
+
+        if pos('_',searchFile.Name) > 0 then
+        begin
+          if LeftStr(searchFile.Name,1) = '_' then
+            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+          else
+            virtualName := searchFile.Name;
+
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
+
+        if LeftStr(searchFile.Name, 2) = '__' then
+          virtualDir := '_Favorite';
+
+        if LeftStr(searchFile.Name, 2) = 'z-' then
+          virtualDir := 'Zed / Archie';
+
+        AddQuickMenu(virtualDir + '\' + searchFile.Name, '\scripts\' + searchFile.Name);
+      end;
+      until FindNext(searchFile) <> 0;
+
+  finally
+    FindClose(searchFile);
+  end;
+
+  try
+    // Process real file directories under scripts
+    if findfirst(FProgramDir + '\scripts\*', faDirectory, searchDir) = 0 then
+    repeat
+      // Only show directories
+      if (searchDir.attr and faDirectory) = faDirectory then
+      begin
+        // Exclude undesired directories
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        begin
+          if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
+          repeat
+            // skip directories
+            if not ((searchFile.attr and faDirectory) = faDirectory) then
+              AddQuickMenu(searchDir.Name + '\' + searchFile.Name, '\scripts\' + searchDir.Name + '\' + searchFile.Name);
+          until FindNext(searchFile) <> 0;
+        end;
+      end;
+        //then ShowMessage('Directory = '+searchResult.Name);
+    until FindNext(searchDir) <> 0;
+  finally
+    FindClose(searchDir);
+    FindClose(searchFile);
+  end;
+
+
+end;
+
 
 procedure TfrmMain.LoadTrayIcon(const Value : string);
 var
@@ -281,8 +500,16 @@ begin
   begin
     Filename := OpenDialog.Filename;
     CompleteFileName(Filename, 'ts');
-    TWXInterpreter.Load(Filename, FALSE);
-  end;
+
+    // MB - Catch when a user is loading a bot without
+   //      using the "Load Bot" menu.
+   if (Pos('bot', LowerCase(ExtractFileName(Filename))) > 0) and
+      (Pos('switchbot', LowerCase(ExtractFileName(Filename))) = 0)
+   then
+     TWXInterpreter.SwitchBot(Filename, True)
+   else
+     TWXInterpreter.Load(Filename, False);
+   end;
 
   // Reset current directory
   SetCurrentDir(FProgramDir);
@@ -334,6 +561,9 @@ begin
       MessageDlg('Unable to open file for export', mtError, [mbOk], 0)
     else
     begin
+      // MB - write : to the beginning od the file for Swath compatablilty.
+      Write(F, ':' + endl);
+
       for I := 1 to TWXDatabase.DBHeader.Sectors do
       begin
         S := TWXDatabase.LoadSector(I);
@@ -356,6 +586,9 @@ begin
           Write(F, endl);
         end;
       end;
+
+      // MB - write : to the end of the file for Swath compatablilty.
+      Write(F, ':' + endl);
 
       CloseFile(F);
       ShowMessage('Warp data successfully exported');
@@ -444,57 +677,62 @@ begin
       while not eof(F) do
       begin
         ReadLn(F, Line);
-        X := StrToIntSafe(GetParameter(Line, 1));
+        // MB - added for import compatability from swath - ignore ':' and blank lines
+        if (Line <> ':') and (Line <> '') and (Line <> ': ENDINTERROG') then
+        Begin
+          X := StrToIntSafe(GetParameter(Line, 1));
 
-        if (X = 0) then
-        begin
-          MessageDlg('Error importing warp data - corrupt?', mtError, [mbOk], 0);
-          CloseFile(F);
-          Exit;
-        end;
+          if (X = 0) then
+          begin
+            MessageDlg('Error importing warp data - corrupt?', mtError, [mbOk], 0);
+            CloseFile(F);
+             Exit;
+         end;
 
-        S := TWXDatabase.LoadSector(X);
+          S := TWXDatabase.LoadSector(X);
 
-        I := StrToIntSafe(GetParameter(Line, 2));
-        if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
-        begin
-          AddWarp(S, I);
-
-          I := StrToIntSafe(GetParameter(Line, 3));
+          I := StrToIntSafe(GetParameter(Line, 2));
           if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
           begin
             AddWarp(S, I);
 
-            I := StrToIntSafe(GetParameter(Line, 4));
+            I := StrToIntSafe(GetParameter(Line, 3));
             if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
             begin
               AddWarp(S, I);
 
-              I := StrToIntSafe(GetParameter(Line, 5));
+              I := StrToIntSafe(GetParameter(Line, 4));
               if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
               begin
                 AddWarp(S, I);
 
-                I := StrToIntSafe(GetParameter(Line, 6));
+                I := StrToIntSafe(GetParameter(Line, 5));
                 if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
                 begin
                   AddWarp(S, I);
 
-                  I := StrToIntSafe(GetParameter(Line, 7));
+                  I := StrToIntSafe(GetParameter(Line, 6));
                   if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
+                  begin
                     AddWarp(S, I);
+
+                    I := StrToIntSafe(GetParameter(Line, 7));
+                    if (I > 0) and (I <= TWXDatabase.DBHeader.Sectors) then
+                      AddWarp(S, I);
+                  end;
                 end;
               end;
             end;
           end;
+
+          if (S.Explored = etNo) then
+            S.Explored := etCalc;
+
+          TWXDatabase.SaveSector(S, X, nil, nil, nil);
+          TWXDatabase.UpdateWarps(X);
         end;
 
-        if (S.Explored = etNo) then
-          S.Explored := etCalc;
-
-        TWXDatabase.SaveSector(S, X, nil, nil, nil);
-        TWXDatabase.UpdateWarps(X);
-      end;
+      End;
 
       CloseFile(F);
 
@@ -713,6 +951,85 @@ begin
   ShellExecute(0, nil, PChar('pack2.html'), nil, nil, SW_NORMAL);
 end;
 
+procedure TfrmMain.miUpdateCheckClick(Sender: TObject);
+var
+  IniFile   : TIniFile;
+  NetHandle : HINTERNET;
+  UrlHandle : HINTERNET;
+  Buffer    : array[0..1024] of Char;
+  BytesRead : dWord;
+  Result,
+  Update    : string;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  Result := '';
+  NetHandle := InternetOpen('Delphi 5.x', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+
+  if Assigned(NetHandle) then 
+  begin
+    UrlHandle := InternetOpenUrl(NetHandle, PChar('http://twxu.twfm.net'), nil, 0, INTERNET_FLAG_RELOAD, 0);
+
+    if Assigned(UrlHandle) then
+    begin
+      FillChar(Buffer, SizeOf(Buffer), 0);
+      repeat
+        Result := Result + Buffer;
+        FillChar(Buffer, SizeOf(Buffer), 0);
+        InternetReadFile(UrlHandle, @Buffer, SizeOf(Buffer), BytesRead);
+      until BytesRead = 0;
+      InternetCloseHandle(UrlHandle);
+    end
+    else
+      { UrlHandle is not valid. Raise an exception. }
+      //raise Exception.CreateFmt('Cannot open URL %s', [Url]);
+
+    InternetCloseHandle(NetHandle);
+  end;
+  //else
+    { NetHandle is not valid. Raise an exception }
+    //raise Exception.Create('Unable to initialize Wininet');
+
+  if Result <> '' then
+  begin
+    try
+      Update := IniFile.ReadString('TWX Proxy', 'Upgrade', '---');
+      if (Pos(Update, Result) = 0) then
+      begin
+        IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'True');
+        miUpdateNow.Visible := True;
+        TWXServer.Broadcast(endl + endl + ANSI_15 + endl +
+          'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
+          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+        if Sender <> nil then
+        begin
+          if Application.MessageBox('An updated verion of TWX Proxy is available.'  + endl +
+          'Would you like to download it now?',
+			    'Checking for Updates', MB_YESNO) = IDYES then
+          ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+        end;
+      end
+      else
+      begin
+        if Sender <> nil then
+        begin
+          Application.MessageBox('You are running the latest version of TWX Proxy.',
+			    'Checking for Updates', MB_OK)
+        end;
+      end;
+  finally
+    IniFile.Free;
+  end;
+
+  end;
+end;
+
+
+procedure TfrmMain.miUpdateNowClick(Sender: TObject);
+begin
+  miUpdateNow.Visible := False;
+  ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+end;
 
 // ************************************************************************
 // Other
@@ -728,6 +1045,25 @@ begin
     miConnectClick(Sender);
 end;
 
+procedure TfrmMain.updateTimerTick(Sender: TObject);
+var
+   IniFile     : TIniFile;
+   LastUpdateCheck : String;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  try
+    LastUpdateCheck := IniFile.ReadString('TWX Proxy', 'LastUpdateCheck', '');
+    if LastUpdateCheck <> DateTimeToStr(Date) then
+    begin
+      IniFile.WriteString('TWX Proxy', 'LastUpdateCheck', DateTimeToStr(Date));
+      miUpdateCheckClick(nil);
+    end;
+  finally
+    IniFile.Free;
+  end;
+end;
+
 procedure TfrmMain.tmrHideFormTimer(Sender: TObject);
 begin
   Hide;
@@ -737,6 +1073,48 @@ end;
 procedure TfrmMain.trayIconClick(Sender: TObject);
 begin
   SetForegroundWindow(Application.Handle);
+end;
+
+procedure TfrmMain.AddBotMenu(BotName: string; ScriptName: string);
+var
+  MenuItem: TQuickMenuItem;
+begin
+  MenuItem := TQuickMenuItem.Create(Self);
+  MenuItem.Caption := BotName;
+  MenuItem.OnClick := OnBotMenuItemClick;
+  MenuItem.ScriptName := ScriptName;
+
+  miBot.Add(MenuItem);
+end;
+
+procedure TfrmMain.AddQuickMenu(QuickName: string; ScriptName: string);
+var
+  MenuItem: TQuickMenuItem;
+  NameList : TStringList;
+  Item  : TMenuItem;
+begin
+  NameList := TStringList.Create;
+  ExtractStrings(['\'], [], PChar(QuickName), NameList);
+
+  if NameList.Count = 2 then
+  begin
+    Item := miQuick.Find(NameList[0]);
+    if Item = nil then
+    begin
+      Item := TMenuItem.Create(Self);
+      Item.Caption := NameList[0];
+      miQuick.Add(Item);
+    end;
+
+    MenuItem := TQuickMenuItem.Create(Self);
+    MenuItem.Caption := NameList[1];
+    MenuItem.OnClick := OnQuickMenuItemClick;
+    MenuItem.ScriptName := ScriptName;
+
+    Item.Add(MenuItem);
+  end;
+  
+  NameList.Free;
 end;
 
 procedure TfrmMain.AddScriptMenu(Script: TScript);
@@ -768,9 +1146,56 @@ begin
   miStop.Visible := (miStop.Count > 0);
 end;
 
+procedure TfrmMain.OnBotMenuItemClick(Sender: TObject);
+begin
+  // MB - Load the new bot. Load has bot detection and
+  //      will close all other scripts automatically.
+  TWXInterpreter.SwitchBot(TQuickMenuItem(Sender).ScriptName, True);
+end;
+
+procedure TfrmMain.OnQuickMenuItemClick(Sender: TObject);
+begin
+    TWXInterpreter.Load(FProgramDir + '\' + TQuickMenuItem(Sender).ScriptName, False)
+end;
+
+
 procedure TfrmMain.OnScriptMenuItemClick(Sender: TObject);
 begin
   TWXInterpreter.StopByHandle(TScriptMenuItem(Sender).Script);
+end;
+
+procedure TfrmMain.popupChanged(Sender: TObject; Source: TMenuItem;
+  Rebuild: Boolean);
+begin
+    popupVisable := false;
+end;
+
+procedure TfrmMain.popupShown(Sender: TObject);
+var
+  IniFile   : TIniFile;
+begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  try
+    if IniFile.ReadString('TWX Proxy', 'UpdateAvailable', '') = 'True' then
+      miUpdateNow.Visible := True;
+  finally
+    IniFile.Free;
+  end;
+
+  // MB - Moved from GUI to prevent menu filcker cause when a server is down
+  if (TWXGUI.Connected) then
+  begin
+    miConnect.Caption := 'Dis&connect';
+    miConnect.Default := FALSE;
+    miLoad.Default := TRUE;
+  end
+  else
+  begin
+    miConnect.Caption := '&Connect';
+    miConnect.Default := TRUE;
+    miLoad.Default := FALSE;
+  end;
 end;
 
 end.
