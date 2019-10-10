@@ -1,0 +1,6 @@
+PELK - Photon, Enter, Land, Kill
+       Used to launch a Photon into an adjacent Sector, Enter
+       Photon'd Sector and land on a Planet then sends one
+       wave of Fighters.
+
+       pelk [Sector] [PlanetNumber]

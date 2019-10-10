@@ -1,0 +1,12 @@
+LSD - LoneStar's Dock Shopper (BAck End) - MOMBot Version
+
+      LSD is not a Command to be used directly from the 
+      MOMBot command-line. To access LSD, use the TAB B 
+      shortcout to start the LSD Front-End. This will allow
+      you to 'bot' another corp member to do the shopping
+      for you.
+
+      Note:  Menu option V in the Front-end Menu allows you
+             to indicate which bot you want to control. It 
+             is important that if you want to 'bot' yourself
+             that you reset Menu option V

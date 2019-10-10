@@ -1,0 +1,6 @@
+PXED - Photon, Export, Enter, Defend
+       Used to launch a Photon into an adjacent Sector then immediately
+       Export into another Ship and Enter Photon'd Sector; then launches
+       a Genesis Torpedo.
+
+       pxed [Sector] [ShipNumber]

@@ -1,0 +1,220 @@
+twx\scripts
+	mombot - Main Bot file to start script
+twx\scripts\mombot\Commands\Cashing
+	mega - Completes a megarob on a port
+	rob - Completes a standard rob on a port
+	tricon - Plays TirCon game until win or run out of money
+
+twx\scripts\mombot\Commands\Data
+	alien411 - provides known locations of alien secotrs on ss
+	armids - runs a armid mine report
+	avoids - unknown
+	busts - lists all current busted sectors
+	cim - runs a cim report
+	class0 - unknown
+	corpinfo - runs a coproration asset report displays on ss
+	course - unknown
+	dataminer - Traitors datamine script for reports
+	de - unknown
+	disp - displays the current secotor on corp ss
+	dock_finder - script to find dock
+	dscan - completes a density scan
+	extern - unknown
+	f
+	fde
+	figs
+	find
+	fp
+	fup
+	getnear
+	holo
+	limps
+	msgs
+	msl
+	neg
+	news
+	nf
+	nfup
+	overload
+	ping
+	plist
+	port
+	pscan
+	qreports
+	remaliens - NEED TO REMOVE
+	sector
+	slist
+	status
+	uf
+
+twx\scripts\mombot\Commands\Defense
+	_dock_kit
+	_planet_kit
+	_terra_kit
+	call
+	evac
+	hazkill
+
+twx\scripts\mombot\Commands\General
+	bwarp
+	callout
+	corp
+	dep
+	land
+	mac
+	pwarp
+	qset
+	topoff
+	tow
+	twarp
+	unlock
+	with
+	xport
+
+twx\scripts\mombot\Commands\Grid
+	clear
+	clearfig
+	climp
+	cmine
+	haz
+	mines
+	passgrid
+	pgrid
+	plimp
+	pmine
+	smow
+
+twx\scripts\mombot\Commands\Offense
+	_kazi
+	htorp
+	mex
+	mxex
+	pe
+	ped
+	pel
+	pelk
+	pex
+	pxe
+	pxed
+	pxel
+	pxek
+	pxex
+
+twx\scripts\mombot\Commands\Resources
+	_dock_shopper
+	buy
+	dump
+	max
+	scruball
+	sellship
+
+twx\scripts\mombot\Modes\Cashing
+	furb
+	merch
+	psst
+	salesman
+	sdt
+	sst
+	tbust
+	wmega
+	wppt
+	wrob
+	wsst
+
+twx\scripts\mombot\Modes\Data
+	_backdoor
+	_phx
+	_sptool
+	bubblelist
+	datamine
+	fedmon
+	fhit
+	param
+	pptfinder
+	sentinel
+	ztm
+
+twx\scripts\mombot\Modes\Defense
+	citfill
+	ig
+	qreset
+	reloader
+	runaway
+	saveme
+	tsaveme
+
+twx\scripts\mombot\Modes\General
+	xenter
+
+twx\scripts\mombot\Modes\Grid
+	_probe
+	disr
+	emptythis
+	gridcheck
+	limpshovel
+	minesweep
+	mow
+	mowfuel
+	mowports
+	mowthis
+	passgrid
+	plimper
+	sgrid
+	smow
+	surroundthis
+	ugrid
+
+twx\scripts\mombot\Modes\Offense
+	_ldrop
+	_meatgrinder
+	boton
+	citcap
+	citkill
+	dockkill
+	foton
+	pdrop
+	plock
+	slingshot
+	tripwire
+
+twx\scripts\mombot\Modes\Resources
+	_solosg
+	_lsect
+	colo
+	createplanet
+	dstrip
+	fillships
+	lsd
+	massupgrade
+	move
+	movefig
+	moveship
+	patp
+	strip
+	stripall
+	stripsips
+
+twx\scripts\mombot\Daemons
+	alienhunt
+	comms
+	farm
+	fillsector
+	ignore
+	mcic
+	nofed
+	online
+	plan9
+	planets
+	quickpanel
+	stats
+	teamsdt
+	viewscreen
+	watcher
+
+twx\scripts\mombot\Startups
+	mcic
+	online
+	stats
+	watcher
+	viewscreen
+

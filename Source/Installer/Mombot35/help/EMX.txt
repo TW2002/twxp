@@ -1,0 +1,1 @@
+EMX - Attempts disconnect in attempt to reset bot

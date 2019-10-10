@@ -1,0 +1,10 @@
+FIGMOVE - Fighter Move
+          Move fighters onto or off of a planet
+
+          figmove [p/s] {fighter amount}
+
+          [p/s]   - P indicates to planet from sector
+                    S indicates to sector from planet
+
+          {amount}  Number of fighters to move. Default
+                    is All available Fighters.

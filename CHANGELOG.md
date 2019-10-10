@@ -1,13 +1,16 @@
 
 Changes in 2.06.04
-+ New - Installer - Includes public scripts, Mombot 3.57p, and authorized Zedbot 2.15
-+ New - Bot Loader - Quickly load or switch bots from the popup menu.
++ New - Installer - Includes public scripts, Mombot 3.58p, and authorized Zedbot 2.15
++ New - Update checker - Now you will alsways know you are runnning the latest.
++ New - Quick Load - Quickly load any script the popup menu.
++ New - Bot Loader - Load or switch bots from the popup menu.
 + New - SwitchBot command and ACTIVEBOT system varable.
-+ Enhanced remote connection support - now allows mnultiple servers and wildcards.
++ Enhanced remote connection support - now allows mnultiple ip addreses and wildcards.
 + Fixed - Issue 32 Notification menu flickers when disconnecting and re-connecting.
 + Fixed - Issue 28 Opening screen is disrupted by command prompt if connected.
++ Fixed - Issue 26 ZTM Import/Export is not compatible with Swath
 
-The follolwing bugs were fixed in 2.06.03
+Changes in 2.06.03
 + Fixed - Initial connect fails when launching Mombot after a manual disconnect.
 + Fixed - Same database is loaded on second launch.
 + Fixed - Multiple instances of the the same script conflicts.

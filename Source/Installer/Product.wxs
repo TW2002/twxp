@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.3.1" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <!-- This code would bind the version to the product file, but I dont want to do that at this time...
@@ -22,8 +22,8 @@
     <Feature Id="MombotFeature" Title="Mombot" Level="1" Description="Installs Mombot 3.5">
       <ComponentGroupRef Id="MombotComponents" />
     </Feature>
-      <Feature Id="ZedbotFeature" Title="Zedbot" Level="1" Description="Installs ZedBot 2.1.5 - This is the final version Archie released.">
-    <ComponentGroupRef Id="ZedbotComponents" />
+      <Feature Id="Zedbot25Feature" Title="Zedbot25" Level="1" Description="Installs Zedbot25 2.1.5 - This is the final version Archie released.">
+    <ComponentGroupRef Id="Zedbot25Components" />
 
     </Feature>
 
@@ -56,23 +56,28 @@
               <Directory Id="SUPGI" Name="SupGInclude" />
             </Directory>
             <Directory Id="MOMBOT" Name="mombot">
-              <Directory Id="MCOMMANDS" Name="commands">
-                <Directory Id="MCCASHING" Name="cashing" />
-                <Directory Id="MCDATA" Name="data" />
-                <Directory Id="MCDEFENSE" Name="defense" />
-                <Directory Id="MCGENERAL" Name="general" />
-                <Directory Id="MCGRID" Name="grid" />
-                <Directory Id="MCOFFENSE" Name="offense" />
+              <Directory Id="MOM_COMMANDS" Name="commands">
+                <Directory Id="MOM_CMD_CASHING" Name="cashing" />
+                <Directory Id="MOM_CMD_DATA" Name="data" />
+                <Directory Id="MOM_CMD_DEFENSE" Name="defense" />
+                <Directory Id="MOM_CMD_GENERAL" Name="general" />
+                <Directory Id="MOM_CMD_GRID" Name="grid" />
+                <Directory Id="MOM_CMD_OFFENSE" Name="offense" />
+                <Directory Id="MOM_CMD_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MODES" Name="modes">
-                <Directory Id="MMCASHING" Name="cashing" />
-                <Directory Id="MMDATA" Name="data" />
-                <Directory Id="MMDEFENSE" Name="defense" />
-                <Directory Id="MMGENERAL" Name="general" />
-                <Directory Id="MMGRID" Name="grid" />
-                <Directory Id="MMOFFENSE" Name="offense" />
+              <Directory Id="MOM_MODES" Name="modes">
+                <Directory Id="MOM_MODES_CASHING" Name="cashing" />
+                <Directory Id="MOM_MODES_DATA" Name="data" />
+                <Directory Id="MOM_MODES_DEFENSE" Name="defense" />
+                <Directory Id="MOM_MODES_GENERAL" Name="general" />
+                <Directory Id="MOM_MODES_GRID" Name="grid" />
+                <Directory Id="MOM_MODES_OFFENSE" Name="offense" />
+                <Directory Id="MOM_MODES_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MHELP" Name="help" />
+              <Directory Id="MOM_DAEMONS" Name="daemons" />
+              <Directory Id="MOM_HELP" Name="help" />
+              <Directory Id="MOM_GAMES" Name="games" />
+              <Directory Id="MOM_STARTUPS" Name="startups" />
             </Directory>
             </Directory>
           </Directory>
@@ -112,11 +117,10 @@
                   Description="Script Pack2 Reference"
                   Target="[TWXPROXY]pack2.html"
                   WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
-        <Shortcut Id="MombotStartMenuShortcut"
-                  Name="Mombot Reference"
-                  Description="Mind Over Matter Bot"
-                  Target="[TWXPROXY]scripts\mombot\mombot.html"
-                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <util:InternetShortcut 
+                  Id="WikiStartMenuShortcut"
+                  Name="TWX WIKI on gitHub"
+                  Target="https://github.com/MicroBlaster/TWXProxy/wiki"/>
         <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
       </Component>
@@ -133,11 +137,18 @@
             <Verb Id="open" TargetFile="MainExe" Argument="&quot;%1&quot;" />
           </Extension>
         </ProgId>
+        <Shortcut Id="ProgramShortcut"
+                  Name="TWX Proxy"
+                  Description="The Veteran's Trade Wars Helper"
+                  Target="[TWXPROXY]twxp.exe"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>        
         <File Id="MainExe" Source="TWXP26\twxp.exe"/>
         <File Source="TWXP26\twxp.dll"/>
+        <File Source="TWXP26\twxc.exe"/>
         <File Source="TWXP26\script.html"/>
 
-        <File Source="TWXP25\twxc.exe"/>
+        <File Source="TWXP26\putty.exe"/>
+
         <File Source="TWXP25\CapEdit.exe"/>
         <File Source="TWXP25\changes.txt"/>
         <File Source="TWXP25\GPL.txt"/>
@@ -241,16 +252,16 @@
 
     <ComponentGroup Id="PublicComponents" >
       <Component Id="PublicComponent" Directory="SCRIPTS" Guid="f6547010-0143-4b3f-a0f8-0461edf27a99">
-        <File Source="Public\Alexio_Auto_Login.cts"/>
-        <File Source="Public\Alexio_Cit_Evac_2.cts"/>
-        <File Source="Public\Alexio_Pbuster_2.cts"/>
-        <File Source="Public\Alexio_Pdrop_2.cts"/>
-        <File Source="Public\Alexio_Planet_Creation_2.11.cts"/>
-        <File Source="Public\Alexio_Planet_Creation_2.cts"/>
-        <File Source="Public\Alexio_Probe_Hunter_2.cts"/>
-        <File Source="Public\Alexio_Quick_Kill_2.cts"/>
-        <File Source="Public\Alexio_Seek_Out_2.01.cts"/>
-        <File Source="Public\Alexio_Surround_Photon_2.cts"/>
+        <File Source="Public\Al_Auto_Login.cts"/>
+        <File Source="Public\Al_Cit_Evac_2.cts"/>
+        <File Source="Public\Al_Pbuster_2.cts"/>
+        <File Source="Public\Al_Pdrop_2.cts"/>
+        <File Source="Public\Al_Planet_Creation_2.11.cts"/>
+        <File Source="Public\Al_Planet_Creation_2.cts"/>
+        <File Source="Public\Al_Probe_Hunter_2.cts"/>
+        <File Source="Public\Al_Quick_Kill_2.cts"/>
+        <File Source="Public\Al_Seek_Out_2.01.cts"/>
+        <File Source="Public\Al_Surround_Photon_2.cts"/>
         <File Source="Public\ck_2ship_grid.cts"/>
         <File Source="Public\ck_buydown.cts"/>
         <File Source="Public\ck_callsaveme.cts"/>
@@ -301,18 +312,18 @@
         <File Source="Public\dny_simple_pgridder.ts"/>
         <File Source="Public\dny_target.ts"/>
         <File Source="Public\DU_Seek_Out_2.31.cts"/>
-        <File Source="Public\ender_bd.ts"/>
-        <File Source="Public\ender_dp.ts"/>
-        <File Source="Public\ender_erp.ts"/>
-        <File Source="Public\ender_ne.ts"/>
-        <File Source="Public\ender_pg.ts"/>
-        <File Source="Public\ender_qx.ts"/>
-        <File Source="Public\ender_re.ts"/>
-        <File Source="Public\ender_rer.ts"/>
-        <File Source="Public\ender_rt.ts"/>
-        <File Source="Public\ender_sd.ts"/>
-        <File Source="Public\ender_sst.ts"/>
-        <File Source="Public\ender_xpd.ts"/>
+        <File Source="Public\end_bd.ts"/>
+        <File Source="Public\end_dp.ts"/>
+        <File Source="Public\end_erp.ts"/>
+        <File Source="Public\end_ne.ts"/>
+        <File Source="Public\end_pg.ts"/>
+        <File Source="Public\end_qx.ts"/>
+        <File Source="Public\end_re.ts"/>
+        <File Source="Public\end_rer.ts"/>
+        <File Source="Public\end_rt.ts"/>
+        <File Source="Public\end_sd.ts"/>
+        <File Source="Public\end_sst.ts"/>
+        <File Source="Public\end_xpd.ts"/>
         <File Source="Public\EP_ansi.ts"/>
         <File Source="Public\EP_CinemaViewer.ts"/>
         <File Source="Public\EP_Class_0.ts"/>
@@ -388,26 +399,24 @@
         <File Source="Public\ls_ZTM_11.ts"/>
         <File Source="Public\ls__ShipManifest.ts"/>
         <File Source="Public\man_alienhunt.ts"/>
-        <File Source="Public\mdest_PtorpSupG.ts"/>
-        <File Source="Public\mdest_RinBot.ts"/>
-        <File Source="Public\mdest_Rintaliation.ts"/>
-        <File Source="Public\mdest_Rin_burst_and_retreat.ts"/>
-        <File Source="Public\mdest_Rin_figme.ts"/>
-        <File Source="Public\mdest_Rin_loader.ts"/>
-        <File Source="Public\mdest_Rin_minedeploy.ts"/>
-        <File Source="Public\mdest_Rin_plocker.ts"/>
-        <File Source="Public\mdest_Rin_quick_pgridder.ts"/>
-        <File Source="Public\mdest_Rin_Team_SDT.ts"/>
-        <File Source="Public\mdest_Rin_Team_SST.ts"/>
-        <File Source="Public\mdest_Saarfin.ts"/>
-        <File Source="Public\mdest_Saarfurb.ts"/>
-        <File Source="Public\mdest_SaarZTM.ts"/>
-        <File Source="Public\mdest_surround.ts"/>
-        <File Source="Public\mdest__oz-planet-trade_best.ts"/>
-        <File Source="Public\mdest__oz-planet-trade_speed.ts"/>
-        <File Source="Public\mdest__oz_improved_foton.ts"/>
-        <File Source="Public\mdest__PlanetSectorFigDump.ts"/>
-        <File Source="Public\mdest___st-bot_109b.ts"/>
+        <File Source="Public\Rin_Bot.ts"/>
+        <File Source="Public\Rin_taliation.ts"/>
+        <File Source="Public\Rin_burst_and_retreat.ts"/>
+        <File Source="Public\Rin_figme.ts"/>
+        <File Source="Public\Rin_loader.ts"/>
+        <File Source="Public\Rin_minedeploy.ts"/>
+        <File Source="Public\Rin_plocker.ts"/>
+        <File Source="Public\Rin_quick_pgridder.ts"/>
+        <File Source="Public\Rin_Team_SDT.ts"/>
+        <File Source="Public\Rin_Team_SST.ts"/>
+        <File Source="Public\Saar_fin.ts"/>
+        <File Source="Public\Saar_furb.ts"/>
+        <File Source="Public\Saar_ZTM.ts"/>
+        <File Source="Public\Rin_surround.ts"/>
+        <File Source="Public\oz_planet-trade_best.ts"/>
+        <File Source="Public\oz_planet-trade_speed.ts"/>
+        <File Source="Public\al_PlanetSectorFigDump.ts"/>
+        <File Source="Public\oz_bot_109b.ts"/>
         <File Source="Public\md_LawnMow.ts"/>
         <File Source="Public\md_PlanetStripper.ts"/>
         <File Source="Public\misc_ANS Code Generator.ts"/>
@@ -431,33 +440,33 @@
         <File Source="Public\misc__kl_limpet_watcher1.ts"/>
         <File Source="Public\misc__kl_no_aln_upgrade.ts"/>
         <File Source="Public\mob_shipscrubberv18.ts"/>
-        <File Source="Public\ozz-cit-killa.ts"/>
-        <File Source="Public\ozz-flex-foton.ts"/>
-        <File Source="Public\ozz-foton.ts"/>
-        <File Source="Public\ozz-planet-grid.ts"/>
-        <File Source="Public\ozz-pre-foton.ts"/>
-        <File Source="Public\ozz_improved_foton.ts"/>
-        <File Source="Public\ozz_twarp_saveme_botver.ts"/>
-        <File Source="Public\phhs_pdrop.cts"/>
-        <File Source="Public\phhs_pdrop.ts"/>
-        <File Source="Public\phh_alienspace.cts"/>
-        <File Source="Public\phh_filereader.ts"/>
-        <File Source="Public\phh_klearsector.cts"/>
-        <File Source="Public\phh_klearsector.ts"/>
-        <File Source="Public\phh_menu.ts"/>
-        <File Source="Public\phh_menumask.txt"/>
-        <File Source="Public\phh_mine_deploy.cts"/>
-        <File Source="Public\phh_msl_echo.cts"/>
-        <File Source="Public\phh_msl_echo.ts"/>
-        <File Source="Public\phh_pdrop.cts"/>
-        <File Source="Public\phh_pdrop.ts"/>
-        <File Source="Public\phh_perslimp_deploy.cts"/>
-        <File Source="Public\phh_qss.cts"/>
-        <File Source="Public\phh_readme_menu.txt"/>
-        <File Source="Public\phh_runawaytracker_standalone.cts"/>
-        <File Source="Public\phh_savevoids.cts"/>
-        <File Source="Public\phh_scrolling banner.ts"/>
-        <File Source="Public\phh_setvoids.cts"/>
+        <File Source="Public\oz_cit-killa.ts"/>
+        <File Source="Public\oz_flex-foton.ts"/>
+        <File Source="Public\oz_foton.ts"/>
+        <File Source="Public\oz_planet-grid.ts"/>
+        <File Source="Public\oz_pre-foton.ts"/>
+        <File Source="Public\oz_improved_foton.ts"/>
+        <File Source="Public\oz_twarp_saveme_botver.ts"/>
+        <File Source="Public\phs_pdrop.cts"/>
+        <File Source="Public\phs_pdrop.ts"/>
+        <File Source="Public\ph_alienspace.cts"/>
+        <File Source="Public\ph_filereader.ts"/>
+        <File Source="Public\ph_klearsector.cts"/>
+        <File Source="Public\ph_klearsector.ts"/>
+        <File Source="Public\ph_menu.ts"/>
+        <File Source="Public\ph_menumask.txt"/>
+        <File Source="Public\ph_mine_deploy.cts"/>
+        <File Source="Public\ph_msl_echo.cts"/>
+        <File Source="Public\ph_msl_echo.ts"/>
+        <File Source="Public\ph_pdrop.cts"/>
+        <File Source="Public\ph_pdrop.ts"/>
+        <File Source="Public\ph_perslimp_deploy.cts"/>
+        <File Source="Public\ph_qss.cts"/>
+        <File Source="Public\ph_readme_menu.txt"/>
+        <File Source="Public\ph_runawaytracker_standalone.cts"/>
+        <File Source="Public\ph_savevoids.cts"/>
+        <File Source="Public\ph_scrolling banner.ts"/>
+        <File Source="Public\ph_setvoids.cts"/>
         <File Source="Public\phx_AFK.ts"/>
         <File Source="Public\phx_figmover.ts"/>
         <File Source="Public\phx_InCommunicado.ts"/>
@@ -523,35 +532,35 @@
         <File Source="Public\tt_macro_mgr.ts"/>
         <File Source="Public\tt_q_probe.ts"/>
         <File Source="Public\TurboSST.ts"/>
-        <File Source="Public\vidd_clrmess.ts"/>
-        <File Source="Public\vidd_cr_check.ts"/>
-        <File Source="Public\vidd_figchanger.cts"/>
-        <File Source="Public\vidd_fighits.cts"/>
-        <File Source="Public\vidd_JetCols.cts"/>
-        <File Source="Public\vidd_quickfigs_ck.cts"/>
-        <File Source="Public\vidd_quickfigs_rm.cts"/>
-        <File Source="Public\vidd_quickfigs_sg.cts"/>
-        <File Source="Public\vidd_SetAvoids.cts"/>
-        <File Source="Public\vidd_startup.ts"/>
-        <File Source="Public\vidd_timecheck.ts"/>
-        <File Source="Public\vidd_universal_figs.cts"/>
-        <File Source="Public\vidd_UpPort2.cts"/>
-        <File Source="Public\Wildstar's Class O Buydown.cts"/>
-        <File Source="Public\Wildstar's Colonizer V2.03.cts"/>
-        <File Source="Public\Wildstar's Combined Mover.cts"/>
-        <File Source="Public\Wildstar's Corpie Grabber.cts"/>
-        <File Source="Public\wilildstar's Colonists Dump.cts"/>
-        <File Source="Public\wilildstar's Colonizer.cts"/>
-        <File Source="Public\wilildstar's Game Stats.cts"/>
-        <File Source="Public\wilildstar's Ore Whore  V2.03.cts"/>
-        <File Source="Public\wilildstar's Ore Whore.cts"/>
-        <File Source="Public\wilildstar's Red Colonizer.cts"/>
-        <File Source="Public\wilildstar's SDrop.cts"/>
-        <File Source="Public\wilildstar's Sector Fighters To Planet Script.cts"/>
-        <File Source="Public\wilildstar's Ship Mover.cts"/>
-        <File Source="Public\wilildstar's Unexplored Sector Scout.cts"/>
-        <File Source="Public\wilildstar's UnexploredSectorScout204.cts"/>
-        <File Source="Public\wilildstar's_Lawnmower.cts"/>
+        <File Source="Public\vid_clrmess.ts"/>
+        <File Source="Public\vid_cr_check.ts"/>
+        <File Source="Public\vid_figchanger.cts"/>
+        <File Source="Public\vid_fighits.cts"/>
+        <File Source="Public\vid_JetCols.cts"/>
+        <File Source="Public\vid_quickfigs_ck.cts"/>
+        <File Source="Public\vid_quickfigs_rm.cts"/>
+        <File Source="Public\vid_quickfigs_sg.cts"/>
+        <File Source="Public\vid_SetAvoids.cts"/>
+        <File Source="Public\vid_startup.ts"/>
+        <File Source="Public\vid_timecheck.ts"/>
+        <File Source="Public\vid_universal_figs.cts"/>
+        <File Source="Public\vid_UpPort2.cts"/>
+        <File Source="Public\wild_Class O Buydown.cts"/>
+        <File Source="Public\Wild_Colonizer V2.03.cts"/>
+        <File Source="Public\Wild_Combined Mover.cts"/>
+        <File Source="Public\Wild_Corpie Grabber.cts"/>
+        <File Source="Public\Wild_Colonists Dump.cts"/>
+        <File Source="Public\Wild_Colonizer.cts"/>
+        <File Source="Public\Wild_Game Stats.cts"/>
+        <File Source="Public\Wild_Ore Whore  V2.03.cts"/>
+        <File Source="Public\Wild_Ore Whore.cts"/>
+        <File Source="Public\Wild_Red Colonizer.cts"/>
+        <File Source="Public\Wild_SDrop.cts"/>
+        <File Source="Public\Wild_Sector Fighters To Planet Script.cts"/>
+        <File Source="Public\Wild_Ship Mover.cts"/>
+        <File Source="Public\Wild_Unexplored Sector Scout.cts"/>
+        <File Source="Public\Wild_UnexploredSectorScout204.cts"/>
+        <File Source="Public\Wild_Lawnmower.cts"/>
         <File Source="Public\xan_amtrak.ts"/>
         <File Source="Public\XBot.ts"/>
         <File Source="Public\XBotCmd.ts"/>
@@ -559,67 +568,45 @@
       </Component>
       <Component Id="SupgComponent" Directory="SUPG" Guid="a2993c51-f412-49c1-83fb-364273517eac">
         <File Source="Public\Supg\1ShipClearSupG.ts"/>
-        <File Source="Public\Supg\1ShipClearTU.cts"/>
         <File Source="Public\Supg\2shipclear.ts"/>
-        <File Source="Public\Supg\amtrak.cts"/>
         <File Source="Public\Supg\amtrak.ts"/>
         <File Source="Public\Supg\Attack.ts"/>
         <File Source="Public\Supg\botSupG.ts"/>
         <File Source="Public\Supg\busttrack.ts"/>
-        <File Source="Public\Supg\buydown.cts"/>
         <File Source="Public\Supg\BuyDownSupG.ts"/>
-        <File Source="Public\Supg\CimHunter.cts"/>
-        <File Source="Public\Supg\Class0.cts"/>
         <File Source="Public\Supg\Class0SupG.ts"/>
         <File Source="Public\Supg\clear.ts"/>
-        <File Source="Public\Supg\Colo.cts"/>
         <File Source="Public\Supg\ColoSupG.ts"/>
         <File Source="Public\Supg\dataman.ts"/>
         <File Source="Public\Supg\dedendkiller.ts"/>
         <File Source="Public\Supg\dedendtrapper.ts"/>
-        <File Source="Public\Supg\Furb.cts"/>
         <File Source="Public\Supg\FurbSupG.ts"/>
         <File Source="Public\Supg\hello.ts"/>
         <File Source="Public\Supg\IG.ts"/>
-        <File Source="Public\Supg\Lawnmower.cts"/>
         <File Source="Public\Supg\LawnMowerSupG.ts"/>
-        <File Source="Public\Supg\nearfig.cts"/>
         <File Source="Public\Supg\NearFigSupG.ts"/>
-        <File Source="Public\Supg\pairfinder.cts"/>
         <File Source="Public\Supg\PairFinderSupG.ts"/>
-        <File Source="Public\Supg\PBust.cts"/>
         <File Source="Public\Supg\Pdrop.ts"/>
         <File Source="Public\Supg\Prober.ts"/>
-        <File Source="Public\Supg\Ptorp.cts"/>
         <File Source="Public\Supg\PtorpSupG.ts"/>
-        <File Source="Public\Supg\QuikPanel.cts"/>
         <File Source="Public\Supg\QuikPanelSupG.ts"/>
         <File Source="Public\Supg\Refill.ts"/>
         <File Source="Public\Supg\Rescue.ts"/>
         <File Source="Public\Supg\saveme.ts"/>
-        <File Source="Public\Supg\SDT.cts"/>
         <File Source="Public\Supg\SDTSupG.ts"/>
-        <File Source="Public\Supg\ShipCap.cts"/>
         <File Source="Public\Supg\ShipCapSupG.ts"/>
-        <File Source="Public\Supg\SST.cts"/>
         <File Source="Public\Supg\SSTSupG.ts"/>
         <File Source="Public\Supg\surround.ts"/>
-        <File Source="Public\Supg\TandemPtorp.cts"/>
         <File Source="Public\Supg\Target.ts"/>
         <File Source="Public\Supg\TripDistance.ts"/>
         <File Source="Public\Supg\TripDistanceSupG.ts"/>
         <File Source="Public\Supg\TUCimHunter.ts"/>
-        <File Source="Public\Supg\tunnellist.cts"/>
         <File Source="Public\Supg\TunnelListSupG.ts"/>
         <File Source="Public\Supg\TUPbuster.ts"/>
         <File Source="Public\Supg\TUTandemPtorp.ts"/>
-        <File Source="Public\Supg\twowaytorp.cts"/>
         <File Source="Public\Supg\twowaytorp.ts"/>
-        <File Source="Public\Supg\WorldPtrade.cts"/>
         <File Source="Public\Supg\WorldPTrade.ts"/>
-        <File Source="Public\Supg\WorldSSM.cts"/>
         <File Source="Public\Supg\WorldSSMSupG.ts"/>
-        <File Source="Public\Supg\ZTM.cts"/>
         <File Source="Public\Supg\ZTMSupG.ts"/>
       </Component>
       <Component Id="SupgIncludeComponent" Directory="SUPGI" Guid="c2031bc2-74e3-4c48-8216-3710d8c26d85">
@@ -650,75 +637,357 @@
 
     <ComponentGroup Id="MombotComponents" >
       <Component Id="MombotComponent" Directory="MOMBOT" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
-        <File Source="Mombot\__mom_bot3_5b.cts"/>
-        <File Source="Mombot\mombot.html" />
+        <File Source="Mombot35\mombot.cts"/>
+        <File Source="Mombot35\mombot3_1045.cts"/>
+        <File Source="Mombot35\readme.md"/>
+        <File Source="Mombot35\license"/>
+        <File Source="Mombot35\source.zip"/>
       </Component>
-      <Component Id="MombotCommandsComponent" Directory="MCGENERAL">
-        <File Source="Mombot\Commands\General\tow.cts"/>
+      <Component Id="MombotCommandsCashingComponent" Directory="MOM_CMD_CASHING" Guid="4b6b1063-82d7-4298-b9f7-776f0ae91884">
+        <File Source="Mombot35\commands\cashing\mega.cts"/>
+        <File Source="Mombot35\commands\cashing\neg.cts"/>
+        <File Source="Mombot35\commands\cashing\ppt.cts"/>
+        <File Source="Mombot35\commands\cashing\rob.cts"/>
+        <File Source="Mombot35\commands\cashing\tricon.cts"/>
       </Component>
-      <Component Id="MombotHelpComponent" Directory="MHELP">
-        <File Source="Mombot\Help\tow.txt"/>
+      <Component Id="MombotCommandsDataComponent" Directory="MOM_CMD_DATA" Guid="1ac283b5-9cc1-49e3-bbe6-cd3a3c32a96e">
+        <File Source="Mombot35\commands\data\armids.cts"/>
+        <File Source="Mombot35\commands\data\avoids.cts"/>
+        <File Source="Mombot35\commands\data\busts.cts"/>
+        <File Source="Mombot35\commands\data\cim.cts"/>
+        <File Source="Mombot35\commands\data\clearbusts.cts"/>
+        <File Source="Mombot35\commands\data\corp_info.cts"/>
+        <File Source="Mombot35\commands\data\course.cts"/>
+        <File Source="Mombot35\commands\data\disp.cts"/>
+        <File Source="Mombot35\commands\data\dscan.cts"/>
+        <File Source="Mombot35\commands\data\figs.cts"/>
+        <File Source="Mombot35\commands\data\find.cts"/>
+        <File Source="Mombot35\commands\data\getvar.cts"/>
+        <File Source="Mombot35\commands\data\holo.cts"/>
+        <File Source="Mombot35\commands\data\limps.cts"/>
+        <File Source="Mombot35\commands\data\overload.cts"/>
+        <File Source="Mombot35\commands\data\param.cts"/>
+        <File Source="Mombot35\commands\data\ping.cts"/>
+        <File Source="Mombot35\commands\data\plist.cts"/>
+        <File Source="Mombot35\commands\data\pscan.cts"/>
+        <File Source="Mombot35\commands\data\sector.cts"/>
+        <File Source="Mombot35\commands\data\setparam.cts"/>
+        <File Source="Mombot35\commands\data\setparms.cts"/>
+        <File Source="Mombot35\commands\data\setvar.cts"/>
+        <File Source="Mombot35\commands\data\slist.cts"/>
+        <File Source="Mombot35\commands\data\status.cts"/>
+        <File Source="Mombot35\commands\data\time.cts"/>
+      </Component>
+      <Component Id="MombotCommandsDefenseComponent" Directory="MOM_CMD_DEFENSE" Guid="64583006-ed1a-418e-9142-6188d5c80b68">
+        <File Source="Mombot35\commands\defense\call.cts"/>
+        <File Source="Mombot35\commands\defense\evac.cts"/>
+        <File Source="Mombot35\commands\defense\_macro_kit.cts"/>
+      </Component>
+      <Component Id="MombotCommandsGeneralComponent" Directory="MOM_CMD_GENERAL" Guid="73a5e031-486e-4c46-980c-f61f27306869">
+        <File Source="Mombot35\commands\general\bwarp.cts"/>
+        <File Source="Mombot35\commands\general\callout.cts"/>
+        <File Source="Mombot35\commands\general\cn9.cts"/>
+        <File Source="Mombot35\commands\general\corp.cts"/>
+        <File Source="Mombot35\commands\general\dep.cts"/>
+        <File Source="Mombot35\commands\general\help.cts"/>
+        <File Source="Mombot35\commands\general\land.cts"/>
+        <File Source="Mombot35\commands\general\mac.cts"/>
+        <File Source="Mombot35\commands\general\nmac.cts"/>
+        <File Source="Mombot35\commands\general\photon.cts"/>
+        <File Source="Mombot35\commands\general\port.cts"/>
+        <File Source="Mombot35\commands\general\pwarp.cts"/>
+        <File Source="Mombot35\commands\general\qset.cts"/>
+        <File Source="Mombot35\commands\general\reboot.cts"/>
+        <File Source="Mombot35\commands\general\relog.cts"/>
+        <File Source="Mombot35\commands\general\subspace.cts"/>
+        <File Source="Mombot35\commands\general\topoff.cts"/>
+        <File Source="Mombot35\commands\general\tow.cts"/>
+        <File Source="Mombot35\commands\general\twarp.cts"/>
+        <File Source="Mombot35\commands\general\unlock.cts"/>
+        <File Source="Mombot35\commands\general\with.cts"/>
+        <File Source="Mombot35\commands\general\xport.cts"/>
+      </Component>
+      <Component Id="MombotCommandsGridComponent" Directory="MOM_CMD_GRID" Guid="c1de5ebd-00b8-430a-aa7e-b60cb441ef10">
+        <File Source="Mombot35\commands\grid\clear.cts"/>
+        <File Source="Mombot35\commands\grid\climp.cts"/>
+        <File Source="Mombot35\commands\grid\cmine.cts"/>
+        <File Source="Mombot35\commands\grid\exit.cts"/>
+        <File Source="Mombot35\commands\grid\mines.cts"/>
+        <File Source="Mombot35\commands\grid\pgrid.cts"/>
+        <File Source="Mombot35\commands\grid\plimp.cts"/>
+        <File Source="Mombot35\commands\grid\pmine.cts"/>
+        <File Source="Mombot35\commands\grid\surround.cts"/>
+        <File Source="Mombot35\commands\grid\xenter.cts"/>
+      </Component>
+      <Component Id="MombotCommandsOffenseComponent" Directory="MOM_CMD_OFFENSE" Guid="09011bd8-609d-4b1b-89fb-dc73a8013c67">
+        <File Source="Mombot35\commands\offense\cap.cts"/>
+        <File Source="Mombot35\commands\offense\hkill.cts"/>
+        <File Source="Mombot35\commands\offense\kill.cts"/>
+        <File Source="Mombot35\commands\offense\pe.cts"/>
+        <File Source="Mombot35\commands\offense\ped.cts"/>
+        <File Source="Mombot35\commands\offense\pel.cts"/>
+        <File Source="Mombot35\commands\offense\pelk.cts"/>
+        <File Source="Mombot35\commands\offense\pex.cts"/>
+        <File Source="Mombot35\commands\offense\pxe.cts"/>
+        <File Source="Mombot35\commands\offense\pxed.cts"/>
+        <File Source="Mombot35\commands\offense\pxedx.cts"/>
+        <File Source="Mombot35\commands\offense\pxel.cts"/>
+        <File Source="Mombot35\commands\offense\pxelk.cts"/>
+        <File Source="Mombot35\commands\offense\pxex.cts"/>
+      </Component>
+      <Component Id="MombotCommandsResourceComponent" Directory="MOM_CMD_RESOURCE" Guid="8b3681f5-124b-4506-a5eb-55967549534e">
+        <File Source="Mombot35\commands\resource\buy.cts"/>
+        <File Source="Mombot35\commands\resource\dump.cts"/>
+        <File Source="Mombot35\commands\resource\max.cts"/>
+        <File Source="Mombot35\commands\resource\sellship.cts"/>
+        <File Source="Mombot35\commands\resource\_dock_shopper.cts"/>
+      </Component>
+      <Component Id="MombotDaemonsComponent" Directory="MOM_DAEMONS" Guid="a014ba39-1ca1-4bac-9edc-c1f0635b02e2">
+        <File Source="Mombot35\daemons\chat.cts"/>
+        <File Source="Mombot35\daemons\comms.cts"/>
+        <File Source="Mombot35\daemons\ephaggle.cts"/>
+        <File Source="Mombot35\daemons\ignore.cts"/>
+        <File Source="Mombot35\daemons\online.cts"/>
+        <File Source="Mombot35\daemons\stats.cts"/>
+        <File Source="Mombot35\daemons\viewscreen.cts"/>
+        <File Source="Mombot35\daemons\watcher.cts"/>
+      </Component>
+      <Component Id="MombotGamesComponent" Directory="MOM_GAMES" Guid="a9a3efe5-bb8b-4d33-8562-1e50713778b6">
+        <File Source="Mombot35\games\placeholder.file"/>
+      </Component>
+      <Component Id="MombotHelpComponent" Directory="MOM_HELP" Guid="c80639da-4356-426d-8f5a-98b60c732a4f">
+        <File Source="Mombot35\help\About.txt"/>
+        <File Source="Mombot35\help\armids.txt"/>
+        <File Source="Mombot35\help\avoids.txt"/>
+        <File Source="Mombot35\help\Bot.txt"/>
+        <File Source="Mombot35\help\boton.txt"/>
+        <File Source="Mombot35\help\Bust.txt"/>
+        <File Source="Mombot35\help\bustcount.txt"/>
+        <File Source="Mombot35\help\Buy.txt"/>
+        <File Source="Mombot35\help\BWarp.txt"/>
+        <File Source="Mombot35\help\Call.txt"/>
+        <File Source="Mombot35\help\callout.txt"/>
+        <File Source="Mombot35\help\CIM.txt"/>
+        <File Source="Mombot35\help\citkill.txt"/>
+        <File Source="Mombot35\help\class0.txt"/>
+        <File Source="Mombot35\help\Clear.txt"/>
+        <File Source="Mombot35\help\CLimp.txt"/>
+        <File Source="Mombot35\help\CMine.txt"/>
+        <File Source="Mombot35\help\cn.txt"/>
+        <File Source="Mombot35\help\cn9.txt"/>
+        <File Source="Mombot35\help\Colo.txt"/>
+        <File Source="Mombot35\help\corp.txt"/>
+        <File Source="Mombot35\help\course.txt"/>
+        <File Source="Mombot35\help\Dep.txt"/>
+        <File Source="Mombot35\help\DISP.txt"/>
+        <File Source="Mombot35\help\DisR.txt"/>
+        <File Source="Mombot35\help\DScan.txt"/>
+        <File Source="Mombot35\help\Dump.txt"/>
+        <File Source="Mombot35\help\EMQ.txt"/>
+        <File Source="Mombot35\help\EMX.txt"/>
+        <File Source="Mombot35\help\Exit.txt"/>
+        <File Source="Mombot35\help\FigMove.txt"/>
+        <File Source="Mombot35\help\Figs.txt"/>
+        <File Source="Mombot35\help\Find.txt"/>
+        <File Source="Mombot35\help\Finder.txt"/>
+        <File Source="Mombot35\help\Furb.txt"/>
+        <File Source="Mombot35\help\GetVar.txt"/>
+        <File Source="Mombot35\help\GridCheck.txt"/>
+        <File Source="Mombot35\help\HKILL.txt"/>
+        <File Source="Mombot35\help\Holo.txt"/>
+        <File Source="Mombot35\help\HTorp.txt"/>
+        <File Source="Mombot35\help\IG.txt"/>
+        <File Source="Mombot35\help\KILL.txt"/>
+        <File Source="Mombot35\help\Land.txt"/>
+        <File Source="Mombot35\help\Lift.txt"/>
+        <File Source="Mombot35\help\Limp.txt"/>
+        <File Source="Mombot35\help\Limps.txt"/>
+        <File Source="Mombot35\help\ListAll.txt"/>
+        <File Source="Mombot35\help\Login.txt"/>
+        <File Source="Mombot35\help\Logoff.txt"/>
+        <File Source="Mombot35\help\LSD.txt"/>
+        <File Source="Mombot35\help\Mac.txt"/>
+        <File Source="Mombot35\help\Max.txt"/>
+        <File Source="Mombot35\help\MaxPort.txt"/>
+        <File Source="Mombot35\help\Mega.txt"/>
+        <File Source="Mombot35\help\Merch.txt"/>
+        <File Source="Mombot35\help\Mine.txt"/>
+        <File Source="Mombot35\help\Mines.txt"/>
+        <File Source="Mombot35\help\MOVE.txt"/>
+        <File Source="Mombot35\help\MoveFig.txt"/>
+        <File Source="Mombot35\help\moveship.txt"/>
+        <File Source="Mombot35\help\Mow.txt"/>
+        <File Source="Mombot35\help\msgs.txt"/>
+        <File Source="Mombot35\help\Neg.txt"/>
+        <File Source="Mombot35\help\News.txt"/>
+        <File Source="Mombot35\help\NMac.txt"/>
+        <File Source="Mombot35\help\Overload.txt"/>
+        <File Source="Mombot35\help\Page.txt"/>
+        <File Source="Mombot35\help\param.txt"/>
+        <File Source="Mombot35\help\patp.txt"/>
+        <File Source="Mombot35\help\pdrop.txt"/>
+        <File Source="Mombot35\help\PE.txt"/>
+        <File Source="Mombot35\help\PED.txt"/>
+        <File Source="Mombot35\help\PEL.txt"/>
+        <File Source="Mombot35\help\PELK.txt"/>
+        <File Source="Mombot35\help\PEX.txt"/>
+        <File Source="Mombot35\help\PGrid.txt"/>
+        <File Source="Mombot35\help\Pimp.txt"/>
+        <File Source="Mombot35\help\Ping.txt"/>
+        <File Source="Mombot35\help\Plimp.txt"/>
+        <File Source="Mombot35\help\PList.txt"/>
+        <File Source="Mombot35\help\Plock.txt"/>
+        <File Source="Mombot35\help\PMine.txt"/>
+        <File Source="Mombot35\help\PScan.txt"/>
+        <File Source="Mombot35\help\PSST.txt"/>
+        <File Source="Mombot35\help\PWarp.txt"/>
+        <File Source="Mombot35\help\PXE.txt"/>
+        <File Source="Mombot35\help\PXED.txt"/>
+        <File Source="Mombot35\help\PXEL.txt"/>
+        <File Source="Mombot35\help\PXELK.txt"/>
+        <File Source="Mombot35\help\PXEX.txt"/>
+        <File Source="Mombot35\help\QSS.txt"/>
+        <File Source="Mombot35\help\Refresh.txt"/>
+        <File Source="Mombot35\help\Relog.txt"/>
+        <File Source="Mombot35\help\Reset.txt"/>
+        <File Source="Mombot35\help\Rob.txt"/>
+        <File Source="Mombot35\help\SafeMow.txt"/>
+        <File Source="Mombot35\help\Saveme.txt"/>
+        <File Source="Mombot35\help\SDT.txt"/>
+        <File Source="Mombot35\help\Sector.txt"/>
+        <File Source="Mombot35\help\SetVar.txt"/>
+        <File Source="Mombot35\help\ShipMove.txt"/>
+        <File Source="Mombot35\help\SList.txt"/>
+        <File Source="Mombot35\help\SST.txt"/>
+        <File Source="Mombot35\help\Stats.txt"/>
+        <File Source="Mombot35\help\status.txt"/>
+        <File Source="Mombot35\help\Stopall.txt"/>
+        <File Source="Mombot35\help\StoreShip.txt"/>
+        <File Source="Mombot35\help\strip.txt"/>
+        <File Source="Mombot35\help\Surround.txt"/>
+        <File Source="Mombot35\help\tbust.txt"/>
+        <File Source="Mombot35\help\TopOff.txt"/>
+        <File Source="Mombot35\help\Tow.txt"/>
+        <File Source="Mombot35\help\TRICON.txt"/>
+        <File Source="Mombot35\help\TWarp.txt"/>
+        <File Source="Mombot35\help\Unlock.txt"/>
+        <File Source="Mombot35\help\With.txt"/>
+        <File Source="Mombot35\help\wppt.txt"/>
+        <File Source="Mombot35\help\xenter.txt"/>
+        <File Source="Mombot35\help\Xport.txt"/>
+        <File Source="Mombot35\help\ZTM.txt"/>
+      </Component>
+      <Component Id="MombotModesCashingComponent" Directory="MOM_MODES_CASHING" Guid="5117ca6d-f5e0-49e1-827e-d4cb20341502">
+        <File Source="Mombot35\modes\cashing\bbb.cts"/>
+        <File Source="Mombot35\modes\cashing\furb.cts"/>
+        <File Source="Mombot35\modes\cashing\Merch.cts"/>
+        <File Source="Mombot35\modes\cashing\sdt.cts"/>
+        <File Source="Mombot35\modes\cashing\sst.cts"/>
+        <File Source="Mombot35\modes\cashing\Tbust.cts"/>
+        <File Source="Mombot35\modes\cashing\wppt.cts"/>
+        <File Source="Mombot35\modes\cashing\WSST.cts"/>
+      </Component>
+      <Component Id="MombotModesDataComponent" Directory="MOM_MODES_DATA" Guid="7f42fb2a-a599-47f2-acb9-8a61379d94f1">
+        <File Source="Mombot35\modes\data\sentinel.cts"/>
+        <File Source="Mombot35\modes\data\ztm.cts"/>
+      </Component>
+      <Component Id="MombotModesDefenseComponent" Directory="MOM_MODES_DEFENSE" Guid="a8262a75-33c4-4acf-94a9-dce0ea310b56">
+        <File Source="Mombot35\modes\defense\ig.cts"/>
+        <File Source="Mombot35\modes\defense\saveme.cts"/>
+      </Component>
+      <Component Id="MombotModesGridComponent" Directory="MOM_MODES_GRID" Guid="66f014f4-90ba-4a7e-84ac-6ed7a9b57a55">
+        <File Source="Mombot35\modes\grid\mow.cts"/>
+      </Component>
+      <Component Id="MombotModesOffenseComponent" Directory="MOM_MODES_OFFENSE" Guid="4f325fb6-cfa7-45dc-b6cb-77243b6db4e3">
+        <File Source="Mombot35\modes\offense\Boton.cts"/>
+        <File Source="Mombot35\modes\offense\CitCap.cts"/>
+        <File Source="Mombot35\modes\offense\Citkill.cts"/>
+        <File Source="Mombot35\modes\offense\DockKill.cts"/>
+        <File Source="Mombot35\modes\offense\Foton.cts"/>
+        <File Source="Mombot35\modes\offense\PDrop.cts"/>
+        <File Source="Mombot35\modes\offense\Plock.cts"/>
+      </Component>
+      <Component Id="MombotModesResourceComponent" Directory="MOM_MODES_RESOURCE" Guid="6e1e5162-e32e-47c9-bca1-0aa65c203b08">
+        <File Source="Mombot35\modes\resource\lsd.cts"/>
+        <File Source="Mombot35\modes\resource\Move.cts"/>
+        <File Source="Mombot35\modes\resource\movefig.cts"/>
+        <File Source="Mombot35\modes\resource\PATP.cts"/>
+        <File Source="Mombot35\modes\resource\Pimp.cts"/>
+        <File Source="Mombot35\modes\resource\strip.cts"/>
+      </Component>
+      <Component Id="MombotStartupComponent" Directory="MOM_STARTUPS" Guid="59b0b9eb-6ab3-460e-abd8-c45e04185ec1">
+        <File Id="startChat" Source="Mombot35\startups\chat.cts"/>
+        <File Id="startVS" Source="Mombot35\startups\viewscreen.cts"/>
+        <File Id="startWatrcher" Source="Mombot35\startups\watcher.cts"/>
       </Component>
     </ComponentGroup>
 
-    <ComponentGroup Id="ZedbotComponents" >
-      <Component Id="ZedbotComponent" Directory="SCRIPTS" Guid="c760a58e-8f18-458c-9ea0-8ad79ba4f1f0">
-        <File Source="Zedbot\Scripts\2_ECol.cts"/>
-        <File Source="Zedbot\Scripts\z-armourer.cts"/>
-        <File Source="Zedbot\Scripts\z-backdoor.cts"/>
-        <File Source="Zedbot\Scripts\z-bot.cts"/>
-        <File Source="Zedbot\Scripts\z-call.cts"/>
-        <File Source="Zedbot\Scripts\z-coloniser.cts"/>
-        <File Source="Zedbot\Scripts\z-commsguard.cts"/>
-        <File Source="Zedbot\Scripts\z-decash.cts"/>
-        <File Source="Zedbot\Scripts\z-fetch.cts"/>
-        <File Source="Zedbot\Scripts\z-figmon.cts"/>
-        <File Source="Zedbot\Scripts\z-figs.cts"/>
-        <File Source="Zedbot\Scripts\z-limps.cts"/>
-        <File Source="Zedbot\Scripts\z-listgridder.cts"/>
-        <File Source="Zedbot\Scripts\z-login.cts"/>
-        <File Source="Zedbot\Scripts\z-mines.cts"/>
-        <File Source="Zedbot\Scripts\z-ontime.cts"/>
-        <File Source="Zedbot\Scripts\z-oreup.cts"/>
-        <File Source="Zedbot\Scripts\z-panel.cts"/>
-        <File Source="Zedbot\Scripts\Z-PDriver.cts"/>
-        <File Source="Zedbot\Scripts\z-rescue.cts"/>
-        <File Source="Zedbot\Scripts\z-safetynet.cts"/>
-        <File Source="Zedbot\Scripts\z-scout.cts"/>
-        <File Source="Zedbot\Scripts\z-sectorlister.cts"/>
-        <File Source="Zedbot\Scripts\z-sptool.cts"/>
-        <File Source="Zedbot\Scripts\z-strip.cts"/>
-        <File Source="Zedbot\Scripts\z-switchbot.cts"/>
-        <File Source="Zedbot\Scripts\z-transcash.cts"/>
-        <File Source="Zedbot\Scripts\z-unload.cts"/>
-        <File Source="Zedbot\Scripts\z-watch.cts"/>
-        <File Source="Zedbot\Scripts\z2_worldtrade.cts"/>
-        <File Source="Zedbot\Scripts\zkazi.cts"/>
-        <File Source="Zedbot\Scripts\zmerch.cts"/>
-        <File Source="Zedbot\Scripts\zminesweep.cts"/>
-        <File Source="Zedbot\Scripts\zpimp.cts"/>
-        <File Source="Zedbot\Scripts\zpsst.cts"/>
-        <File Source="Zedbot\Scripts\zugrid.cts"/>
-        <File Source="Zedbot\Scripts\zupgrade.cts"/>
-        <File Source="Zedbot\Scripts\zwsst.cts"/>
-        <File Source="Zedbot\Scripts\z_ck_buydown.cts"/>
-        <File Source="Zedbot\Scripts\_ck_overload_checker.cts"/>
-        <File Source="Zedbot\Scripts\_DU_Seek_Out_2.31.cts"/>
+    <ComponentGroup Id="Zedbot25Components" >
+      <Component Id="Zedbot25Component" Directory="SCRIPTS" Guid="c760a58e-8f18-458c-9ea0-8ad79ba4f1f0">
+        <File Source="Zedbot25\Scripts\z-armourer.cts"/>
+        <File Source="Zedbot25\Scripts\z-backdoor.cts"/>
+        <File Source="Zedbot25\Scripts\z-bot.cts"/>
+        <File Source="Zedbot25\Scripts\z-call.cts"/>
+        <File Source="Zedbot25\Scripts\z-coloniser.cts"/>
+        <File Source="Zedbot25\Scripts\z-commsguard.cts"/>
+        <File Source="Zedbot25\Scripts\z-decash.cts"/>
+        <File Source="Zedbot25\Scripts\z-fetch.cts"/>
+        <File Source="Zedbot25\Scripts\z-figmon.cts"/>
+        <File Source="Zedbot25\Scripts\z-figs.cts"/>
+        <File Source="Zedbot25\Scripts\z-limps.cts"/>
+        <File Source="Zedbot25\Scripts\z-listgridder.cts"/>
+        <File Source="Zedbot25\Scripts\z-login.cts"/>
+        <File Source="Zedbot25\Scripts\z-mines.cts"/>
+        <File Source="Zedbot25\Scripts\z-ontime.cts"/>
+        <File Source="Zedbot25\Scripts\z-oreup.cts"/>
+        <File Source="Zedbot25\Scripts\z-panel.cts"/>
+        <File Source="Zedbot25\Scripts\z-pdriver.cts"/>
+        <File Source="Zedbot25\Scripts\z-rescue.cts"/>
+        <File Source="Zedbot25\Scripts\z-safetynet.cts"/>
+        <File Source="Zedbot25\Scripts\z-scout.cts"/>
+        <File Source="Zedbot25\Scripts\z-sectorlister.cts"/>
+        <File Source="Zedbot25\Scripts\z-sptool.cts"/>
+        <File Source="Zedbot25\Scripts\z-strip.cts"/>
+        <File Source="Zedbot25\Scripts\z-transcash.cts"/>
+        <File Source="Zedbot25\Scripts\z-unload.cts"/>
+        <File Source="Zedbot25\Scripts\z-watch.cts"/>
+        <File Source="Zedbot25\Scripts\z_kazi.cts"/>
+        <File Source="Zedbot25\Scripts\z_merch.cts"/>
+        <File Source="Zedbot25\Scripts\z_minesweep.cts"/>
+        <File Source="Zedbot25\Scripts\z_pimp.cts"/>
+        <File Source="Zedbot25\Scripts\z_psst.cts"/>
+        <File Source="Zedbot25\Scripts\z_ugrid.cts"/>
+        <File Source="Zedbot25\Scripts\z_upgrade.cts"/>
+        <File Source="Zedbot25\Scripts\z_worldtrade.cts"/>
+        <File Source="Zedbot25\Scripts\z_wsst.cts"/>
+        <File Source="Zedbot25\Scripts\z_buydown.cts"/>
+        <File Source="Zedbot25\Scripts\z-authorise.cts"/>
+        <File Source="Zedbot25\Scripts\z-charger.cts"/>
+        <File Source="Zedbot25\Scripts\z-clearbusts.cts"/>
+        <File Source="Zedbot25\Scripts\z-grid.cts"/>
+        <File Source="Zedbot25\Scripts\z-mcicprimer.cts"/>
+        <File Source="Zedbot25\Scripts\z-pursuit.cts"/>
+        <File Source="Zedbot25\Scripts\z-rapidresponse.cts"/>
+        <File Source="Zedbot25\Scripts\z_citcap.cts"/>
+        <File Source="Zedbot25\Scripts\z_gridtest.cts"/>
       </Component>
       <Component Id="SoundsComponent" Directory="TWXPROXY" Guid="0fcdc5f3-153a-40f2-b78d-744b00535589">
-        <File Source="zedbot\alert.wav"/>
-        <File Source="zedbot\cuckoclk.wav"/>
-        <File Source="zedbot\ding.wav"/>
-        <File Source="zedbot\failed.wav"/>
-        <File Source="zedbot\pdropalert.wav"/>
-        <File Source="zedbot\proximity.wav"/>
-        <File Source="zedbot\z_page.wav"/>
-        <File Source="zedbot\Z-Bot Installation Notes.txt"/>
-        <File Source="zedbot\ZedPack-Readme.zip"/>
+        <File Source="Zedbot25\alert.wav"/>
+        <File Source="Zedbot25\cuckoclk.wav"/>
+        <File Source="Zedbot25\ding.wav"/>
+        <File Source="Zedbot25\failed.wav"/>
+        <File Source="Zedbot25\pdropalert.wav"/>
+        <File Source="Zedbot25\proximity.wav"/>
+        <File Source="Zedbot25\z_page.wav"/>
+        <File Source="Zedbot25\Z-Bot Installation Notes.txt"/>
+        <File Source="Zedbot25\ZedPack-Readme.zip"/>
+      </Component>
+      <!--<Component Id="ZedMomCommandGeneralComponent" Directory="MOM_CMD_GENERAL" Guid="d21ac7a8-dfa2-4c2d-b465-19623c01664c">
+        <File Source="Zedbot25\Scripts\switchbot.cts"/>
+      </Component>-->
+      <Component Id="ZedMomHelpComponent" Directory="MOM_HELP" Guid="8cef7855-4da6-453f-b5d4-e3a44388c0ce">
+        <File Source="Zedbot25\Scripts\switchbot.txt"/>
       </Component>
     </ComponentGroup>
   </Fragment>
-
-
-
 </Wix>

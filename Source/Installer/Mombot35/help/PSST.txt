@@ -1,0 +1,4 @@
+ - psst [ship2] [planet1] [planet2] - Planet SST.
+
+  - psst CLEAR_BUSTS - Clears bot's bust file.
+  - psst off - Stops Planet SST

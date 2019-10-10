@@ -1,0 +1,4 @@
+SAFEMOW - Travels passively to target sector. Will 
+          stop if blocked by non-passive sector.
+
+         safemow [sector] [fighters to drop]

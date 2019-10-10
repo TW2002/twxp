@@ -1,0 +1,4 @@
+HKILL - Holo Kill
+        Performs a Holo-Scan and moves into an adjacent
+        sector if an enemy Trader is present, launches
+        an attack.

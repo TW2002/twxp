@@ -1,0 +1,5 @@
+LOGOFF - Will logoff in citadel if used while in 
+         citadel w/o cloak option
+
+    logoff [min til relog] {cloak} - logs off and disconnects
+

@@ -1,0 +1,8 @@
+PARAM - Displays sector parameters saved in game.
+      
+      - param [sector] 
+	      Displays all bot sector parameters 
+             (FIGSEC, MINESEC, LIMPSEC, MSLSEC, BUSTED, PSECTOR)
+
+      - param [param]
+              Displays all sectors where that param is non-zero/non-blank

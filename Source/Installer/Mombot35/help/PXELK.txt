@@ -1,0 +1,6 @@
+PXELK - Photon, Export, Enter, Land, Kill
+       Used to launch a Photon into an adjacent Sector, Export
+       into another ship, Enter Photon'd Sector and land on a 
+       Planet then sends one wave of Fighters.
+
+       pxelk [Sector] [ShipNumber] [PlanetNumber]
