@@ -30,8 +30,8 @@ interface
 
 uses
   Windows,
-  Messages,
   SysUtils,
+  Messages,
   DateUtils,
   Classes,
   Graphics,
@@ -179,8 +179,8 @@ uses
   TWXExport,
   Ansi,
   Registry,
-  WinTypes,
-  inifiles;
+  inifiles,
+  strutils;
 
 {$R *.DFM}
 
@@ -198,7 +198,7 @@ begin
   FProgramDir := (Owner as TModGUI).ProgramDir;
   LoadingScript := FALSE;
   miStop.Visible := False;
-  miQuick.Visible := False;
+  miQuick.Visible := True;
   miUpdateNow.Visible := False;
 
   LoadBotMenu();
@@ -230,7 +230,6 @@ begin
   try
     SectionList := TStringList.Create;
     try
-      ScriptList := TStringList.Create;
       IniFile.ReadSections(SectionList);
       for Section in SectionList do
       begin
@@ -238,10 +237,13 @@ begin
           BotName := IniFile.ReadString(Section, 'Name', '');
           Script  := IniFile.ReadString(Section, 'Script', '');
 
+          ScriptList := TStringList.Create;
           ExtractStrings([','], [], PChar(Script), ScriptList);
 
           if FileExists (FProgramDir + '\scripts\' + ScriptList[0]) then
             AddBotMenu(BotName, Script);
+
+          ScriptList.Free;
         end;
       end;
     finally
@@ -253,7 +255,148 @@ begin
 end;
 
 procedure TfrmMain.LoadQuickMenu();
+var
+  IniFile    : TIniFile;
+  searchDir,
+  searchFile : TSearchRec;
+  virtualName,
+  virtualDir,
+  dirName    : String;
+  dirList    : TStringList;
+  Item       : TMenuItem;
 begin
+  IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
+
+  dirList := TStringList.Create;
+  dirList.Sorted := true;
+  try
+    // Process virtual directories based on 'name_' = 'virtual name' from twxp.cfg
+    if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
+    repeat
+      // skip directories
+      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      begin
+        virtualDir := 'Misc';
+
+        if pos('_',searchFile.Name) > 0 then
+        begin
+          if LeftStr(searchFile.Name,1) = '_' then
+            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+          else
+            virtualName := searchFile.Name;
+
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
+
+        if LeftStr(searchFile.Name, 2) = '__' then
+          virtualDir := '_Favorite';
+
+        if LeftStr(searchFile.Name, 2) = 'z-' then
+          virtualDir := 'Zed / Archie';
+
+        if dirList.IndexOf(virtualDir) = -1 then
+          dirList.add(virtualDir);
+
+      end;
+      until FindNext(searchFile) <> 0;
+
+  finally
+    FindClose(searchFile);
+  end;
+
+  try
+    // Process real file directories under scripts
+    if findfirst(FProgramDir + '\scripts\*', faDirectory, searchDir) = 0 then
+    repeat
+      // Only show directories
+      if (searchDir.attr and faDirectory) = faDirectory then
+      begin
+        // Exclude undesired directories
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        begin
+          if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
+          repeat
+            // skip directories
+            if not ((searchFile.attr and faDirectory) = faDirectory) then
+              if dirList.IndexOf(searchDir.Name) = -1 then
+                dirList.add(searchDir.Name);
+          until FindNext(searchFile) <> 0;
+        end;
+      end;
+        //then ShowMessage('Directory = '+searchResult.Name);
+    until FindNext(searchDir) <> 0;
+  finally
+    FindClose(searchDir);
+    FindClose(searchFile);
+  end;
+
+  for dirName in dirList do
+  begin
+      Item := TMenuItem.Create(Self);
+      Item.Caption := dirName;
+      miQuick.Add(Item);
+  end;
+
+  try
+    // Process virtual directories based on 'name_' = 'virtual name' from twxp.cfg
+    if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
+    repeat
+      // skip directories
+      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      begin
+        virtualDir := 'Misc';
+
+        if pos('_',searchFile.Name) > 0 then
+        begin
+          if LeftStr(searchFile.Name,1) = '_' then
+            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+          else
+            virtualName := searchFile.Name;
+
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
+
+        if LeftStr(searchFile.Name, 2) = '__' then
+          virtualDir := '_Favorite';
+
+        if LeftStr(searchFile.Name, 2) = 'z-' then
+          virtualDir := 'Zed / Archie';
+
+        AddQuickMenu(virtualDir + '\' + searchFile.Name, '\scripts\' + searchFile.Name);
+      end;
+      until FindNext(searchFile) <> 0;
+
+  finally
+    FindClose(searchFile);
+  end;
+
+  try
+    // Process real file directories under scripts
+    if findfirst(FProgramDir + '\scripts\*', faDirectory, searchDir) = 0 then
+    repeat
+      // Only show directories
+      if (searchDir.attr and faDirectory) = faDirectory then
+      begin
+        // Exclude undesired directories
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        begin
+          if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
+          repeat
+            // skip directories
+            if not ((searchFile.attr and faDirectory) = faDirectory) then
+              AddQuickMenu(searchDir.Name + '\' + searchFile.Name, '\scripts\' + searchDir.Name + '\' + searchFile.Name);
+          until FindNext(searchFile) <> 0;
+        end;
+      end;
+        //then ShowMessage('Directory = '+searchResult.Name);
+    until FindNext(searchDir) <> 0;
+  finally
+    FindClose(searchDir);
+    FindClose(searchFile);
+  end;
+
 
 end;
 
@@ -947,13 +1090,31 @@ end;
 procedure TfrmMain.AddQuickMenu(QuickName: string; ScriptName: string);
 var
   MenuItem: TQuickMenuItem;
+  NameList : TStringList;
+  Item  : TMenuItem;
 begin
-  MenuItem := TQuickMenuItem.Create(Self);
-  MenuItem.Caption := ScriptName;
-  MenuItem.OnClick := OnQuickMenuItemClick;
-  MenuItem.ScriptName := ScriptName;
+  NameList := TStringList.Create;
+  ExtractStrings(['\'], [], PChar(QuickName), NameList);
 
-  miBot.Add(MenuItem);
+  if NameList.Count = 2 then
+  begin
+    Item := miQuick.Find(NameList[0]);
+    if Item = nil then
+    begin
+      Item := TMenuItem.Create(Self);
+      Item.Caption := NameList[0];
+      miQuick.Add(Item);
+    end;
+
+    MenuItem := TQuickMenuItem.Create(Self);
+    MenuItem.Caption := NameList[1];
+    MenuItem.OnClick := OnQuickMenuItemClick;
+    MenuItem.ScriptName := ScriptName;
+
+    Item.Add(MenuItem);
+  end;
+  
+  NameList.Free;
 end;
 
 procedure TfrmMain.AddScriptMenu(Script: TScript);
@@ -994,7 +1155,7 @@ end;
 
 procedure TfrmMain.OnQuickMenuItemClick(Sender: TObject);
 begin
-  TWXInterpreter.Load('scripts\' + TQuickMenuItem(Sender).ScriptName, False);
+    TWXInterpreter.Load(FProgramDir + '\' + TQuickMenuItem(Sender).ScriptName, False)
 end;
 
 

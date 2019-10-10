@@ -347,6 +347,9 @@ var
   Error  : Boolean;
   I      : Integer;
 begin
+  // MB - Cleanup extra backslashes
+  Filename := StringReplace(Filename, '\\', '\', [rfReplaceAll]);
+
   // MB - Stop script if it is already running
   I := 0;
   while (I < TWXInterpreter.Count) do

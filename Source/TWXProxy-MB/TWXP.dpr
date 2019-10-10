@@ -360,21 +360,21 @@ begin
 
       IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
       IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');
-      IniFile.WriteString('QuickLoad', 'Alexio_', 'Alexio');
-      IniFile.WriteString('QuickLoad', 'ender', 'Ender');
+      IniFile.WriteString('QuickLoad', 'Al_', 'Alexio');
+      IniFile.WriteString('QuickLoad', 'end_', 'Ender');
       IniFile.WriteString('QuickLoad', 'ep_', 'ElderProphit');
       IniFile.WriteString('QuickLoad', 'ck_', 'Cherokee');
       IniFile.WriteString('QuickLoad', 'dny_', 'Dynarri');
       IniFile.WriteString('QuickLoad', 'Kaus_', 'Kaus');
       IniFile.WriteString('QuickLoad', 'ls_', 'Lonestar');
-      IniFile.WriteString('QuickLoad', 'ozz_', 'Ozz');
+      IniFile.WriteString('QuickLoad', 'oz_', 'Ozz');
       IniFile.WriteString('QuickLoad', 'ph_', 'Parrothead');
-      IniFile.WriteString('QuickLoad', 'mob_', 'Mob');
       IniFile.WriteString('QuickLoad', 'pro_', 'Promethies');
-      IniFile.WriteString('QuickLoad', 'ram', 'Rammer');
+      IniFile.WriteString('QuickLoad', 'ram_', 'Rammer');
+      IniFile.WriteString('QuickLoad', 'rin_', 'Rincrast');
       IniFile.WriteString('QuickLoad', 'vid_', 'Vid Kid');
-      IniFile.WriteString('QuickLoad', 'xan_', 'Xanos');
-      IniFile.WriteString('QuickLoad', 'z', 'Zed / Archie');
+      IniFile.WriteString('QuickLoad', 'wild_', 'Wildstar');
+      IniFile.WriteString('QuickLoad', 'z_', 'Zed / Archie');
     finally
       IniFile.Free;
     end;
