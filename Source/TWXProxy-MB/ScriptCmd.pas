@@ -2437,6 +2437,51 @@ begin
   Result := caNone;
 end;
 
+function CmdStripANSI(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  S: String;
+begin
+  // CMD: CmdStripANSI textVar ansiVar
+  // removes ANSI from a variable.
+  S := Params[1].Value;
+  TWXExtractor.StripANSI(S);
+
+  Params[0].Value := S;
+
+  Result := caNone;
+end;
+
+function CmdFormatColor(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  // CMD: CmdFormatColor [var]
+  // Sets user defined colors for use with formatString, echo, and getText.
+  TWXExtractor.FormatColor := Params[0].Value;
+
+  Result := caNone;
+end;
+
+function CmdFormatString(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+
+  Result := caNone;
+end;
+
+function CmdEchoFormatted(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+
+  Result := caNone;
+end;
+
+function CmdGetInputFormatted(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  // CMD: getInput var <prompt>
+
+  TWXServer.Broadcast(Params[1].Value );
+  TScript(Script).Locked := TRUE;
+  TWXMenu.BeginScriptInput(TScript(Script), TVarParam(Params[0]), FALSE);
+  Result := caPause;
+end;
+
 // *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
 // *****************************************************************************
@@ -3732,7 +3777,7 @@ begin
     AddCommand('TRUNCATE', 1, 1, CmdTruncate, [pkVar], pkValue);
 
     // Commands added for 2.06
-    AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [], pkValue);
+    AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [pkValue], pkValue);
     AddCommand('SETDEAFCLIENTS', 0, 1, CmdSetDeafClients, [pkValue], pkValue);
 
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
@@ -3741,6 +3786,14 @@ begin
 
     AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
 
+    AddCommand('STRIPANSI', 2, 2, CmdStripANSI, [pkValue, pkValue], pkValue);
+
+    AddCommand('FORMATCOLOR', 1, 1, CmdFormatColor, [pkValue], pkValue);
+    AddCommand('FORMATSTRING', 1, -1, CmdFormatString, [pkValue], pkValue);
+    AddCommand('ECHOF', 1, -1, CmdEchoFormatted, [pkValue], pkValue);
+    AddCommand('GETINPUTF', 1, -1, CmdGetInputFormatted, [pkValue], pkValue);
+
+    // CmdGotoPrompt ??? Switchboard ??? Maybe
   end;
 end;
 
