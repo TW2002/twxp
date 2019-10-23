@@ -313,7 +313,7 @@ begin
       if (searchDir.attr and faDirectory) = faDirectory then
       begin
         // Exclude undesired directories
-        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,mombot3,quantum,zedbot') = 0) then
         begin
           if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
           repeat
@@ -380,7 +380,7 @@ begin
       if (searchDir.attr and faDirectory) = faDirectory then
       begin
         // Exclude undesired directories
-        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,quantum') = 0) then
+        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,mombot3,quantum,zedbot') = 0) then
         begin
           if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
           repeat

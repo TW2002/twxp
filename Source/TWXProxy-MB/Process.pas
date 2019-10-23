@@ -96,6 +96,10 @@ type
     FCurrentScanType       : Word;
     FCurrentShipClass      : String;
 
+    // MB - Strings to hold TW2002 color codes and user color codes
+    FTW2002Color,
+    FFormatColor           : String;
+
     procedure SectorCompleted;
     procedure ResetSectorLists;
     procedure ProcessPrompt(Line : string);
@@ -106,7 +110,6 @@ type
     procedure ProcessSectorLine(Line : String);
     procedure ProcessLine(Line : String);
     procedure ProcessPortLine(Line : String);
-    procedure StripANSI(var S : string);
     procedure ProcessFigScanLine(Line : String);
     procedure ResetFigDatabase;
 
@@ -117,6 +120,7 @@ type
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
+    procedure StripANSI(var S : string);
 
     procedure Reset;
     procedure ProcessInBound(var InData : string);
@@ -156,6 +160,7 @@ type
     property CurrentPlanetScanner: Boolean read FCurrentPlanetScanner;
     property CurrentScanType: Word    read FCurrentScanType;
     property CurrentShipClass: String  read FCurrentShipClass;
+    property FormatColor: String  read FFormatColor write FFormatColor;
 
   published
     property MenuKey: Char read GetMenuKey write SetMenuKey;
@@ -179,6 +184,17 @@ begin
   FPlanetList := TList.Create;
 
   MenuKey := '$';
+
+  FTW2002Color :=
+    '~a=^[0;30m ~b=^[0;31m ~c=^[0;32m ~d=^[0;33m ~e=^[0;34m ~f=^[0;35m ' +
+    '~g=^[0;36m ~h=^[0;37m ~A=^[1;30m ~B=^[1;31m ~C=^[1;32m ~D=^[1;33m ' +
+    '~E=^[0;34m ~F=^[1;35m ~G=^[1;36m ~H=^[1;37m ~i=^[40m ~j=^[41m ' +
+    '~k=^[42m ~l=^[43m ~m=^[44m ~n=^[45m ~o=^[46m ~p=^[47m ~!=^[2J^[H ' +
+    '~0=^[0m ~1=^[0m^[1;36m ~2=^[0m^[1;33m ~3=^[0m^[35m ~4=^[0m^[44m ' +
+    '~5=^[0m^[32m ~6=^[0m^[1;5;31m ~7=^[0m^[1;37m ~8=^[0m^[1;5;31m ' +
+    '~9=^[0m^[30;47m ~q=^[0m^[5;34m ~r=^[0m^[34m ~s=^[0m^[30;41m ' +
+    '~I=^[0;34;47m ~J=^[31;47m ~K=^[1;33;44m';
+  FFormatColor := '';
 end;
 
 procedure TModExtractor.BeforeDestruction;
