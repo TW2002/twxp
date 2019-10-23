@@ -1,0 +1,6 @@
+CITFILL - Citadel Base Refill Mode
+          Refills any corpie above a planet who attacks/is 
+          attacked or deploys fighters.
+
+          citfill [on/off] {number figs to attempt per try}
+ 

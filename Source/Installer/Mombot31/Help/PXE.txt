@@ -1,0 +1,5 @@
+PXE - Photon, Export, Enter 
+      Used to Launch a Photon into an adjacent Sector then immediately
+      Export into another ship and then enter Photon'd Sector.
+
+      pxe [Sector] [ShipNumber]

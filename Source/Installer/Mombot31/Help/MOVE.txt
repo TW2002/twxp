@@ -1,0 +1,8 @@
+MOVE - Product Mover
+
+    move [type] [planet] [rounds]
+
+    [type] - use [f]uel, [o]rg, [e]quip 
+    [type] - use [fc] fuel colo, [oc] org colo, [ec] equip colo
+    [planet] planet to move to
+    [rounds] number of rounds to move product / colonists

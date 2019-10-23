@@ -1,0 +1,9 @@
+QSET - Quasar Cannon Setter
+       Automatically calculates what percentage a Cannon
+       needs to be set at to cause desired damage, and sets
+       the Cannon accordingly
+
+       qset [damage] {a|s}
+
+       - [damage]   Amount of damage, or stength of Cannon
+       - {a|s}      Indicates 'Atmosphere' or 'Sector' Cannon

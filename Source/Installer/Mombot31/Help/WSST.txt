@@ -1,0 +1,14 @@
+World Sell-Steal-Transport
+ - wsst [ship2] {cash dropoff} {f} {s} {safe|passive} {furbpoint}
+    - {cash dropoff} - if started from planet citadel
+    - {f}            - buy fighters
+    - {s}            - buy shields
+    - {safe}         - Will not mow to locations, scans and moves
+    - {passive}      - Will be safe, as well as avoid any enemy fighters
+    - {furbpoint}    - Terra, Dock (default), Alpha, Rylos 
+    - {limp}         - Will lay 3 limps/sector if Furbing at Dock.
+    - {armid}        - Will lay 3 armids/sector if Furbing at Dock.
+    - {quiet}        - Will not braodcast BUSTED msg's on SubSpace
+    - {x100}         - Will Drop 100 Fighters per sector
+
+  - wsst CLEAR_BUSTS - Clears bot's bust file.

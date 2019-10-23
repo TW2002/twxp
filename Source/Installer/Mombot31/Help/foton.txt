@@ -1,0 +1,11 @@
+FOTON - Multipurpose Photon Mode
+        
+    - foton [on/off] {a/d/p/s} {return}    
+        - {a}djacent - photons adjacent sector when fig/limp/armid hit 
+        - {d}ensity  - constant density scan, photons on density change
+        - {p}lanet   - standard planet warp photon script
+        - {s}urround - attempts to foton retreat sector
+                                                
+        - {return}   - Returns Planet Home after Pwarp
+                                                
+          Authors: Mind Dagger and The Bounty Hunter 

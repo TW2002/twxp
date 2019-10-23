@@ -1,0 +1,4 @@
+PING - Determine current server ping times.
+
+
+     - Originally written by Cherokee

@@ -1,0 +1,4 @@
+CAP -  Ship Capture Command
+       Scans Current-Sector for any Enemy Ships. Attempts
+       to Capture Enemy-occupied ships first, captures any
+       empty enemy ships that are Empty

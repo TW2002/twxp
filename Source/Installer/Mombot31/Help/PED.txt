@@ -1,0 +1,5 @@
+PED - Photon, Enter, Defend
+      Used to launch a Photon into an adjacent Sector, Enter 
+      Photon'd Sector and launches a Genesis Torpedo
+
+      ped [Sector]

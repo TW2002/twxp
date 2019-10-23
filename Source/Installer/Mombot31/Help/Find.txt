@@ -1,0 +1,13 @@
+FIND - Search TWX-DBase for Fighter/Port data
+
+     find [f/nf/fp/p/de/ufde] [type] {sector} [port type]
+
+     - [type]   =  [de]ad-end or 
+                   [f]igged or 
+                   [nf] no-fig or 
+                   [fp] figged port or 
+                   [p]ort or 
+                   [ufde] un-figged dead end
+     - {sector}    sector number that you need finder data on, 
+                   default is current sector
+     - [port type] port type (s)ell , (b)uy, or (x) either

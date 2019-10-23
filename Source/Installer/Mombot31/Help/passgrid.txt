@@ -1,0 +1,4 @@
+PASSGRID - Passive Gridder
+           
+           Moves around actively scanning, avoiding enemy
+           Sectors, while dropping Fighters and Mines

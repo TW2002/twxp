@@ -16,15 +16,21 @@
       <ComponentRef Id="DesktopShortcut" />
       <ComponentRef Id="ApplicationShortcut" /> 
     </Feature>
-    <Feature Id="PublicFeature" Title="Public Scripts" Level="1" Description="Installs common public scripts. These scripts are provided 'as-is' with no documentation. Use at your own risk.">
+    <Feature Id="PublicFeature" Title="Public Scripts" Level="1" TypicalDefault="install" Description="Installs common public scripts. These scripts are provided 'as-is' with no documentation. Use at your own risk.">
       <ComponentGroupRef Id="PublicComponents" />
     </Feature>
-    <Feature Id="MombotFeature" Title="Mombot" Level="1" Description="Installs Mombot 3.5">
-      <ComponentGroupRef Id="MombotComponents" />
+    <Feature Id="MombotFeature" Title="Mind Over Mater bot" Level="1" Display="expand">
+    <Feature Id="Mombot31Feature" Title="Legacy Mombot" Level="2" TypicalDefault="install" Description="Installs Mombot 3.10xx">
+      <ComponentGroupRef Id="Mombot31Components" />
     </Feature>
-      <Feature Id="Zedbot25Feature" Title="Zedbot25" Level="1" Description="Installs Zedbot25 2.1.5 - This is the final version Archie released.">
+    <Feature Id="Mombot35Feature" Title="Latest Mombot" Level="1" TypicalDefault="install" Description="Installs Mombot 3.5x">
+      <ComponentGroupRef Id="Mombot35Components" />
+    </Feature>
+      </Feature>
+    <Feature Id="ZedbotFeature" Title="Zedbot" Level="1"  Display="expand">
+      <Feature Id="Zedbot25Feature" Title="Zedbot 2.19+" Level="1" TypicalDefault="install" Description="Installs Zedbot25 2.19+ - This is the final version Archie released, but with 'authorized' commands and scripts previously only available to members of Zedcorp.">
     <ComponentGroupRef Id="Zedbot25Components" />
-
+    </Feature>
     </Feature>
 
     <UIRef Id="WixUI_FeatureTree" />
@@ -55,29 +61,51 @@
             <Directory Id="SUPG" Name="SupG" >
               <Directory Id="SUPGI" Name="SupGInclude" />
             </Directory>
-            <Directory Id="MOMBOT" Name="mombot">
-              <Directory Id="MOM_COMMANDS" Name="commands">
-                <Directory Id="MOM_CMD_CASHING" Name="cashing" />
-                <Directory Id="MOM_CMD_DATA" Name="data" />
-                <Directory Id="MOM_CMD_DEFENSE" Name="defense" />
-                <Directory Id="MOM_CMD_GENERAL" Name="general" />
-                <Directory Id="MOM_CMD_GRID" Name="grid" />
-                <Directory Id="MOM_CMD_OFFENSE" Name="offense" />
-                <Directory Id="MOM_CMD_RESOURCE" Name="resource" />
+            <Directory Id="MOMBOT31" Name="mombot3">
+              <Directory Id="MOM31_COMMANDS" Name="commands">
+                <Directory Id="MOM31_CMD_CASHING" Name="cashing" />
+                <Directory Id="MOM31_CMD_DATA" Name="data" />
+                <Directory Id="MOM31_CMD_DEFENSE" Name="defense" />
+                <Directory Id="MOM31_CMD_GENERAL" Name="general" />
+                <Directory Id="MOM31_CMD_GRID" Name="grid" />
+                <Directory Id="MOM31_CMD_OFFENSE" Name="offense" />
+                <Directory Id="MOM31_CMD_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MOM_MODES" Name="modes">
-                <Directory Id="MOM_MODES_CASHING" Name="cashing" />
-                <Directory Id="MOM_MODES_DATA" Name="data" />
-                <Directory Id="MOM_MODES_DEFENSE" Name="defense" />
-                <Directory Id="MOM_MODES_GENERAL" Name="general" />
-                <Directory Id="MOM_MODES_GRID" Name="grid" />
-                <Directory Id="MOM_MODES_OFFENSE" Name="offense" />
-                <Directory Id="MOM_MODES_RESOURCE" Name="resource" />
+              <Directory Id="MOM31_MODES" Name="modes">
+                <Directory Id="MOM31_MODES_CASHING" Name="cashing" />
+                <Directory Id="MOM31_MODES_DATA" Name="data" />
+                <Directory Id="MOM31_MODES_DEFENSE" Name="defense" />
+                <Directory Id="MOM31_MODES_GENERAL" Name="general" />
+                <Directory Id="MOM31_MODES_GRID" Name="grid" />
+                <Directory Id="MOM31_MODES_OFFENSE" Name="offense" />
+                <Directory Id="MOM31_MODES_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MOM_DAEMONS" Name="daemons" />
-              <Directory Id="MOM_HELP" Name="help" />
-              <Directory Id="MOM_GAMES" Name="games" />
-              <Directory Id="MOM_STARTUPS" Name="startups" />
+              <Directory Id="MOM31_DAEMONS" Name="daemons" />
+              <Directory Id="MOM31_HELP" Name="help" />
+            </Directory>
+            <Directory Id="MOMBOT35" Name="mombot">
+              <Directory Id="MOM35_COMMANDS" Name="commands">
+                <Directory Id="MOM35_CMD_CASHING" Name="cashing" />
+                <Directory Id="MOM35_CMD_DATA" Name="data" />
+                <Directory Id="MOM35_CMD_DEFENSE" Name="defense" />
+                <Directory Id="MOM35_CMD_GENERAL" Name="general" />
+                <Directory Id="MOM35_CMD_GRID" Name="grid" />
+                <Directory Id="MOM35_CMD_OFFENSE" Name="offense" />
+                <Directory Id="MOM35_CMD_RESOURCE" Name="resource" />
+              </Directory>
+              <Directory Id="MOM35_MODES" Name="modes">
+                <Directory Id="MOM35_MODES_CASHING" Name="cashing" />
+                <Directory Id="MOM35_MODES_DATA" Name="data" />
+                <Directory Id="MOM35_MODES_DEFENSE" Name="defense" />
+                <Directory Id="MOM35_MODES_GENERAL" Name="general" />
+                <Directory Id="MOM35_MODES_GRID" Name="grid" />
+                <Directory Id="MOM35_MODES_OFFENSE" Name="offense" />
+                <Directory Id="MOM35_MODES_RESOURCE" Name="resource" />
+              </Directory>
+              <Directory Id="MOM35_DAEMONS" Name="daemons" />
+              <Directory Id="MOM35_HELP" Name="help" />
+              <Directory Id="MOM35_GAMES" Name="games" />
+              <Directory Id="MOM35_STARTUPS" Name="startups" />
             </Directory>
             </Directory>
           </Directory>
@@ -635,22 +663,296 @@
       </Component>
     </ComponentGroup>
 
-    <ComponentGroup Id="MombotComponents" >
-      <Component Id="MombotComponent" Directory="MOMBOT" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
+    <ComponentGroup Id="Mombot31Components" >
+      <Component Id="Mombot31Component" Directory="MOMBOT31" Guid="843bc0cd-86fa-46cf-ac6a-56bb045d8ace">
+        <File Id="mom1045" Source="Mombot31\__mom_bot3_1045.cts"/>
+        <File Id="mom1044" Source="Mombot31\__mom_bot3_1044.ts"/>
+        <File Source="Mombot31\page.wav"/>
+        <File Id="mom001" Source="Mombot31\script.html"/>
+        <File Source="Mombot31\MOMBot_Manual.html"/>
+      </Component>
+      <Component Id="Mombot31CommandsCashingComponent" Directory="MOM31_CMD_CASHING" Guid="046e67f5-2242-4805-b8da-44e8c950dcb2">
+        <File Id="mom010" Source="Mombot31\commands\cashing\bust.cts"/>
+        <File Id="mom011" Source="Mombot31\commands\cashing\neg.cts"/>
+        <File Id="mom012" Source="Mombot31\commands\cashing\sdt.cts"/>
+        <File Id="mom013" Source="Mombot31\commands\cashing\sst.cts"/>
+        <File Id="mom014" Source="Mombot31\commands\cashing\tricon.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsDataComponent" Directory="MOM31_CMD_DATA" Guid="23414fd3-efcc-44f0-b912-aae976eba62d">
+        <File Id="mom0020" Source="Mombot31\commands\data\armids.cts"/>
+        <File Id="mom0021" Source="Mombot31\commands\data\avoids.cts"/>
+        <File Id="mom0022" Source="Mombot31\commands\data\busts.cts"/>
+        <File Id="mom0023" Source="Mombot31\commands\data\cim.cts"/>
+        <File Id="mom0024" Source="Mombot31\commands\data\class0.cts"/>
+        <File Id="mom0025" Source="Mombot31\commands\data\corpinfo.cts"/>
+        <File Id="mom0029" Source="Mombot31\commands\data\figs.cts"/>
+        <File Id="mom0030" Source="Mombot31\commands\data\getnear.cts"/>
+        <File Id="mom0031" Source="Mombot31\commands\data\limps.cts"/>
+        <File Id="mom0032" Source="Mombot31\commands\data\msgs.cts"/>
+        <File Id="mom0033" Source="Mombot31\commands\data\msl.cts"/>
+        <File Id="mom0533" Source="Mombot31\commands\data\neg.cts"/>
+        <File Id="mom0534" Source="Mombot31\commands\data\news.cts"/>
+        <File Id="mom0034" Source="Mombot31\commands\data\overload.cts"/>
+        <File Id="mom0036" Source="Mombot31\commands\data\ping.cts"/>
+        <File Id="mom0037" Source="Mombot31\commands\data\QReport.cts"/>
+        <File Id="mom0038" Source="Mombot31\commands\data\remaliens.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsDefenseComponent" Directory="MOM31_CMD_DEFENSE" Guid="ab957e3a-d049-4edf-be14-4b8c2f475234">
+        <File Id="mom0046" Source="Mombot31\commands\defense\call.cts"/>
+        <File Id="mom0047" Source="Mombot31\commands\defense\evac.cts"/>
+        <File Id="mom0048" Source="Mombot31\commands\defense\HazKill.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsGeneralComponent" Directory="MOM31_CMD_GENERAL" Guid="9cfe00e9-6990-4cba-9688-597f129cd8b6">
+        <File Id="mom0051" Source="Mombot31\commands\general\page.cts"/>
+        <File Source="Zedbot25\Scripts\switchbot.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsGridComponent" Directory="MOM31_CMD_GRID" Guid="c1de5ebd-00b8-430a-aa7e-b60cb441ef10">
+        <File Id="mom0674" Source="Mombot31\commands\grid\clearfig.cts"/>
+        <File Id="mom0074" Source="Mombot31\commands\grid\haz.cts"/>
+        <File Id="mom0075" Source="Mombot31\commands\grid\passgrid.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsOffenseComponent" Directory="MOM31_CMD_OFFENSE" Guid="09011bd8-609d-4b1b-89fb-dc73a8013c67">
+        <File Id="mom0084" Source="Mombot31\commands\offense\mex.cts"/>
+        <File Id="mom0085" Source="Mombot31\commands\offense\mxex.cts"/>
+        <File Id="mom0086" Source="Mombot31\commands\offense\_kazi.cts"/>
+      </Component>
+      <Component Id="Mombot31CommandsResourceComponent" Directory="MOM31_CMD_RESOURCE" Guid="8b3681f5-124b-4506-a5eb-55967549534e">
+        <File Id="mom0110" Source="Mombot31\commands\resource\buy.cts"/>
+        <File Id="mom0111" Source="Mombot31\commands\resource\dump.cts"/>
+        <File Id="mom0112" Source="Mombot31\commands\resource\scruball.cts"/>
+        <File Id="mom0113" Source="Mombot31\commands\resource\sellship.cts"/>
+      </Component>
+      <Component Id="Mombot31DaemonsComponent" Directory="MOM31_DAEMONS" Guid="a014ba39-1ca1-4bac-9edc-c1f0635b02e2">
+        <File Id="mom0116" Source="Mombot31\daemons\comms.cts"/>
+        <File Id="mom0117" Source="Mombot31\daemons\FillSector.cts"/>
+        <File Id="mom0118" Source="Mombot31\daemons\ignore.cts"/>
+        <File Id="mom0120" Source="Mombot31\daemons\nofed.cts"/>
+        <File Id="mom0121" Source="Mombot31\daemons\planets.cts"/>
+        <File Id="mom0122" Source="Mombot31\daemons\quikpanel.cts"/>
+        <File Id="mom0123" Source="Mombot31\daemons\stats.cts"/>
+      </Component>
+      <Component Id="Mombot31HelpComponent" Directory="MOM31_HELP" Guid="c80639da-4356-426d-8f5a-98b60c732a4f">
+        <File Id="mom0130" Source="Mombot31\help\About.txt"/>
+        <File Id="mom0131" Source="Mombot31\help\armids.txt"/>
+        <File Id="mom0132" Source="Mombot31\help\avoids.txt"/>
+        <File Id="mom0133" Source="Mombot31\help\Bot.txt"/>
+        <File Id="mom0134" Source="Mombot31\help\boton.txt"/>
+        <File Id="mom0135" Source="Mombot31\help\Bust.txt"/>
+        <File Id="mom0136" Source="Mombot31\help\bustcount.txt"/>
+        <File Id="mom0137" Source="Mombot31\help\Buy.txt"/>
+        <File Id="mom0138" Source="Mombot31\help\BWarp.txt"/>
+        <File Id="mom0139" Source="Mombot31\help\Call.txt"/>
+        <File Id="mom0539" Source="Mombot31\help\cap.txt"/>
+        <File Id="mom0141" Source="Mombot31\help\CIM.txt"/>
+        <File Id="mom5142" Source="Mombot31\help\citcap.txt"/>
+        <File Id="mom6142" Source="Mombot31\help\citfill.txt"/>
+        <File Id="mom0142" Source="Mombot31\help\citkill.txt"/>
+        <File Id="mom0143" Source="Mombot31\help\class0.txt"/>
+        <File Id="mom6544" Source="Mombot31\help\Clear.txt"/>
+        <File Id="mom0144" Source="Mombot31\help\Clearfig.txt"/>
+        <File Id="mom0145" Source="Mombot31\help\CLimp.txt"/>
+        <File Id="mom0146" Source="Mombot31\help\CMine.txt"/>
+        <File Id="mom0147" Source="Mombot31\help\cn.txt"/>
+        <File Id="mom0148" Source="Mombot31\help\cn9.txt"/>
+        <File Id="mom0149" Source="Mombot31\help\Colo.txt"/>
+        <File Id="mom0150" Source="Mombot31\help\corpinfo.txt"/>
+        <File Id="mom0151" Source="Mombot31\help\course.txt"/>
+        <File Id="mom0152" Source="Mombot31\help\Dep.txt"/>
+        <File Id="mom0153" Source="Mombot31\help\DISP.txt"/>
+        <File Id="mom0154" Source="Mombot31\help\DisR.txt"/>
+        <File Id="mom0155" Source="Mombot31\help\DScan.txt"/>
+        <File Id="mom03455" Source="Mombot31\help\dockkill.txt"/>
+        <File Id="mom0156" Source="Mombot31\help\Dump.txt"/>
+        <File Id="mom0157" Source="Mombot31\help\EMQ.txt"/>
+        <File Id="mom0158" Source="Mombot31\help\EMX.txt"/>
+        <File Id="mom3359" Source="Mombot31\help\Evac.txt"/>
+        <File Id="mom0159" Source="Mombot31\help\Exit.txt"/>
+        <File Id="mom6760" Source="Mombot31\help\farm.txt"/>
+        <File Id="mom0160" Source="Mombot31\help\FigMove.txt"/>
+        <File Id="mom0161" Source="Mombot31\help\Figs.txt"/>
+        <File Id="mom9461" Source="Mombot31\help\fillships.txt"/>
+        <File Id="mom0162" Source="Mombot31\help\Find.txt"/>
+        <File Id="mom0163" Source="Mombot31\help\Finder.txt"/>
+        <File Id="mom5664" Source="Mombot31\help\Furb.txt"/>
+        <File Id="mom0164" Source="Mombot31\help\foton.txt"/>
+        <File Id="mom7465" Source="Mombot31\help\Getnear.txt"/>
+        <File Id="mom0165" Source="Mombot31\help\GetVar.txt"/>
+        <File Id="mom0166" Source="Mombot31\help\GridCheck.txt"/>
+        <File Id="mom8767" Source="Mombot31\help\Haz.txt"/>
+        <File Id="mom6367" Source="Mombot31\help\HazKill.txt"/>
+        <File Id="mom0167" Source="Mombot31\help\HKILL.txt"/>
+        <File Id="mom0168" Source="Mombot31\help\Holo.txt"/>
+        <File Id="mom0169" Source="Mombot31\help\HTorp.txt"/>
+        <File Id="mom0170" Source="Mombot31\help\IG.txt"/>
+        <File Id="mom8771" Source="Mombot31\help\kazi.txt"/>
+        <File Id="mom0171" Source="Mombot31\help\KILL.txt"/>
+        <File Id="mom0172" Source="Mombot31\help\Land.txt"/>
+        <File Id="mom5972" Source="Mombot31\help\LDrop.txt"/>
+        <File Id="mom0173" Source="Mombot31\help\Lift.txt"/>
+        <File Id="mom0174" Source="Mombot31\help\Limp.txt"/>
+        <File Id="mom0175" Source="Mombot31\help\Limps.txt"/>
+        <File Id="mom0176" Source="Mombot31\help\ListAll.txt"/>
+        <File Id="mom6777" Source="Mombot31\help\Login.txt"/>
+        <File Id="mom0177" Source="Mombot31\help\Limpshovel.txt"/>
+        <File Id="mom0178" Source="Mombot31\help\Logoff.txt"/>
+        <File Id="mom0180" Source="Mombot31\help\LSD.txt"/>
+        <File Id="mom0181" Source="Mombot31\help\Mac.txt"/>
+        <File Id="mom0182" Source="Mombot31\help\Max.txt"/>
+        <File Id="mom0183" Source="Mombot31\help\MaxPort.txt"/>
+        <File Id="mom0184" Source="Mombot31\help\Mega.txt"/>
+        <File Id="mom0185" Source="Mombot31\help\Merch.txt"/>
+        <File Id="mom6486" Source="Mombot31\help\Mex.txt"/>
+        <File Id="mom6686" Source="Mombot31\help\Mxex.txt"/>
+        <File Id="mom0186" Source="Mombot31\help\Mine.txt"/>
+        <File Id="mom0187" Source="Mombot31\help\Mines.txt"/>
+        <File Id="mom5487" Source="Mombot31\help\Minesweep.txt"/>
+        <File Id="mom0188" Source="Mombot31\help\MOVE.txt"/>
+        <File Id="mom0189" Source="Mombot31\help\MoveFig.txt"/>
+        <File Id="mom0190" Source="Mombot31\help\moveship.txt"/>
+        <File Id="mom0191" Source="Mombot31\help\Mow.txt"/>
+        <File Id="mom5691" Source="Mombot31\help\MowFuel.txt"/>
+        <File Id="mom0192" Source="Mombot31\help\msgs.txt"/>
+        <File Id="mom0193" Source="Mombot31\help\Neg.txt"/>
+        <File Id="mom0194" Source="Mombot31\help\News.txt"/>
+        <File Id="mom0195" Source="Mombot31\help\NMac.txt"/>
+        <File Id="mom0196" Source="Mombot31\help\Overload.txt"/>
+        <File Id="mom0197" Source="Mombot31\help\Page.txt"/>
+        <File Id="mom0198" Source="Mombot31\help\passgrid.txt"/>
+        <File Id="mom0199" Source="Mombot31\help\patp.txt"/>
+        <File Id="mom0200" Source="Mombot31\help\pdrop.txt"/>
+        <File Id="mom0201" Source="Mombot31\help\PE.txt"/>
+        <File Id="mom0202" Source="Mombot31\help\PED.txt"/>
+        <File Id="mom0203" Source="Mombot31\help\PEL.txt"/>
+        <File Id="mom0204" Source="Mombot31\help\PELK.txt"/>
+        <File Id="mom0205" Source="Mombot31\help\PEX.txt"/>
+        <File Id="mom0206" Source="Mombot31\help\PGrid.txt"/>
+        <File Id="mom0207" Source="Mombot31\help\Pimp.txt"/>
+        <File Id="mom0208" Source="Mombot31\help\Ping.txt"/>
+        <File Id="mom0209" Source="Mombot31\help\Plimp.txt"/>
+        <File Id="mom0210" Source="Mombot31\help\PList.txt"/>
+        <File Id="mom0211" Source="Mombot31\help\Plock.txt"/>
+        <File Id="mom0212" Source="Mombot31\help\PMine.txt"/>
+        <File Id="mom0213" Source="Mombot31\help\PScan.txt"/>
+        <File Id="mom0214" Source="Mombot31\help\PSST.txt"/>
+        <File Id="mom0215" Source="Mombot31\help\PWarp.txt"/>
+        <File Id="mom0216" Source="Mombot31\help\PXE.txt"/>
+        <File Id="mom0217" Source="Mombot31\help\PXED.txt"/>
+        <File Id="mom0218" Source="Mombot31\help\PXEL.txt"/>
+        <File Id="mom0219" Source="Mombot31\help\PXELK.txt"/>
+        <File Id="mom0220" Source="Mombot31\help\PXEX.txt"/>
+        <File Id="mom6521" Source="Mombot31\help\qreport.txt"/>
+        <File Id="mom3421" Source="Mombot31\help\qset.txt"/>
+        <File Id="mom8721" Source="Mombot31\help\QSS.txt"/>
+        <File Id="mom7622" Source="Mombot31\help\Refresh.txt"/>
+        <File Id="mom0222" Source="Mombot31\help\reloader.txt"/>
+        <File Id="mom0223" Source="Mombot31\help\Relog.txt"/>
+        <File Id="mom0224" Source="Mombot31\help\Reset.txt"/>
+        <File Id="mom7625" Source="Mombot31\help\runaway.txt"/>
+        <File Id="mom0225" Source="Mombot31\help\Rob.txt"/>
+        <File Id="mom0226" Source="Mombot31\help\SafeMow.txt"/>
+        <File Id="mom4527" Source="Mombot31\help\salesman.txt"/>
+        <File Id="mom4927" Source="Mombot31\help\Saveme.txt"/>
+        <File Id="mom0228" Source="Mombot31\help\SDT.txt"/>
+        <File Id="mom0230" Source="Mombot31\help\Sector.txt"/>
+        <File Id="mom6530" Source="Mombot31\help\SellShip.txt"/>
+        <File Id="mom0231" Source="Mombot31\help\SetVar.txt"/>
+        <File Id="mom0232" Source="Mombot31\help\ShipMove.txt"/>
+        <File Id="mom0233" Source="Mombot31\help\SList.txt"/>
+        <File Id="mom7834" Source="Mombot31\help\SMow.txt"/>
+        <File Id="mom0234" Source="Mombot31\help\SST.txt"/>
+        <File Id="mom0235" Source="Mombot31\help\Stats.txt"/>
+        <File Id="mom0236" Source="Mombot31\help\status.txt"/>
+        <File Id="mom0237" Source="Mombot31\help\Stopall.txt"/>
+        <File Id="mom0238" Source="Mombot31\help\StoreShip.txt"/>
+        <File Id="mom7839" Source="Mombot31\help\strip.txt"/>
+        <File Id="mom0239" Source="Mombot31\help\stripships.txt"/>
+        <File Id="mom0240" Source="Mombot31\help\Surround.txt"/>
+        <File Id="mom0242" Source="Mombot31\help\TopOff.txt"/>
+        <File Id="mom0243" Source="Mombot31\help\Tow.txt"/>
+        <File Id="mom0244" Source="Mombot31\help\TRICON.txt"/>
+        <File Id="mom0245" Source="Mombot31\help\TWarp.txt"/>
+        <File Id="mom7545" Source="Mombot31\help\TSaveme.txt"/>
+        <File Id="mom5646" Source="Mombot31\help\Unlock.txt"/>
+        <File Id="mom0246" Source="Mombot31\help\ugrid.txt"/>
+        <File Id="mom0247" Source="Mombot31\help\With.txt"/>
+        <File Id="mom5647" Source="Mombot31\help\wrob.txt"/>
+        <File Id="mom0248" Source="Mombot31\help\WSST.txt"/>
+        <File Id="mom0250" Source="Mombot31\help\Xport.txt"/>
+        <File Id="mom0251" Source="Mombot31\help\ZTM.txt"/>
+        <File Source="Zedbot25\Scripts\switchbot.txt"/>
+      </Component>
+      <Component Id="Mombot31ModesCashingComponent" Directory="MOM31_MODES_CASHING" Guid="5117ca6d-f5e0-49e1-827e-d4cb20341502">
+        <File Id="mom0262" Source="Mombot31\modes\cashing\furb.cts"/>
+        <File Id="mom5663" Source="Mombot31\modes\cashing\Merch.cts"/>
+        <File Id="mom0363" Source="Mombot31\modes\cashing\psst.cts"/>
+        <File Id="mom2363" Source="Mombot31\modes\cashing\Salesman.cts"/>
+        <File Id="mom0264" Source="Mombot31\modes\cashing\wrob.cts"/>
+        <File Id="mom0268" Source="Mombot31\modes\cashing\WSST.cts"/>
+      </Component>
+      <Component Id="Mombot31ModesDataComponent" Directory="MOM31_MODES_DATA" Guid="7f42fb2a-a599-47f2-acb9-8a61379d94f1">
+        <File Id="mom6570" Source="Mombot31\modes\data\FedMon.cts"/>
+        <File Id="mom0270" Source="Mombot31\modes\data\Finder.cts"/>
+        <File Id="mom0271" Source="Mombot31\modes\data\ztm.cts"/>
+      </Component>
+      <Component Id="Mombot31ModesDefenseComponent" Directory="MOM31_MODES_DEFENSE" Guid="a8262a75-33c4-4acf-94a9-dce0ea310b56">
+        <File Id="mom0272" Source="Mombot31\modes\defense\CitFill.cts"/>
+        <File Id="mom5472" Source="Mombot31\modes\defense\ig.cts"/>
+        <File Id="mom6473" Source="Mombot31\modes\defense\Reloader.cts"/>
+        <File Id="mom2773" Source="Mombot31\modes\defense\RunAway.cts"/>
+        <File Id="mom2673" Source="Mombot31\modes\defense\saveme.cts"/>
+        <File Id="mom8573" Source="Mombot31\modes\defense\TSaveme.cts"/>
+      </Component>
+      <Component Id="Mombot31ModesResourceComponent" Directory="MOM31_MODES_RESOURCE" Guid="6e1e5162-e32e-47c9-bca1-0aa65c203b08">
+        <File Id="mom0310" Source="Mombot31\modes\resource\colo.cts"/>
+        <File Id="mom7610" Source="Mombot31\modes\resource\farm.cts"/>
+        <File Id="mom6710" Source="Mombot31\modes\resource\fillships.cts"/>
+        <File Id="mom8410" Source="Mombot31\modes\resource\lsd.cts"/>
+        <File Id="mom2311" Source="Mombot31\modes\resource\Move.cts"/>
+        <File Id="mom7512" Source="Mombot31\modes\resource\movefig.cts"/>
+        <File Id="mom2312" Source="Mombot31\modes\resource\moveship.cts"/>
+        <File Id="mom0313" Source="Mombot31\modes\resource\PATP.cts"/>
+        <File Id="mom0314" Source="Mombot31\modes\resource\Pimp.cts"/>
+        <File Id="mom6715" Source="Mombot31\modes\resource\strip.cts"/>
+        <File Id="mom0315" Source="Mombot31\modes\resource\StripShips.cts"/>
+      </Component>
+      <Component Id="Mombot31ModesGridComponent" Directory="MOM31_MODES_GRID" Guid="1ad35234-edaf-403f-b6f3-7a053da1a898">
+        <File Id="mom0500" Source="Mombot31\modes\grid\DisR.cts"/>
+        <File Id="mom0501" Source="Mombot31\modes\grid\GridCheck.cts"/>
+        <File Id="mom0502" Source="Mombot31\modes\grid\LimpShovel.cts"/>
+        <File Id="mom0503" Source="Mombot31\modes\grid\MineSweep.cts"/>
+        <File Id="mom0504" Source="Mombot31\modes\grid\MowFuel.cts"/>
+        <File Id="mom0505" Source="Mombot31\modes\grid\plimper.cts"/>
+        <File Id="mom0506" Source="Mombot31\modes\grid\UGrid.cts"/>
+      </Component>
+      <Component Id="Mombot31ModesOffenseComponent" Directory="MOM31_MODES_OFFENSE" Guid="23c47712-6dfa-453b-9982-fc1a8881e7fe">
+        <File Id="mom0510" Source="Mombot31\modes\offense\_LDrop.cts"/>
+        <File Id="mom0511" Source="Mombot31\modes\offense\Boton.cts"/>
+        <File Id="mom0512" Source="Mombot31\modes\offense\CitCap.cts"/>
+        <File Id="mom0513" Source="Mombot31\modes\offense\Citkill.cts"/>
+        <File Id="mom0514" Source="Mombot31\modes\offense\DockKill.cts"/>
+        <File Id="mom0515" Source="Mombot31\modes\offense\Foton.cts"/>
+        <File Id="mom0516" Source="Mombot31\modes\offense\PDrop.cts"/>
+        <File Id="mom0517" Source="Mombot31\modes\offense\Plock.cts"/>
+      </Component>
+
+    </ComponentGroup>
+
+    <ComponentGroup Id="Mombot35Components" >
+      <Component Id="MombotComponent" Directory="MOMBOT35" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
         <File Source="Mombot35\mombot.cts"/>
         <File Source="Mombot35\mombot3_1045.cts"/>
         <File Source="Mombot35\readme.md"/>
         <File Source="Mombot35\license"/>
         <File Source="Mombot35\source.zip"/>
       </Component>
-      <Component Id="MombotCommandsCashingComponent" Directory="MOM_CMD_CASHING" Guid="4b6b1063-82d7-4298-b9f7-776f0ae91884">
+      <Component Id="MombotCommandsCashingComponent" Directory="MOM35_CMD_CASHING" Guid="4b6b1063-82d7-4298-b9f7-776f0ae91884">
         <File Source="Mombot35\commands\cashing\mega.cts"/>
         <File Source="Mombot35\commands\cashing\neg.cts"/>
         <File Source="Mombot35\commands\cashing\ppt.cts"/>
         <File Source="Mombot35\commands\cashing\rob.cts"/>
         <File Source="Mombot35\commands\cashing\tricon.cts"/>
       </Component>
-      <Component Id="MombotCommandsDataComponent" Directory="MOM_CMD_DATA" Guid="1ac283b5-9cc1-49e3-bbe6-cd3a3c32a96e">
+      <Component Id="MombotCommandsDataComponent" Directory="MOM35_CMD_DATA" Guid="1ac283b5-9cc1-49e3-bbe6-cd3a3c32a96e">
         <File Source="Mombot35\commands\data\armids.cts"/>
         <File Source="Mombot35\commands\data\avoids.cts"/>
         <File Source="Mombot35\commands\data\busts.cts"/>
@@ -678,12 +980,12 @@
         <File Source="Mombot35\commands\data\status.cts"/>
         <File Source="Mombot35\commands\data\time.cts"/>
       </Component>
-      <Component Id="MombotCommandsDefenseComponent" Directory="MOM_CMD_DEFENSE" Guid="64583006-ed1a-418e-9142-6188d5c80b68">
+      <Component Id="MombotCommandsDefenseComponent" Directory="MOM35_CMD_DEFENSE" Guid="64583006-ed1a-418e-9142-6188d5c80b68">
         <File Source="Mombot35\commands\defense\call.cts"/>
         <File Source="Mombot35\commands\defense\evac.cts"/>
         <File Source="Mombot35\commands\defense\_macro_kit.cts"/>
       </Component>
-      <Component Id="MombotCommandsGeneralComponent" Directory="MOM_CMD_GENERAL" Guid="73a5e031-486e-4c46-980c-f61f27306869">
+      <Component Id="MombotCommandsGeneralComponent" Directory="MOM35_CMD_GENERAL" Guid="73a5e031-486e-4c46-980c-f61f27306869">
         <File Source="Mombot35\commands\general\bwarp.cts"/>
         <File Source="Mombot35\commands\general\callout.cts"/>
         <File Source="Mombot35\commands\general\cn9.cts"/>
@@ -707,7 +1009,7 @@
         <File Source="Mombot35\commands\general\with.cts"/>
         <File Source="Mombot35\commands\general\xport.cts"/>
       </Component>
-      <Component Id="MombotCommandsGridComponent" Directory="MOM_CMD_GRID" Guid="c1de5ebd-00b8-430a-aa7e-b60cb441ef10">
+      <Component Id="MombotCommandsGridComponent" Directory="MOM35_CMD_GRID" Guid="a4b931ae-967a-45be-a0df-026da4062845">
         <File Source="Mombot35\commands\grid\clear.cts"/>
         <File Source="Mombot35\commands\grid\climp.cts"/>
         <File Source="Mombot35\commands\grid\cmine.cts"/>
@@ -719,7 +1021,7 @@
         <File Source="Mombot35\commands\grid\surround.cts"/>
         <File Source="Mombot35\commands\grid\xenter.cts"/>
       </Component>
-      <Component Id="MombotCommandsOffenseComponent" Directory="MOM_CMD_OFFENSE" Guid="09011bd8-609d-4b1b-89fb-dc73a8013c67">
+      <Component Id="MombotCommandsOffenseComponent" Directory="MOM35_CMD_OFFENSE" Guid="816db98f-729a-4d5a-aaf6-962aa31ae563">
         <File Source="Mombot35\commands\offense\cap.cts"/>
         <File Source="Mombot35\commands\offense\hkill.cts"/>
         <File Source="Mombot35\commands\offense\kill.cts"/>
@@ -735,14 +1037,14 @@
         <File Source="Mombot35\commands\offense\pxelk.cts"/>
         <File Source="Mombot35\commands\offense\pxex.cts"/>
       </Component>
-      <Component Id="MombotCommandsResourceComponent" Directory="MOM_CMD_RESOURCE" Guid="8b3681f5-124b-4506-a5eb-55967549534e">
+      <Component Id="MombotCommandsResourceComponent" Directory="MOM35_CMD_RESOURCE" Guid="36f4a9e4-a6e4-4086-87ae-d0bdece5c515">
         <File Source="Mombot35\commands\resource\buy.cts"/>
         <File Source="Mombot35\commands\resource\dump.cts"/>
         <File Source="Mombot35\commands\resource\max.cts"/>
         <File Source="Mombot35\commands\resource\sellship.cts"/>
         <File Source="Mombot35\commands\resource\_dock_shopper.cts"/>
       </Component>
-      <Component Id="MombotDaemonsComponent" Directory="MOM_DAEMONS" Guid="a014ba39-1ca1-4bac-9edc-c1f0635b02e2">
+      <Component Id="MombotDaemonsComponent" Directory="MOM35_DAEMONS" Guid="78a6c5ec-dbc0-4d82-a127-444df32491cd">
         <File Source="Mombot35\daemons\chat.cts"/>
         <File Source="Mombot35\daemons\comms.cts"/>
         <File Source="Mombot35\daemons\ephaggle.cts"/>
@@ -752,10 +1054,10 @@
         <File Source="Mombot35\daemons\viewscreen.cts"/>
         <File Source="Mombot35\daemons\watcher.cts"/>
       </Component>
-      <Component Id="MombotGamesComponent" Directory="MOM_GAMES" Guid="a9a3efe5-bb8b-4d33-8562-1e50713778b6">
+      <Component Id="MombotGamesComponent" Directory="MOM35_GAMES" Guid="a9a3efe5-bb8b-4d33-8562-1e50713778b6">
         <File Source="Mombot35\games\placeholder.file"/>
       </Component>
-      <Component Id="MombotHelpComponent" Directory="MOM_HELP" Guid="c80639da-4356-426d-8f5a-98b60c732a4f">
+      <Component Id="MombotHelpComponent" Directory="MOM35_HELP" Guid="9a3be94e-3f24-47ce-8a09-ba0084622a5d">
         <File Source="Mombot35\help\About.txt"/>
         <File Source="Mombot35\help\armids.txt"/>
         <File Source="Mombot35\help\avoids.txt"/>
@@ -877,7 +1179,7 @@
         <File Source="Mombot35\help\Xport.txt"/>
         <File Source="Mombot35\help\ZTM.txt"/>
       </Component>
-      <Component Id="MombotModesCashingComponent" Directory="MOM_MODES_CASHING" Guid="5117ca6d-f5e0-49e1-827e-d4cb20341502">
+      <Component Id="MombotModesCashingComponent" Directory="MOM35_MODES_CASHING" Guid="e1838218-f343-4493-b6cb-a75e174a2f56">
         <File Source="Mombot35\modes\cashing\bbb.cts"/>
         <File Source="Mombot35\modes\cashing\furb.cts"/>
         <File Source="Mombot35\modes\cashing\Merch.cts"/>
@@ -887,18 +1189,18 @@
         <File Source="Mombot35\modes\cashing\wppt.cts"/>
         <File Source="Mombot35\modes\cashing\WSST.cts"/>
       </Component>
-      <Component Id="MombotModesDataComponent" Directory="MOM_MODES_DATA" Guid="7f42fb2a-a599-47f2-acb9-8a61379d94f1">
+      <Component Id="MombotModesDataComponent" Directory="MOM35_MODES_DATA" Guid="fb8990b7-224e-41f1-89f0-786aed5477a8">
         <File Source="Mombot35\modes\data\sentinel.cts"/>
         <File Source="Mombot35\modes\data\ztm.cts"/>
       </Component>
-      <Component Id="MombotModesDefenseComponent" Directory="MOM_MODES_DEFENSE" Guid="a8262a75-33c4-4acf-94a9-dce0ea310b56">
+      <Component Id="MombotModesDefenseComponent" Directory="MOM35_MODES_DEFENSE" Guid="11cd701f-3ef7-4283-879d-f613bdc4516c">
         <File Source="Mombot35\modes\defense\ig.cts"/>
         <File Source="Mombot35\modes\defense\saveme.cts"/>
       </Component>
-      <Component Id="MombotModesGridComponent" Directory="MOM_MODES_GRID" Guid="66f014f4-90ba-4a7e-84ac-6ed7a9b57a55">
+      <Component Id="MombotModesGridComponent" Directory="MOM35_MODES_GRID" Guid="00ba8516-1df0-48d0-9fa1-9422c7c28689">
         <File Source="Mombot35\modes\grid\mow.cts"/>
       </Component>
-      <Component Id="MombotModesOffenseComponent" Directory="MOM_MODES_OFFENSE" Guid="4f325fb6-cfa7-45dc-b6cb-77243b6db4e3">
+      <Component Id="MombotModesOffenseComponent" Directory="MOM35_MODES_OFFENSE" Guid="7ba08a72-505f-4cca-ae12-70a798e1c774">
         <File Source="Mombot35\modes\offense\Boton.cts"/>
         <File Source="Mombot35\modes\offense\CitCap.cts"/>
         <File Source="Mombot35\modes\offense\Citkill.cts"/>
@@ -907,7 +1209,7 @@
         <File Source="Mombot35\modes\offense\PDrop.cts"/>
         <File Source="Mombot35\modes\offense\Plock.cts"/>
       </Component>
-      <Component Id="MombotModesResourceComponent" Directory="MOM_MODES_RESOURCE" Guid="6e1e5162-e32e-47c9-bca1-0aa65c203b08">
+      <Component Id="MombotModesResourceComponent" Directory="MOM35_MODES_RESOURCE" Guid="6d093801-8fa2-49cf-a32c-12a788c3707a">
         <File Source="Mombot35\modes\resource\lsd.cts"/>
         <File Source="Mombot35\modes\resource\Move.cts"/>
         <File Source="Mombot35\modes\resource\movefig.cts"/>
@@ -915,13 +1217,14 @@
         <File Source="Mombot35\modes\resource\Pimp.cts"/>
         <File Source="Mombot35\modes\resource\strip.cts"/>
       </Component>
-      <Component Id="MombotStartupComponent" Directory="MOM_STARTUPS" Guid="59b0b9eb-6ab3-460e-abd8-c45e04185ec1">
+      <Component Id="MombotStartupComponent" Directory="MOM35_STARTUPS" Guid="59b0b9eb-6ab3-460e-abd8-c45e04185ec1">
         <File Id="startChat" Source="Mombot35\startups\chat.cts"/>
         <File Id="startVS" Source="Mombot35\startups\viewscreen.cts"/>
         <File Id="startWatrcher" Source="Mombot35\startups\watcher.cts"/>
       </Component>
     </ComponentGroup>
-
+    
+      
     <ComponentGroup Id="Zedbot25Components" >
       <Component Id="Zedbot25Component" Directory="SCRIPTS" Guid="c760a58e-8f18-458c-9ea0-8ad79ba4f1f0">
         <File Source="Zedbot25\Scripts\z-armourer.cts"/>
@@ -981,12 +1284,6 @@
         <File Source="Zedbot25\z_page.wav"/>
         <File Source="Zedbot25\Z-Bot Installation Notes.txt"/>
         <File Source="Zedbot25\ZedPack-Readme.zip"/>
-      </Component>
-      <!--<Component Id="ZedMomCommandGeneralComponent" Directory="MOM_CMD_GENERAL" Guid="d21ac7a8-dfa2-4c2d-b465-19623c01664c">
-        <File Source="Zedbot25\Scripts\switchbot.cts"/>
-      </Component>-->
-      <Component Id="ZedMomHelpComponent" Directory="MOM_HELP" Guid="8cef7855-4da6-453f-b5d4-e3a44388c0ce">
-        <File Source="Zedbot25\Scripts\switchbot.txt"/>
       </Component>
     </ComponentGroup>
   </Fragment>
