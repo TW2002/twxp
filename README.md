@@ -24,7 +24,7 @@ Installing TWX Proxy has never been easier, thanks to the TWX Proxy MEGA INSTALL
 
 * [TWXProxy 2.06](https://github.com/MicroBlaster/TWXProxy/tree/master/Source/TWXProxy-MB) is an updated version of TWXProxy released by MicroBlaster.
 
-** Installer Coming Soon ***
+** TWX Proxy 3 Coming Soon ***
 
 Be sure to check out the [wiki](https://github.com/MicroBlaster/TWXProxy/wiki) for further information.
 
