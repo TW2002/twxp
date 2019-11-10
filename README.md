@@ -10,6 +10,8 @@ Special thanks to *Steven Ruzicka (aka Mind Dagger)* for helping me get setup, I
 
 ## Mega Installer
 
+Installing TWX Proxy has never been easier, thanks to the TWX Proxy MEGA INSTALLER!!!
+
 [http://microblaster.net/files/twxp/twxproxy26.msi](http://microblaster.net/files/twxp/twxproxy26.msi)
 
  - TWX Proxy 2.06.04d - With new Quick Script Loader!
