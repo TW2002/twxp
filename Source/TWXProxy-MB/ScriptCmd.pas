@@ -1175,17 +1175,12 @@ begin
      Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
       Params[0].SetBool(Bool);
     except on E: EScriptError do
-      // Float comparison failed, try string comparison
-      Params[0].SetBool(AnsiSameStr(Params[1].Value, Params[2].Value));
+      // Float comparison failed,
+      Params[0].SetBool(False);
     end;
-    exit;
-  end;
-
-  // MB - returning this from 2.04, not sure why it was removed in 2.05
-  if (Params[1].Value = Params[2].Value) then
-    Params[0].Value := '1'
+  end
   else
-    Params[0].Value := '0';
+    Params[0].SetBool(AnsiSameStr(Params[1].Value, Params[2].Value));
 
 
   Result := caNone;
