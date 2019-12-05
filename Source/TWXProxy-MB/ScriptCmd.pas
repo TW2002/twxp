@@ -1167,14 +1167,26 @@ begin
   // CMD: isEqual var <value1> <value2>
   // var = 1 if <value1> = <value2> else var = 0
 
-  try
-    // The difference must be within MaxFloatVariance to be considered equal
-    Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
-    Params[0].SetBool(Bool);
-  except on E: EScriptError do
-    // Float comparison failed, try string comparison
-    Params[0].SetBool(AnsiSameStr(Params[1].Value, Params[2].Value));
+  // MB - Only do a numeric comparision if both arguments are numeric
+  if (Params[1].IsNumeric and Params[2].IsNumeric) then
+  begin
+    try
+      // The difference must be within MaxFloatVariance to be considered equal
+     Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
+      Params[0].SetBool(Bool);
+    except on E: EScriptError do
+      // Float comparison failed, try string comparison
+      Params[0].SetBool(AnsiSameStr(Params[1].Value, Params[2].Value));
+    end;
+    exit;
   end;
+
+  // MB - returning this from 2.04, not sure why it was removed in 2.05
+  if (Params[1].Value = Params[2].Value) then
+    Params[0].Value := '1'
+  else
+    Params[0].Value := '0';
+
 
   Result := caNone;
 end;

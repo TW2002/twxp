@@ -278,6 +278,12 @@ begin
       begin
         virtualDir := 'Misc';
 
+        if LeftStr(searchFile.Name, 2) = '__' then
+        virtualDir := '_Favorite';
+
+        if LeftStr(searchFile.Name, 2) = 'z-' then
+          virtualDir := 'Zed / Archie';
+
         if pos('_',searchFile.Name) > 0 then
         begin
           if LeftStr(searchFile.Name,1) = '_' then
@@ -288,12 +294,6 @@ begin
           virtualName := LeftStr(virtualName, pos('_',virtualName));
           virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
         end;
-
-        if LeftStr(searchFile.Name, 2) = '__' then
-          virtualDir := '_Favorite';
-
-        if LeftStr(searchFile.Name, 2) = 'z-' then
-          virtualDir := 'Zed / Archie';
 
         if dirList.IndexOf(virtualDir) = -1 then
           dirList.add(virtualDir);
