@@ -1,5 +1,5 @@
 Changes in 2.06.05
-Fixed - Issue 36 String Comparisons do not work like they did in 2.04
++ Fixed - Issue 36 String Comparisons do not work like they did in 2.04
 
 Changes in 2.06.04
 + New - Installer - Includes public scripts, Mombot 3.58p, and authorized Zedbot 2.19
