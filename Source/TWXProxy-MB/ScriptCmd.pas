@@ -1172,7 +1172,7 @@ begin
   begin
     try
       // The difference must be within MaxFloatVariance to be considered equal
-     Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
+      Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
       Params[0].SetBool(Bool);
     except on E: EScriptError do
       // Float comparison failed,

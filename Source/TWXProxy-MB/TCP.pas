@@ -349,9 +349,9 @@ begin
   AddressList := TStringList.Create;
   Index := GetSocketIndex(Socket);
 
-  if (RemoteAddress = '127.0.0.1') or
-  (Copy(RemoteAddress, 1, 8) = '192.168.') or
-  (Copy(RemoteAddress, 1, 3) = '10.')
+  if (RemoteAddress = '127.0.0.1') //or
+  //(Copy(RemoteAddress, 1, 8) = '192.168.') or
+  //(Copy(RemoteAddress, 1, 3) = '10.')
   then
     LocalClient := TRUE
   else
@@ -363,7 +363,7 @@ begin
      for Address in AddressList do
      begin
         TempAddress := stringreplace(Address, '.*', '',[rfReplaceAll, rfIgnoreCase]);
-        if (Copy(ExternalAddress,1,length(TempAddress)) = TempAddress)
+        if (Copy(RemoteAddress,1,length(TempAddress)) = TempAddress)
         then
           LocalClient := TRUE
      end;
