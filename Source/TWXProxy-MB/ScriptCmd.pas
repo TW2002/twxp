@@ -2458,6 +2458,22 @@ begin
   Result := caNone;
 end;
 
+function CmdSetAutoTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Value : Integer;
+begin
+  // CMD: setTextLineTrigger <name> <label> [<value>]
+
+  // mb - set default lifecycle to 1 if not present
+  if (Length(Params) < 4) then
+    Value := 1
+  else
+    Value := Floor(Params[3].DecValue);
+
+  TScript(Script).SetAutoTrigger(Params[0].Value, Params[1].Value, Params[2].Value, Value);
+  Result := caNone;
+end;
+
 function CmdFormatColor(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
   // CMD: CmdFormatColor [var]
@@ -3792,8 +3808,9 @@ begin
     AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
 
     AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
-
     AddCommand('STRIPANSI', 2, 2, CmdStripANSI, [pkValue, pkValue], pkValue);
+    AddCommand('SETAUTOTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
+
 
     AddCommand('FORMATCOLOR', 1, 1, CmdFormatColor, [pkValue], pkValue);
     AddCommand('FORMATSTRING', 1, -1, CmdFormatString, [pkValue], pkValue);

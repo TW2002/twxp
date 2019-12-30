@@ -1587,11 +1587,13 @@ var
   Last        : Char;
   Linked,
   InQuote     : Boolean;
-  ParamLine   : TStringList;
+  ParamLine,
+  ParamList   : TStringList;
 begin
   FLineCount := FLineCount + ScriptText.Count;
   ScriptID := IncludeScriptList.Add(UpperCase(ScriptName));
   ParamLine := TStringList.Create;
+  ParamList := TStringList.Create;
 
   Line := 1;
 
@@ -1619,6 +1621,26 @@ begin
               ParamStr := Copy(ParamStr, 1, Length(ParamStr) - 1);
               Break;
             end;
+
+            // mb - handle asignment operators
+            if not (InQuote) and (LineText[I] = '=') then
+            begin
+              if Last = ':' then
+              begin
+                ParamLine.Clear;
+                ParamLine.Append('SETVAR');
+
+                ParamList.Clear;
+                ExtractStrings([' '], [], PChar(LineText), ParamList);
+
+                ParamLine.Append(Uppercase(ParamList[0]));
+                ParamStr := ParamList[2];
+                break;
+              end;
+
+            end;
+
+
 
             if not (InQuote) and (IsOperator(LineText[I])) then
             begin

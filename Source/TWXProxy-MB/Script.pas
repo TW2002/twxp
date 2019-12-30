@@ -93,11 +93,13 @@ type
     Name,
     Value,
     LabelName,
+    Response,
     Param     : string;
+    LifeCycle : Integer;
     Timer     : TDelayTimer;
   end;
 
-  TTriggerType = (ttText, ttTextLine, ttTextOut, ttDelay, ttEvent);
+  TTriggerType = (ttText, ttTextLine, ttTextOut, ttDelay, ttEvent, ttTextAuto);
 
   // TModInterpreter: Encapsulation for all script interpretation within the program.
   TModInterpreter = class(TTWXModule, ITWXGlobals)
@@ -219,6 +221,7 @@ type
     function TextOutEvent(const Text : string; var Handled : Boolean) : Boolean;
     function ProgramEvent(EventName, MatchText : string; Exclusive : Boolean) : Boolean;
     function EventActive(EventName : string) : Boolean;
+    procedure SetAutoTrigger(Name, Value, Response : String; LifeCycle : Integer);
     procedure SetTextLineTrigger(Name, LabelName, Value : string);
     procedure SetTextOutTrigger(Name, LabelName, Value : string);
     procedure SetTextTrigger(Name, LabelName, Value : string);
@@ -260,7 +263,7 @@ uses
   Ansi;
 
 const
-  TriggerNameMap: array[TTriggerType] of string = ('Text', 'Text-Line', 'Text-Out', 'Delay', 'Event');
+  TriggerNameMap: array[TTriggerType] of string = ('Text', 'Text-Line', 'Text-Out', 'Delay', 'Event', 'Text-Auto');
 
 //var
   // CmdParams : array of TCmdParam; // EP - Persists to avoid constant SetLength calls, dramatically improving script execution
@@ -811,6 +814,7 @@ begin
   Trigger^.Value := '';
   Trigger^.Param := '';
   Trigger^.LabelName := '';
+  Trigger^.Response := '';
 
   if (Trigger^.Timer <> nil) then
     Trigger^.Timer.Free;
@@ -821,11 +825,12 @@ end;
 function TScript.CheckTriggers(TriggerList : TList; const Text : string; TextOutTrigger, ForceTrigger : Boolean; var Handled : Boolean) : Boolean;
 var
   I         : Integer;
-  LabelName : string;
+  LabelName,
+  Response  : string;
 begin
   // check through textLineTriggers for matches with Text
   Result := FALSE;
-  Handled := FALSE;
+  //Handled := FALSE;
 
   if (not (TextOutTrigger) and not (ForceTrigger) and not ((FTriggersActive)) or (FLocked)) then
     Exit; // triggers are not enabled or locked in stasis (waiting on menu?)
@@ -836,27 +841,56 @@ begin
   begin
     if (Pos(TTrigger(TriggerList[I]^).Value, Text) > 0) or (TTrigger(TriggerList[I]^).Value = '') then
     begin
-      // remove this trigger and enact it
-      Handled := TRUE;
+      // mb - save triger values
       LabelName := TTrigger(TriggerList[I]^).LabelName;
+      Response  := TTrigger(TriggerList[I]^).Response;
 
-      FreeTrigger(TriggerList[I]);
-      TriggerList.Delete(I);
-
-      try
-        GotoLabel(LabelName);
-      except
-        // script is not in execution - so we need to do error handling for gotos outside execute loop
-        on E : EScriptError do
+      // mb - new lifecycle option, currently only on AutoTrigger
+      if TTrigger(TriggerList[I]^).LifeCycle > 0 then
+      begin
+        TTrigger(TriggerList[I]^).LifeCycle := TTrigger(TriggerList[I]^).LifeCycle - 1;
+        if TTrigger(TriggerList[I]^).LifeCycle = 0 then
         begin
-          TWXServer.Broadcast(ANSI_15 + 'Script run-time error (trigger activation): ' + ANSI_7 + E.Message + endl);
+          //Handled := TRUE;
+
+          // remove this trigger
+          FreeTrigger(TriggerList[I]);
+          TriggerList.Delete(I);
+        end;
+
+      end;
+
+
+      if Length(Response) > 0 then
+      begin
+        // mb - handle new autotrigger type
+        TWXClient.Send(Response);
+        Result := TRUE;
+      end
+      else
+      begin
+        // remove this trigger and enact it
+        //Handled := TRUE;
+        //LabelName := TTrigger(TriggerList[I]^).LabelName;
+
+        //FreeTrigger(TriggerList[I]);
+        //TriggerList.Delete(I);
+
+        try
+          GotoLabel(LabelName);
+        except
+          // script is not in execution - so we need to do error handling for gotos outside execute loop
+          on E : EScriptError do
+          begin
+            TWXServer.Broadcast(ANSI_15 + 'Script run-time error (trigger activation): ' + ANSI_7 + E.Message + endl);
+            SelfTerminate;
+            Result := TRUE;
+          end;
+        else
+          TWXServer.Broadcast(ANSI_15 + 'Unknown script run-time error (trigger activation)' + ANSI_7 + endl);
           SelfTerminate;
           Result := TRUE;
         end;
-      else
-        TWXServer.Broadcast(ANSI_15 + 'Unknown script run-time error (trigger activation)' + ANSI_7 + endl);
-        SelfTerminate;
-        Result := TRUE;
       end;
 
       if not (Result) then
@@ -935,6 +969,9 @@ begin
 
       Exit;
     end;
+
+  // check through autoTriggers for matches with Text
+  Result := CheckTriggers(FTriggers[ttTextAuto], Text, FALSE, ForceTrigger, Handled);
 
   // check through textTriggers for matches with Text
   Result := CheckTriggers(FTriggers[ttText], Text, FALSE, ForceTrigger, Handled);
@@ -1053,8 +1090,11 @@ begin
   Result := AllocMem(SizeOf(TTrigger));
   Result.Name := Name;
   Result.LabelName := LabelName;
+  Result.Response := '';
   Result.Value := Value;
   Result.Timer := nil;
+  // mb - default lifecycle is single response / no repeat
+  Result.LifeCycle := 1;
 end;
 
 function TScript.FindWindow(WindowName : string) : TScriptWindow;
@@ -1074,6 +1114,29 @@ begin
 
   if (Result = nil) then
     raise EScriptError.Create('Window not found: ' + WindowName);
+end;
+
+procedure TScript.SetAutoTrigger(Name, Value, Response : String; LifeCycle : Integer);
+var
+  Trigger : PTrigger;
+begin
+  // mb - doto - do I need this for autotriggers?
+  //Cmp.ExtendName(Name, ExecScriptID);
+  //Cmp.ExtendLabelName(LabelName, ExecScriptID);
+
+  if (TriggerExists(Name)) then
+    raise EScriptError.Create('Trigger already exists: ''' + Name + '''');
+
+  Trigger := AllocMem(SizeOf(TTrigger));
+  Trigger.Name := Name;
+  Trigger.LabelName := '';
+  Trigger.Response := Response;
+  Trigger.Value := Value;
+  //Trigger.Param := Param;
+  Trigger.Timer := nil;
+  Trigger.LifeCycle := LifeCycle;
+
+  FTriggers[ttTextAuto].Add(Trigger);
 end;
 
 procedure TScript.SetTextLineTrigger(Name, LabelName, Value : String);
@@ -1104,9 +1167,11 @@ begin
   Trigger := AllocMem(SizeOf(TTrigger));
   Trigger.Name := Name;
   Trigger.LabelName := LabelName;
+  Trigger.Response := '';
   Trigger.Value := UpperCase(Value);
   Trigger.Param := Param;
   Trigger.Timer := nil;
+  Trigger.LifeCycle := 1;
 
   if (Trigger.Value = 'TIME HIT') then
     Controller.CountTimerEvent;
