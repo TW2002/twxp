@@ -1011,6 +1011,7 @@ begin
       end
       else
       begin
+        IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'False');
         if Sender <> nil then
         begin
           IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'False');
@@ -1041,10 +1042,11 @@ procedure TfrmMain.trayIconDblClick(Sender: TObject);
 begin
   SetForegroundWindow(Application.Handle);
 
-  if (miLoad.Default) then
+  if TWXGUI.Connected then
     miLoadClick(Sender)
-  else if (miConnect.Default) then
-    miConnectClick(Sender);
+  else
+    miConnectClick(Sender)
+
 end;
 
 procedure TfrmMain.updateTimerTick(Sender: TObject);

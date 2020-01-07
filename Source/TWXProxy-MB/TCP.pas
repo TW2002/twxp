@@ -65,6 +65,13 @@ type
     tcpClient : TClientSocket;
   end;
 
+  TQuickText = class
+  private
+    Search : string;
+    Replace : string;
+  end;
+
+
   TModServer = class(TTelnetServerSocket, IModServer)
   private
     FClientTypes     : array[0..255] of TClientType;
@@ -77,6 +84,11 @@ type
     FExternalAddress : String;
     FBroadCastMsgs   : Boolean;
     FLocalEcho       : Boolean;
+
+    // MB - Strings to hold TW2002 color codes and user color codes
+    SystemQuickText,
+    UserQuickText     : TList ;
+
 
   private
     function GetClientType(Index : Integer) : TClientType;
@@ -98,6 +110,7 @@ type
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
     procedure SetLocalEcho(Value: Boolean);
+    procedure AddSystemQuickText(Search, Replace : string);
 
   protected
     procedure tcpServerClientConnect(Sender: TObject; Socket: TCustomWinSocket);
@@ -117,6 +130,10 @@ type
     procedure StopVarDump;
     procedure NotifyScriptLoad;
     procedure NotifyScriptStop;
+
+    procedure AddQuickText(Search, Replace : string);
+    procedure ClearQuickText(Search : string = '');
+    function ApplyQuickText(Text : string) : string;
 
     property ClientTypes[Index : Integer] : TClientType read GetClientType write SetClientType;
     property ClientCount : Integer read GetClientCount;
@@ -224,6 +241,55 @@ begin
 
   // set defaults
  BroadCastMsgs := True;
+
+  // mb - Cleate lists for quicktext
+  SystemQuickText := TList.Create;
+  UserQuickText := Tlist.Create;
+
+  // initialize system quicktexts
+  AddSystemQuickText('~a', '^[0;30m');
+  AddSystemQuickText('~b', '^[0;31m');
+  AddSystemQuickText('~c', '^[0;32m');
+  AddSystemQuickText('~d', '^[0;33m');
+  AddSystemQuickText('~e', '^[0;34m');
+  AddSystemQuickText('~f', '^[0;35m');
+  AddSystemQuickText('~g', '^[0;36m');
+  AddSystemQuickText('~h', '^[0;37m');
+  AddSystemQuickText('~A', '^[1;30m');
+  AddSystemQuickText('~B', '^[1;31m');
+  AddSystemQuickText('~C', '^[1;32m');
+  AddSystemQuickText('~D', '^[1;33m');
+  AddSystemQuickText('~E', '^[1;34m');
+  AddSystemQuickText('~F', '^[1;35m');
+  AddSystemQuickText('~G', '^[1;36m');
+  AddSystemQuickText('~H', '^[1;37m');
+  AddSystemQuickText('~i', '^[1;30m');
+  AddSystemQuickText('~j', '^[41m');
+  AddSystemQuickText('~k', '^[42m');
+  AddSystemQuickText('~l', '^[43m');
+  AddSystemQuickText('~m', '^[44m');
+  AddSystemQuickText('~n', '^[45m');
+  AddSystemQuickText('~o', '^[46m');
+  AddSystemQuickText('~p', '^[47m');
+  AddSystemQuickText('~!', '^[2J^[H');
+  AddSystemQuickText('~@', chr(13) + '^[0m^[0K');
+  AddSystemQuickText('~0', '^[0m');
+  AddSystemQuickText('~1', '^[0m^[1;36m');
+  AddSystemQuickText('~2', '^[0m^[1;33m');
+  AddSystemQuickText('~3', '^[0m^[35m');
+  AddSystemQuickText('~4', '^[0m^[44m');
+  AddSystemQuickText('~5', '^[0m^[32m');
+  AddSystemQuickText('~6', '^[0m^[1;5;31m');
+  AddSystemQuickText('~7', '^[0m^[1;37m');
+  AddSystemQuickText('~8', '^[0m^[1;5;31m');
+  AddSystemQuickText('~9', '^[0m^[30;47m');
+  AddSystemQuickText('~q', '^[0m^[5;34m');
+  AddSystemQuickText('~r', '^[0m^[34m');
+  AddSystemQuickText('~s', '^[0m^[30;41m');
+  AddSystemQuickText('~I', '^[0;34;47m');
+  AddSystemQuickText('~J', '^[31;47m');
+  AddSystemQuickText('~K', '^[1;33;44m');
+
 end;
 
 procedure TModServer.BeforeDestruction;
@@ -232,7 +298,92 @@ begin
   FBufferOut.Free;
   FBufTimer.Free;
 
+  while (SystemQuickText.Count > 0) do
+  begin
+    TQuickText(SystemQuickText[0]).Free;
+    SystemQuickText.Delete(0);
+  end;
+  SystemQuickText.Free;
+
+  while (UserQuickText.Count > 0) do
+  begin
+    TQuickText(UserQuickText[0]).Free;
+    UserQuickText.Delete(0);
+  end;
+  UserQuickText.Free;
+
   inherited;
+end;
+
+function TModServer.ApplyQuickText(Text : string) : string;
+var
+  QuickText : TQuickText;
+  I : Integer;
+begin
+    for I := 0 to UserQuickText.Count - 1 do
+    begin
+      Text := stringreplace(Text, TQuickText(UserQuickText[I]).Search,
+              TQuickText(UserQuickText[I]).Replace, [rfReplaceAll]);
+    end;
+
+    for I := 0 to SystemQuickText.Count - 1 do
+    begin
+      Text := stringreplace(Text, TQuickText(SystemQuickText[I]).Search,
+              TQuickText(SystemQuickText[I]).Replace, [rfReplaceAll]);
+    end;
+
+    result := stringreplace(Text, '^[', chr(27) + '[', [rfReplaceAll]);
+end;
+
+procedure TModServer.AddSystemQuickText(Search, Replace : string);
+var
+  NewText : TQuickText;
+begin
+  // build new Syhstem QuickText
+  NewText := TQuickText.Create;
+  NewText.Search  := Search;
+  NewText.Replace := Replace;
+
+  SystemQuickText.Add(NewText);
+end;
+
+procedure TModServer.AddQuickText(Search, Replace : string);
+var
+  NewText : TQuickText;
+begin
+  // build new User QuickText
+  NewText := TQuickText.Create;
+  NewText.Search  := Search;
+  NewText.Replace := ApplyQuickText(Replace);
+
+  UserQuickText.Add(NewText);
+end;
+
+procedure TModServer.ClearQuickText(Search : string = '');
+var
+  NewText : TQuickText;
+  I : Integer;
+begin
+  if (Search = '') then
+    begin
+       while (UserQuickText.Count > 0) do
+    begin
+      TQuickText(UserQuickText[0]).Free;
+      UserQuickText.Delete(0);
+    end;
+  end
+  else
+  begin
+    for I := 0 to UserQuickText.Count - 1 do
+    begin
+      if TQuickText(UserQuickText[I]).Search = Search then
+      begin
+        TQuickText(UserQuickText[I]).Free;
+        UserQuickText.Delete(I);
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TModServer.Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
@@ -241,6 +392,8 @@ var
 begin
   if (Length(Text) = 0) then
     Exit;
+
+  Text := ApplyQuickText(Text);
 
   if not (Buffered) and (FBufferOut.Count > 0) then
   begin
@@ -909,7 +1062,7 @@ begin
   if (TWXDatabase.DBHeader.UseLogin) then
   begin
     TWXInterpreter.StopAll(FALSE);
-    TWXInterpreter.Load(FetchScript(TWXDatabase.DBHeader.LoginScript, FALSE), TRUE);
+    TWXInterpreter.Load(FetchScript(TWXGUI.ProgramDir + '\scripts\' + TWXDatabase.DBHeader.LoginScript, FALSE), TRUE);
   end;
 end;
 

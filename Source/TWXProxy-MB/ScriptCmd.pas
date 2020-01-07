@@ -397,11 +397,18 @@ end;
 
 function CmdDisconnect(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
-  // CMD: disconnect
-
+  // CMD: disconnect {disable}
+  // {disable} - Will disable reconnects if true
   if (TWXClient.Connected) then
-    TWXClient.CloseClient;
+  begin
 
+    // mb - Hard disconnect if param[1] = True - other wise
+    // soft disconnect with reconnect allowed.
+    if (Length(Params) > 0) then
+      TWXClient.Disconnect
+    else
+      TWXClient.CloseClient;
+  end;
   Result := caNone;
 end;
 
@@ -2345,7 +2352,7 @@ begin
   Result := caNone;
 end;
 
-function CmdClearGlobals(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdClearGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
 
   TWXGlobalVars.Clear;
@@ -2474,17 +2481,24 @@ begin
   Result := caNone;
 end;
 
-function CmdFormatColor(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdAddQuickText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
-  // CMD: CmdFormatColor [var]
-  // Sets user defined colors for use with formatString, echo, and getText.
-  TWXExtractor.FormatColor := Params[0].Value;
+  // CMD: CmdAddQuickText {search} {replace}
+  // Sets user defined QuickTexts for use with echo, and getText.
+  // {search} - Text to search for.
+  // {replace} - Text to replace found text.
+
+  TWXServer.AddQuickText(Params[0].Value, Params[1].Value);
 
   Result := caNone;
 end;
 
-function CmdFormatString(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdClearQuickText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
+  if Length(Params) > 0 then
+    TWXServer.ClearQuickText(Params[0].Value)
+  else
+    TWXServer.ClearQuickText();
 
   Result := caNone;
 end;
@@ -3678,7 +3692,7 @@ begin
     AddCommand('CONNECT', 0, 0, CmdConnect, [], pkValue);
     AddCommand('CUTTEXT', 4, 4, CmdCutText, [pkValue, pkVar, pkValue, pkValue], pkValue);
     AddCommand('DELETE', 1, 1, CmdDelete, [pkValue], pkValue);
-    AddCommand('DISCONNECT', 0, 0, CmdDisconnect, [], pkValue);
+    AddCommand('DISCONNECT', 0, 1, CmdDisconnect, [], pkValue);
 
     AddCommand('DIVIDE', 2, 2, CmdDivide, [pkVar, pkValue], pkValue);
     AddCommand('ECHO', 1, -1, CmdEcho, [pkValue], pkValue);
@@ -3805,19 +3819,28 @@ begin
 
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
     AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
-    AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
+    AddCommand('CLEARGLOBAL', 0, 0, CmdClearGlobal, [], pkValue);
 
     AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
     AddCommand('STRIPANSI', 2, 2, CmdStripANSI, [pkValue, pkValue], pkValue);
     AddCommand('SETAUTOTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
 
+    AddCommand('SETQUICKTEXT', 2, 2, CmdAddQuickText, [pkValue], pkValue);
+    AddCommand('CLEARQUICKTEXT', 1, 0, CmdClearQuickText, [pkValue], pkValue);
 
-    AddCommand('FORMATCOLOR', 1, 1, CmdFormatColor, [pkValue], pkValue);
-    AddCommand('FORMATSTRING', 1, -1, CmdFormatString, [pkValue], pkValue);
-    AddCommand('ECHOF', 1, -1, CmdEchoFormatted, [pkValue], pkValue);
-    AddCommand('GETINPUTF', 1, -1, CmdGetInputFormatted, [pkValue], pkValue);
+//    AddCommand('SORTARRAY', 1, 1, CmdSortArray, [pkValue], pkValue);
+//    AddCommand('COPYDATABASE', 1, 1, CmdCopyDatabase, [pkValue], pkValue);
+//    AddCommand('CREATEDATABASE', 1, 1, CmdCreateDatabase, [pkValue], pkValue);
+//    AddCommand('DELETEDATABASE', 1, 1, CmdDeleteDatabase, [pkValue], pkValue);
+//    AddCommand('EDITDATABASE', 1, 1, CmdEditDatabase, [pkValue], pkValue);
+//    AddCommand('LISTDATABASES', 1, 1, CmdListDatabases, [pkValue], pkValue);
+//    AddCommand('LOADDATABASE', 1, 1, CmdLoadDatabase, [pkValue], pkValue);
 
-    // CmdGotoPrompt ??? Switchboard ??? Maybe
+
+
+    //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
+    // GETGAMESETTINGS CmdGotoPrompt ??? Switchboard ??? Maybe
+
   end;
 end;
 

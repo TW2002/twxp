@@ -1625,19 +1625,64 @@ begin
             // mb - handle asignment operators
             if not (InQuote) and (LineText[I] = '=') then
             begin
-              if Last = ':' then
+              if pos(last,':*/+-') > 0 then
               begin
                 ParamLine.Clear;
-                ParamLine.Append('SETVAR');
+
+                if Last = ':' then
+                  ParamLine.Append('SETVAR');
+                if Last = '*' then
+                  ParamLine.Append('MULTIPLY');
+                if Last = '/' then
+                  ParamLine.Append('DIVIDE');
+                if Last = '+' then
+                  ParamLine.Append('ADD');
+                if Last = '-' then
+                  ParamLine.Append('SUBTRACT');
 
                 ParamList.Clear;
                 ExtractStrings([' '], [], PChar(LineText), ParamList);
 
-                ParamLine.Append(Uppercase(ParamList[0]));
-                ParamStr := ParamList[2];
-                break;
+                ParamLine.Append(Uppercase(stringreplace(ParamList[0], chr(9), '',
+                          [rfReplaceAll, rfIgnoreCase])));
+                ParamStr := '';
+                Continue;
+                //break;
               end;
+            end;
 
+            // mb - handle increment operator
+            if not (InQuote) and (LineText[I] = '+') and (Last = '+') then
+            begin
+              ParamLine.Clear;
+              ParamLine.Append('ADD');
+
+              ParamList.Clear;
+              ExtractStrings([' '], [], PChar(LineText), ParamList);
+
+              ParamLine.Append(Uppercase(stringreplace(stringreplace(
+                      ParamList[0], '++', '',[rfReplaceAll, rfIgnoreCase]),
+                      chr(9), '',[rfReplaceAll, rfIgnoreCase])));
+
+              ParamStr := '1';
+              break;
+            end;
+
+            // mb - handle decrement operator
+            if not (InQuote) and (LineText[I] = '-') and (Last = '-') then
+            begin
+              ParamLine.Clear;
+              ParamLine.Append('SUBTRACT');
+
+              ParamList.Clear;
+              ExtractStrings([' '], [], PChar(LineText), ParamList);
+
+              ParamLine.Append(Uppercase(stringreplace(stringreplace(
+                      ParamList[0], '--', '',[rfReplaceAll, rfIgnoreCase]),
+                      chr(9), '',[rfReplaceAll, rfIgnoreCase])));
+
+              ParamStr := '1';
+              break;
             end;
 
 

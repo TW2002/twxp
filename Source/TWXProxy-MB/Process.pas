@@ -96,10 +96,6 @@ type
     FCurrentScanType       : Word;
     FCurrentShipClass      : String;
 
-    // MB - Strings to hold TW2002 color codes and user color codes
-    FTW2002Color,
-    FFormatColor           : String;
-
     procedure SectorCompleted;
     procedure ResetSectorLists;
     procedure ProcessPrompt(Line : string);
@@ -160,7 +156,6 @@ type
     property CurrentPlanetScanner: Boolean read FCurrentPlanetScanner;
     property CurrentScanType: Word    read FCurrentScanType;
     property CurrentShipClass: String  read FCurrentShipClass;
-    property FormatColor: String  read FFormatColor write FFormatColor;
 
   published
     property MenuKey: Char read GetMenuKey write SetMenuKey;
@@ -185,16 +180,6 @@ begin
 
   MenuKey := '$';
 
-  FTW2002Color :=
-    '~a=^[0;30m ~b=^[0;31m ~c=^[0;32m ~d=^[0;33m ~e=^[0;34m ~f=^[0;35m ' +
-    '~g=^[0;36m ~h=^[0;37m ~A=^[1;30m ~B=^[1;31m ~C=^[1;32m ~D=^[1;33m ' +
-    '~E=^[0;34m ~F=^[1;35m ~G=^[1;36m ~H=^[1;37m ~i=^[40m ~j=^[41m ' +
-    '~k=^[42m ~l=^[43m ~m=^[44m ~n=^[45m ~o=^[46m ~p=^[47m ~!=^[2J^[H ' +
-    '~0=^[0m ~1=^[0m^[1;36m ~2=^[0m^[1;33m ~3=^[0m^[35m ~4=^[0m^[44m ' +
-    '~5=^[0m^[32m ~6=^[0m^[1;5;31m ~7=^[0m^[1;37m ~8=^[0m^[1;5;31m ' +
-    '~9=^[0m^[30;47m ~q=^[0m^[5;34m ~r=^[0m^[34m ~s=^[0m^[30;41m ' +
-    '~I=^[0;34;47m ~J=^[31;47m ~K=^[1;33;44m';
-  FFormatColor := '';
 end;
 
 procedure TModExtractor.BeforeDestruction;
@@ -1448,6 +1433,9 @@ begin
   StripChar(S, #10);
   StripChar(AnsiS, #10);
 
+  // MB - Process autotext
+  //TWXInterpreter.AutoTextEvent(S, FALSE);
+
   // Form and process lines out of data
   I := 1;
   Line := CurrentLine + S;
@@ -1459,13 +1447,15 @@ begin
     begin
       // find the matching carriage return in the ansi line
       X := 1;
-      
+
       if (Length(ANSILine) > 0) then
         while (ANSILine[X] <> #13) and (X < Length(ANSILine)) do
           Inc(X);
 
       CurrentLine := Copy(Line, 1, I - 1);
       CurrentANSILine := Copy(ANSILine, 1, X);
+      // MB - Process autotext
+      //TWXInterpreter.AutoTextEvent(CurrentLine, FALSE);
       ProcessLine(CurrentLine);
 
       if (I < Length(Line)) then
@@ -1489,8 +1479,12 @@ begin
   // Process what we have left
   CurrentLine := Line;
   CurrentANSILine := ANSILine;
-  ProcessPrompt(CurrentLine);
 
+  // MB - Process autotext for prompts only, otherwise they
+  //      get fired twice on the same event.
+  TWXInterpreter.AutoTextEvent(CurrentLine, FALSE);
+
+  ProcessPrompt(CurrentLine);
 end;
 
 

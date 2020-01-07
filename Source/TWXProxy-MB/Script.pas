@@ -140,6 +140,7 @@ type
     function TextOutEvent(Text : string; StartScript : TScript) : Boolean;
     procedure TextEvent(Text : string; ForceTrigger : Boolean);
     procedure TextLineEvent(Text : string; ForceTrigger : Boolean);
+    procedure AutoTextEvent(Text : string; ForceTrigger : Boolean);
     function EventActive(EventName : string) : Boolean;
     procedure ActivateTriggers;
     procedure DumpVars(const SearchName : string);
@@ -217,6 +218,7 @@ type
     procedure AddMenu(MenuItem : TObject);
     procedure GotoLabel(L : string);
     function TextLineEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
+    function AutoTextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
     function TextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
     function TextOutEvent(const Text : string; var Handled : Boolean) : Boolean;
     function ProgramEvent(EventName, MatchText : string; Exclusive : Boolean) : Boolean;
@@ -596,6 +598,18 @@ begin
       Inc(I);
 end;
 
+procedure TModInterpreter.AutoTextEvent(Text : string; ForceTrigger : Boolean);
+var
+  I : Integer;
+begin
+  // trigger matching textline triggers in active scripts
+  I := 0;
+
+  while (I < ScriptList.Count) do
+    if not (Scripts[I].AutoTextEvent(Text, ForceTrigger)) then
+      Inc(I);
+end;
+
 function TModInterpreter.EventActive(EventName : string) : Boolean;
 var
   I : Integer;
@@ -824,6 +838,7 @@ end;
 
 function TScript.CheckTriggers(TriggerList : TList; const Text : string; TextOutTrigger, ForceTrigger : Boolean; var Handled : Boolean) : Boolean;
 var
+  LifeCycle,
   I         : Integer;
   LabelName,
   Response  : string;
@@ -839,16 +854,22 @@ begin
 
   while (I < TriggerList.Count) do
   begin
+
     if (Pos(TTrigger(TriggerList[I]^).Value, Text) > 0) or (TTrigger(TriggerList[I]^).Value = '') then
     begin
+    if (TTrigger(TriggerList[I]^).Name = '09') then
+Response  := TTrigger(TriggerList[I]^).Response;
+
+
       // mb - save triger values
+      LifeCycle := TTrigger(TriggerList[I]^).LifeCycle;
       LabelName := TTrigger(TriggerList[I]^).LabelName;
       Response  := TTrigger(TriggerList[I]^).Response;
 
       // mb - new lifecycle option, currently only on AutoTrigger
-      if TTrigger(TriggerList[I]^).LifeCycle > 0 then
+      if LifeCycle > 0 then
       begin
-        TTrigger(TriggerList[I]^).LifeCycle := TTrigger(TriggerList[I]^).LifeCycle - 1;
+        TTrigger(TriggerList[I]^).LifeCycle := LifeCycle - 1;
         if TTrigger(TriggerList[I]^).LifeCycle = 0 then
         begin
           //Handled := TRUE;
@@ -864,8 +885,10 @@ begin
       if Length(Response) > 0 then
       begin
         // mb - handle new autotrigger type
+        Sleep(250);
         TWXClient.Send(Response);
-        Result := TRUE;
+        exit;
+        //Result := TRUE;
       end
       else
       begin
@@ -955,6 +978,14 @@ begin
   Result := CheckTriggers(FTriggers[ttTextLine], Text, FALSE, ForceTrigger, Handled);
 end;
 
+function TScript.AutoTextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
+var
+  Handled : Boolean;
+begin
+  // check through autoTriggers for matches with Text
+  Result := CheckTriggers(FTriggers[ttTextAuto], Text, FALSE, ForceTrigger, Handled);
+end;
+
 function TScript.TextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
 var
   Handled : Boolean;
@@ -969,9 +1000,6 @@ begin
 
       Exit;
     end;
-
-  // check through autoTriggers for matches with Text
-  Result := CheckTriggers(FTriggers[ttTextAuto], Text, FALSE, ForceTrigger, Handled);
 
   // check through textTriggers for matches with Text
   Result := CheckTriggers(FTriggers[ttText], Text, FALSE, ForceTrigger, Handled);
