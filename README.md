@@ -2,7 +2,7 @@
 
 ## What is TWXProxy?
 
-**TWXProxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Borland Delphi 5.
+**TWXProxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Borland Turbo Pascal.
 
 Originally written by Remco Mulder, [TWXProxy](https://github.com/erikh/twxproxy) has been passed on to various developers over the years. Because it is written in an obsolete version of Pascal, it can only be compiled using Turbo Delphi 2006 Explorer which is no longer available. 
 
