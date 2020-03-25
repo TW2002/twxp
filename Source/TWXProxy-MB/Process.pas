@@ -34,6 +34,7 @@ uses
   SysUtils,
   DataBase,
   StrUtils,
+  INIFiles,
   Classes;
 
 type
@@ -55,6 +56,7 @@ type
     FCurrentMessage,
     FTWGSVer,
     FTW2002Ver          : string;
+    FTWGSType           : integer;
     FTraderList,
     FShipList,
     FPlanetList         : TList;
@@ -128,6 +130,10 @@ type
     property CurrentSector: integer read FCurrentSectorIndex;
 
     // MB - Addeded in 2.06
+    property TWGSType: integer read FTWGSType;
+    property TWGSVer: string read FTWGSVer;
+    property TW2002Ver: string read FTW2002Ver;
+
     property CurrentTurns: integer read FCurrentTurns;
     property CurrentCredits: integer read FCurrentCredits;
     property CurrentFighters: integer read FCurrentFighters;
@@ -180,6 +186,9 @@ begin
 
   MenuKey := '$';
 
+  FTWGSType := 0;
+  FTWGSVer := '';
+  FTW2002Ver := '';
 end;
 
 procedure TModExtractor.BeforeDestruction;
@@ -277,17 +286,19 @@ begin
 end;
 
 procedure TModExtractor.ProcessPrompt(Line : string);
+var
+  Head : TDataHeader;
 begin
   // This procedure checks command prompts.  It is called from both
   // processline and processinbound, as it can come in as part of
   // a large packet or still be waiting for the user.
 
-  // TODO - Make version availablre to scripts
   // MB - Added TWGS Version detection
   if (Copy(Line, 1, 14) = 'TradeWars Game') then
   begin
-    FTWGSVer := '1.03';
-    FTW2002Ver := '3.13';
+    FTWGSType := 2;
+    FTWGSVer := '2.20b';
+    FTW2002Ver := '3.34';
 
     // MB - Sending event to Mombot, since we blocked # initially.
     if TWXClient.BlockExtended then
@@ -299,8 +310,11 @@ begin
   end
   else if (Copy(Line, 1, 15) = 'Trade Wars 2002') then
   begin
-    FTWGSVer := '2.20b';
-    FTW2002Ver := '3.34';
+//Trade Wars 2002 Game Server v1.03                          Copyright (C) 1998
+//www.tradewars.com                                   Epic Interactive Strategy
+    FTWGSType := 1;
+    FTWGSVer := '1.03';
+    FTW2002Ver := '3.13';
 
     // MB - Sending event to Mombot, since we blocked # initially.
     if TWXClient.BlockExtended then
@@ -322,14 +336,16 @@ begin
   //TODO: check database size on v screen
   //TODO: Verify Stardock location on 'v' scren matches database.
   //TODO: Veryfy game age to determin if this is a rebang
-  //TODO: Fix endless loop if stardock is hidden
 
   // MB - Display 'v' screen if stardock location is unknown.
-  //if (TWXDatabase.DBHeader.Stardock = 0) then
-  //begin
-  //  TWXClient.Send('v');
-  //  Sleep(500);
-  //end;
+  if (TWXDatabase.DBHeader.Stardock = 65535) then
+  begin
+    Head := TWXDatabase.DBHeader;
+    Head.Stardock := 0;
+    TWXDatabase.DBHeader := Head;
+    TWXClient.Send('vi/');
+    Sleep(500);
+  end;
 
     // No displays anymore, all done
     FCurrentDisplay := dNone;
@@ -1166,6 +1182,7 @@ var
   X       : String;
   I       : Integer;
   Sect    : TSector;
+  INI     : TINIFile;
 begin
   // Every line is passed to this procedure to be processed and recorded
   if (FCurrentMessage <> '') then
@@ -1243,6 +1260,15 @@ begin
         Sect.Explored := etCalc;
         Sect.Update := Now;
         TWXDatabase.SaveSector(Sect, I, nil, nil, nil);
+
+        // MB - Store the stardoc sector in config file.
+        INI := TINIFile.Create(TWXGUI.ProgramDir + '\' + StripFileExtension(TWXDatabase.DatabaseName) + '.cfg');
+        try
+          INI.WriteString('Variables', '$STARDOCK', inttostr(I));
+        finally
+          INI.Free;
+        end;
+
       end;
     end;
   end

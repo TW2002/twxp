@@ -547,7 +547,7 @@ begin
     end;
 
   Socket.SendText(endl + ANSI_13 + 'TWX Proxy Server ' + ANSI_11 + 'v' +
-                  ProgramVersion + ANSI_7 + ' (' + ReleaseVersion + ')' + endl);
+                  ProgramVersion + chr(ReleaseNumber + 96) + ANSI_7 + ' (' + ReleaseVersion + ')' + endl);
 
   if (BroadCastMsgs) then
     Broadcast(endl + ANSI_2 + 'Active connection detected from: ' + ANSI_14 + RemoteAddress + endl + endl)
@@ -995,7 +995,7 @@ end;
 
 procedure TModClient.Disconnect;
 begin
-
+  TWXExtractor.CurrentLine := '';
   TWXServer.ClientMessage(ANSI_12 + 'Disconnecting from server...');
 
   // Make sure it doesn't try to reconnect

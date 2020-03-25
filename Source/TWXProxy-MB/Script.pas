@@ -112,6 +112,7 @@ type
     FTimerEventCount: Integer;
     FLastScript,
     FActiveBot,
+    FActiveBotScript,
     FProgramDir: string;
 
     function GetScript(Index : Integer) : TScript;
@@ -151,6 +152,7 @@ type
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
     property ActiveBot : string read FActiveBot;
+    property ActiveBotScript   : string read FActiveBotScript;
     property ScriptMenu : TMenuItem read FScriptMenu write FScriptMenu;
     property ScriptRef : TScriptRef read FScriptRef;
     property ProgramDir: string read GetProgramDir;
@@ -479,9 +481,14 @@ end;
 procedure TModInterpreter.SwitchBot(ScriptName : String; StopBotScripts : Boolean);
 var
    I : Integer;
-   Script     : String;
-   ScriptList : TStringList;
+   IniFile     : TIniFile;
+   Script,
+   BotScript,
+   Section     : String;
+   SectionList,
+   ScriptList  : TStringList;
 begin
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
   ScriptList := TStringList.Create;
 
   if (ScriptName <> '') then
@@ -514,7 +521,29 @@ begin
        else
          Load('scripts\' + script, FALSE);
      end;
-      FActiveBot := ScriptName;
+      FActiveBotScript := ScriptName;
+
+      // MB - Get the activescript name from the ini file.
+      begin
+      try
+        SectionList := TStringList.Create;
+       try
+          IniFile.ReadSections(SectionList);
+          for Section in SectionList do
+          begin
+            BotScript  := IniFile.ReadString(Section, 'Script', '');
+            if (Pos(LowerCase(ScriptName), LowerCase(BotScript)) = 1) then
+            begin
+              FActiveBot := IniFile.ReadString(Section, 'Name', '');
+            end;
+          end;
+        finally
+          SectionList.Free;
+        end;
+      finally
+      IniFile.Free;
+      end;
+    end
 
     finally
       ScriptList.free();
@@ -845,7 +874,7 @@ var
 begin
   // check through textLineTriggers for matches with Text
   Result := FALSE;
-  //Handled := FALSE;
+  Handled := FALSE;
 
   if (not (TextOutTrigger) and not (ForceTrigger) and not ((FTriggersActive)) or (FLocked)) then
     Exit; // triggers are not enabled or locked in stasis (waiting on menu?)
@@ -872,7 +901,7 @@ Response  := TTrigger(TriggerList[I]^).Response;
         TTrigger(TriggerList[I]^).LifeCycle := LifeCycle - 1;
         if TTrigger(TriggerList[I]^).LifeCycle = 0 then
         begin
-          //Handled := TRUE;
+          Handled := TRUE;
 
           // remove this trigger
           FreeTrigger(TriggerList[I]);

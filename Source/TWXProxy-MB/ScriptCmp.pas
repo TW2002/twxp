@@ -1390,7 +1390,7 @@ begin
     begin
       Inc(WaitOnCount);
 
-      RecurseCmd(['SETVAR','$LastLine','CURRENTLINE'], Line, ScriptID);
+      RecurseCmd(['GETWORD', 'CURRENTLINE', '$LastPrompt', '1'], Line, ScriptID);
 
       if (ParamLine.Count > 1) then
       begin
@@ -1399,20 +1399,25 @@ begin
           RecurseCmd(['GETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
           RecurseCmd(['SETDEAFCLIENTS'], Line, ScriptID);
 
+          RecurseCmd(['SETDELAYTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'A', ':WAITON' + IntToStr(WaitOnCount), '2000'], Line, ScriptID);
+          RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'B', ':WAITON' + IntToStr(WaitOnCount), '$LastPrompt'], Line, ScriptID);
           RecurseCmd(['SEND','"/"'], Line, ScriptID);
-          RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
           RecurseCmd(['PAUSE'], Line, ScriptID);
           RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+          RecurseCmd(['KILLALLTRIGGERS'], Line, ScriptID);
 
           RecurseCmd(['SETDEAFCLIENTS','$LastDeaf'], Line, ScriptID);
         end
       end
       else
       begin
-        RecurseCmd(['SEND','"/"'], Line, ScriptID);
-        RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount), ':WAITON' + IntToStr(WaitOnCount), '$LastLine'], Line, ScriptID);
-        RecurseCmd(['PAUSE'], Line, ScriptID);
-        RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+          RecurseCmd(['SETDELAYTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'A', ':WAITON' + IntToStr(WaitOnCount), '2000'], Line, ScriptID);
+          RecurseCmd(['SETTEXTTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'B', ':WAITON' + IntToStr(WaitOnCount), '$LastPrompt'], Line, ScriptID);
+          RecurseCmd(['SEND','"/"'], Line, ScriptID);
+          RecurseCmd(['PAUSE'], Line, ScriptID);
+          RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
+          RecurseCmd(['KILLTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'A'], Line, ScriptID);
+          RecurseCmd(['KILLTRIGGER', 'WAITON' + IntToStr(WaitOnCount) + 'B'], Line, ScriptID);
       end;
     end
     else
