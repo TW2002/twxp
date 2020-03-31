@@ -93,11 +93,13 @@ type
     Name,
     Value,
     LabelName,
+    Response,
     Param     : string;
+    LifeCycle : Integer;
     Timer     : TDelayTimer;
   end;
 
-  TTriggerType = (ttText, ttTextLine, ttTextOut, ttDelay, ttEvent);
+  TTriggerType = (ttText, ttTextLine, ttTextOut, ttDelay, ttEvent, ttTextAuto);
 
   // TModInterpreter: Encapsulation for all script interpretation within the program.
   TModInterpreter = class(TTWXModule, ITWXGlobals)
@@ -110,6 +112,7 @@ type
     FTimerEventCount: Integer;
     FLastScript,
     FActiveBot,
+    FActiveBotScript,
     FProgramDir: string;
 
     function GetScript(Index : Integer) : TScript;
@@ -138,6 +141,7 @@ type
     function TextOutEvent(Text : string; StartScript : TScript) : Boolean;
     procedure TextEvent(Text : string; ForceTrigger : Boolean);
     procedure TextLineEvent(Text : string; ForceTrigger : Boolean);
+    procedure AutoTextEvent(Text : string; ForceTrigger : Boolean);
     function EventActive(EventName : string) : Boolean;
     procedure ActivateTriggers;
     procedure DumpVars(const SearchName : string);
@@ -148,6 +152,7 @@ type
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
     property ActiveBot : string read FActiveBot;
+    property ActiveBotScript   : string read FActiveBotScript;
     property ScriptMenu : TMenuItem read FScriptMenu write FScriptMenu;
     property ScriptRef : TScriptRef read FScriptRef;
     property ProgramDir: string read GetProgramDir;
@@ -215,10 +220,12 @@ type
     procedure AddMenu(MenuItem : TObject);
     procedure GotoLabel(L : string);
     function TextLineEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
+    function AutoTextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
     function TextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
     function TextOutEvent(const Text : string; var Handled : Boolean) : Boolean;
     function ProgramEvent(EventName, MatchText : string; Exclusive : Boolean) : Boolean;
     function EventActive(EventName : string) : Boolean;
+    procedure SetAutoTrigger(Name, Value, Response : String; LifeCycle : Integer);
     procedure SetTextLineTrigger(Name, LabelName, Value : string);
     procedure SetTextOutTrigger(Name, LabelName, Value : string);
     procedure SetTextTrigger(Name, LabelName, Value : string);
@@ -260,7 +267,7 @@ uses
   Ansi;
 
 const
-  TriggerNameMap: array[TTriggerType] of string = ('Text', 'Text-Line', 'Text-Out', 'Delay', 'Event');
+  TriggerNameMap: array[TTriggerType] of string = ('Text', 'Text-Line', 'Text-Out', 'Delay', 'Event', 'Text-Auto');
 
 //var
   // CmdParams : array of TCmdParam; // EP - Persists to avoid constant SetLength calls, dramatically improving script execution
@@ -474,9 +481,14 @@ end;
 procedure TModInterpreter.SwitchBot(ScriptName : String; StopBotScripts : Boolean);
 var
    I : Integer;
-   Script     : String;
-   ScriptList : TStringList;
+   IniFile     : TIniFile;
+   Script,
+   BotScript,
+   Section     : String;
+   SectionList,
+   ScriptList  : TStringList;
 begin
+  IniFile := TIniFile.Create(TWXGUI.ProgramDir + '\twxp.cfg');
   ScriptList := TStringList.Create;
 
   if (ScriptName <> '') then
@@ -509,7 +521,29 @@ begin
        else
          Load('scripts\' + script, FALSE);
      end;
-      FActiveBot := ScriptName;
+      FActiveBotScript := ScriptName;
+
+      // MB - Get the activescript name from the ini file.
+      begin
+      try
+        SectionList := TStringList.Create;
+       try
+          IniFile.ReadSections(SectionList);
+          for Section in SectionList do
+          begin
+            BotScript  := IniFile.ReadString(Section, 'Script', '');
+            if (Pos(LowerCase(ScriptName), LowerCase(BotScript)) = 1) then
+            begin
+              FActiveBot := IniFile.ReadString(Section, 'Name', '');
+            end;
+          end;
+        finally
+          SectionList.Free;
+        end;
+      finally
+      IniFile.Free;
+      end;
+    end
 
     finally
       ScriptList.free();
@@ -590,6 +624,18 @@ begin
 
   while (I < ScriptList.Count) do
     if not (Scripts[I].TextLineEvent(Text, ForceTrigger)) then
+      Inc(I);
+end;
+
+procedure TModInterpreter.AutoTextEvent(Text : string; ForceTrigger : Boolean);
+var
+  I : Integer;
+begin
+  // trigger matching textline triggers in active scripts
+  I := 0;
+
+  while (I < ScriptList.Count) do
+    if not (Scripts[I].AutoTextEvent(Text, ForceTrigger)) then
       Inc(I);
 end;
 
@@ -811,6 +857,7 @@ begin
   Trigger^.Value := '';
   Trigger^.Param := '';
   Trigger^.LabelName := '';
+  Trigger^.Response := '';
 
   if (Trigger^.Timer <> nil) then
     Trigger^.Timer.Free;
@@ -820,8 +867,10 @@ end;
 
 function TScript.CheckTriggers(TriggerList : TList; const Text : string; TextOutTrigger, ForceTrigger : Boolean; var Handled : Boolean) : Boolean;
 var
+  LifeCycle,
   I         : Integer;
-  LabelName : string;
+  LabelName,
+  Response  : string;
 begin
   // check through textLineTriggers for matches with Text
   Result := FALSE;
@@ -834,29 +883,66 @@ begin
 
   while (I < TriggerList.Count) do
   begin
+
     if (Pos(TTrigger(TriggerList[I]^).Value, Text) > 0) or (TTrigger(TriggerList[I]^).Value = '') then
     begin
-      // remove this trigger and enact it
-      Handled := TRUE;
+    if (TTrigger(TriggerList[I]^).Name = '09') then
+Response  := TTrigger(TriggerList[I]^).Response;
+
+
+      // mb - save triger values
+      LifeCycle := TTrigger(TriggerList[I]^).LifeCycle;
       LabelName := TTrigger(TriggerList[I]^).LabelName;
+      Response  := TTrigger(TriggerList[I]^).Response;
 
-      FreeTrigger(TriggerList[I]);
-      TriggerList.Delete(I);
-
-      try
-        GotoLabel(LabelName);
-      except
-        // script is not in execution - so we need to do error handling for gotos outside execute loop
-        on E : EScriptError do
+      // mb - new lifecycle option, currently only on AutoTrigger
+      if LifeCycle > 0 then
+      begin
+        TTrigger(TriggerList[I]^).LifeCycle := LifeCycle - 1;
+        if TTrigger(TriggerList[I]^).LifeCycle = 0 then
         begin
-          TWXServer.Broadcast(ANSI_15 + 'Script run-time error (trigger activation): ' + ANSI_7 + E.Message + endl);
+          Handled := TRUE;
+
+          // remove this trigger
+          FreeTrigger(TriggerList[I]);
+          TriggerList.Delete(I);
+        end;
+
+      end;
+
+
+      if Length(Response) > 0 then
+      begin
+        // mb - handle new autotrigger type
+        Sleep(250);
+        TWXClient.Send(Response);
+        exit;
+        //Result := TRUE;
+      end
+      else
+      begin
+        // remove this trigger and enact it
+        //Handled := TRUE;
+        //LabelName := TTrigger(TriggerList[I]^).LabelName;
+
+        //FreeTrigger(TriggerList[I]);
+        //TriggerList.Delete(I);
+
+        try
+          GotoLabel(LabelName);
+        except
+          // script is not in execution - so we need to do error handling for gotos outside execute loop
+          on E : EScriptError do
+          begin
+            TWXServer.Broadcast(ANSI_15 + 'Script run-time error (trigger activation): ' + ANSI_7 + E.Message + endl);
+            SelfTerminate;
+            Result := TRUE;
+          end;
+        else
+          TWXServer.Broadcast(ANSI_15 + 'Unknown script run-time error (trigger activation)' + ANSI_7 + endl);
           SelfTerminate;
           Result := TRUE;
         end;
-      else
-        TWXServer.Broadcast(ANSI_15 + 'Unknown script run-time error (trigger activation)' + ANSI_7 + endl);
-        SelfTerminate;
-        Result := TRUE;
       end;
 
       if not (Result) then
@@ -919,6 +1005,14 @@ var
 begin
   // check through lineTriggers for matches with Text
   Result := CheckTriggers(FTriggers[ttTextLine], Text, FALSE, ForceTrigger, Handled);
+end;
+
+function TScript.AutoTextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
+var
+  Handled : Boolean;
+begin
+  // check through autoTriggers for matches with Text
+  Result := CheckTriggers(FTriggers[ttTextAuto], Text, FALSE, ForceTrigger, Handled);
 end;
 
 function TScript.TextEvent(const Text : string; ForceTrigger : Boolean) : Boolean;
@@ -1053,8 +1147,11 @@ begin
   Result := AllocMem(SizeOf(TTrigger));
   Result.Name := Name;
   Result.LabelName := LabelName;
+  Result.Response := '';
   Result.Value := Value;
   Result.Timer := nil;
+  // mb - default lifecycle is single response / no repeat
+  Result.LifeCycle := 1;
 end;
 
 function TScript.FindWindow(WindowName : string) : TScriptWindow;
@@ -1074,6 +1171,29 @@ begin
 
   if (Result = nil) then
     raise EScriptError.Create('Window not found: ' + WindowName);
+end;
+
+procedure TScript.SetAutoTrigger(Name, Value, Response : String; LifeCycle : Integer);
+var
+  Trigger : PTrigger;
+begin
+  // mb - doto - do I need this for autotriggers?
+  //Cmp.ExtendName(Name, ExecScriptID);
+  //Cmp.ExtendLabelName(LabelName, ExecScriptID);
+
+  if (TriggerExists(Name)) then
+    raise EScriptError.Create('Trigger already exists: ''' + Name + '''');
+
+  Trigger := AllocMem(SizeOf(TTrigger));
+  Trigger.Name := Name;
+  Trigger.LabelName := '';
+  Trigger.Response := Response;
+  Trigger.Value := Value;
+  //Trigger.Param := Param;
+  Trigger.Timer := nil;
+  Trigger.LifeCycle := LifeCycle;
+
+  FTriggers[ttTextAuto].Add(Trigger);
 end;
 
 procedure TScript.SetTextLineTrigger(Name, LabelName, Value : String);
@@ -1104,9 +1224,11 @@ begin
   Trigger := AllocMem(SizeOf(TTrigger));
   Trigger.Name := Name;
   Trigger.LabelName := LabelName;
+  Trigger.Response := '';
   Trigger.Value := UpperCase(Value);
   Trigger.Param := Param;
   Trigger.Timer := nil;
+  Trigger.LifeCycle := 1;
 
   if (Trigger.Value = 'TIME HIT') then
     Controller.CountTimerEvent;

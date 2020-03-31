@@ -278,22 +278,22 @@ begin
       begin
         virtualDir := 'Misc';
 
-        if pos('_',searchFile.Name) > 0 then
-        begin
-          if LeftStr(searchFile.Name,1) = '_' then
-            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
-          else
-            virtualName := searchFile.Name;
-
-          virtualName := LeftStr(virtualName, pos('_',virtualName));
-          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
-        end;
-
         if LeftStr(searchFile.Name, 2) = '__' then
-          virtualDir := '_Favorite';
+        virtualDir := '_Favorite';
 
         if LeftStr(searchFile.Name, 2) = 'z-' then
           virtualDir := 'Zed / Archie';
+
+        if LeftStr(searchFile.Name,1) = '_' then
+          virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+        else
+          virtualName := searchFile.Name;
+
+        if pos('_',virtualName) > 1 then
+        begin
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
 
         if dirList.IndexOf(virtualDir) = -1 then
           dirList.add(virtualDir);
@@ -347,22 +347,22 @@ begin
       begin
         virtualDir := 'Misc';
 
-        if pos('_',searchFile.Name) > 0 then
-        begin
-          if LeftStr(searchFile.Name,1) = '_' then
-            virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
-          else
-            virtualName := searchFile.Name;
-
-          virtualName := LeftStr(virtualName, pos('_',virtualName));
-          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
-        end;
-
         if LeftStr(searchFile.Name, 2) = '__' then
           virtualDir := '_Favorite';
 
         if LeftStr(searchFile.Name, 2) = 'z-' then
           virtualDir := 'Zed / Archie';
+
+        if LeftStr(searchFile.Name,1) = '_' then
+          virtualName := RightStr(searchFile.Name, Length(searchFile.Name) -1)
+        else
+          virtualName := searchFile.Name;
+
+        if pos('_',virtualName) > 1 then
+        begin
+          virtualName := LeftStr(virtualName, pos('_',virtualName));
+          virtualDir := IniFile.ReadString('QuickLoad', virtualName, 'Misc');
+        end;
 
         AddQuickMenu(virtualDir + '\' + searchFile.Name, '\scripts\' + searchFile.Name);
       end;
@@ -1011,8 +1011,11 @@ begin
       end
       else
       begin
+        IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'False');
         if Sender <> nil then
         begin
+          IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'False');
+          miUpdateNow.Visible := False;
           Application.MessageBox('You are running the latest version of TWX Proxy.',
 			    'Checking for Updates', MB_OK)
         end;
@@ -1039,10 +1042,11 @@ procedure TfrmMain.trayIconDblClick(Sender: TObject);
 begin
   SetForegroundWindow(Application.Handle);
 
-  if (miLoad.Default) then
+  if TWXGUI.Connected then
     miLoadClick(Sender)
-  else if (miConnect.Default) then
-    miConnectClick(Sender);
+  else
+    miConnectClick(Sender)
+
 end;
 
 procedure TfrmMain.updateTimerTick(Sender: TObject);

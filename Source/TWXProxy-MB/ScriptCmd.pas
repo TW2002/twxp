@@ -397,11 +397,18 @@ end;
 
 function CmdDisconnect(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
-  // CMD: disconnect
-
+  // CMD: disconnect {disable}
+  // {disable} - Will disable reconnects if true
   if (TWXClient.Connected) then
-    TWXClient.CloseClient;
+  begin
 
+    // mb - Hard disconnect if param[1] = True - other wise
+    // soft disconnect with reconnect allowed.
+    if (Length(Params) > 0) then
+      TWXClient.Disconnect
+    else
+      TWXClient.CloseClient;
+  end;
   Result := caNone;
 end;
 
@@ -1167,14 +1174,21 @@ begin
   // CMD: isEqual var <value1> <value2>
   // var = 1 if <value1> = <value2> else var = 0
 
-  try
-    // The difference must be within MaxFloatVariance to be considered equal
-    Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
-    Params[0].SetBool(Bool);
-  except on E: EScriptError do
-    // Float comparison failed, try string comparison
+  // MB - Only do a numeric comparision if both arguments are numeric
+  if (Params[1].IsNumeric and Params[2].IsNumeric) then
+  begin
+    try
+      // The difference must be within MaxFloatVariance to be considered equal
+      Bool := Abs(Params[1].DecValue - Params[2].DecValue) <= MaxFloatVariance;
+      Params[0].SetBool(Bool);
+    except on E: EScriptError do
+      // Float comparison failed,
+      Params[0].SetBool(False);
+    end;
+  end
+  else
     Params[0].SetBool(AnsiSameStr(Params[1].Value, Params[2].Value));
-  end;
+
 
   Result := caNone;
 end;
@@ -2338,7 +2352,7 @@ begin
   Result := caNone;
 end;
 
-function CmdClearGlobals(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdClearGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
 
   TWXGlobalVars.Clear;
@@ -2411,7 +2425,7 @@ begin
 
       for I := 0 to BotList.Count - 1 do
       begin
-        if Pos(LowerCase(BotList[I]), LowerCase(TWXInterpreter.ActiveBot)) > 0 then
+        if Pos(LowerCase(BotList[I]), LowerCase(TWXInterpreter.ActiveBotScript)) > 0 then
         begin
           if I < BotList.Count -1 then
             NextBot := BotList[I + 1]
@@ -2451,36 +2465,104 @@ begin
   Result := caNone;
 end;
 
-function CmdFormatColor(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdSetAutoTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Value : Integer;
 begin
-  // CMD: CmdFormatColor [var]
-  // Sets user defined colors for use with formatString, echo, and getText.
-  TWXExtractor.FormatColor := Params[0].Value;
+  // CMD: setTextLineTrigger <name> <label> [<value>]
+
+  // mb - set default lifecycle to 1 if not present
+  if (Length(Params) < 4) then
+    Value := 1
+  else
+    Value := Floor(Params[3].DecValue);
+
+  TScript(Script).SetAutoTrigger(Params[0].Value, Params[1].Value, Params[2].Value, Value);
+  Result := caNone;
+end;
+
+function CmdSetAutoLineTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Value : Integer;
+begin
+  // CMD: setTextLineTrigger <name> <label> [<value>]
+
+  // mb - set default lifecycle to 1 if not present
+  //if (Length(Params) < 4) then
+  //  Value := 1
+  //else
+  //  Value := Floor(Params[3].DecValue);
+
+  //TScript(Script).SetAutoTrigger(Params[0].Value, Params[1].Value, Params[2].Value, Value);
+  Result := caNone;
+end;
+
+function CmdReqVersion(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  CurrentVer,
+  RequiredVer : Integer;
+begin
+  CurrentVer := StrToIntDef(StringReplace(ProgramVersion, '.', '', [rfReplaceAll]),0);
+  RequiredVer := StrToIntDef(StringReplace(Params[0].Value, '.', '', [rfReplaceAll]),0);
+
+  if CurrentVer >= RequiredVer then
+    Result := caNone
+  else
+  begin
+    TWXServer.ClientMessage('This script requires TWX Proxy version ' + Params[0].Value + ' or later to run.');
+    Result := caStop;
+  end;
+end;
+
+function CmdSortArray(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
 
   Result := caNone;
 end;
 
-function CmdFormatString(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdModulas(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  F1,
+  F2 : integer;
 begin
+  // CMD: moduals var <value>
+  // Get the remainder from variable divided by a value
+
+  F2 := floor(Params[1].DecValue);
+  if (F2 = 0) then
+    raise EScriptError.Create('Division by zero');
+  F1 := floor(Params[0].DecValue);
+  UpdateParam(Params[0], F1 mod F2, TScript(Script).DecimalPrecision);
 
   Result := caNone;
 end;
 
-function CmdEchoFormatted(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+
+
+function CmdAddQuickText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
+  // CMD: CmdAddQuickText {search} {replace}
+  // Sets user defined QuickTexts for use with echo, and getText.
+  // {search} - Text to search for.
+  // {replace} - Text to replace found text.
+
+  TWXServer.AddQuickText(Params[0].Value, Params[1].Value);
 
   Result := caNone;
 end;
 
-function CmdGetInputFormatted(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdClearQuickText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
-  // CMD: getInput var <prompt>
+  if Length(Params) > 0 then
+    TWXServer.ClearQuickText(Params[0].Value)
+  else
+    TWXServer.ClearQuickText();
 
-  TWXServer.Broadcast(Params[1].Value );
-  TScript(Script).Locked := TRUE;
-  TWXMenu.BeginScriptInput(TScript(Script), TVarParam(Params[0]), FALSE);
-  Result := caPause;
+  Result := caNone;
 end;
+
+
+
 
 // *****************************************************************************
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
@@ -3295,8 +3377,13 @@ begin
 end;
 
 function SCStardock(Indexes : TStringArray) : string;
+var
+  Sector : integer;
 begin
-  Result := IntToStr(TWXDatabase.DBHeader.StarDock);
+  Sector := StrToInt(TWXDatabase.DBHeader.StarDock);
+  if Sector = 65535 then
+    Sector = 0;
+  Result := Sector;
 end;
 
 function SCTime(Indexes : TStringArray) : string;
@@ -3515,9 +3602,91 @@ begin
   SCCurrentShipNumber(Indexes)]);
 end;
 
+function SCCurrentQS(Indexes : TStringArray) : string;
+begin
+
+//TURNS:CRED:FIGS:SHLD:CARBO:PHOT:ALN:EXP:CORP:SHIP:Class:HLDS:ORE:ORG:EQU:COL
+Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',
+ [SCCurrentTurns(Indexes),
+  SCCurrentCredits(Indexes),
+  SCCurrentFighters(Indexes),
+  SCCurrentShields(Indexes),
+  SCCurrentCorbomite(Indexes),
+  SCCurrentPhotons(Indexes),
+  SCCurrentAlignment(Indexes),
+  SCCurrentExperience(Indexes),
+  SCCurrentCorp(Indexes),
+  SCCurrentShipNumber(Indexes),
+  SCCurrentShipClass(Indexes),
+  SCCurrentTotalHolds(Indexes),
+  SCCurrentOreHolds(Indexes),
+  SCCurrentOrgHolds(Indexes),
+  SCCurrentEquHolds(Indexes),
+  SCCurrentColHolds(Indexes)]);
+end;
+
+function SCCurrentQSALL(Indexes : TStringArray) : string;
+begin
+//Armd:Lmpt:GTorp:AtmDt:TWarp:Clks:Beacns:EPrb:MDis:PsPrb:PlScn:LRS
+Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',
+ [SCCurrentTurns(Indexes),
+  SCCurrentCredits(Indexes),
+  SCCurrentFighters(Indexes),
+  SCCurrentShields(Indexes),
+  SCCurrentCorbomite(Indexes),
+  SCCurrentPhotons(Indexes),
+  SCCurrentAlignment(Indexes),
+  SCCurrentExperience(Indexes),
+  SCCurrentCorp(Indexes),
+  SCCurrentShipNumber(Indexes),
+  SCCurrentShipClass(Indexes),
+  SCCurrentTotalHolds(Indexes),
+  SCCurrentOreHolds(Indexes),
+  SCCurrentOrgHolds(Indexes),
+  SCCurrentEquHolds(Indexes),
+  SCCurrentColHolds(Indexes),
+  SCCurrentArmids(Indexes),
+  SCCurrentLimpets(Indexes),
+  SCCurrentGenTorps(Indexes),
+  SCCurrentAtomics(Indexes),
+  SCCurrentTwarpType(Indexes),
+  SCCurrentCloaks(Indexes),
+  SCCurrentBeacons(Indexes),
+  SCCurrentEprobes(Indexes),
+  SCCurrentMineDisr(Indexes),
+  SCCurrentPsychicProbe(Indexes),
+  SCCurrentPlanetScanner(Indexes),
+  SCCurrentScanType(Indexes)]);
+end;
+
 function SCActiveBot(Indexes : TStringArray) : string;
 begin
   Result := TWXInterpreter.ActiveBot;
+end;
+
+function SCActiveBotScript(Indexes : TStringArray) : string;
+begin
+  Result := TWXInterpreter.ActiveBotScript;
+end;
+
+function SCTWXVersion(Indexes : TStringArray) : string;
+begin
+  Result := ProgramVersion + Chr(ReleaseNumber + 96);
+end;
+
+function SCTWGSTYPE(Indexes : TStringArray) : string;
+begin
+  Result := inttostr(TWXExtractor.TWGSType);
+end;
+
+function SCTWGSVer(Indexes : TStringArray) : string;
+begin
+  Result := TWXExtractor.TWGSVer;
+end;
+
+function SCTW2002Ver(Indexes : TStringArray) : string;
+begin
+  Result := TWXExtractor.TW2002Ver;
 end;
 
 // *****************************************************************************
@@ -3638,7 +3807,14 @@ begin
     AddSysConstant('CURRENTSHIPCLASS', SCCurrentShipClass);
     AddSysConstant('CURRENTANSIQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
+    AddSysConstant('CURRENTQS',SCCurrentQS);
+    AddSysConstant('CURRENTQSALL',SCCurrentQSALL);
     AddSysConstant('ACTIVEBOT',SCActiveBot);
+    AddSysConstant('ACTIVEBOTSCRIPT',SCActiveBotScript);
+    AddSysConstant('VERSION',SCTWXVersion);
+    AddSysConstant('TWGSTYPE',SCTWGSTYPE);
+    AddSysConstant('TWGSVER',SCTWGSVer);
+    AddSysConstant('TW2002VER',SCTW2002Ver);
   end;
 end;
 
@@ -3655,7 +3831,7 @@ begin
     AddCommand('CONNECT', 0, 0, CmdConnect, [], pkValue);
     AddCommand('CUTTEXT', 4, 4, CmdCutText, [pkValue, pkVar, pkValue, pkValue], pkValue);
     AddCommand('DELETE', 1, 1, CmdDelete, [pkValue], pkValue);
-    AddCommand('DISCONNECT', 0, 0, CmdDisconnect, [], pkValue);
+    AddCommand('DISCONNECT', 0, 1, CmdDisconnect, [], pkValue);
 
     AddCommand('DIVIDE', 2, 2, CmdDivide, [pkVar, pkValue], pkValue);
     AddCommand('ECHO', 1, -1, CmdEcho, [pkValue], pkValue);
@@ -3782,18 +3958,31 @@ begin
 
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
     AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
-    AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
+    AddCommand('CLEARGLOBAL', 0, 0, CmdClearGlobal, [], pkValue);
 
     AddCommand('SWITCHBOT', 0, 1, CmdSwitchBot, [pkValue], pkValue);
-
     AddCommand('STRIPANSI', 2, 2, CmdStripANSI, [pkValue, pkValue], pkValue);
+    AddCommand('SETAUTOTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
+    AddCommand('SETAUTOTEXTTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
+    AddCommand('REQVERSION', 1, 1, CmdReqVersion, [pkValue], pkValue);
+    AddCommand('SORTARRAY', 1, 1, CmdSortArray, [pkValue], pkValue);
+    AddCommand('MODULAS', 1, 1, CmdModulas, [pkValue], pkValue);
 
-    AddCommand('FORMATCOLOR', 1, 1, CmdFormatColor, [pkValue], pkValue);
-    AddCommand('FORMATSTRING', 1, -1, CmdFormatString, [pkValue], pkValue);
-    AddCommand('ECHOF', 1, -1, CmdEchoFormatted, [pkValue], pkValue);
-    AddCommand('GETINPUTF', 1, -1, CmdGetInputFormatted, [pkValue], pkValue);
+    AddCommand('SETQUICKTEXT', 2, 2, CmdAddQuickText, [pkValue], pkValue);
+    AddCommand('CLEARQUICKTEXT', 1, 0, CmdClearQuickText, [pkValue], pkValue);
 
-    // CmdGotoPrompt ??? Switchboard ??? Maybe
+//    AddCommand('COPYDATABASE', 1, 1, CmdCopyDatabase, [pkValue], pkValue);
+//    AddCommand('CREATEDATABASE', 1, 1, CmdCreateDatabase, [pkValue], pkValue);
+//    AddCommand('DELETEDATABASE', 1, 1, CmdDeleteDatabase, [pkValue], pkValue);
+//    AddCommand('EDITDATABASE', 1, 1, CmdEditDatabase, [pkValue], pkValue);
+//    AddCommand('LISTDATABASES', 1, 1, CmdListDatabases, [pkValue], pkValue);
+//    AddCommand('LOADDATABASE', 1, 1, CmdLoadDatabase, [pkValue], pkValue);
+
+
+
+    //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
+    // GETGAMESETTINGS CmdGotoPrompt ??? Switchboard ??? Maybe
+
   end;
 end;
 
