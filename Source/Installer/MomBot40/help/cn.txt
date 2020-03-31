@@ -1,0 +1,1 @@
+CN - Resets your cn settings to bot defaults.

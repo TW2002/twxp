@@ -1,0 +1,16 @@
+                     
+   
+                  <<<< patp >>>>
+   
+                   PATP - Pay At The Pump               
+       patp [min port fuel] {turbo} {upgrade} {buyhalf} 
+            {skipcim} {avoidbusts} {reverse} {destroyports}
+             
+     Options:
+         [min port fuel]  minimum fuel a port must have to visit it
+         [turbo]          puts all buydowns in a burst
+         [upgrade]        upgrades each port
+         [buyhalf]        empties ports halfway
+         [skipcim]        skips cim check before patp
+         [avoidbusts]     avoids all xxB ports
+                          have enough fighters

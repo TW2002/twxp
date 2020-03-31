@@ -1,0 +1,14 @@
+                     
+   
+                <<<< moveship >>>>
+   
+     Moves empty ships from one sector to another.
+                     
+     moveship [sector] {back} 
+                       
+     [sector] - target sector
+     [back]   - will grab ships from target sector and bring
+                them back to current sector   
+                               
+                Can use either planet or SXX port in        
+                starting sector for fuel.

@@ -1,0 +1,17 @@
+DISR - Disrupt Armid Mines in Adjacent Sectors
+
+      disr {Sector} {NScan} {Burst}
+
+      {Sector}  Disrupt Mines in adjacent sector
+      {Burst}   Sends only 1 disruptor into each sector
+      {NScan}   Do not perform Holo Scan --otherwise it
+                auto detects enemy Armids
+
+      Start Prompts:
+                      Command Prompt
+                      Planet/Citadel Prompt(s)
+                      Computer Prompt
+                      StarDock Prompt
+                      Port Prompt
+
+      Default: Disrupt all adjacents, with Holo Scan.

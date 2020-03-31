@@ -1,0 +1,5 @@
+HOLO - Displays Long Range scans on subspace
+
+       Holo {fed}   
+
+       {fed}  will redirect output to Fed comm-link

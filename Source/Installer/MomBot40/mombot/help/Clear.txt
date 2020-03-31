@@ -1,0 +1,2 @@
+CLEAR - Quickly cleans sector of enemy armid and 
+        limpet mines. 

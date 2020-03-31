@@ -1,0 +1,8 @@
+MOW - Lawn Mow
+
+   mow [destination] {figs to drop} {kill} {cap} {saveme} {p} 
+
+   {p}      will port ship immediately upon arrival.
+   {kill}   will attempt to kill immediately upon arrival.
+   {cap}    will attempt to capture immediately upon arrival.
+   {saveme} will call saveme to be picked up at destination.

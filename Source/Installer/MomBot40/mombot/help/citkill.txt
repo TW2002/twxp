@@ -1,0 +1,15 @@
+CITKILL - Citadel Based Kill Mode
+    
+ citkill [on/off] {"player name"|corp#} {sg} {dt} {empty} {smart} {override}
+   
+      - {"player name"}   = Player to target, name must be
+                            surrounded by double quotes
+      - {corp#}           = Corporation number to target
+      - {sg}              = Shotgun mode, fires waves at
+                            first three possible targets
+      - {dt}              = Doubletap mode, fires two waves
+                            before refurbing
+      - {empty}           = Will capture empty ships in sector.
+      - {smart}           = Notices changes in ship type/target
+      - {override}        = Overrides safety on attacking defender
+                            bonus ships

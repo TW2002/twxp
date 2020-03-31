@@ -1,0 +1,10 @@
+OVLEROAD - Checks Corporate/Personal Planet Lists
+           Will attmempt to indicate which sectors have planet
+           densities higher than the allowable Maximum
+
+           overload {under}
+
+           {under} Shows sectors with more than 1 planet that are not full
+
+
+           - Originally written by Cherokee

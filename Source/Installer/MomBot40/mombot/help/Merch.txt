@@ -1,0 +1,11 @@
+MERCH - Visits all ports in grid and sells organics
+              and/or equipment.
+
+        merch [min port product] [o | e] ({neg}otiate OR {hold}byhold)
+              {buyfuel} {skipcim} 
+
+        {neg/hold}   Determines planet negotiate or hold 
+                     selling approach
+        {skipcim}    Does not run cim before starting route
+        {buyfuel}    Buys all the fuel in fuel selling ports 
+                     on route

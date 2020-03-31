@@ -1,0 +1,5 @@
+RELOG - Toggel On or Off Bot's Relog.
+        When relog is off, the Bot will not reconnect
+        and enter a game when a connection is dropped.
+
+        relog [on|off]

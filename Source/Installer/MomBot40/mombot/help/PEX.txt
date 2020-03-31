@@ -1,0 +1,5 @@
+PEX - Photon, Enter, Export
+      Used to launch a Photon into an adjacent Sector, Enter 
+      Photon'd Sector and Export back into another Ship.
+
+      pex [Sector] [ShipNumber]

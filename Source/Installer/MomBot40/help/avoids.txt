@@ -1,0 +1,19 @@
+                     
+   
+                 <<<< avoids >>>>
+   
+     Set, clear, or display avoids
+     Using the avoids command without a parameter will display
+     current avoids over subspace. 
+            
+     Options:
+             {set} -  Will set an avoid 
+                                             
+           {clear} -  Will clear an avoid if a sector number
+                      is provided, otherwise 'clear' by itself
+                      will clear all avoids.
+            
+     Usage: 
+            >avoids set 45
+            >avoids clear 45
+            >avoids clear

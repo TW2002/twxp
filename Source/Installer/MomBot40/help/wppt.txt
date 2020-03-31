@@ -1,0 +1,13 @@
+- wppt {holoscan} {evade}
+  World PPT - Originally written by Xide                          
+                                                                  
+   - {holoscan}    = 0 - doesn't holoscan                         
+                     1 - holoscans on odd densities               
+                     2 - always holoscans (default)               
+                                                                  
+   - {evade}       = 0 - normal (default)                         
+                     1 - paranoid                                 
+                     2 - avoids nothing                           
+                                                                  
+   - {nohaggle}    = doesn't haggle                               
+                                                                  
