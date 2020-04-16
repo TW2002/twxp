@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.3.1" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
+	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.6.5.2" Manufacturer="eXide" UpgradeCode="d750cbbf-b7c5-45b2-b21c-f1727a99d2f9">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <!-- This code would bind the version to the product file, but I dont want to do that at this time...
       <Product Version="!(bind.FileVersion.MyAssemblyDll)" ...="">
@@ -20,11 +20,11 @@
       <ComponentGroupRef Id="PublicComponents" />
     </Feature>
     <Feature Id="MombotFeature" Title="Mind Over Mater bot" Level="1" Display="expand">
-    <Feature Id="Mombot31Feature" Title="Legacy Mombot" Level="2" TypicalDefault="install" Description="Installs Mombot 3.10xx">
+    <Feature Id="Mombot31Feature" Title="Legacy Mombot" Level="1" TypicalDefault="install" Description="Installs Mombot 3">
       <ComponentGroupRef Id="Mombot31Components" />
     </Feature>
-    <Feature Id="Mombot40Feature" Title="Latest Mombot" Level="1" TypicalDefault="install" Description="Installs Mombot 3.5x">
-      <ComponentGroupRef Id="Mombot40Components" />
+    <Feature Id="Mombot4pFeature" Title="Latest Mombot" Level="1" TypicalDefault="install" Description="Installs Mombot 4">
+      <ComponentGroupRef Id="Mombot4pComponents" />
     </Feature>
       </Feature>
     <Feature Id="ZedbotFeature" Title="Zedbot" Level="1"  Display="expand">
@@ -83,29 +83,29 @@
               <Directory Id="MOM31_DAEMONS" Name="daemons" />
               <Directory Id="MOM31_HELP" Name="help" />
             </Directory>
-            <Directory Id="Mombot40" Name="mombot">
-              <Directory Id="MOM35_COMMANDS" Name="commands">
-                <Directory Id="MOM35_CMD_CASHING" Name="cashing" />
-                <Directory Id="MOM35_CMD_DATA" Name="data" />
-                <Directory Id="MOM35_CMD_DEFENSE" Name="defense" />
-                <Directory Id="MOM35_CMD_GENERAL" Name="general" />
-                <Directory Id="MOM35_CMD_GRID" Name="grid" />
-                <Directory Id="MOM35_CMD_OFFENSE" Name="offense" />
-                <Directory Id="MOM35_CMD_RESOURCE" Name="resource" />
+            <Directory Id="Mombot4p" Name="mombot4p">
+              <Directory Id="MOM40_COMMANDS" Name="commands">
+                <Directory Id="MOM40_CMD_CASHING" Name="cashing" />
+                <Directory Id="MOM40_CMD_DATA" Name="data" />
+                <Directory Id="MOM40_CMD_DEFENSE" Name="defense" />
+                <Directory Id="MOM40_CMD_GENERAL" Name="general" />
+                <Directory Id="MOM40_CMD_GRID" Name="grid" />
+                <Directory Id="MOM40_CMD_OFFENSE" Name="offense" />
+                <Directory Id="MOM40_CMD_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MOM35_MODES" Name="modes">
-                <Directory Id="MOM35_MODES_CASHING" Name="cashing" />
-                <Directory Id="MOM35_MODES_DATA" Name="data" />
-                <Directory Id="MOM35_MODES_DEFENSE" Name="defense" />
-                <Directory Id="MOM35_MODES_GENERAL" Name="general" />
-                <Directory Id="MOM35_MODES_GRID" Name="grid" />
-                <Directory Id="MOM35_MODES_OFFENSE" Name="offense" />
-                <Directory Id="MOM35_MODES_RESOURCE" Name="resource" />
+              <Directory Id="MOM40_MODES" Name="modes">
+                <Directory Id="MOM40_MODES_CASHING" Name="cashing" />
+                <Directory Id="MOM40_MODES_DATA" Name="data" />
+                <Directory Id="MOM40_MODES_DEFENSE" Name="defense" />
+                <Directory Id="MOM40_MODES_GENERAL" Name="general" />
+                <Directory Id="MOM40_MODES_GRID" Name="grid" />
+                <Directory Id="MOM40_MODES_OFFENSE" Name="offense" />
+                <Directory Id="MOM40_MODES_RESOURCE" Name="resource" />
               </Directory>
-              <Directory Id="MOM35_DAEMONS" Name="daemons" />
-              <Directory Id="MOM35_HELP" Name="help" />
-              <Directory Id="MOM35_GAMES" Name="games" />
-              <Directory Id="MOM35_STARTUPS" Name="startups" />
+              <Directory Id="MOM40_DAEMONS" Name="daemons" />
+              <Directory Id="MOM40_HELP" Name="help" />
+              <Directory Id="MOM40_GAMES" Name="games" />
+              <Directory Id="MOM40_STARTUPS" Name="startups" />
             </Directory>
             </Directory>
           </Directory>
@@ -666,7 +666,7 @@
     <ComponentGroup Id="Mombot31Components" >
       <Component Id="Mombot31Component" Directory="MOMBOT31" Guid="843bc0cd-86fa-46cf-ac6a-56bb045d8ace">
         <File Id="mom1045" Source="Mombot31\__mom_bot3_1045.cts"/>
-        <File Id="mom1044" Source="Mombot31\__mom_bot3_1044.ts"/>
+        <!-- <File Id="mom1044" Source="Mombot31\__mom_bot3_1044.ts"/>-->
         <File Source="Mombot31\page.wav"/>
         <File Id="mom001" Source="Mombot31\script.html"/>
         <File Source="Mombot31\MOMBot_Manual.html"/>
@@ -937,292 +937,391 @@
 
     </ComponentGroup>
 
-    <ComponentGroup Id="Mombot40Components" >
-      <Component Id="MombotComponent" Directory="Mombot40" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
-        <File Source="Mombot40\mombot.cts"/>
-        <File Source="Mombot40\readme.md"/>
-        <File Source="Mombot40\license"/>
+    <ComponentGroup Id="Mombot4pComponents" >
+      <Component Id="MombotComponent" Directory="Mombot4p" Guid="44eb0314-abd0-4098-b098-4e56384858f2">
+        <File Source="Mombot4p\mombot.cts"/>
+        <File Source="Mombot4p\readme.md"/>
+        <File Source="Mombot4p\license"/>
 
         <File Id="m31.0001" Source="Mombot31\MOMBot_Manual.html"/>
         <File Id="m31.0002" Source="Mombot31\page.wav"/>
         <File Id="m31.0003" Source="Mombot31\script.html"/>
       </Component>
-      <Component Id="MombotCommandsCashingComponent" Directory="MOM35_CMD_CASHING" Guid="4b6b1063-82d7-4298-b9f7-776f0ae91884">
-        <File Source="Mombot40\commands\cashing\mega.cts"/>
-        <File Source="Mombot40\commands\cashing\neg.cts"/>
-        <File Source="Mombot40\commands\cashing\rob.cts"/>
-        <File Source="Mombot40\commands\cashing\tricon.cts"/>
+      <Component Id="MombotCommandsCashingComponent" Directory="MOM40_CMD_CASHING" Guid="4b6b1063-82d7-4298-b9f7-776f0ae91884">
+        <File Source="Mombot4p\commands\cashing\mega.cts"/>
+        <File Source="Mombot4p\commands\cashing\neg.cts"/>
+        <File Source="Mombot4p\commands\cashing\rob.cts"/>
+        <File Source="Mombot4p\commands\cashing\tricon.cts"/>
 
         <File Id="m31.1001" Source="Mombot31\commands\cashing\bust.cts"/>
       </Component>
-      <Component Id="MombotCommandsDataComponent" Directory="MOM35_CMD_DATA" Guid="1ac283b5-9cc1-49e3-bbe6-cd3a3c32a96e">
-        <File Source="Mombot40\commands\data\armids.cts"/>
-        <File Source="Mombot40\commands\data\avoids.cts"/>
-        <File Source="Mombot40\commands\data\busts.cts"/>
-        <File Source="Mombot40\commands\data\cim.cts"/>
-        <File Source="Mombot40\commands\data\clearbusts.cts"/>
-        <File Source="Mombot40\commands\data\corp_info.cts"/>
-        <File Source="Mombot40\commands\data\course.cts"/>
-        <File Source="Mombot40\commands\data\disp.cts"/>
-        <File Source="Mombot40\commands\data\dscan.cts"/>
-        <File Source="Mombot40\commands\data\figs.cts"/>
-        <File Source="Mombot40\commands\data\find.cts"/>
-        <File Source="Mombot40\commands\data\getvar.cts"/>
-        <File Source="Mombot40\commands\data\holo.cts"/>
-        <File Source="Mombot40\commands\data\limps.cts"/>
-        <File Source="Mombot40\commands\data\overload.cts"/>
-        <File Source="Mombot40\commands\data\param.cts"/>
-        <File Source="Mombot40\commands\data\ping.cts"/>
-        <File Source="Mombot40\commands\data\plist.cts"/>
-        <File Source="Mombot40\commands\data\pscan.cts"/>
-        <File Source="Mombot40\commands\data\sector.cts"/>
-        <File Source="Mombot40\commands\data\setparam.cts"/>
-        <File Source="Mombot40\commands\data\setparms.cts"/>
-        <File Source="Mombot40\commands\data\setvar.cts"/>
-        <File Source="Mombot40\commands\data\slist.cts"/>
-        <File Source="Mombot40\commands\data\status.cts"/>
-        <File Source="Mombot40\commands\data\time.cts"/>
+      <Component Id="MombotCommandsDataComponent" Directory="MOM40_CMD_DATA" Guid="1ac283b5-9cc1-49e3-bbe6-cd3a3c32a96e">
+        <File Source="Mombot4p\commands\data\armids.cts"/>
+        <File Source="Mombot4p\commands\data\avoids.cts"/>
+        <File Source="Mombot4p\commands\data\busts.cts"/>
+        <File Source="Mombot4p\commands\data\cim.cts"/>
+        <File Source="Mombot4p\commands\data\clearbusts.cts"/>
+        <File Source="Mombot4p\commands\data\corp_info.cts"/>
+        <File Source="Mombot4p\commands\data\course.cts"/>
+        <File Source="Mombot4p\commands\data\disp.cts"/>
+        <File Source="Mombot4p\commands\data\dscan.cts"/>
+        <File Source="Mombot4p\commands\data\figs.cts"/>
+        <File Source="Mombot4p\commands\data\find.cts"/>
+        <File Source="Mombot4p\commands\data\getvar.cts"/>
+        <File Source="Mombot4p\commands\data\holo.cts"/>
+        <File Source="Mombot4p\commands\data\limps.cts"/>
+        <File Source="Mombot4p\commands\data\overload.cts"/>
+        <File Source="Mombot4p\commands\data\param.cts"/>
+        <File Source="Mombot4p\commands\data\ping.cts"/>
+        <File Source="Mombot4p\commands\data\plist.cts"/>
+        <File Source="Mombot4p\commands\data\pscan.cts"/>
+        <File Source="Mombot4p\commands\data\sector.cts"/>
+        <File Source="Mombot4p\commands\data\setparam.cts"/>
+        <File Source="Mombot4p\commands\data\setparms.cts"/>
+        <File Source="Mombot4p\commands\data\setvar.cts"/>
+        <File Source="Mombot4p\commands\data\slist.cts"/>
+        <File Source="Mombot4p\commands\data\status.cts"/>
+        <File Source="Mombot4p\commands\data\time.cts"/>
+        <File Source="Mombot4p\commands\data\select.cts"/>
+        <File Source="Mombot4p\commands\data\update.cts"/>
 
-        <File Id="mom400024" Source="Mombot31\commands\data\class0.cts"/>
+        <File Id="m31.1100" Source="Mombot31\commands\data\class0.cts"/>
+        <File Id="m31.1101" Source="Mombot31\commands\data\Getnear.cts"/>
+        <File Id="m31.1102" Source="Mombot31\commands\data\msgs.cts"/>
+        <File Id="m31.1103" Source="Mombot31\commands\data\msl.cts"/>
+        <File Id="m31.1104" Source="Mombot31\commands\data\news.cts"/>
+        <File Id="m31.1105" Source="Mombot31\commands\data\QReport.cts"/>
+        <File Id="m31.1106" Source="Mombot31\commands\data\remaliens.cts"/>
       </Component>
-      <Component Id="MombotCommandsDefenseComponent" Directory="MOM35_CMD_DEFENSE" Guid="64583006-ed1a-418e-9142-6188d5c80b68">
-        <File Source="Mombot40\commands\defense\call.cts"/>
-        <File Source="Mombot40\commands\defense\evac.cts"/>
-        <File Source="Mombot40\commands\defense\_macro_kit.cts"/>
+      <Component Id="MombotCommandsDefenseComponent" Directory="MOM40_CMD_DEFENSE" Guid="64583006-ed1a-418e-9142-6188d5c80b68">
+        <File Source="Mombot4p\commands\defense\call.cts"/>
+        <File Source="Mombot4p\commands\defense\evac.cts"/>
+        <File Source="Mombot4p\commands\defense\_macro_kit.cts"/>
+
+        <File Id="m31.1200" Source="Mombot31\commands\Defense\HazKill.cts"/>
       </Component>
-      <Component Id="MombotCommandsGeneralComponent" Directory="MOM35_CMD_GENERAL" Guid="73a5e031-486e-4c46-980c-f61f27306869">
-        <File Source="Mombot40\commands\general\bwarp.cts"/>
-        <File Source="Mombot40\commands\general\callout.cts"/>
-        <File Source="Mombot40\commands\general\cn9.cts"/>
-        <File Source="Mombot40\commands\general\corp.cts"/>
-        <File Source="Mombot40\commands\general\dep.cts"/>
-        <File Source="Mombot40\commands\general\help.cts"/>
-        <File Source="Mombot40\commands\general\land.cts"/>
-        <File Source="Mombot40\commands\general\mac.cts"/>
-        <File Source="Mombot40\commands\general\nmac.cts"/>
-        <File Source="Mombot40\commands\general\photon.cts"/>
-        <File Source="Mombot40\commands\general\port.cts"/>
-        <File Source="Mombot40\commands\general\pwarp.cts"/>
-        <File Source="Mombot40\commands\general\qset.cts"/>
-        <File Source="Mombot40\commands\general\reboot.cts"/>
-        <File Source="Mombot40\commands\general\relog.cts"/>
-        <File Source="Mombot40\commands\general\subspace.cts"/>
-        <File Source="Mombot40\commands\general\topoff.cts"/>
-        <File Source="Mombot40\commands\general\tow.cts"/>
-        <File Source="Mombot40\commands\general\twarp.cts"/>
-        <File Source="Mombot40\commands\general\unlock.cts"/>
-        <File Source="Mombot40\commands\general\with.cts"/>
-        <File Source="Mombot40\commands\general\xport.cts"/>
+      <Component Id="MombotCommandsGeneralComponent" Directory="MOM40_CMD_GENERAL" Guid="73a5e031-486e-4c46-980c-f61f27306869">
+        <File Source="Mombot4p\commands\general\bwarp.cts"/>
+        <File Source="Mombot4p\commands\general\callout.cts"/>
+        <File Source="Mombot4p\commands\general\cn9.cts"/>
+        <File Source="Mombot4p\commands\general\corp.cts"/>
+        <File Source="Mombot4p\commands\general\dep.cts"/>
+        <File Source="Mombot4p\commands\general\help.cts"/>
+        <File Source="Mombot4p\commands\general\land.cts"/>
+        <File Source="Mombot4p\commands\general\mac.cts"/>
+        <File Source="Mombot4p\commands\general\nmac.cts"/>
+        <File Source="Mombot4p\commands\general\photon.cts"/>
+        <File Source="Mombot4p\commands\general\port.cts"/>
+        <File Source="Mombot4p\commands\general\pwarp.cts"/>
+        <File Source="Mombot4p\commands\general\qset.cts"/>
+        <File Source="Mombot4p\commands\general\reboot.cts"/>
+        <File Source="Mombot4p\commands\general\relog.cts"/>
+        <File Source="Mombot4p\commands\general\subspace.cts"/>
+        <File Source="Mombot4p\commands\general\topoff.cts"/>
+        <File Source="Mombot4p\commands\general\tow.cts"/>
+        <File Source="Mombot4p\commands\general\twarp.cts"/>
+        <File Source="Mombot4p\commands\general\unlock.cts"/>
+        <File Source="Mombot4p\commands\general\with.cts"/>
+        <File Source="Mombot4p\commands\general\xport.cts"/>
+
+        <File Id="m31.1300" Source="Mombot31\commands\general\page.cts"/>
       </Component>
-      <Component Id="MombotCommandsGridComponent" Directory="MOM35_CMD_GRID" Guid="a4b931ae-967a-45be-a0df-026da4062845">
-        <File Source="Mombot40\commands\grid\clear.cts"/>
-        <File Source="Mombot40\commands\grid\climp.cts"/>
-        <File Source="Mombot40\commands\grid\cmine.cts"/>
-        <File Source="Mombot40\commands\grid\exit.cts"/>
-        <File Source="Mombot40\commands\grid\mines.cts"/>
-        <File Source="Mombot40\commands\grid\pgrid.cts"/>
-        <File Source="Mombot40\commands\grid\plimp.cts"/>
-        <File Source="Mombot40\commands\grid\pmine.cts"/>
-        <File Source="Mombot40\commands\grid\surround.cts"/>
-        <File Source="Mombot40\commands\grid\xenter.cts"/>
+      <Component Id="MombotCommandsGridComponent" Directory="MOM40_CMD_GRID" Guid="a4b931ae-967a-45be-a0df-026da4062845">
+        <File Source="Mombot4p\commands\grid\clear.cts"/>
+        <File Source="Mombot4p\commands\grid\climp.cts"/>
+        <File Source="Mombot4p\commands\grid\cmine.cts"/>
+        <File Source="Mombot4p\commands\grid\exit.cts"/>
+        <File Source="Mombot4p\commands\grid\mines.cts"/>
+        <File Source="Mombot4p\commands\grid\pgrid.cts"/>
+        <File Source="Mombot4p\commands\grid\plimp.cts"/>
+        <File Source="Mombot4p\commands\grid\pmine.cts"/>
+        <!-- Duplicate <File Source="Mombot4p\commands\grid\port.cts"/>-->
+        <File Source="Mombot4p\commands\grid\surround.cts"/>
+        <File Source="Mombot4p\commands\grid\xenter.cts"/>
+        <File Source="Mombot4p\commands\grid\deploy.cts"/>
+
+        <File Id="m31.1400" Source="Mombot31\commands\grid\clearfig.cts"/>
+        <File Id="m31.1401" Source="Mombot31\commands\grid\haz.cts"/>
+        <File Id="m31.1402" Source="Mombot31\commands\grid\passgrid.cts"/>
       </Component>
-      <Component Id="MombotCommandsOffenseComponent" Directory="MOM35_CMD_OFFENSE" Guid="816db98f-729a-4d5a-aaf6-962aa31ae563">
-        <File Source="Mombot40\commands\offense\cap.cts"/>
-        <File Source="Mombot40\commands\offense\hkill.cts"/>
-        <File Source="Mombot40\commands\offense\kill.cts"/>
-        <File Source="Mombot40\commands\offense\pe.cts"/>
-        <File Source="Mombot40\commands\offense\ped.cts"/>
-        <File Source="Mombot40\commands\offense\pel.cts"/>
-        <File Source="Mombot40\commands\offense\pelk.cts"/>
-        <File Source="Mombot40\commands\offense\pex.cts"/>
-        <File Source="Mombot40\commands\offense\pxe.cts"/>
-        <File Source="Mombot40\commands\offense\pxed.cts"/>
-        <File Source="Mombot40\commands\offense\pxedx.cts"/>
-        <File Source="Mombot40\commands\offense\pxel.cts"/>
-        <File Source="Mombot40\commands\offense\pxelk.cts"/>
-        <File Source="Mombot40\commands\offense\pxex.cts"/>
+      <Component Id="MombotCommandsOffenseComponent" Directory="MOM40_CMD_OFFENSE" Guid="816db98f-729a-4d5a-aaf6-962aa31ae563">
+        <File Source="Mombot4p\commands\offense\cap.cts"/>
+        <File Source="Mombot4p\commands\offense\hkill.cts"/>
+        <File Source="Mombot4p\commands\offense\kill.cts"/>
+        <File Source="Mombot4p\commands\offense\pe.cts"/>
+        <File Source="Mombot4p\commands\offense\ped.cts"/>
+        <File Source="Mombot4p\commands\offense\pel.cts"/>
+        <File Source="Mombot4p\commands\offense\pelk.cts"/>
+        <File Source="Mombot4p\commands\offense\pex.cts"/>
+        <File Source="Mombot4p\commands\offense\pxe.cts"/>
+        <File Source="Mombot4p\commands\offense\pxed.cts"/>
+        <File Source="Mombot4p\commands\offense\pxedx.cts"/>
+        <File Source="Mombot4p\commands\offense\pxel.cts"/>
+        <File Source="Mombot4p\commands\offense\pxelk.cts"/>
+        <File Source="Mombot4p\commands\offense\pxex.cts"/>
+
+        <File Id="m31.1500" Source="Mombot31\commands\offense\mex.cts"/>
+        <File Id="m31.1501" Source="Mombot31\commands\offense\mxex.cts"/>
+        <File Id="m31.1502" Source="Mombot31\commands\offense\_kazi.cts"/>
       </Component>
-      <Component Id="MombotCommandsResourceComponent" Directory="MOM35_CMD_RESOURCE" Guid="36f4a9e4-a6e4-4086-87ae-d0bdece5c515">
-        <File Source="Mombot40\commands\resource\buy.cts"/>
-        <File Source="Mombot40\commands\resource\dump.cts"/>
-        <File Source="Mombot40\commands\resource\max.cts"/>
-        <File Source="Mombot40\commands\resource\sellship.cts"/>
-        <File Source="Mombot40\commands\resource\_dock_shopper.cts"/>
+      <Component Id="MombotCommandsResourceComponent" Directory="MOM40_CMD_RESOURCE" Guid="36f4a9e4-a6e4-4086-87ae-d0bdece5c515">
+        <File Source="Mombot4p\commands\resource\buy.cts"/>
+        <File Source="Mombot4p\commands\resource\dump.cts"/>
+        <File Source="Mombot4p\commands\resource\max.cts"/>
+        <File Source="Mombot4p\commands\resource\sellship.cts"/>
+        <File Source="Mombot4p\commands\resource\_dock_shopper.cts"/>
+
+        <File Id="ms1.1600" Source="Mombot31\commands\resource\scruball.cts"/>
       </Component>
-      <Component Id="MombotDaemonsComponent" Directory="MOM35_DAEMONS" Guid="78a6c5ec-dbc0-4d82-a127-444df32491cd">
-        <File Source="Mombot40\daemons\chat.cts"/>
-        <File Source="Mombot40\daemons\comms.cts"/>
-        <File Source="Mombot40\daemons\ephaggle.cts"/>
-        <File Source="Mombot40\daemons\ignore.cts"/>
-        <File Source="Mombot40\daemons\online.cts"/>
-        <File Source="Mombot40\daemons\stats.cts"/>
-        <File Source="Mombot40\daemons\viewscreen.cts"/>
-        <File Source="Mombot40\daemons\watcher.cts"/>
+      <Component Id="MombotDaemonsComponent" Directory="MOM40_DAEMONS" Guid="78a6c5ec-dbc0-4d82-a127-444df32491cd">
+        <File Source="Mombot4p\daemons\chat.cts"/>
+        <File Source="Mombot4p\daemons\comms.cts"/>
+        <File Source="Mombot4p\daemons\ephaggle.cts"/>
+        <File Source="Mombot4p\daemons\ignore.cts"/>
+        <File Source="Mombot4p\daemons\online.cts"/>
+        <File Source="Mombot4p\daemons\stats.cts"/>
+        <File Source="Mombot4p\daemons\viewscreen.cts"/>
+        <File Source="Mombot4p\daemons\watcher.cts"/>
+
+        <File Id="m31.1700" Source="Mombot31\daemons\FillSector.cts"/>
+        <File Id="m31.1701" Source="Mombot31\daemons\nofed.cts"/>
+        <File Id="m31.1702" Source="Mombot31\daemons\planets.cts"/>
+        <File Id="m31.1703" Source="Mombot31\daemons\quikpanel.cts"/>
       </Component>
-      <Component Id="MombotHelpComponent" Directory="MOM35_HELP" Guid="9a3be94e-3f24-47ce-8a09-ba0084622a5d">
-        <File Source="Mombot40\help\About.txt"/>
-        <File Source="Mombot40\help\armids.txt"/>
-        <File Source="Mombot40\help\avoids.txt"/>
-        <File Source="Mombot40\help\Bot.txt"/>
-        <File Source="Mombot40\help\boton.txt"/>
-        <File Source="Mombot40\help\Bust.txt"/>
-        <File Source="Mombot40\help\bustcount.txt"/>
-        <File Source="Mombot40\help\Buy.txt"/>
-        <File Source="Mombot40\help\BWarp.txt"/>
-        <File Source="Mombot40\help\Call.txt"/>
-        <File Source="Mombot40\help\callout.txt"/>
-        <File Source="Mombot40\help\CIM.txt"/>
-        <File Source="Mombot40\help\citkill.txt"/>
-        <File Source="Mombot40\help\class0.txt"/>
-        <File Source="Mombot40\help\Clear.txt"/>
-        <File Source="Mombot40\help\CLimp.txt"/>
-        <File Source="Mombot40\help\CMine.txt"/>
-        <File Source="Mombot40\help\cn.txt"/>
-        <File Source="Mombot40\help\cn9.txt"/>
-        <File Source="Mombot40\help\Colo.txt"/>
-        <File Source="Mombot40\help\corp.txt"/>
-        <File Source="Mombot40\help\course.txt"/>
-        <File Source="Mombot40\help\Dep.txt"/>
-        <File Source="Mombot40\help\DISP.txt"/>
-        <File Source="Mombot40\help\DisR.txt"/>
-        <File Source="Mombot40\help\DScan.txt"/>
-        <File Source="Mombot40\help\Dump.txt"/>
-        <File Source="Mombot40\help\EMQ.txt"/>
-        <File Source="Mombot40\help\EMX.txt"/>
-        <File Source="Mombot40\help\Exit.txt"/>
-        <File Source="Mombot40\help\FigMove.txt"/>
-        <File Source="Mombot40\help\Figs.txt"/>
-        <File Source="Mombot40\help\Find.txt"/>
-        <File Source="Mombot40\help\Finder.txt"/>
-        <File Source="Mombot40\help\Furb.txt"/>
-        <File Source="Mombot40\help\GetVar.txt"/>
-        <File Source="Mombot40\help\GridCheck.txt"/>
-        <File Source="Mombot40\help\HKILL.txt"/>
-        <File Source="Mombot40\help\Holo.txt"/>
-        <File Source="Mombot40\help\HTorp.txt"/>
-        <File Source="Mombot40\help\IG.txt"/>
-        <File Source="Mombot40\help\KILL.txt"/>
-        <File Source="Mombot40\help\Land.txt"/>
-        <File Source="Mombot40\help\Lift.txt"/>
-        <File Source="Mombot40\help\Limp.txt"/>
-        <File Source="Mombot40\help\Limps.txt"/>
-        <File Source="Mombot40\help\ListAll.txt"/>
-        <File Source="Mombot40\help\Login.txt"/>
-        <File Source="Mombot40\help\Logoff.txt"/>
-        <File Source="Mombot40\help\LSD.txt"/>
-        <File Source="Mombot40\help\Mac.txt"/>
-        <File Source="Mombot40\help\Max.txt"/>
-        <File Source="Mombot40\help\MaxPort.txt"/>
-        <File Source="Mombot40\help\Mega.txt"/>
-        <File Source="Mombot40\help\Merch.txt"/>
-        <File Source="Mombot40\help\Mine.txt"/>
-        <File Source="Mombot40\help\Mines.txt"/>
-        <File Source="Mombot40\help\MOVE.txt"/>
-        <File Source="Mombot40\help\MoveFig.txt"/>
-        <File Source="Mombot40\help\moveship.txt"/>
-        <File Source="Mombot40\help\Mow.txt"/>
-        <File Source="Mombot40\help\msgs.txt"/>
-        <File Source="Mombot40\help\Neg.txt"/>
-        <File Source="Mombot40\help\News.txt"/>
-        <File Source="Mombot40\help\NMac.txt"/>
-        <File Source="Mombot40\help\Overload.txt"/>
-        <File Source="Mombot40\help\Page.txt"/>
-        <File Source="Mombot40\help\param.txt"/>
-        <File Source="Mombot40\help\patp.txt"/>
-        <File Source="Mombot40\help\pdrop.txt"/>
-        <File Source="Mombot40\help\PE.txt"/>
-        <File Source="Mombot40\help\PED.txt"/>
-        <File Source="Mombot40\help\PEL.txt"/>
-        <File Source="Mombot40\help\PELK.txt"/>
-        <File Source="Mombot40\help\PEX.txt"/>
-        <File Source="Mombot40\help\PGrid.txt"/>
-        <File Source="Mombot40\help\Pimp.txt"/>
-        <File Source="Mombot40\help\Ping.txt"/>
-        <File Source="Mombot40\help\Plimp.txt"/>
-        <File Source="Mombot40\help\PList.txt"/>
-        <File Source="Mombot40\help\Plock.txt"/>
-        <File Source="Mombot40\help\PMine.txt"/>
-        <File Source="Mombot40\help\PScan.txt"/>
-        <File Source="Mombot40\help\PSST.txt"/>
-        <File Source="Mombot40\help\PWarp.txt"/>
-        <File Source="Mombot40\help\PXE.txt"/>
-        <File Source="Mombot40\help\PXED.txt"/>
-        <File Source="Mombot40\help\PXEL.txt"/>
-        <File Source="Mombot40\help\PXELK.txt"/>
-        <File Source="Mombot40\help\PXEX.txt"/>
-        <File Source="Mombot40\help\QSS.txt"/>
-        <File Source="Mombot40\help\Refresh.txt"/>
-        <File Source="Mombot40\help\Relog.txt"/>
-        <File Source="Mombot40\help\Reset.txt"/>
-        <File Source="Mombot40\help\Rob.txt"/>
-        <File Source="Mombot40\help\SafeMow.txt"/>
-        <File Source="Mombot40\help\Saveme.txt"/>
-        <File Source="Mombot40\help\SDT.txt"/>
-        <File Source="Mombot40\help\Sector.txt"/>
-        <File Source="Mombot40\help\SetVar.txt"/>
-        <File Source="Mombot40\help\ShipMove.txt"/>
-        <File Source="Mombot40\help\SList.txt"/>
-        <File Source="Mombot40\help\SST.txt"/>
-        <File Source="Mombot40\help\Stats.txt"/>
-        <File Source="Mombot40\help\status.txt"/>
-        <File Source="Mombot40\help\Stopall.txt"/>
-        <File Source="Mombot40\help\StoreShip.txt"/>
-        <File Source="Mombot40\help\strip.txt"/>
-        <File Source="Mombot40\help\Surround.txt"/>
-        <File Source="Mombot40\help\tbust.txt"/>
-        <File Source="Mombot40\help\TopOff.txt"/>
-        <File Source="Mombot40\help\Tow.txt"/>
-        <File Source="Mombot40\help\TRICON.txt"/>
-        <File Source="Mombot40\help\TWarp.txt"/>
-        <File Source="Mombot40\help\Unlock.txt"/>
-        <File Source="Mombot40\help\With.txt"/>
-        <File Source="Mombot40\help\wppt.txt"/>
-        <File Source="Mombot40\help\xenter.txt"/>
-        <File Source="Mombot40\help\Xport.txt"/>
-        <File Source="Mombot40\help\ZTM.txt"/>
+      <Component Id="MombotHelpComponent" Directory="MOM40_HELP" Guid="9a3be94e-3f24-47ce-8a09-ba0084622a5d">
+        <File Source="Mombot4p\help\About.txt"/>
+        <File Source="Mombot4p\help\armids.txt"/>
+        <File Source="Mombot4p\help\avoids.txt"/>
+        <File Source="Mombot4p\help\Bot.txt"/>
+        <File Source="Mombot4p\help\boton.txt"/>
+        <File Source="Mombot4p\help\Bust.txt"/>
+        <File Source="Mombot4p\help\bustcount.txt"/>
+        <File Source="Mombot4p\help\Buy.txt"/>
+        <File Source="Mombot4p\help\BWarp.txt"/>
+        <File Source="Mombot4p\help\Call.txt"/>
+        <File Source="Mombot4p\help\callout.txt"/>
+        <File Source="Mombot4p\help\CIM.txt"/>
+        <File Source="Mombot4p\help\citkill.txt"/>
+        <File Source="Mombot4p\help\class0.txt"/>
+        <File Source="Mombot4p\help\Clear.txt"/>
+        <File Source="Mombot4p\help\CLimp.txt"/>
+        <File Source="Mombot4p\help\CMine.txt"/>
+        <File Source="Mombot4p\help\cn.txt"/>
+        <File Source="Mombot4p\help\cn9.txt"/>
+        <File Source="Mombot4p\help\Colo.txt"/>
+        <File Source="Mombot4p\help\corp.txt"/>
+        <File Source="Mombot4p\help\course.txt"/>
+        <File Source="Mombot4p\help\Dep.txt"/>
+        <File Source="Mombot4p\help\DISP.txt"/>
+        <File Source="Mombot4p\help\DisR.txt"/>
+        <File Source="Mombot4p\help\DScan.txt"/>
+        <File Source="Mombot4p\help\Dump.txt"/>
+        <File Source="Mombot4p\help\EMQ.txt"/>
+        <File Source="Mombot4p\help\EMX.txt"/>
+        <File Source="Mombot4p\help\Exit.txt"/>
+        <File Source="Mombot4p\help\FigMove.txt"/>
+        <File Source="Mombot4p\help\Figs.txt"/>
+        <File Source="Mombot4p\help\Find.txt"/>
+        <File Source="Mombot4p\help\Finder.txt"/>
+        <File Source="Mombot4p\help\Furb.txt"/>
+        <File Source="Mombot4p\help\GetVar.txt"/>
+        <File Source="Mombot4p\help\GridCheck.txt"/>
+        <File Source="Mombot4p\help\HKILL.txt"/>
+        <File Source="Mombot4p\help\Holo.txt"/>
+        <File Source="Mombot4p\help\HTorp.txt"/>
+        <File Source="Mombot4p\help\IG.txt"/>
+        <File Source="Mombot4p\help\KILL.txt"/>
+        <File Source="Mombot4p\help\Land.txt"/>
+        <File Source="Mombot4p\help\Lift.txt"/>
+        <File Source="Mombot4p\help\Limp.txt"/>
+        <File Source="Mombot4p\help\Limps.txt"/>
+        <File Source="Mombot4p\help\ListAll.txt"/>
+        <File Source="Mombot4p\help\Login.txt"/>
+        <File Source="Mombot4p\help\Logoff.txt"/>
+        <File Source="Mombot4p\help\LSD.txt"/>
+        <File Source="Mombot4p\help\Mac.txt"/>
+        <File Source="Mombot4p\help\Max.txt"/>
+        <File Source="Mombot4p\help\MaxPort.txt"/>
+        <File Source="Mombot4p\help\Mega.txt"/>
+        <File Source="Mombot4p\help\Merch.txt"/>
+        <File Source="Mombot4p\help\Mine.txt"/>
+        <File Source="Mombot4p\help\Mines.txt"/>
+        <File Source="Mombot4p\help\MOVE.txt"/>
+        <File Source="Mombot4p\help\MoveFig.txt"/>
+        <File Source="Mombot4p\help\moveship.txt"/>
+        <File Source="Mombot4p\help\Mow.txt"/>
+        <File Source="Mombot4p\help\msgs.txt"/>
+        <File Source="Mombot4p\help\Neg.txt"/>
+        <File Source="Mombot4p\help\News.txt"/>
+        <File Source="Mombot4p\help\NMac.txt"/>
+        <File Source="Mombot4p\help\Overload.txt"/>
+        <File Source="Mombot4p\help\Page.txt"/>
+        <File Source="Mombot4p\help\param.txt"/>
+        <File Source="Mombot4p\help\patp.txt"/>
+        <File Source="Mombot4p\help\pdrop.txt"/>
+        <File Source="Mombot4p\help\PE.txt"/>
+        <File Source="Mombot4p\help\PED.txt"/>
+        <File Source="Mombot4p\help\PEL.txt"/>
+        <File Source="Mombot4p\help\PELK.txt"/>
+        <File Source="Mombot4p\help\PEX.txt"/>
+        <File Source="Mombot4p\help\PGrid.txt"/>
+        <File Source="Mombot4p\help\Pimp.txt"/>
+        <File Source="Mombot4p\help\Ping.txt"/>
+        <File Source="Mombot4p\help\Plimp.txt"/>
+        <File Source="Mombot4p\help\PList.txt"/>
+        <File Source="Mombot4p\help\Plock.txt"/>
+        <File Source="Mombot4p\help\PMine.txt"/>
+        <File Source="Mombot4p\help\PScan.txt"/>
+        <File Source="Mombot4p\help\PSST.txt"/>
+        <File Source="Mombot4p\help\PWarp.txt"/>
+        <File Source="Mombot4p\help\PXE.txt"/>
+        <File Source="Mombot4p\help\PXED.txt"/>
+        <File Source="Mombot4p\help\PXEL.txt"/>
+        <File Source="Mombot4p\help\PXELK.txt"/>
+        <File Source="Mombot4p\help\PXEX.txt"/>
+        <File Source="Mombot4p\help\QSS.txt"/>
+        <File Source="Mombot4p\help\Refresh.txt"/>
+        <File Source="Mombot4p\help\Relog.txt"/>
+        <File Source="Mombot4p\help\Reset.txt"/>
+        <File Source="Mombot4p\help\Rob.txt"/>
+        <File Source="Mombot4p\help\SafeMow.txt"/>
+        <File Source="Mombot4p\help\Saveme.txt"/>
+        <File Source="Mombot4p\help\SDT.txt"/>
+        <File Source="Mombot4p\help\Sector.txt"/>
+        <File Source="Mombot4p\help\SetVar.txt"/>
+        <File Source="Mombot4p\help\ShipMove.txt"/>
+        <File Source="Mombot4p\help\SList.txt"/>
+        <File Source="Mombot4p\help\SST.txt"/>
+        <File Source="Mombot4p\help\Stats.txt"/>
+        <File Source="Mombot4p\help\status.txt"/>
+        <File Source="Mombot4p\help\Stopall.txt"/>
+        <File Source="Mombot4p\help\StoreShip.txt"/>
+        <File Source="Mombot4p\help\strip.txt"/>
+        <File Source="Mombot4p\help\Surround.txt"/>
+        <File Source="Mombot4p\help\tbust.txt"/>
+        <File Source="Mombot4p\help\TopOff.txt"/>
+        <File Source="Mombot4p\help\Tow.txt"/>
+        <File Source="Mombot4p\help\TRICON.txt"/>
+        <File Source="Mombot4p\help\TWarp.txt"/>
+        <File Source="Mombot4p\help\Unlock.txt"/>
+        <File Source="Mombot4p\help\With.txt"/>
+        <File Source="Mombot4p\help\wppt.txt"/>
+        <File Source="Mombot4p\help\xenter.txt"/>
+        <File Source="Mombot4p\help\Xport.txt"/>
+        <File Source="Mombot4p\help\ZTM.txt"/>
+        <File Source="Mombot4p\help\select.txt"/>
+        <File Source="Mombot4p\help\beam.txt"/>
+        <File Source="Mombot4p\help\update.txt"/>
+        <File Source="Mombot4p\help\deploy.txt"/>
+
+        <File Id="m31.2000" Source="Mombot31\help\cap.txt"/>
+        <File Id="m31.2001" Source="Mombot31\help\citcap.txt"/>
+        <File Id="m31.2002" Source="Mombot31\help\citfill.txt"/>
+        <File Id="m31.2003" Source="Mombot31\help\Clearfig.txt"/>
+        <File Id="m31.2004" Source="Mombot31\help\corpinfo.txt"/>
+        <File Id="m31.2005" Source="Mombot31\help\dockkill.txt"/>
+        <File Id="m31.2006" Source="Mombot31\help\Evac.txt"/>
+        <File Id="m31.2007" Source="Mombot31\help\farm.txt"/>
+        <File Id="m31.2008" Source="Mombot31\help\fillships.txt"/>
+        <File Id="m31.2009" Source="Mombot31\help\foton.txt"/>
+        <File Id="m31.2010" Source="Mombot31\help\Haz.txt"/>
+        <File Id="m31.2011" Source="Mombot31\help\kazi.txt"/>
+        <File Id="m31.2012" Source="Mombot31\help\LDrop.txt"/>
+        <File Id="m31.2013" Source="Mombot31\help\Limpshovel.txt"/>
+        <File Id="m31.2014" Source="Mombot31\help\Mex.txt"/>
+        <File Id="m31.2015" Source="Mombot31\help\Minesweep.txt"/>
+        <File Id="m31.2016" Source="Mombot31\help\MowFuel.txt"/>
+        <File Id="m31.2017" Source="Mombot31\help\mxex.txt"/>
+        <File Id="m31.2018" Source="Mombot31\help\passgrid.txt"/>
+        <File Id="m31.2019" Source="Mombot31\help\qreport.txt"/>
+        <File Id="m31.2020" Source="Mombot31\help\qset.txt"/>
+        <File Id="m31.2021" Source="Mombot31\help\reloader.txt"/>
+        <File Id="m31.2022" Source="Mombot31\help\runaway.txt"/>
+        <File Id="m31.2023" Source="Mombot31\help\salesman.txt"/>
+        <File Id="m31.2024" Source="Mombot31\help\SellShip.txt"/>
+        <File Id="m31.2025" Source="Mombot31\help\SMow.txt"/>
+        <File Id="m31.2026" Source="Mombot31\help\stripships.txt"/>
+        <File Id="m31.2027" Source="Mombot31\help\TSaveme.txt"/>
+        <File Id="m31.2028" Source="Mombot31\help\ugrid.txt"/>
+        <File Id="m31.2029" Source="Mombot31\help\WSST.txt"/>
+
+        <File Id="QBOT.0000" Source="Zedbot25\Scripts\switchbot.txt"/>
       </Component>
-      <Component Id="MombotModesCashingComponent" Directory="MOM35_MODES_CASHING" Guid="e1838218-f343-4493-b6cb-a75e174a2f56">
-        <File Source="Mombot40\modes\cashing\bbb.cts"/>
-        <File Source="Mombot40\modes\cashing\furb.cts"/>
-        <File Source="Mombot40\modes\cashing\Merch.cts"/>
-        <File Source="Mombot40\modes\cashing\sdt.cts"/>
-        <File Source="Mombot40\modes\cashing\sst.cts"/>
-        <File Source="Mombot40\modes\cashing\Tbust.cts"/>
-        <File Source="Mombot40\modes\cashing\wppt.cts"/>
-        <File Source="Mombot40\modes\cashing\WSST.cts"/>
+      <Component Id="MombotGamesComponent" Directory="MOM40_GAMES" Guid="b92551da-625e-4857-aa04-226697b0b4a6">
+        <File Source="Mombot4p\games\placeholder.txt"/>
       </Component>
-      <Component Id="MombotModesDataComponent" Directory="MOM35_MODES_DATA" Guid="fb8990b7-224e-41f1-89f0-786aed5477a8">
-        <File Source="Mombot40\modes\data\sentinel.cts"/>
-        <File Source="Mombot40\modes\data\ztm.cts"/>
+      <Component Id="MombotModesCashingComponent" Directory="MOM40_MODES_CASHING" Guid="e1838218-f343-4493-b6cb-a75e174a2f56">
+        <File Source="Mombot4p\modes\cashing\bbb.cts"/>
+        <File Source="Mombot4p\modes\cashing\furb.cts"/>
+        <File Source="Mombot4p\modes\cashing\Merch.cts"/>
+        <File Source="Mombot4p\modes\cashing\sdt.cts"/>
+        <File Source="Mombot4p\modes\cashing\sst.cts"/>
+        <File Source="Mombot4p\modes\cashing\Tbust.cts"/>
+        <File Source="Mombot4p\modes\cashing\wppt.cts"/>
+        <File Source="Mombot4p\modes\cashing\WSST.cts"/>
+
+        <File Id="m31.3000" Source="Mombot31\modes\cashing\psst.cts"/>
+        <File Id="m31.3001" Source="Mombot31\modes\cashing\Salesman.cts"/>
+        <File Id="m31.3002" Source="Mombot31\modes\cashing\wrob.cts"/>
       </Component>
-      <Component Id="MombotModesDefenseComponent" Directory="MOM35_MODES_DEFENSE" Guid="11cd701f-3ef7-4283-879d-f613bdc4516c">
-        <File Source="Mombot40\modes\defense\ig.cts"/>
-        <File Source="Mombot40\modes\defense\saveme.cts"/>
+      <Component Id="MombotModesDataComponent" Directory="MOM40_MODES_DATA" Guid="fb8990b7-224e-41f1-89f0-786aed5477a8">
+        <File Source="Mombot4p\modes\data\beam.cts"/>
+        <File Source="Mombot4p\modes\data\sentinel.cts"/>
+        <File Source="Mombot4p\modes\data\ztm.cts"/>
+
+        <File Id="m31.3100" Source="Mombot31\modes\data\FedMon.cts"/>
+        <File Id="m31.3101" Source="Mombot31\modes\data\Finder.cts"/>
       </Component>
-      <Component Id="MombotModesGridComponent" Directory="MOM35_MODES_GRID" Guid="00ba8516-1df0-48d0-9fa1-9422c7c28689">
-        <File Source="Mombot40\modes\grid\mow.cts"/>
+      <Component Id="MombotModesDefenseComponent" Directory="MOM40_MODES_DEFENSE" Guid="11cd701f-3ef7-4283-879d-f613bdc4516c">
+        <File Source="Mombot4p\modes\defense\ig.cts"/>
+        <File Source="Mombot4p\modes\defense\saveme.cts"/>
+
+        <File Id="m31.3200" Source="Mombot31\modes\defense\CitFill.cts"/>
+        <File Id="m31.3201" Source="Mombot31\modes\defense\Reloader.cts"/>
+        <File Id="m31.3202" Source="Mombot31\modes\defense\RunAway.cts"/>
+        <File Id="m31.3203" Source="Mombot31\modes\defense\TSaveme.cts"/>        
       </Component>
-      <Component Id="MombotModesOffenseComponent" Directory="MOM35_MODES_OFFENSE" Guid="7ba08a72-505f-4cca-ae12-70a798e1c774">
-        <File Source="Mombot40\modes\offense\Boton.cts"/>
-        <File Source="Mombot40\modes\offense\CitCap.cts"/>
-        <File Source="Mombot40\modes\offense\Citkill.cts"/>
-        <File Source="Mombot40\modes\offense\DockKill.cts"/>
-        <File Source="Mombot40\modes\offense\Foton.cts"/>
-        <File Source="Mombot40\modes\offense\PDrop.cts"/>
-        <File Source="Mombot40\modes\offense\Plock.cts"/>
+      <Component Id="MombotModesGridComponent" Directory="MOM40_MODES_GRID" Guid="00ba8516-1df0-48d0-9fa1-9422c7c28689">
+        <File Source="Mombot4p\modes\grid\mow.cts"/>
+
+        <File Id="m31.3300" Source="Mombot31\modes\grid\DisR.cts"/>
+        <File Id="m31.3301" Source="Mombot31\modes\grid\GridCheck.cts"/>
+        <File Id="m31.3302" Source="Mombot31\modes\grid\LimpShovel.cts"/>
+        <File Id="m31.3303" Source="Mombot31\modes\grid\MineSweep.cts"/>
+        <File Id="m31.3304" Source="Mombot31\modes\grid\MowFuel.cts"/>
+        <File Id="m31.3305" Source="Mombot31\modes\grid\plimper.cts"/>
+        <File Id="m31.3306" Source="Mombot31\modes\grid\UGrid.cts"/>
       </Component>
-      <Component Id="MombotModesResourceComponent" Directory="MOM35_MODES_RESOURCE" Guid="6d093801-8fa2-49cf-a32c-12a788c3707a">
-        <File Source="Mombot40\modes\resource\lsd.cts"/>
-        <File Source="Mombot40\modes\resource\Move.cts"/>
-        <File Source="Mombot40\modes\resource\movefig.cts"/>
-        <File Source="Mombot40\modes\resource\PATP.cts"/>
-        <File Source="Mombot40\modes\resource\Pimp.cts"/>
-        <File Source="Mombot40\modes\resource\strip.cts"/>
+      <Component Id="MombotModesOffenseComponent" Directory="MOM40_MODES_OFFENSE" Guid="7ba08a72-505f-4cca-ae12-70a798e1c774">
+        <File Source="Mombot4p\modes\offense\Boton.cts"/>
+        <File Source="Mombot4p\modes\offense\CitCap.cts"/>
+        <File Source="Mombot4p\modes\offense\Citkill.cts"/>
+        <File Source="Mombot4p\modes\offense\DockKill.cts"/>
+        <File Source="Mombot4p\modes\offense\Foton.cts"/>
+        <File Source="Mombot4p\modes\offense\PDrop.cts"/>
+        <File Source="Mombot4p\modes\offense\Plock.cts"/>
+
+        <File Id="m31.3400" Source="Mombot31\modes\offense\_ldrop.cts"/>
       </Component>
-      <Component Id="MombotStartupComponent" Directory="MOM35_STARTUPS" Guid="59b0b9eb-6ab3-460e-abd8-c45e04185ec1">
-        <File Id="startChat" Source="Mombot40\startups\chat.cts"/>
-        <File Id="startVS" Source="Mombot40\startups\viewscreen.cts"/>
-        <File Id="startWatrcher" Source="Mombot40\startups\watcher.cts"/>
+      <Component Id="MombotModesResourceComponent" Directory="MOM40_MODES_RESOURCE" Guid="6d093801-8fa2-49cf-a32c-12a788c3707a">
+        <File Source="Mombot4p\modes\resource\lsd.cts"/>
+        <File Source="Mombot4p\modes\resource\Move.cts"/>
+        <File Source="Mombot4p\modes\resource\movefig.cts"/>
+        <File Source="Mombot4p\modes\resource\PATP.cts"/>
+        <File Source="Mombot4p\modes\resource\Pimp.cts"/>
+        <File Source="Mombot4p\modes\resource\strip.cts"/>
+
+        <File Id="m31.3500" Source="Mombot31\modes\resource\colo.cts"/>
+        <File Id="m31.3501" Source="Mombot31\modes\resource\farm.cts"/>
+        <File Id="m31.3502" Source="Mombot31\modes\resource\fillships.cts"/>
+        <File Id="m31.3503" Source="Mombot31\modes\resource\moveship.cts"/>
+        <File Id="m31.3504" Source="Mombot31\modes\resource\StripShips.cts"/>
+
+      </Component>
+      <Component Id="MombotStartupComponent" Directory="MOM40_STARTUPS" Guid="59b0b9eb-6ab3-460e-abd8-c45e04185ec1">
+        <File Id="startChat" Source="Mombot4p\startups\chat.cts"/>
+        <File Id="startVS" Source="Mombot4p\startups\viewscreen.cts"/>
+        <File Id="startWatrcher" Source="Mombot4p\startups\watcher.cts"/>
       </Component>
     </ComponentGroup>
     

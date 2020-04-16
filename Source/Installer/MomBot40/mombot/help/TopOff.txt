@@ -1,1 +1,0 @@
-TOPOFF - Fills a ship with fighters using the sector figs.
