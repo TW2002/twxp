@@ -3380,10 +3380,10 @@ function SCStardock(Indexes : TStringArray) : string;
 var
   Sector : integer;
 begin
-  Sector := StrToInt(TWXDatabase.DBHeader.StarDock);
+  Sector := TWXDatabase.DBHeader.StarDock;
   if Sector = 65535 then
-    Sector = 0;
-  Result := Sector;
+    Sector := 0;
+  Result := IntToStr(Sector);
 end;
 
 function SCTime(Indexes : TStringArray) : string;

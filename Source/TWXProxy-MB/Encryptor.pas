@@ -110,7 +110,7 @@ var
   S,
   Key,
   Chunk      : String;
-  P          : ^Char;
+  P          : ^AnsiChar;
 begin
   // Encode string
   S := '';
@@ -163,7 +163,7 @@ begin
     // record index of chunk and encrypt it -
     // do this by accessing 32-bit chunk index in memory and
     // encrypting it at low level
-    P := @I;
+    P := PAnsiChar(@I);
     for J := 1 to SizeOf(Integer) do
     begin
       Chunk := Char(Byte(P^) xor FScrambleSeed xor ChunkKey xor J) + Chunk;

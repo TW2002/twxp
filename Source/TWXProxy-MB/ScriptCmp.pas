@@ -1087,6 +1087,7 @@ type
     end;
   end;
 
+
   function CompileTree(Branch : PBranch) : string;
   var
     Value1,
@@ -1099,7 +1100,7 @@ type
     if (Branch^.Op = OP_NONE) then
     begin
       // its a value
-      SetString(Result, PChar(Branch^.Value1), StrLen(Branch^.Value1));
+      SetString(Result, PChar(Branch^.Value1), StrLen(PAnsiChar(Branch^.Value1)));
       StrDispose(PChar(Branch^.Value1));
     end
     else
@@ -1188,7 +1189,7 @@ begin
   if (Root^.Op = OP_NONE) then
   begin
     // tree is only one value, compile it
-    SetString(Value, PChar(Root^.Value1), StrLen(Root^.Value1));
+    SetString(Value, PChar(Root^.Value1), StrLen(PAnsiChar(Root^.Value1)));
     StrDispose(PChar(Root^.Value1));
     FreeMem(Root);
     CompileValue(Value, CmdCode, ParamKind, Line, ScriptID);

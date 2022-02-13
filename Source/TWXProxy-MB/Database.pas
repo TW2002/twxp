@@ -252,7 +252,7 @@ type
 
     property Sectors[Index : Integer] : TSector read LoadSector;
     property DataBaseOpen : Boolean read FDataBaseOpen;
-    property DBHeader: TDataHeader read FDBHeader;
+    property DBHeader: TDataHeader read FDBHeader write FDBHeader;
     property LastPortCIM: TDateTime read GetLastPortCIM write SetLastPortCIM;
 
   published
