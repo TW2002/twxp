@@ -37,6 +37,7 @@ uses
   FormLicense,
   FormMain,
   FormHistory,
+  System.UITypes,
   FormScript;
 
 type
@@ -45,8 +46,8 @@ type
 
   TModGUI = class(TTWXModule, ITWXGlobals)
   private
-    FProgramDir: string;
-    FDatabaseName: string;
+    FProgramDir: Ansistring;
+    FDatabaseName: Ansistring;
     FGUIForms: array[TGUIFormType] of TForm;
     FConnected: Boolean;
     FFirstLoad: Boolean;
@@ -56,15 +57,15 @@ type
     function GUIFormFactory(GUIFormType: TGUIFormType): TForm;
     function GetFormEnabled(FormType: TGUIFormType): Boolean;
     procedure SetFormEnabled(FormType: TGUIFormType; Enabled: Boolean);
-    procedure SetDatabaseName(const Value: string);
-    function GetDatabaseName: String;
+    procedure SetDatabaseName(const Value: Ansistring);
+    function GetDatabaseName: AnsiString;
     procedure SetTrayHint(const Value: string);
     function GetRecording: Boolean;
     procedure SetRecording(Value: Boolean);
   protected
     { ITWXGlobals }
-    function GetProgramDir: string;
-    procedure SetProgramDir(const Value: string);
+    function GetProgramDir: Ansistring;
+    procedure SetProgramDir(const Value: Ansistring);
 
     property GUIForms[TGUIFormType: TGUIFormType]: TForm read GUIFormFactory;
   public
@@ -78,10 +79,10 @@ type
 
     property Connected: Boolean read GetConnected write SetConnected;
     property FormEnabled[FormType: TGUIFormType]: Boolean read GetFormEnabled write SetFormEnabled;
-    property ProgramDir: string read GetProgramDir write SetProgramDir;
+    property ProgramDir: Ansistring read GetProgramDir write SetProgramDir;
     property Recording: Boolean read GetRecording write SetRecording;
   published
-    property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+    property DatabaseName: Ansistring read GetDatabaseName write SetDatabaseName;
     property TrayHint: string write SetTrayHint;
     property FirstLoad: Boolean read FFirstLoad write FFirstLoad;
   end;
@@ -99,12 +100,12 @@ begin
   Result := FGUIForms[GUIFormType];
 end;
 
-function TModGUI.GetProgramDir: string;
+function TModGUI.GetProgramDir: Ansistring;
 begin
   Result := FProgramDir;
 end;
 
-procedure TModGUI.SetProgramDir(const Value: string);
+procedure TModGUI.SetProgramDir(const Value: Ansistring);
 begin
   FProgramDir := Value;
 end;
@@ -132,13 +133,13 @@ begin
   Result := GUIForms[FormType].Enabled;
 end;
 
-procedure TModGUI.SetDatabaseName(const Value : string);
+procedure TModGUI.SetDatabaseName(const Value : Ansistring);
 begin
   FDatabaseName := Value;
   //TfrmMain(GUIForms[gfMain]).DatabaseName := Value;
 end;
 
-function TModGUI.GetDatabaseName: String;
+function TModGUI.GetDatabaseName: AnsiString;
 begin
   Result := FDatabaseName;
 end;

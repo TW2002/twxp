@@ -35,19 +35,19 @@ type
   TEncryptor = class(TComponent)
   protected
     { Protected declarations }
-    FKey                : String;
+    FKey                : AnsiString;
     FShift              : Integer;
     FShiftKey,
     FChunkSize,
     FScrambleSeed       : Byte;
   public
     { Public declarations }
-    procedure Encrypt(var Target : String);
-    procedure Decrypt(var Target : String);
-    procedure ConvertKey(var Key : String);
+    procedure Encrypt(var Target : AnsiString);
+    procedure Decrypt(var Target : AnsiString);
+    procedure ConvertKey(var Key : AnsiString);
   published
     { Published declarations }
-    property Key : String Read FKey Write FKey;
+    property Key : AnsiString Read FKey Write FKey;
     property Shift : Integer Read FShift Write FShift default 5;
     property ShiftKey : Byte Read FShiftKey Write FShiftKey default 50;
     property ChunkSize : Byte Read FChunkSize Write FChunkSize default 18;
@@ -63,11 +63,11 @@ begin
   RegisterComponents('Samples', [TEncryptor]);
 end;
 
-procedure TEncryptor.ConvertKey(var Key : String);
+procedure TEncryptor.ConvertKey(var Key : AnsiString);
 var
-  S       : String;
+  S       : AnsiString;
   I       : Integer;
-  KeyChar : String;
+  KeyChar : AnsiString;
 begin
   KeyChar := '';
 
@@ -95,7 +95,7 @@ begin
   Key := S;
 end;
 
-procedure TEncryptor.Encrypt(var Target : String);
+procedure TEncryptor.Encrypt(var Target : AnsiString);
 var
   Chunks,
   I,
@@ -109,7 +109,7 @@ var
   CheckSum   : Byte;
   S,
   Key,
-  Chunk      : String;
+  Chunk      : AnsiString;
   P          : ^AnsiChar;
 begin
   // Encode string
@@ -177,7 +177,7 @@ begin
   end;
 end;
 
-procedure TEncryptor.Decrypt(var Target : String);
+procedure TEncryptor.Decrypt(var Target : AnsiString);
 var
   I,
   X,
@@ -190,7 +190,7 @@ var
   S,
   Chunk,
   Key,
-  ChunkIdx   : String;
+  ChunkIdx   : AnsiString;
   P          : Pointer;
 begin
   // Unscramble string

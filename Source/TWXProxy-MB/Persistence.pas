@@ -31,6 +31,8 @@ uses
   Dialogs,
   Contnrs,
   Classes,
+  System.Types,
+  System.UITypes,
   Core;
 
 type
@@ -39,8 +41,8 @@ type
     FModuleList : TObjectList;
     FOutputFile : string;
 
-    function ReadStringFromStream(Stream: TStream): string;
-    procedure ApplyStateValues(const ClassTag: string; StateStream: TStream);
+    function ReadStringFromStream(Stream: TStream): AnsiString;
+    procedure ApplyStateValues(const ClassTag: AnsiString; StateStream: TStream);
     procedure ProcessStateValues(StateStream: TStream);
     procedure ReportStateLoaded;
     function CalcChecksum(Stream: TMemoryStream): Integer;
@@ -92,7 +94,7 @@ var
   ModuleValues : TMemoryStream;
   OutputValues : TMemoryStream;
   Module       : TTWXModule;
-  ClassTag     : string;
+  ClassTag     : AnsiString;
   Checksum     : Integer;
   DataSize     : Integer;
   //ModuleNames  : array of String;
@@ -120,10 +122,10 @@ begin
         if (ModuleValues.Size > 0) then
         begin
           ModuleValues.Seek(0, soFromBeginning);
-          ClassTag := Module.Classname;
+          ClassTag := AnsiString(Module.Classname);
           DataSize := Length(ClassTag);
           OutputValues.Write(DataSize, 4);
-          OutputValues.Write(PChar(ClassTag)^, DataSize);
+          OutputValues.Write(PAnsiChar(ClassTag)^, DataSize);
           OutputValues.CopyFrom(ModuleValues, ModuleValues.Size);
           ModuleValues.Clear;
         end;
@@ -174,7 +176,7 @@ begin
   end;
 end;
 
-procedure TPersistenceManager.ApplyStateValues(const ClassTag: string; StateStream: TStream);
+procedure TPersistenceManager.ApplyStateValues(const ClassTag: AnsiString; StateStream: TStream);
 var
   I: Integer;
   Pos: Integer;
@@ -184,7 +186,7 @@ begin
   Pos := StateStream.Position;
 
   for I := 0 to FModuleList.Count - 1 do
-    if (FModuleList[I].Classname = ClassTag) then
+    if (AnsiString(FModuleList[I].Classname) = ClassTag) then
     begin
       if (StateStream.Position <> Pos) then
         StateStream.Seek(Pos, soFromBeginning); // return to where we started
@@ -197,7 +199,7 @@ end;
 
 procedure TPersistenceManager.ProcessStateValues(StateStream: TStream);
 var
-  ClassTag: string;
+  ClassTag: AnsiString;
 begin
   StateStream.Seek(0, soFromBeginning);
 
@@ -276,16 +278,16 @@ begin
   finally
     CloseFile(InputFile);
   end;
-  
+
   ReportStateLoaded;
 
 {$I+}
 end;
 
-function TPersistenceManager.ReadStringFromStream(Stream: TStream): string;
+function TPersistenceManager.ReadStringFromStream(Stream: TStream): AnsiString;
 var
   Len: Integer;
-  Buf: PChar;
+  Buf: PAnsiChar;
 begin
   Stream.Read(Len, 4);
 

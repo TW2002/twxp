@@ -1672,8 +1672,8 @@ begin
       // fetch command from code
       Cmd := ReadWord(CodePos);
       // read and execute command
-      Msg := 'In Execute: ScriptID: ' + IntToStr(ExecScriptID) + ' Line: ' + IntToStr(Line) + ' Cmd: ' + IntToStr(Cmd);
-      OutputDebugString(PChar(Msg));
+      //Msg := 'In Execute: ScriptID: ' + IntToStr(ExecScriptID) + ' Line: ' + IntToStr(Line) + ' Cmd: ' + IntToStr(Cmd);
+      //OutputDebugString(PChar(Msg));
 
       CmdAction := ProcessCmd(Cmp.ScriptRef.Cmds[Cmd], CodePos);
       if (Integer(CodePos) - Integer(Cmp.Code) >= Cmp.CodeSize) and (CmdAction <> caPause) then

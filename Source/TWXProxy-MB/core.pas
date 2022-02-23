@@ -72,10 +72,10 @@ type
 
   ITWXGlobals = interface
     ['{EA12D75A-A526-4571-A35F-108B2CBE0A6B}']
-    function GetProgramDir: string;
-    procedure SetProgramDir(const Value: string);
+    function GetProgramDir: Ansistring;
+    procedure SetProgramDir(const Value: Ansistring);
 
-    property ProgramDir: string read GetProgramDir write SetProgramDir;
+    property ProgramDir: Ansistring read GetProgramDir write SetProgramDir;
   end;
 
   IMessageListener = interface
@@ -104,10 +104,10 @@ type
 
   IModExtractor = interface
     ['{342885A8-F7A8-46EE-9913-7AE9C1DBBA7F}']
-    function GetMenuKey: Char;
-    procedure SetMenuKey(Value: Char);
+    function GetMenuKey: AnsiChar;
+    procedure SetMenuKey(Value: AnsiChar);
 
-    property MenuKey: Char read GetMenuKey write SetMenuKey;
+    property MenuKey: AnsiChar read GetMenuKey write SetMenuKey;
   end;
 
   IModGUI = interface

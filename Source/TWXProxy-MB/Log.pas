@@ -61,7 +61,7 @@ type
     FMaxPlayDelay   : Cardinal;
     FNotifyPlayCuts : Boolean;
 
-    function GetLogName: string;
+    function GetLogName: Ansistring;
     function GetLogTimer: TTimer;
     function GetNextLogEntry: PLogEntry;
     procedure OpenLog(Filename: string);
@@ -71,8 +71,8 @@ type
 
   protected
     { ITWXGlobals }
-    procedure SetProgramDir(const Value: string);
-    function GetProgramDir: string;
+    procedure SetProgramDir(const Value: Ansistring);
+    function GetProgramDir: Ansistring;
 
     { IModLog }
     function GetLogEnabled: Boolean;
@@ -246,7 +246,7 @@ begin
   end;
 end;
 
-function TModLog.GetLogName: string;
+function TModLog.GetLogName: Ansistring;
 begin
   Result := 'logs\' + DateToStr(Date) + ' ' + StripFileExtension(ShortFileName(TWXDatabase.DatabaseName));
   Replace(Result, '/', '-');
@@ -463,12 +463,12 @@ begin
   FBinaryLogs := Value;
 end;
 
-procedure TModLog.SetProgramDir(const Value: string);
+procedure TModLog.SetProgramDir(const Value: Ansistring);
 begin
   FProgramDir := Value;
 end;
 
-function TModLog.GetProgramDir: string;
+function TModLog.GetProgramDir: Ansistring;
 begin
   Result := FProgramDir;
 end;

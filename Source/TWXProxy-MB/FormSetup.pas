@@ -356,7 +356,7 @@ begin
   if (Length(tbMenuKey.Text) = 0) then
     TWXExtractor.MenuKey := ' '
   else
-    TWXExtractor.MenuKey := tbMenuKey.Text[1];
+    TWXExtractor.MenuKey := AnsiChar(tbMenuKey.Text[1]);
 
   TWXDatabase.UseCache := cbCache.Checked;
 
@@ -480,7 +480,7 @@ end;
 procedure TfrmSetup.btnSaveClick(Sender: TObject);
 var
   Error,
-  S        : string;
+  S        : AnsiString;
   Focus    : TWinControl;
   Port,
   ListenPort,

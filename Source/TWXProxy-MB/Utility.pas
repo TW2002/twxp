@@ -31,43 +31,43 @@ interface
 uses
   Classes;
 
-function GetSpace(I : Integer) : String;
-function AsterixToEnter(S : String) : String;
-function GetParameter(S : String; Parameter : Word) : String;
-function GetParameterPos(S : String; Parameter : Integer) : Integer;
-function Segment(I : Integer) : String;
-function IsIn(S, X : String) : Boolean;
-function StrToIntSafe(S : String) : Integer;
-function StripChar(var S : String; C : Char) : String;
-function ShortFilename(S : String) : String;
-function StripFileExtension(S : string) : string;
-function GetDirectory(S : String) : String;
-function FetchScript(S : String; Include : Boolean) : String;
-procedure Replace(var S : String; A, B : Char);
-procedure CompleteFileName(var S : String; X : String);
-function GetTelnetLogin(InStr : String) : String;
-function StripChars(S : String) : String;
+function GetSpace(I : Integer) : AnsiString;
+function AsterixToEnter(S : AnsiString) : AnsiString;
+function GetParameter(S : AnsiString; Parameter : Word) : AnsiString;
+function GetParameterPos(S : AnsiString; Parameter : Integer) : Integer;
+function Segment(I : Integer) : AnsiString;
+function IsIn(S, X : AnsiString) : Boolean;
+function StrToIntSafe(S : AnsiString) : Integer;
+function StripChar(var S : AnsiString; C : AnsiChar) : AnsiString;
+function ShortFilename(S : AnsiString) : AnsiString;
+function StripFileExtension(S : Ansistring) : Ansistring;
+function GetDirectory(S : AnsiString) : AnsiString;
+function FetchScript(S : AnsiString; Include : Boolean) : AnsiString;
+procedure Replace(var S : AnsiString; A, B : AnsiChar);
+procedure CompleteFileName(var S : AnsiString; X : AnsiString);
+function GetTelnetLogin(InStr : AnsiString) : AnsiString;
+function StripChars(S : AnsiString) : AnsiString;
 procedure FreeList(List : TList; MemSize : Integer);
-procedure SetFileExtension(var Filename : String; Extension : String);
-function WordWrap(S : string) : string;
-function IsIpAddress(Addr : string) : Boolean;
+procedure SetFileExtension(var Filename : AnsiString; Extension : AnsiString);
+function WordWrap(S : Ansistring) : Ansistring;
+function IsIpAddress(Addr : Ansistring) : Boolean;
 function rdtsc : Int64;
 procedure ReverseTList(var List : TList);
-procedure Split(const Line : string; var Strings : TStringList; const Delimiters : string = ''); // default string parameter should be blank
+procedure Split(const Line : Ansistring; var Strings : TStringList; const Delimiters : Ansistring = ''); // default string parameter should be blank
 
 implementation
 
 uses
   SysUtils;
 
-procedure SetFileExtension(var Filename : String; Extension : String);
+procedure SetFileExtension(var Filename : AnsiString; Extension : AnsiString);
 begin
   // ensure the filename has an extention.  If not, make one
-  if (Pos('.', Filename) = 0) then
+  if (Pos('.', String(Filename)) = 0) then
     Filename := Filename + Extension;
 end;
 
-function GetSpace(I : Integer) : String;
+function GetSpace(I : Integer) : AnsiString;
 var
   X : Integer;
 begin
@@ -77,7 +77,7 @@ begin
     Result := Result + ' ';
 end;
 
-function StripChars(S : String) : String;
+function StripChars(S : AnsiString) : AnsiString;
 var
   I : Integer;
 begin
@@ -89,11 +89,11 @@ begin
       Result := Result + S[I];
 end;
 
-function GetTelnetLogin(InStr : String) : String;
+function GetTelnetLogin(InStr : AnsiString) : AnsiString;
 var
   I,
   X    : Integer;
-  Retn : String;
+  Retn : AnsiString;
 begin
   // get telnet commands from this line
   X := 0;
@@ -114,13 +114,13 @@ begin
   GetTelnetLogin := Retn;
 end;
 
-function Generate(Name, Base : String) : String;
+function Generate(Name, Base : AnsiString) : AnsiString;
 var
   I    : Integer;
   Key,
   A,
   B    : Byte;
-  Retn : String;
+  Retn : AnsiString;
 begin
   Retn := '';
   Key := $5A;
@@ -142,15 +142,15 @@ begin
     else
       A := A + 55;
 
-    Retn := Retn + Char(A);
+    Retn := Retn + AnsiChar(A);
   end;
 
   Result := Retn;
 end;
 
-function FetchScript(S : String; Include : Boolean) : String;
+function FetchScript(S : AnsiString; Include : Boolean) : AnsiString;
 var
-  NameList : array[1..6] of string;
+  NameList : array[1..6] of Ansistring;
   Limit,
   I        : Integer;
 begin
@@ -185,14 +185,14 @@ begin
   Result := S;
 
   for I := 1 to Limit do
-    if (FileExists(NameList[I])) then
+    if (FileExists(String(NameList[I]))) then
     begin
       Result := NameList[I];
       Break;
     end;
 end;
 
-procedure CompleteFileName(var S : String; X : String);
+procedure CompleteFileName(var S : AnsiString; X : AnsiString);
 var
   I : Integer;
 begin
@@ -208,10 +208,10 @@ begin
   S := S + '.' + X;
 end;
 
-procedure Replace(var S : String; A, B : Char);
+procedure Replace(var S : AnsiString; A, B : AnsiChar);
 var
   I : Integer;
-  N : String;
+  N : AnsiString;
 begin
   N := '';
 
@@ -224,7 +224,7 @@ begin
   S := N;
 end;
 
-function ShortFilename(S : String) : String;
+function ShortFilename(S : AnsiString) : AnsiString;
 var
   I : Integer;
 begin
@@ -236,7 +236,7 @@ begin
   ShortFilename := Copy(S, I + 1, length(S));
 end;
 
-function StripFileExtension(S : string) : string;
+function StripFileExtension(S : Ansistring) : Ansistring;
 var
   I : Integer;
 begin
@@ -251,12 +251,12 @@ begin
   Result := S;
 end;
 
-function StrToIntSafe(S : String) : Integer;
+function StrToIntSafe(S : AnsiString) : Integer;
 var
   ErrorC,
   Value  : Integer;
 begin
-  Val(S, Value, ErrorC);
+  Val(String(S), Value, ErrorC);
 
   if (ErrorC <> 0) then
     Value := 0;
@@ -264,9 +264,9 @@ begin
   StrToIntSafe := Value;
 end;
 
-function AsterixToEnter(S : String) : String;
+function AsterixToEnter(S : AnsiString) : AnsiString;
 var
-  X : String;
+  X : AnsiString;
   I : Integer;
 begin
   for I := 1 to length(S) do
@@ -281,13 +281,13 @@ begin
   AsterixToEnter := X;
 end;
 
-function Segment(I : Integer) : String;
+function Segment(I : Integer) : AnsiString;
 var
   X, C : Integer;
-  M, O : String;
+  M, O : AnsiString;
 begin
   // Moving from the right side, add commas every 3rd digit
-  M := IntToStr(I);
+  M := AnsiString(IntToStr(I));
   O := '';
   C := -1;
 
@@ -305,10 +305,10 @@ begin
   Segment := O;
 end;
 
-function GetDirectory(S : String) : String;
+function GetDirectory(S : AnsiString) : AnsiString;
 var
   I    : Integer;
-  Retn : String;
+  Retn : AnsiString;
 begin
   // gets the directory out of the passed filename
 
@@ -325,22 +325,22 @@ begin
   GetDirectory := Retn;
 end;
 
-function StripChar(var S : String; C : Char) : String;
+function StripChar(var S : AnsiString; C : AnsiChar) : AnsiString;
 var
   I : Integer;
-  X : String;
+  X : AnsiString;
 begin
   // Remove character from string
   X := '';
 
   for I := 1 to length(S) do
-    if (S[I] <> C) then X := X + S[I];
+    if (S[I] <> AnsiChar(C)) then X := X + S[I];
 
   S := X;
   StripChar := X;
 end;
 
-function IsIn(S, X : String) : Boolean;
+function IsIn(S, X : AnsiString) : Boolean;
 begin
   if (S = '') then
     IsIn := TRUE
@@ -353,11 +353,11 @@ begin
   end;
 end;
 
-function GetParameter(S : String; Parameter : Word) : String;
+function GetParameter(S : AnsiString; Parameter : Word) : AnsiString;
 var
   I, P : Integer;
-  retn : String;
-  Last : Char;
+  retn : AnsiString;
+  Last : AnsiChar;
 begin
   // Get text parameter
   if (S = '') then
@@ -388,10 +388,10 @@ begin
   GetParameter := retn;
 end;
 
-function GetParameterPos(S : String; Parameter : Integer) : Integer;
+function GetParameterPos(S : AnsiString; Parameter : Integer) : Integer;
 var
   I, P : Integer;
-  Last : Char;
+  Last : AnsiChar;
 begin
   // Get text parameter
   P := 1;
@@ -423,7 +423,7 @@ begin
   List.Free;
 end;
 
-function WordWrap(S : string) : string;
+function WordWrap(S : Ansistring) : Ansistring;
 var
   I,
   J,
@@ -453,7 +453,7 @@ begin
   Result := S;
 end;
 
-function IsIpAddress(Addr : string) : Boolean;
+function IsIpAddress(Addr : Ansistring) : Boolean;
 var
   I,
   Dots : Integer;
@@ -492,10 +492,10 @@ begin
     List.Exchange(I - 1, List.Count - I);
 end;
 
-procedure Split(const Line : string; var Strings : TStringList; const Delimiters : string = ''); // default string parameter should be blank
+procedure Split(const Line : Ansistring; var Strings : TStringList; const Delimiters : Ansistring = ''); // default string parameter should be blank
 var
   Separators,
-  WhiteSpace : set of Char; // set of Char
+  WhiteSpace : set of AnsiChar; // set of Char
   I : Integer;
 begin
   if (Delimiters <> '') then // Delimiters were specified
@@ -508,7 +508,7 @@ begin
     Separators := [#9, #32]; // Tab and Space, if omitted
 
   WhiteSpace := [];
-  ExtractStrings(Separators, WhiteSpace, @Line[1], TStrings(Strings));
+  ExtractStrings(Separators, WhiteSpace, PChar(@Line[1]), TStrings(Strings));
 end;
 
 end.

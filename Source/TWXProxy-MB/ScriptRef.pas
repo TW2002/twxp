@@ -36,9 +36,9 @@ uses
 
 type
   TCmdParam = class;
-  TStringArray = array of string;
+  TStringArray = array of AnsiString;
   TCmdAction = (caNone, caStop, caPause, caAuth);
-  TScriptConstHandler = function(Indexes : TStringArray) : string;
+  TScriptConstHandler = function(Indexes : TStringArray) : Ansistring;
   TScriptCmdHandler = function(Script : TObject; Params : array of TCmdParam) : TCmdAction;
   TParamKind = (pkValue, pkVar);
   EScriptError = class(Exception);
@@ -49,14 +49,14 @@ type
   // script command handling functions within the ScriptCmd unit.
   TCmdParam = class(TObject)
   protected
-    FStrValue     : string;
+    FStrValue     : Ansistring;
     FDecValue     : Extended;
     FSigDigits    : Byte;
     FIsNumeric    : Boolean;
     FNumChanged   : Boolean;
     FIsTemporary  : Boolean;
-    procedure SetStrValue(S : string);
-    function GetStrValue : string;
+    procedure SetStrValue(S : Ansistring);
+    function GetStrValue : Ansistring;
     procedure SetDecValue(E : Extended);
     function GetDecValue : Extended;
 
@@ -65,7 +65,7 @@ type
     destructor Destroy; override;
 
     procedure SetBool(B : Boolean);
-    property Value : string read GetStrValue write SetStrValue;
+    property Value : Ansistring read GetStrValue write SetStrValue;
     property DecValue : Extended read GetDecValue write SetDecValue;
     property SigDigits : Byte read FSigDigits write FSigDigits;
     property IsNumeric : Boolean read FIsNumeric; // write FIsNumeric;
@@ -77,7 +77,7 @@ type
   // variables/triggers to allow the scripting language to function.
   TScriptCmd = class(TObject)
   protected
-    FName         : string;
+    FName         : Ansistring;
     FMinParams,
     FMaxParams    : Integer;
     FParamKinds   : array of TParamKind;
@@ -88,7 +88,7 @@ type
     function GetParamKind(Index : Integer) : TParamKind;
 
   public
-    property Name : string read FName write FName; // must be stored in uppercase
+    property Name : Ansistring read FName write FName; // must be stored in uppercase
     property MinParams : Integer read FMinParams write FMinParams;
     property MaxParams : Integer read FMaxParams write FMaxParams;
     property DefParamKind : TParamKind read FDefParamKind write FDefParamKind;
@@ -102,14 +102,14 @@ type
   // processing any parameters.
   TScriptSysConst = class(TObject)
   protected
-    FName   : string;
+    FName   : Ansistring;
     FonRead : TScriptConstHandler;
 
   public
-    function Read(Indexes : TStringArray) : string;
+    function Read(Indexes : TStringArray) : Ansistring;
 
     property onRead : TScriptConstHandler read FonRead write FonRead;
-    property Name : string read FName write FName; // must be stored in uppercase
+    property Name : Ansistring read FName write FName; // must be stored in uppercase
   end;
 
   // TScriptRef: An object that holds all the references to script consts/cmds
@@ -125,13 +125,13 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
-    procedure AddCommand(Name : string; MinParams, MaxParams : Integer; onCmd : TScriptCmdHandler;
-      ParamKinds : array of TParamKind; DefParamKind : TParamKind);
-    procedure AddSysConstant(Name : string; onRead : TScriptConstHandler);
 
-    function FindCmd(Name : string) : Integer;
-    function FindSysConst(Name : string) : Integer;
+    procedure AddCommand(Name : Ansistring; MinParams, MaxParams : Integer; onCmd : TScriptCmdHandler;
+      ParamKinds : array of TParamKind; DefParamKind : TParamKind);
+    procedure AddSysConstant(Name : Ansistring; onRead : TScriptConstHandler);
+
+    function FindCmd(Name : Ansistring) : Integer;
+    function FindSysConst(Name : Ansistring) : Integer;
 
     property Cmds[Index : Integer] : TScriptCmd read GetScriptCmd;
     property SysConsts[Index : Integer] : TScriptSysConst read GetScriptSysConst;
@@ -188,15 +188,15 @@ begin
   end;
 end;
 
-procedure TCmdParam.SetStrValue(S: string);
+procedure TCmdParam.SetStrValue(S: Ansistring);
 begin
   FStrValue := S;
   FIsNumeric := false;
 end;
 
-function TCmdParam.GetStrValue : String;
+function TCmdParam.GetStrValue : AnsiString;
 const
-  Buffer: array[0..63] of Char = #0; // EP - Make it persist for efficiency
+  Buffer: array[0..63] of AnsiChar = #0; // EP - Make it persist for efficiency
 var
   Len: Integer;
 begin
@@ -229,7 +229,7 @@ var
   DecPos: Integer;
 begin
   if FIsNumeric = FALSE then
-    if TextToFloat(PChar(FStrValue), F, fvExtended) then
+    if TextToFloat(PAnsiChar(FStrValue), F, fvExtended) then
     begin
       FDecValue := F;
       DecPos := Pos('.', FStrValue);
@@ -276,7 +276,7 @@ end;
 // TScriptSysConst implementation
 
 
-function TScriptSysConst.Read(Indexes : TStringArray) : string;
+function TScriptSysConst.Read(Indexes : TStringArray) : Ansistring;
 begin
   Result := onRead(Indexes);
 end;
@@ -318,7 +318,7 @@ begin
   SysConstList.Free;
 end;
 
-procedure TScriptRef.AddCommand(Name : string; MinParams, MaxParams : Integer;
+procedure TScriptRef.AddCommand(Name : Ansistring; MinParams, MaxParams : Integer;
   onCmd : TScriptCmdHandler; ParamKinds : array of TParamKind; DefParamKind : TParamKind);
 var
   NewCmd : TScriptCmd;
@@ -335,7 +335,7 @@ begin
   CmdList.Add(NewCmd);
 end;
 
-procedure TScriptRef.AddSysConstant(Name : string; onRead : TScriptConstHandler);
+procedure TScriptRef.AddSysConstant(Name : Ansistring; onRead : TScriptConstHandler);
 var
   NewConst : TScriptSysConst;
 begin
@@ -359,7 +359,7 @@ begin
   Result := SysConstList.Items[Index];
 end;
 
-function TScriptRef.FindCmd(Name : string) : Integer;
+function TScriptRef.FindCmd(Name : Ansistring) : Integer;
 var
   I : Integer;
 begin
@@ -375,7 +375,7 @@ begin
       end;
 end;
 
-function TScriptRef.FindSysConst(Name : string) : Integer;
+function TScriptRef.FindSysConst(Name : Ansistring) : Integer;
 var
   I : Integer;
 begin
