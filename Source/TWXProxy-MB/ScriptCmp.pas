@@ -69,7 +69,7 @@ type
 
   TConditionStruct = record
     ConLabel,
-    EndLabel  : string;
+    EndLabel  : Ansistring;
     IsWhile,
     AtElse    : Boolean;
   end;
@@ -78,7 +78,7 @@ type
   // a list of indexed values in the event of it being used as an array within the script.
   TVarParam = class(TCmdParam) // variable or variable array declared within script
   protected
-    FName      : string;
+    FName      : Ansistring;
     Vars       : TList; // list of variables indexed within this variable
     FArraySize : Integer; // static array size
 
@@ -87,13 +87,13 @@ type
     destructor Destroy; override;
 
     function AddVar(NewVar : TVarParam) : Integer;
-    procedure Dump(Tab : string);
+    procedure Dump(Tab : Ansistring);
     function GetIndexVar(Indexes : TStringArray) : TVarParam;
     procedure SetArray(Dimensions : array of Integer);
     procedure SetArrayFromStrings(Strings : TStringList);
     procedure SetArrayFromList(List : TList);
     procedure SetMultiArraysFromLists(ListArray : array of TList);
-    property Name : string read FName write FName;
+    property Name : Ansistring read FName write FName;
     property ArraySize : Integer read FArraySize write FArraySize;
   end;
 
@@ -101,13 +101,13 @@ type
   TScriptLabel = class(TObject)
   protected
     FLocation : Integer;
-    FName     : string;
+    FName     : Ansistring;
 
   public
     constructor Create; reintroduce;
 
     property Location : Integer read FLocation write FLocation;
-    property Name : string read FName write FName;
+    property Name : Ansistring read FName write FName;
   end;
 
   TScriptCmp = class(TComponent)
@@ -117,7 +117,7 @@ type
     FLabelList        : TList;
     IncludeScriptList,
     FDescription      : TStringList;
-    FScriptFile       : string;
+    FScriptFile       : Ansistring;
     FCode             : Pointer;
     IFLabelCount,
     SysVarCount,
@@ -132,37 +132,37 @@ type
     function GetLabelCount : Integer;
     function GetParam(Index : Integer) : TCmdParam;
     function GetLabel(Index : Integer) : TScriptLabel;
-    function GetIncludeScript(Index : Integer) : string;
-    function ApplyEncryption(const Value : string; Key : Byte) : string;
+    function GetIncludeScript(Index : Integer) : Ansistring;
+    function ApplyEncryption(const Value : Ansistring; Key : Byte) : Ansistring;
 
     procedure AppendCode(NewCode : Pointer; NewCodeSize : Byte);
-    procedure BuildLabel(const Name : string; Location : Integer);
-    function IdentifyParam(ParamName : string) : Byte;
-    procedure WriteCode(var CmdCode : string; Code : Pointer; CodeLength : Integer);
-    procedure CompileValue(Value : string; var CmdCode : string; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
-    procedure RecurseCmd(const CmdLine : array of string; Line : Integer; ScriptID : Byte);
-    procedure CompileParam(Param : string; var CmdCode : string; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
+    procedure BuildLabel(const Name : Ansistring; Location : Integer);
+    function IdentifyParam(ParamName : Ansistring) : Byte;
+    procedure WriteCode(var CmdCode : Ansistring; Code : Pointer; CodeLength : Integer);
+    procedure CompileValue(Value : Ansistring; var CmdCode : Ansistring; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
+    procedure RecurseCmd(const CmdLine : array of Ansistring; Line : Integer; ScriptID : Byte);
+    procedure CompileParam(Param : Ansistring; var CmdCode : Ansistring; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
     procedure CompileParamLine(const ParamLine : TStringList; const Line : Integer; const ScriptID : Byte);
-    function ConvertOps(const Line : string) : string;
-    function ConvertConditions(const Line : string) : string;
-    function IsOperator(C : Char) : Boolean;
-    procedure CompileFromStrings(ScriptText : TStringList; ScriptName : string);
-    procedure IncludeFile(Filename : string);
+    function ConvertOps(const Line : Ansistring) : Ansistring;
+    function ConvertConditions(const Line : Ansistring) : Ansistring;
+    function IsOperator(C : AnsiChar) : Boolean;
+    procedure CompileFromStrings(ScriptText : TStringList; ScriptName : Ansistring);
+    procedure IncludeFile(Filename : Ansistring);
 
   public
     constructor Create(ScriptRef : TScriptRef); reintroduce;
     destructor Destroy; override;
 
-    procedure CompileFromFile(const Filename, DescFile : string);
+    procedure CompileFromFile(const Filename, DescFile : Ansistring);
     procedure AddParam(Param : TCmdParam);
-    procedure LoadFromFile(const Filename : string);
-    procedure WriteToFile(const Filename : string);
-    procedure ExtendName(var Name : string; ScriptID : Integer);
-    procedure ExtendLabelName(var Name : string; ScriptID : Integer);
+    procedure LoadFromFile(const Filename : Ansistring);
+    procedure WriteToFile(const Filename : Ansistring);
+    procedure ExtendName(var Name : Ansistring; ScriptID : Integer);
+    procedure ExtendLabelName(var Name : Ansistring; ScriptID : Integer);
 
     property Params[Index : Integer] : TCmdParam read GetParam;
     property Labels[Index : Integer] : TScriptLabel read GetLabel;
-    property IncludeScripts[Index : Integer] : string read GetIncludeScript;
+    property IncludeScripts[Index : Integer] : Ansistring read GetIncludeScript;
 
     property ParamCount : Integer read GetParamCount;
     property LabelCount : Integer read GetLabelCount;
@@ -171,7 +171,7 @@ type
     property LineCount : Integer read FLineCount;
     property CmdCount : Integer read FCmdCount;
     property ScriptRef : TScriptRef read FScriptRef;
-    property ScriptFile : string read FScriptFile;
+    property ScriptFile : Ansistring read FScriptFile;
   end;
 
 implementation
@@ -427,7 +427,7 @@ begin
   end;
 end;
 
-procedure TVarParam.Dump(Tab : string);
+procedure TVarParam.Dump(Tab : Ansistring);
 var
   I : Integer;
 begin
@@ -542,7 +542,7 @@ begin
   Result := FLabelList[Index];
 end;
 
-function TScriptCmp.GetIncludeScript(Index : Integer) : string;
+function TScriptCmp.GetIncludeScript(Index : Integer) : Ansistring;
 begin
   Result := IncludeScriptList[Index];
 end;
@@ -575,7 +575,7 @@ begin
   Inc(FCodeSize, NewCodeSize);
 end;
 
-procedure TScriptCmp.BuildLabel(const Name : string; Location : Integer);
+procedure TScriptCmp.BuildLabel(const Name : Ansistring; Location : Integer);
 var
   NewLabel : TScriptLabel;
 begin
@@ -587,7 +587,7 @@ begin
   FLabelList.Add(NewLabel);
 end;
 
-procedure TScriptCmp.ExtendName(var Name : string; ScriptID : Integer);
+procedure TScriptCmp.ExtendName(var Name : Ansistring; ScriptID : Integer);
 begin
   if (Pos('~', Name) = 0) then
   begin
@@ -607,17 +607,17 @@ begin
   end;
 end;
 
-procedure TScriptCmp.ExtendLabelName(var Name : string; ScriptID : Integer);
+procedure TScriptCmp.ExtendLabelName(var Name : Ansistring; ScriptID : Integer);
 begin
   if (Pos('~', Name) = 0) and (ScriptID > 0) then
     Name := ':' + IncludeScriptList[ScriptID] + '~' + Copy(Name, 2, Length(Name));
 end;
 
-function TScriptCmp.IdentifyParam(ParamName : string) : Byte;
+function TScriptCmp.IdentifyParam(ParamName : Ansistring) : Byte;
 var
   IndexLevel,
   I          : Integer;
-  ConstName  : string;
+  ConstName  : Ansistring;
 begin
   // identify the type of this parameter
   // EP - See if it's a $var, %progVar,  #char, [const], or [sysConst]
@@ -651,7 +651,7 @@ begin
   end;
 end;
 
-function TScriptCmp.ApplyEncryption(const Value : string; Key : Byte) : string;
+function TScriptCmp.ApplyEncryption(const Value : Ansistring; Key : Byte) : Ansistring;
 var
   I : Integer;
 begin
@@ -659,18 +659,18 @@ begin
 
   if (Length(Value) > 0) then
     for I := 1 to Length(Value) do
-      Result := Result + Char(Byte(Value[I]) xor Key);
+      Result := Result + AnsiChar(Byte(Value[I]) xor Key);
 end;
 
-procedure TScriptCmp.WriteCode(var CmdCode : string; Code : Pointer; CodeLength : Integer);
+procedure TScriptCmp.WriteCode(var CmdCode : Ansistring; Code : Pointer; CodeLength : Integer);
 var
-  S : string;
+  S : Ansistring;
 begin
-  SetString(S, PChar(Code), CodeLength);
+  SetString(S, PAnsiChar(Code), CodeLength);
   CmdCode := CmdCode + S;
 end;
 
-procedure TScriptCmp.CompileValue(Value : string; var CmdCode : string; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
+procedure TScriptCmp.CompileValue(Value : Ansistring; var CmdCode : Ansistring; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
 // Value can be a variable name, a constant, a system constant, a program variable or a character
 
   procedure QuotationError;
@@ -683,10 +683,10 @@ procedure TScriptCmp.CompileValue(Value : string; var CmdCode : string; ParamKin
     raise EScriptError.Create('Invalid command parameter type ''' + Value + '''');
   end;
 
-  procedure BuildIndexList(IndexList : TStringList; var Name : string);
+  procedure BuildIndexList(IndexList : TStringList; var Name : Ansistring);
   var
     RetnName,
-    Index      : string;
+    Index      : Ansistring;
     I,
     IndexDepth : Integer;
   begin
@@ -840,7 +840,7 @@ begin
         NewVar := TVarParam.Create;
         NewVar.Name := Value;
         // EP - See if it could be a number
-        if TextToFloat(PChar(Value), DecValue, fvExtended) then
+        if TextToFloat(PAnsiChar(Value), DecValue, fvExtended) then
           NewVar.DecValue := DecValue;
 
         ID := FParamList.Add(NewVar);
@@ -907,7 +907,7 @@ begin
   end;
 end;
 
-procedure TScriptCmp.RecurseCmd(const CmdLine : array of string; Line : Integer; ScriptID : Byte);
+procedure TScriptCmp.RecurseCmd(const CmdLine : array of Ansistring; Line : Integer; ScriptID : Byte);
 var
   ParamLine : TStringList;
   I         : Integer;
@@ -932,7 +932,7 @@ begin
   end;
 end;
 
-procedure TScriptCmp.CompileParam(Param : string; var CmdCode : string; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
+procedure TScriptCmp.CompileParam(Param : Ansistring; var CmdCode : Ansistring; ParamKind : TParamKind; Line : Integer; ScriptID : Byte);
 // Param is a full equation of values joined by operators, it must be broken down and
 // the values passed to CompileValue
 type
@@ -940,10 +940,10 @@ type
   TBranch = record
     Value1,
     Value2 : Pointer;
-    Op     : Char;
+    Op     : AnsiChar;
   end;
 
-  function SplitOperator(const Equation : string; const Ops : string; var Value1, Value2 : string; var Op : Char) : Boolean;
+  function SplitOperator(const Equation : Ansistring; const Ops : Ansistring; var Value1, Value2 : Ansistring; var Op : AnsiChar) : Boolean;
   var
     InQuote      : Boolean;
     BracketLevel,
@@ -991,11 +991,11 @@ type
     end;
   end;
 
-  function BreakDown(Equation : string) : PBranch;
+  function BreakDown(Equation : Ansistring) : PBranch;
   var
-    Op           : Char;
+    Op           : AnsiChar;
     V1,
-    V2           : string;
+    V2           : Ansistring;
     Encased,
     Split,
     InQuote,
@@ -1074,7 +1074,7 @@ type
       begin
         // no operators left, just a value
         Result^.Op := OP_NONE;
-        Result^.Value1 := StrNew(PChar(Equation));
+        Result^.Value1 := StrNew(PAnsiChar(Equation));
       end;
 
     except
@@ -1087,10 +1087,11 @@ type
     end;
   end;
 
-  function CompileTree(Branch : PBranch) : string;
+
+  function CompileTree(Branch : PBranch) : Ansistring;
   var
     Value1,
-    Value2 : string;
+    Value2 : Ansistring;
   begin
     // return the name of the variable containing the result of this operation
     Inc(SysVarCount);
@@ -1099,8 +1100,8 @@ type
     if (Branch^.Op = OP_NONE) then
     begin
       // its a value
-      SetString(Result, PChar(Branch^.Value1), StrLen(Branch^.Value1));
-      StrDispose(PChar(Branch^.Value1));
+      SetString(Result, PAnsiChar(Branch^.Value1), StrLen(PAnsiChar(Branch^.Value1)));
+      StrDispose(PAnsiChar(Branch^.Value1));
     end
     else
     begin
@@ -1178,7 +1179,7 @@ type
   end;
 var
   Root  : PBranch;
-  Value : string;
+  Value : Ansistring;
 begin
   // Param is a set of Command parameters linked by operators, i.e. ($VAR+50)&"text"
   // We need to form a binary tree of all operations to be performed
@@ -1188,8 +1189,8 @@ begin
   if (Root^.Op = OP_NONE) then
   begin
     // tree is only one value, compile it
-    SetString(Value, PChar(Root^.Value1), StrLen(Root^.Value1));
-    StrDispose(PChar(Root^.Value1));
+    SetString(Value, PAnsiChar(Root^.Value1), StrLen(PAnsiChar(Root^.Value1)));
+    StrDispose(PAnsiChar(Root^.Value1));
     FreeMem(Root);
     CompileValue(Value, CmdCode, ParamKind, Line, ScriptID);
   end
@@ -1209,10 +1210,10 @@ var
   ID        : Word;
   I         : Integer;
   LabelName,
-  CmdCode   : string;
+  CmdCode   : Ansistring;
   ConStruct : ^TConditionStruct;
-//  F : TextFile; // EP
-//  ParamLineString : String; // EP
+  // F : TextFile; // EP
+  // ParamLineString : String; // EP
 begin
   // ParamLine is a broken down list of all params in the line, including the command.
 
@@ -1220,23 +1221,23 @@ begin
   begin
     // label - record its position
 
-(*
-  // EP - For capturing processed script syntax
+  (*
+   //EP - For capturing processed script syntax
     SetCurrentDir('c:\temp');
     AssignFile(F, 'TWX_Preprocessed.txt');
   {$I-}
     Append(F);
-  
+
     if (IOResult <> 0) then
       ReWrite(F);
-  
+
     if (IOResult <> 0) then
     raise EScriptError.Create('Unable to write to file c:\temp\TWX_Preprocessed.txt');
   {$I+}
     WriteLn(F, ParamLine[0]);
     CloseFile(F);
   // EP
-*)
+ *)
 
     if (ParamLine.Count > 1) then
       raise EScriptError.Create('Unnecessary parameters after label declaration');
@@ -1352,7 +1353,7 @@ begin
         RecurseCmd(['GOTO', ConStruct^.ConLabel], Line, ScriptID)
       else
         RecurseCmd([ConStruct^.ConLabel], Line, ScriptID);
-        
+
       RecurseCmd([ConStruct^.EndLabel], Line, ScriptID);
       ConStruct^.ConLabel := '';
       ConStruct^.EndLabel := '';
@@ -1444,7 +1445,7 @@ begin
       WriteLn(F, ParamLineString);
       CloseFile(F);
       // EP
-*)
+ *)
       Inc(FCmdCount);
       I := ScriptRef.FindCmd(ParamLine[0]);
 
@@ -1471,16 +1472,16 @@ begin
         CompileParam(ParamLine[I], CmdCode, ScriptRef.Cmds[ID].ParamKinds[I - 1], Line, ScriptID);
 
       // write the command to byte code (with null termination)
-      AppendCode(PChar(CmdCode), Length(CmdCode) + 1);
+      AppendCode(PAnsiChar(CmdCode), Length(CmdCode) + 1);
     end;
   end;
 end;
 
-function TScriptCmp.ConvertOps(const Line : string) : string;
+function TScriptCmp.ConvertOps(const Line : Ansistring) : Ansistring;
 var
   I       : Integer;
   UpParam,
-  Param   : string;
+  Param   : Ansistring;
   InQuote : Boolean;
 begin
   Param := '';
@@ -1514,11 +1515,11 @@ begin
   end;
 end;
 
-function TScriptCmp.ConvertConditions(const Line : string) : string;
+function TScriptCmp.ConvertConditions(const Line : Ansistring) : Ansistring;
 var
   I       : Integer;
   C,
-  Last    : Char;
+  Last    : AnsiChar;
   InQuote : Boolean;
 begin
   // convert multi-character conditions (>=, <> and <=) into single character ones
@@ -1561,7 +1562,7 @@ begin
   end;
 end;
 
-function TScriptCmp.IsOperator(C : Char) : Boolean;
+function TScriptCmp.IsOperator(C : AnsiChar) : Boolean;
 begin
   if (C = '=') or
      (C = '>') or
@@ -1582,14 +1583,14 @@ begin
     Result := FALSE;
 end;
 
-procedure TScriptCmp.CompileFromStrings(ScriptText : TStringList; ScriptName : string);
+procedure TScriptCmp.CompileFromStrings(ScriptText : TStringList; ScriptName : Ansistring);
 var
   ScriptID    : Byte;
   Line,
   I           : Integer;
   ParamStr,
-  LineText    : string;
-  Last        : Char;
+  LineText    :  AnsiString;
+  Last        : AnsiChar;
   Linked,
   InQuote     : Boolean;
   ParamLine,
@@ -1612,7 +1613,7 @@ begin
         InQuote := FALSE;
         Linked := FALSE;
         ParamLine.Clear;
-
+        OutputDebugString(PChar(Format('Processing Line: %s', [LineText])));
         if (Length(LineText) > 0) then
         begin
           for I := 1 to Length(LineText) do
@@ -1646,7 +1647,7 @@ begin
                   ParamLine.Append('SUBTRACT');
 
                 ParamList.Clear;
-                ExtractStrings([' '], [], PChar(LineText), ParamList);
+                ExtractStrings([' '], [], PChar(String(LineText)), ParamList);
 
                 ParamLine.Append(Uppercase(stringreplace(ParamList[0], chr(9), '',
                           [rfReplaceAll, rfIgnoreCase])));
@@ -1663,7 +1664,7 @@ begin
               ParamLine.Append('ADD');
 
               ParamList.Clear;
-              ExtractStrings([' '], [], PChar(LineText), ParamList);
+              ExtractStrings([' '], [], PChar(String(LineText)), ParamList);
 
               ParamLine.Append(Uppercase(stringreplace(stringreplace(
                       ParamList[0], '++', '',[rfReplaceAll, rfIgnoreCase]),
@@ -1680,7 +1681,7 @@ begin
               ParamLine.Append('SUBTRACT');
 
               ParamList.Clear;
-              ExtractStrings([' '], [], PChar(LineText), ParamList);
+              ExtractStrings([' '], [], PChar(String(LineText)), ParamList);
 
               ParamLine.Append(Uppercase(stringreplace(stringreplace(
                       ParamList[0], '--', '',[rfReplaceAll, rfIgnoreCase]),
@@ -1752,13 +1753,13 @@ begin
   end;
 end;
 
-procedure TScriptCmp.IncludeFile(Filename : string);
+procedure TScriptCmp.IncludeFile(Filename : Ansistring);
 var
   ScriptText : TStringList;
   Len,
   I          : Integer;
-  S,
-  Name       : string;
+  S          : AnsiString;
+  Name       : Ansistring;
   Encryptor  : TEncryptor;
   F          : File;
   Buf        : Pointer;
@@ -1797,7 +1798,7 @@ begin
 
         try
           BlockRead(F, Buf^, Len);
-          SetString(S, PChar(Buf), Len);
+          SetString(S, PAnsiChar(Buf), Len);
         finally
           FreeMem(Buf);
         end;
@@ -1824,7 +1825,7 @@ begin
   end;
 end;
 
-procedure TScriptCmp.CompileFromFile(const Filename, DescFile : string);
+procedure TScriptCmp.CompileFromFile(const Filename, DescFile : Ansistring);
 var
   ScriptText : TStringList;
 begin
@@ -1843,7 +1844,7 @@ begin
   end;
 end;
 
-procedure TScriptCmp.WriteToFile(const Filename : string);
+procedure TScriptCmp.WriteToFile(const Filename : Ansistring);
 var
   F         : File;
   Hdr       : TScriptFileHeader;
@@ -1852,7 +1853,7 @@ var
   Len,
   I         : Integer;
   ParamType : Byte;
-  Val       : PChar;
+  Val       : PAnsiChar;
 begin
   // write script to a file to be loaded from later
 
@@ -1869,7 +1870,7 @@ begin
   if (Hdr.DescSize > 0) then
   begin
     // write description to file
-    Val := PChar(FDescription.Text);
+    Val := PAnsiChar(AnsiString(FDescription.Text));
     BlockWrite(F, Val^, Hdr.DescSize);
   end;
 
@@ -1881,7 +1882,7 @@ begin
     for I := 0 to FParamList.Count - 1 do
     begin
       Param := TCmdParam(FParamList[I]);
-      Val := PChar(ApplyEncryption(Param.Value, 113));
+      Val := PAnsiChar(ApplyEncryption(Param.Value, 113));
       Len := Length(Param.Value);
 
       if (Param is TVarParam) then
@@ -1890,7 +1891,7 @@ begin
         BlockWrite(F, ParamType, 1);
         BlockWrite(F, Len, 4);
         BlockWrite(F, Val^, Len);
-        Val := PChar(ApplyEncryption(TVarParam(Param).Name, 113));
+        Val := PAnsiChar(ApplyEncryption(TVarParam(Param).Name, 113));
         Len := Length(TVarParam(Param).Name);
         BlockWrite(F, Len, 4);
         BlockWrite(F, Val^, Len);
@@ -1912,7 +1913,7 @@ begin
   if (IncludeScriptList.Count > 0) then
     for I := 0 to IncludeScriptList.Count - 1 do
     begin
-      Val := PChar(IncludeScriptList[I]);
+      Val := PAnsiChar(IncludeScriptList[I]);
       Len := Length(IncludeScriptList[I]);
       BlockWrite(F, Len, 4);
       BlockWrite(F, Val^, Len);
@@ -1928,7 +1929,7 @@ begin
     begin
       Pos := TScriptLabel(FLabelList[I]).Location;
       BlockWrite(F, Pos, 4);
-      Val := PChar(TScriptLabel(FLabelList[I]).Name);
+      Val := PAnsiChar(TScriptLabel(FLabelList[I]).Name);
       Len := Length(TScriptLabel(FLabelList[I]).Name);
       BlockWrite(F, Len, 4);
       BlockWrite(F, Val^, Len);
@@ -1942,7 +1943,7 @@ begin
   FParamList.Add(Param);
 end;
 
-procedure TScriptCmp.LoadFromFile(const Filename : string);
+procedure TScriptCmp.LoadFromFile(const Filename : Ansistring);
 var
   F         : File;
   Hdr       : TScriptFileHeader;
@@ -1950,8 +1951,8 @@ var
   Len       : Integer;
   Param     : TCmdParam;
   ParamType : Byte;
-  Val       : PChar;
-  ValStr    : string;
+  Val       : PAnsiChar;
+  ValStr    : Ansistring;
   Lab       : TScriptLabel;
 begin
   // load script data from file

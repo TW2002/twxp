@@ -147,8 +147,8 @@ type
 
   protected
     { ITWXGlobals }
-    function GetProgramDir: string;
-    procedure SetProgramDir(const Value: string);
+    function GetProgramDir: Ansistring;
+    procedure SetProgramDir(const Value: Ansistring);
 
   public
     procedure AfterConstruction; override;
@@ -845,12 +845,12 @@ begin
   ApplySetup;
 end;
 
-function TModMenu.GetProgramDir: string;
+function TModMenu.GetProgramDir: Ansistring;
 begin
   Result := FProgramDir;
 end;
 
-procedure TModMenu.SetProgramDir(const Value: string);
+procedure TModMenu.SetProgramDir(const Value: Ansistring);
 begin
   FProgramDir := Value;
 end;
@@ -1890,7 +1890,7 @@ procedure TModMenu.miMenuKey2(ClientIndex : Byte);
 begin
   if (CurrentMenu.Line <> '') then
   begin
-    TWXExtractor.MenuKey := CurrentMenu.Line[1];
+    TWXExtractor.MenuKey := AnsiChar(CurrentMenu.Line[1]);
     CurrentMenu.Value := TWXExtractor.MenuKey;
   end;
 end;

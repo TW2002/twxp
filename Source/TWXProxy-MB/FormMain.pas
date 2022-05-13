@@ -56,7 +56,7 @@ uses
   ActnList,
   Variants,
   ShellAPI,
-  WinInet;
+  WinInet, System.ImageList;
 
 type
   TScriptMenuItem = class(TMenuItem)
@@ -472,7 +472,7 @@ end;
 
 procedure TfrmMain.miReloadClick(Sender: TObject);
 var
-  FileName : String;
+  FileName : AnsiString;
 begin
   // Reload this script
   FileName := TMenuItem(Sender).Caption;
@@ -482,7 +482,7 @@ end;
 
 procedure TfrmMain.miLoadClick(Sender: TObject);
 var
-  Filename : String;
+  Filename : AnsiString;
 begin
   if (LoadingScript) then
   begin
@@ -527,7 +527,7 @@ var
   F        : TextFile;
   I        : Integer;
   S        : TSector;
-  Filename : String;
+  Filename : AnsiString;
 begin
   if not (TWXDatabase.DataBaseOpen) then
   begin
@@ -749,7 +749,7 @@ end;
 procedure TfrmMain.miExportBubbleClick(Sender: TObject);
 var
   F        : TextFile;
-  Filename : String;
+  Filename : AnsiString;
 begin
   if not (TWXDatabase.DataBaseOpen) then
   begin
@@ -802,7 +802,7 @@ var
   F         : TextFile;
   I         : Integer;
   S         : TSector;
-  Filename  : String;
+  Filename  : AnsiString;
   WarpsIn   : TList;
 begin
   if not (TWXDatabase.DataBaseOpen) then

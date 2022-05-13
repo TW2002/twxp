@@ -75,7 +75,7 @@ const
   //PCharBuffer : PChar = @CharBuffer;
 var
   // EP - These are for improving the speed of repetitive Read commands
-  LastReadFilename : String;
+  LastReadFilename : AnsiString;
   //LastReadModTime : Integer;
   LastReadModTime : Int64;
   LastReadStrings : TStringList;
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-function ConvertBoolToString(const B : Boolean) : string;
+function ConvertBoolToString(const B : Boolean) : Ansistring;
 begin
   if (B) then
     Result := '1'
@@ -227,7 +227,7 @@ end;
 
 function CmdAddMenu(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  LabelName : string;
+  LabelName : Ansistring;
 begin
   // CMD: addMenu <parent> <name> <description> <hotkey> <reference> <prompt> <closeMenu>
 
@@ -241,7 +241,7 @@ begin
 
   TScript(Script).AddMenu(TWXMenu.AddCustomMenu(UpperCase(Params[0].Value),
     UpperCase(Params[1].Value), Params[2].Value, LabelName, Params[5].Value,
-    UpCase(Params[3].Value[1]), (Params[6].Value = '1'), TScript(Script)));
+    UpCase(Char(Params[3].Value[1])), (Params[6].Value = '1'), TScript(Script)));
 
   Result := caNone;
 end;
@@ -328,7 +328,7 @@ var
   I,
   IntLength,
   Position : Integer;
-  S : string;
+  S : Ansistring;
 begin
   // CMD: cutLengths <value> array <lengths1,length2,...>
 
@@ -431,7 +431,7 @@ end;
 
 function CmdEcho(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  EchoText : string;
+  EchoText : Ansistring;
   I        : Integer;
 begin
   // CMD: echo <values...>
@@ -605,7 +605,7 @@ end;
 function CmdGetDirList(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   SearchRec : TSearchRec;
-  Mask : String;
+  Mask : AnsiString;
   List : TStringList;
 begin
   // CMD: getDirList varArray <FileMask>
@@ -662,7 +662,7 @@ end;
 function CmdGetFileList(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   SearchRec : TSearchRec;
-  Mask : String;
+  Mask : AnsiString;
   List : TStringList;
 begin
   // CMD: getFileList varArray <FileMask>
@@ -809,7 +809,7 @@ var
   Index   : Integer;
   S       : TSector;
   Items   : TList;
-  VarName : string;
+  VarName : Ansistring;
 begin
   // CMD: getSector <index> var
 
@@ -1027,7 +1027,7 @@ var
   S,
   Line,
   StartStr,
-  EndStr   : string;
+  EndStr   : Ansistring;
   StartPos,
   EndPos   : Integer;
 begin
@@ -1113,8 +1113,8 @@ end;
 function CmdGetWordCount(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I, WordCount : Integer;
-  Line : String;
-  Last : Char;
+  Line : AnsiString;
+  Last : AnsiChar;
 begin
   // CMD: getWordCount <text> storageVar
   // EP: Ideally add CmdTextToArray command to speed up line parsing.
@@ -1485,7 +1485,7 @@ end;
 function CmdPadLeft(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I   : Integer;
-  Pad : string;
+  Pad : Ansistring;
 begin
   // CMD: padLeft var <value>
   // add spaces to the left of a variable
@@ -1504,7 +1504,7 @@ end;
 function CmdPadRight(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I   : Integer;
-  Pad : string;
+  Pad : Ansistring;
 begin
   // CMD: padRight var <value>
   // add spaces to the right of a variable
@@ -1560,7 +1560,7 @@ end;
 function CmdRead(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
 { Declared in Unit Var list:
-  LastFileRead : String;
+  LastFileRead : AnsiString;
   LastFileModified : TFileTime;
   LastFileStrings : TStringArray;
 }
@@ -1734,7 +1734,7 @@ end;
 
 function CmdSend(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  SendText : string;
+  SendText : Ansistring;
   I        : Integer;
 begin
   // CMD: send <values...>
@@ -1791,7 +1791,7 @@ end;
 
 function CmdSetEventTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Param : string;
+  Param : Ansistring;
 begin
   // CMD: setEventTrigger <name> <label> <event> [<parameter>]
 
@@ -1820,7 +1820,7 @@ end;
 
 function CmdSetMenuKey(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  S : string;
+  S : AnsiString;
 begin
   // CMD: setMenuKey <value>
 
@@ -1911,7 +1911,7 @@ end;
 
 function CmdSetTextLineTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Value : string;
+  Value : Ansistring;
 begin
   // CMD: setTextLineTrigger <name> <label> [<value>]
 
@@ -1926,7 +1926,7 @@ end;
 
 function CmdSetTextOutTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Value : string;
+  Value : Ansistring;
 begin
   // CMD: setTextOutTrigger <name> <label> [<value>]
 
@@ -1941,7 +1941,7 @@ end;
 
 function CmdSetTextTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Value : string;
+  Value : Ansistring;
 begin
   // CMD: setTextTrigger <name> <label> [<value>]
 
@@ -1991,7 +1991,7 @@ end;
 
 function CmdSplitText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Delims : string;
+  Delims : Ansistring;
   Strings : TStringList;
 begin
   // CMD: splitText <text> varArray {delims}
@@ -2015,7 +2015,7 @@ end;
 function CmdStop(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I    : Integer;
-  Name : string;
+  Name : Ansistring;
 begin
   // CMD: stop <scriptName>
   Name := UpperCase(ShortFilename(StripFileExtension(Params[0].Value)));
@@ -2037,7 +2037,7 @@ function CmdStripText(Script : TObject; Params : array of TCmdParam) : TCmdActio
 var
   I       : Integer;
   RemText,
-  Value   : string;
+  Value   : Ansistring;
 begin
   // CMD: stripText var <value>
 
@@ -2365,7 +2365,7 @@ var
    IniFile     : TIniFile;
    BotScript,
    NextBot,
-   Section     : String;
+   Section     : AnsiString;
    BotList,
    ScriptList,
    SectionList : TStringList;
@@ -2453,7 +2453,7 @@ end;
 
 function CmdStripANSI(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  S: String;
+  S: AnsiString;
 begin
   // CMD: CmdStripANSI textVar ansiVar
   // removes ANSI from a variable.
@@ -2568,92 +2568,92 @@ end;
 //                      SCRIPT SYSTEM CONST IMPLEMENTATION
 // *****************************************************************************
 
-function SCAlphaCentauri(Indexes : TStringArray) : string;
+function SCAlphaCentauri(Indexes : TStringArray) : Ansistring;
 begin
   Result := IntToStr(TWXDatabase.DBHeader.AlphaCentauri);
 end;
 
-function SCAnsi_0(Indexes : TStringArray) : string;
+function SCAnsi_0(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_0;
 end;
 
-function SCAnsi_1(Indexes : TStringArray) : string;
+function SCAnsi_1(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_1;
 end;
 
-function SCAnsi_2(Indexes : TStringArray) : string;
+function SCAnsi_2(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_2;
 end;
 
-function SCAnsi_3(Indexes : TStringArray) : string;
+function SCAnsi_3(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_3;
 end;
 
-function SCAnsi_4(Indexes : TStringArray) : string;
+function SCAnsi_4(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_4;
 end;
 
-function SCAnsi_5(Indexes : TStringArray) : string;
+function SCAnsi_5(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_5;
 end;
 
-function SCAnsi_6(Indexes : TStringArray) : string;
+function SCAnsi_6(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_6;
 end;
 
-function SCAnsi_7(Indexes : TStringArray) : string;
+function SCAnsi_7(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_7;
 end;
 
-function SCAnsi_8(Indexes : TStringArray) : string;
+function SCAnsi_8(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_8;
 end;
 
-function SCAnsi_9(Indexes : TStringArray) : string;
+function SCAnsi_9(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_9;
 end;
 
-function SCAnsi_10(Indexes : TStringArray) : string;
+function SCAnsi_10(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_10;
 end;
 
-function SCAnsi_11(Indexes : TStringArray) : string;
+function SCAnsi_11(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_11;
 end;
 
-function SCAnsi_12(Indexes : TStringArray) : string;
+function SCAnsi_12(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_12;
 end;
 
-function SCAnsi_13(Indexes : TStringArray) : string;
+function SCAnsi_13(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_13;
 end;
 
-function SCAnsi_14(Indexes : TStringArray) : string;
+function SCAnsi_14(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_14;
 end;
 
-function SCAnsi_15(Indexes : TStringArray) : string;
+function SCAnsi_15(Indexes : TStringArray) : AnsiString;
 begin
   Result := ANSI_15;
 end;
 
-function SCConnected(Indexes : TStringArray) : string;
+function SCConnected(Indexes : TStringArray) : AnsiString;
 begin
   if (TWXClient.Connected) then
     Result := '1'
@@ -2661,57 +2661,57 @@ begin
     Result := '0';
 end;
 
-function SCCurrentANSILine(Indexes : TStringArray) : string;
+function SCCurrentANSILine(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.CurrentANSILine;
 end;
 
-function SCCurrentLine(Indexes : TStringArray) : string;
+function SCCurrentLine(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.CurrentLine;
 end;
 
-function SCCurrentSector(Indexes : TStringArray) : string;
+function SCCurrentSector(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentSector);
 end;
 
-function SCDate(Indexes : TStringArray) : string;
+function SCDate(Indexes : TStringArray) : AnsiString;
 begin
   Result := DateToStr(Now);
 end;
 
-function SCFalse(Indexes : TStringArray) : string;
+function SCFalse(Indexes : TStringArray) : AnsiString;
 begin
   Result := '0';
 end;
 
-function SCGame(Indexes : TStringArray) : string;
+function SCGame(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXDatabase.DBHeader.Game;
 end;
 
-function SCGameName(Indexes : TStringArray) : string;
+function SCGameName(Indexes : TStringArray) : AnsiString;
 begin
   Result := StripFileExtension(ShortFileName(TWXDatabase.DatabaseName));
 end;
 
-function SCLicenseName(Indexes : TStringArray) : string;
+function SCLicenseName(Indexes : TStringArray) : AnsiString;
 begin
   Result := 'User'
 end;
 
-function SCLoginName(Indexes : TStringArray) : string;
+function SCLoginName(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXDatabase.DBHeader.LoginName;
 end;
 
-function SCPassword(Indexes : TStringArray) : string;
+function SCPassword(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXDatabase.DBHeader.Password;
 end;
 
-function SCPort_Class(Indexes : TStringArray) : string;
+function SCPort_Class(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2734,7 +2734,7 @@ begin
 
 end;
 
-function SCPort_BuildTime(Indexes : TStringArray) : string;
+function SCPort_BuildTime(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2747,7 +2747,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.BuildTime);
 end;
 
-function SCPort_BuyFuel(Indexes : TStringArray) : string;
+function SCPort_BuyFuel(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2763,7 +2763,7 @@ begin
     Result := '0';
 end;
 
-function SCPort_BuyOrg(Indexes : TStringArray) : string;
+function SCPort_BuyOrg(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2779,7 +2779,7 @@ begin
     Result := '0';
 end;
 
-function SCPort_BuyEquip(Indexes : TStringArray) : string;
+function SCPort_BuyEquip(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2795,7 +2795,7 @@ begin
     Result := '0';
 end;
 
-function SCPort_Equip(Indexes : TStringArray) : string;
+function SCPort_Equip(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2808,7 +2808,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductAmount[ptEquipment]);
 end;
 
-function SCPort_Exists(Indexes : TStringArray) : string;
+function SCPort_Exists(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2832,7 +2832,7 @@ begin
 
 end;
 
-function SCPort_Fuel(Indexes : TStringArray) : string;
+function SCPort_Fuel(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2845,7 +2845,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductAmount[ptFuelOre]);
 end;
 
-function SCPort_Name(Indexes : TStringArray) : string;
+function SCPort_Name(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2858,7 +2858,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].SPort.Name;
 end;
 
-function SCPort_Org(Indexes : TStringArray) : string;
+function SCPort_Org(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2871,7 +2871,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductAmount[ptOrganics]);
 end;
 
-function SCPort_PercentFuel(Indexes : TStringArray) : string;
+function SCPort_PercentFuel(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2884,7 +2884,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductPercent[ptFuelOre]);
 end;
 
-function SCPort_PercentOrg(Indexes : TStringArray) : string;
+function SCPort_PercentOrg(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2897,7 +2897,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductPercent[ptOrganics]);
 end;
 
-function SCPort_PercentEquip(Indexes : TStringArray) : string;
+function SCPort_PercentEquip(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2910,7 +2910,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].SPort.ProductPercent[ptEquipment]);
 end;
 
-function SCPort_Updated(Indexes : TStringArray) : string;
+function SCPort_Updated(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2923,17 +2923,17 @@ begin
   Result := DateTimeToStr(TWXDatabase.Sectors[SectIndex].SPort.UpDate);
 end;
 
-function SCRawPacket(Indexes : TStringArray) : string;
+function SCRawPacket(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.RawANSILine;
 end;
 
-function SCRylos(Indexes : TStringArray) : string;
+function SCRylos(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXDatabase.DBHeader.Rylos);
 end;
 
-function SCSector_Anomaly(Indexes : TStringArray) : string;
+function SCSector_Anomaly(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -2946,7 +2946,7 @@ begin
   Result := IntToStr(Byte(TWXDatabase.Sectors[SectIndex].Anomaly));
 end;
 
-function SCSector_BackdoorCount(Indexes : TStringArray) : string;
+function SCSector_BackdoorCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
   WarpsIn   : TList;
@@ -2969,7 +2969,7 @@ begin
   WarpsIn.Free;
 end;
 
-function SCSector_Backdoors(Indexes : TStringArray) : string;
+function SCSector_Backdoors(Indexes : TStringArray) : AnsiString;
 var
   SectIndex,
   WarpIndex : Integer;
@@ -2998,7 +2998,7 @@ begin
   WarpsIn.Free;
 end;
 
-function SCSector_Beacon(Indexes : TStringArray) : string;
+function SCSector_Beacon(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3011,7 +3011,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].Beacon;
 end;
 
-function SCSector_Constellation(Indexes : TStringArray) : string;
+function SCSector_Constellation(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3024,7 +3024,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].Constellation;
 end;
 
-function SCSector_Density(Indexes : TStringArray) : string;
+function SCSector_Density(Indexes : TStringArray) : Ansistring;
 var
   SectIndex : Integer;
 begin
@@ -3037,7 +3037,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].Density);
 end;
 
-function SCSector_Explored(Indexes : TStringArray) : string;
+function SCSector_Explored(Indexes : TStringArray) : AnsiString;
 var
   Explored  : TSectorExploredType;
   SectIndex : Integer;
@@ -3058,7 +3058,7 @@ begin
   end;
 end;
 
-function SCSector_Figs_Owner(Indexes : TStringArray) : string;
+function SCSector_Figs_Owner(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3071,7 +3071,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].Figs.Owner;
 end;
 
-function SCSector_Figs_Quantity(Indexes : TStringArray) : string;
+function SCSector_Figs_Quantity(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3084,7 +3084,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].Figs.Quantity);
 end;
 
-function SCSector_Figs_Type(Indexes : TStringArray) : string;
+function SCSector_Figs_Type(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3106,7 +3106,7 @@ begin
   end;
 end;
 
-function SCSector_Limpets_Owner(Indexes : TStringArray) : string;
+function SCSector_Limpets_Owner(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3119,7 +3119,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].Mines_Limpet.Owner;
 end;
 
-function SCSector_Limpets_Quantity(Indexes : TStringArray) : string;
+function SCSector_Limpets_Quantity(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3132,7 +3132,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].Mines_Limpet.Quantity);
 end;
 
-function SCSector_Mines_Owner(Indexes : TStringArray) : string;
+function SCSector_Mines_Owner(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3145,7 +3145,7 @@ begin
   Result := TWXDatabase.Sectors[SectIndex].Mines_Armid.Owner;
 end;
 
-function SCSector_Mines_Quantity(Indexes : TStringArray) : string;
+function SCSector_Mines_Quantity(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3158,7 +3158,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].Mines_Armid.Quantity);
 end;
 
-function SCSector_NavHaz(Indexes : TStringArray) : string;
+function SCSector_NavHaz(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3171,7 +3171,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].NavHaz);
 end;
 
-function SCSector_PlanetCount(Indexes : TStringArray) : string;
+function SCSector_PlanetCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
   ItemList  : TList;
@@ -3187,7 +3187,7 @@ begin
   FreeList(ItemList, SizeOf(TPlanet));
 end;
 
-function SCSector_Planets(Indexes : TStringArray) : string;
+function SCSector_Planets(Indexes : TStringArray) : AnsiString;
 var
   PlanetIndex,
   SectIndex   : Integer;
@@ -3210,7 +3210,7 @@ begin
   FreeList(ItemList, SizeOf(TPlanet));
 end;
 
-function SCSector_Ships(Indexes : TStringArray) : string;
+function SCSector_Ships(Indexes : TStringArray) : AnsiString;
 var
   ShipIndex,
   SectIndex   : Integer;
@@ -3233,7 +3233,7 @@ begin
   FreeList(ItemList, SizeOf(TShip));
 end;
 
-function SCSector_ShipCount(Indexes : TStringArray) : string;
+function SCSector_ShipCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
   ItemList  : TList;
@@ -3249,7 +3249,7 @@ begin
   FreeList(ItemList, SizeOf(TShip));
 end;
 
-function SCSector_Traders(Indexes : TStringArray) : string;
+function SCSector_Traders(Indexes : TStringArray) : AnsiString;
 var
   TraderIndex,
   SectIndex   : Integer;
@@ -3272,7 +3272,7 @@ begin
   FreeList(ItemList, SizeOf(TTrader));
 end;
 
-function SCSector_TraderCount(Indexes : TStringArray) : string;
+function SCSector_TraderCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
   ItemList  : TList;
@@ -3288,7 +3288,7 @@ begin
   FreeList(ItemList, SizeOf(TTrader));
 end;
 
-function SCSector_Updated(Indexes : TStringArray) : string;
+function SCSector_Updated(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3301,7 +3301,7 @@ begin
   Result := DateTimeToStr(TWXDatabase.Sectors[SectIndex].Update);
 end;
 
-function SCSector_WarpCount(Indexes : TStringArray) : string;
+function SCSector_WarpCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
 begin
@@ -3314,7 +3314,7 @@ begin
   Result := IntToStr(TWXDatabase.Sectors[SectIndex].Warps);
 end;
 
-function SCSector_Warps(Indexes : TStringArray) : string;
+function SCSector_Warps(Indexes : TStringArray) : AnsiString;
 var
   SectIndex,
   WarpIndex : Integer;
@@ -3332,7 +3332,7 @@ begin
     Result := IntToStr(TWXDatabase.Sectors[SectIndex].Warp[WarpIndex]);
 end;
 
-function SCSector_WarpInCount(Indexes : TStringArray) : string;
+function SCSector_WarpInCount(Indexes : TStringArray) : AnsiString;
 var
   SectIndex : Integer;
   WarpsIn   : TList;
@@ -3348,7 +3348,7 @@ begin
   WarpsIn.Free;
 end;
 
-function SCSector_WarpsIn(Indexes : TStringArray) : string;
+function SCSector_WarpsIn(Indexes : TStringArray) : AnsiString;
 var
   SectIndex,
   WarpIndex : Integer;
@@ -3371,77 +3371,77 @@ begin
   WarpsIn.Free;
 end;
 
-function SCSectors(Indexes : TStringArray) : string;
+function SCSectors(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXDatabase.DBHeader.Sectors);
 end;
 
-function SCStardock(Indexes : TStringArray) : string;
+function SCStardock(Indexes : TStringArray) : AnsiString;
 var
   Sector : integer;
 begin
-  Sector := StrToInt(TWXDatabase.DBHeader.StarDock);
+  Sector := TWXDatabase.DBHeader.StarDock;
   if Sector = 65535 then
-    Sector = 0;
-  Result := Sector;
+    Sector := 0;
+  Result := IntToStr(Sector);
 end;
 
-function SCTime(Indexes : TStringArray) : string;
+function SCTime(Indexes : TStringArray) : AnsiString;
 begin
   Result := TimeToStr(Now);
 end;
 
-function SCTrue(Indexes : TStringArray) : string;
+function SCTrue(Indexes : TStringArray) : AnsiString;
 begin
   Result := '1';
 end;
 
-function SCcurrentTurns(Indexes : TStringArray) : string;
+function SCcurrentTurns(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentTurns);
 end;
 
-function SCCurrentCredits(Indexes : TStringArray) : string;
+function SCCurrentCredits(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentCredits)
 end;
 
-function SCCurrentFighters(Indexes : TStringArray) : string;
+function SCCurrentFighters(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentFighters)
 end;
 
-function SCCurrentShields(Indexes : TStringArray) : string;
+function SCCurrentShields(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentShields)
 end;
 
-function SCCurrentTotalHolds(Indexes : TStringArray) : string;
+function SCCurrentTotalHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentTotalHolds)
 end;
 
-function SCCurrentOreHolds(Indexes : TStringArray) : string;
+function SCCurrentOreHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentOreHolds)
 end;
 
-function SCCurrentOrgHolds(Indexes : TStringArray) : string;
+function SCCurrentOrgHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentOrgHolds)
 end;
 
-function SCCurrentEquHolds(Indexes : TStringArray) : string;
+function SCCurrentEquHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentEquHolds)
 end;
 
-function SCCurrentColHolds(Indexes : TStringArray) : string;
+function SCCurrentColHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentColHolds)
 end;
 
-function SCCurrentEmptyHolds(Indexes : TStringArray) : string;
+function SCCurrentEmptyHolds(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentTotalHolds -
                      TWXExtractor.CurrentOreHolds -
@@ -3450,27 +3450,27 @@ begin
                      TWXExtractor.CurrentColHolds)
 end;
 
-function SCCurrentPhotons(Indexes : TStringArray) : string;
+function SCCurrentPhotons(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentPhotons)
 end;
 
-function SCCurrentArmids(Indexes : TStringArray) : string;
+function SCCurrentArmids(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentArmids)
 end;
 
-function SCCurrentLimpets(Indexes : TStringArray) : string;
+function SCCurrentLimpets(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentLimpets)
 end;
 
-function SCCurrentGenTorps(Indexes : TStringArray) : string;
+function SCCurrentGenTorps(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentGenTorps)
 end;
 
-function SCCurrentTwarpType(Indexes : TStringArray) : string;
+function SCCurrentTwarpType(Indexes : TStringArray) : AnsiString;
 begin
   if TWXExtractor.CurrentTwarpType = 0 then
     Result := 'No'
@@ -3478,37 +3478,37 @@ else
     Result := IntToStr(TWXExtractor.CurrentTwarpType)
 end;
 
-function SCCurrentCloaks(Indexes : TStringArray) : string;
+function SCCurrentCloaks(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentCloaks)
 end;
 
-function SCCurrentBeacons(Indexes : TStringArray) : string;
+function SCCurrentBeacons(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentBeacons)
 end;
 
-function SCCurrentAtomics(Indexes : TStringArray) : string;
+function SCCurrentAtomics(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentAtomics)
 end;
 
-function SCCurrentCorbomite(Indexes : TStringArray) : string;
+function SCCurrentCorbomite(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentCorbomite)
 end;
 
-function SCCurrentEprobes(Indexes : TStringArray) : string;
+function SCCurrentEprobes(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentEprobes)
 end;
 
-function SCCurrentMineDisr(Indexes : TStringArray) : string;
+function SCCurrentMineDisr(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentMineDisr)
 end;
 
-function SCCurrentPsychicProbe(Indexes : TStringArray) : string;
+function SCCurrentPsychicProbe(Indexes : TStringArray) : AnsiString;
 begin
   if TWXExtractor.CurrentPsychicProbe then
       Result := 'Yes'
@@ -3516,7 +3516,7 @@ begin
       Result := 'No'
 end;
 
-function SCCurrentPlanetScanner(Indexes : TStringArray) : string;
+function SCCurrentPlanetScanner(Indexes : TStringArray) : AnsiString;
 begin
   if TWXExtractor.CurrentPlanetScanner then
       Result := 'Yes'
@@ -3524,7 +3524,7 @@ begin
       Result := 'No'
 end;
 
-function SCCurrentScanType(Indexes : TStringArray) : string;
+function SCCurrentScanType(Indexes : TStringArray) : AnsiString;
 begin
   if TWXExtractor.CurrentScanType = 0 then
       Result := 'None'
@@ -3534,32 +3534,32 @@ begin
       Result := 'Holo'
 end;
 
-function SCCurrentAlignment(Indexes : TStringArray) : string;
+function SCCurrentAlignment(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentAlignment)
 end;
 
-function SCCurrentExperience(Indexes : TStringArray) : string;
+function SCCurrentExperience(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentExperience)
 end;
 
-function SCCurrentCorp(Indexes : TStringArray) : string;
+function SCCurrentCorp(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentCorp)
 end;
 
-function SCCurrentShipNumber(Indexes : TStringArray) : string;
+function SCCurrentShipNumber(Indexes : TStringArray) : AnsiString;
 begin
   Result := IntToStr(TWXExtractor.CurrentShipNumber)
 end;
 
-function SCCurrentShipClass(Indexes : TStringArray) : string;
+function SCCurrentShipClass(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.CurrentShipClass
 end;
 
-function SCCurrentQuickStats(Indexes : TStringArray) : string;
+function SCCurrentQuickStats(Indexes : TStringArray) : AnsiString;
 begin
 
  Result := Format(
@@ -3602,7 +3602,7 @@ begin
   SCCurrentShipNumber(Indexes)]);
 end;
 
-function SCCurrentQS(Indexes : TStringArray) : string;
+function SCCurrentQS(Indexes : TStringArray) : AnsiString;
 begin
 
 //TURNS:CRED:FIGS:SHLD:CARBO:PHOT:ALN:EXP:CORP:SHIP:Class:HLDS:ORE:ORG:EQU:COL
@@ -3625,7 +3625,7 @@ Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',
   SCCurrentColHolds(Indexes)]);
 end;
 
-function SCCurrentQSALL(Indexes : TStringArray) : string;
+function SCCurrentQSALL(Indexes : TStringArray) : AnsiString;
 begin
 //Armd:Lmpt:GTorp:AtmDt:TWarp:Clks:Beacns:EPrb:MDis:PsPrb:PlScn:LRS
 Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s',
@@ -3659,32 +3659,32 @@ Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s
   SCCurrentScanType(Indexes)]);
 end;
 
-function SCActiveBot(Indexes : TStringArray) : string;
+function SCActiveBot(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXInterpreter.ActiveBot;
 end;
 
-function SCActiveBotScript(Indexes : TStringArray) : string;
+function SCActiveBotScript(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXInterpreter.ActiveBotScript;
 end;
 
-function SCTWXVersion(Indexes : TStringArray) : string;
+function SCTWXVersion(Indexes : TStringArray) : AnsiString;
 begin
   Result := ProgramVersion + Chr(ReleaseNumber + 96);
 end;
 
-function SCTWGSTYPE(Indexes : TStringArray) : string;
+function SCTWGSTYPE(Indexes : TStringArray) : AnsiString;
 begin
   Result := inttostr(TWXExtractor.TWGSType);
 end;
 
-function SCTWGSVer(Indexes : TStringArray) : string;
+function SCTWGSVer(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.TWGSVer;
 end;
 
-function SCTW2002Ver(Indexes : TStringArray) : string;
+function SCTW2002Ver(Indexes : TStringArray) : AnsiString;
 begin
   Result := TWXExtractor.TW2002Ver;
 end;

@@ -109,7 +109,7 @@ var
 // MB - Moved to global, so that we can save object states in Setup Form
 //  PersistenceManager: TPersistenceManager;
   MessageHandler: TMessageHandler;
-  ProgramDir: string;
+  ProgramDir: Ansistring;
 
 function ModuleFactory(Module: TModuleType): TTWXModule;
 var
@@ -401,7 +401,7 @@ begin
   InitProgram;
 
   if TWXGUI.DatabaseName <> '' then
-    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb')
+    TWXDatabase.OpenDataBase( 'data\' + String(TWXGUI.DatabaseName) + '.xdb')
   else
   begin
     dbFile := '';

@@ -33,6 +33,7 @@ uses
   //OverbyteICSTnCnx,
   ExtCtrls,
   //OverbyteICSWSocket,
+  System.UITypes,
   Database,
   Core;
 
@@ -52,7 +53,7 @@ type
     TFunc = (None, IAC, Op, Sub, Command, Done); // EP - Set here to persist between receives
   private
     FOptionSent : array[0..255] of Boolean;
-    function ProcessTelnet(S : string; Socket : TCustomWinSocket) : string;
+    function ProcessTelnet(S : Ansistring; Socket : TCustomWinSocket) : Ansistring;
   end;
 
   TTelnetServerSocket = class(TTelnetSocket)
@@ -67,8 +68,8 @@ type
 
   TQuickText = class
   private
-    Search : string;
-    Replace : string;
+    Search : Ansistring;
+    Replace : Ansistring;
   end;
 
 
@@ -110,7 +111,7 @@ type
     procedure SetBroadCastMsgs(Value: Boolean);
     function GetLocalEcho: Boolean;
     procedure SetLocalEcho(Value: Boolean);
-    procedure AddSystemQuickText(Search, Replace : string);
+    procedure AddSystemQuickText(Search, Replace : Ansistring);
 
   protected
     procedure tcpServerClientConnect(Sender: TObject; Socket: TCustomWinSocket);
@@ -124,16 +125,16 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
-    procedure Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
-    procedure ClientMessage(MessageText : string);
-    procedure AddBuffer(Text : string);
+    procedure Broadcast(Text : Ansistring; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
+    procedure ClientMessage(MessageText : Ansistring);
+    procedure AddBuffer(Text : Ansistring);
     procedure StopVarDump;
     procedure NotifyScriptLoad;
     procedure NotifyScriptStop;
 
-    procedure AddQuickText(Search, Replace : string);
-    procedure ClearQuickText(Search : string = '');
-    function ApplyQuickText(Text : string) : string;
+    procedure AddQuickText(Search, Replace : Ansistring);
+    procedure ClearQuickText(Search : Ansistring = '');
+    function ApplyQuickText(Text : Ansistring) : Ansistring;
 
     property ClientTypes[Index : Integer] : TClientType read GetClientType write SetClientType;
     property ClientCount : Integer read GetClientCount;
@@ -165,7 +166,7 @@ type
     FReconnectDelay,
     FReconnectTock,
     FreconnectCount : Integer;
-    FUnsentString   : String;
+    FUnsentString   : AnsiString;
     IdleMinutes     : Integer;
 
   protected
@@ -189,7 +190,7 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
-    procedure Send(Text : string);
+    procedure Send(Text : AnsiString);
     procedure Connect();
     procedure ConnectNow();
     procedure Disconnect;
@@ -315,27 +316,27 @@ begin
   inherited;
 end;
 
-function TModServer.ApplyQuickText(Text : string) : string;
+function TModServer.ApplyQuickText(Text : Ansistring) : Ansistring;
 var
-  QuickText : TQuickText;
+  // QuickText : TQuickText;
   I : Integer;
 begin
     for I := 0 to UserQuickText.Count - 1 do
     begin
-      Text := stringreplace(Text, TQuickText(UserQuickText[I]).Search,
-              TQuickText(UserQuickText[I]).Replace, [rfReplaceAll]);
+      Text := AnsiString(stringreplace(String(Text), String(TQuickText(UserQuickText[I]).Search),
+              String(TQuickText(UserQuickText[I]).Replace), [rfReplaceAll]));
     end;
 
     for I := 0 to SystemQuickText.Count - 1 do
     begin
-      Text := stringreplace(Text, TQuickText(SystemQuickText[I]).Search,
-              TQuickText(SystemQuickText[I]).Replace, [rfReplaceAll]);
+      Text := AnsiString(stringreplace(String(Text), String(TQuickText(SystemQuickText[I]).Search),
+              String(TQuickText(SystemQuickText[I]).Replace), [rfReplaceAll]));
     end;
 
-    result := stringreplace(Text, '^[', chr(27) + '[', [rfReplaceAll]);
+    result := AnsiString(stringreplace(String(Text), '^[', chr(27) + '[', [rfReplaceAll]));
 end;
 
-procedure TModServer.AddSystemQuickText(Search, Replace : string);
+procedure TModServer.AddSystemQuickText(Search, Replace : Ansistring);
 var
   NewText : TQuickText;
 begin
@@ -347,7 +348,7 @@ begin
   SystemQuickText.Add(NewText);
 end;
 
-procedure TModServer.AddQuickText(Search, Replace : string);
+procedure TModServer.AddQuickText(Search, Replace : Ansistring);
 var
   NewText : TQuickText;
 begin
@@ -359,9 +360,9 @@ begin
   UserQuickText.Add(NewText);
 end;
 
-procedure TModServer.ClearQuickText(Search : string = '');
+procedure TModServer.ClearQuickText(Search : Ansistring = '');
 var
-  NewText : TQuickText;
+  // NewText : TQuickText;
   I : Integer;
 begin
   if (Search = '') then
@@ -386,7 +387,7 @@ begin
   end;
 end;
 
-procedure TModServer.Broadcast(Text : string; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
+procedure TModServer.Broadcast(Text : Ansistring; AMarkEcho : Boolean = TRUE; BroadcastDeaf : Boolean = FALSE; Buffered : Boolean = FALSE);
 var
   I : Integer;
 begin
@@ -398,7 +399,7 @@ begin
   if not (Buffered) and (FBufferOut.Count > 0) then
   begin
     // we still have data going out of the buffer, add to it for a later broadcast
-    FBufferOut.Add(Text);
+    FBufferOut.Add(String(Text));
     Exit;
   end;
 
@@ -416,7 +417,7 @@ begin
     end;
 end;
 
-procedure TModServer.ClientMessage(MessageText : string);
+procedure TModServer.ClientMessage(MessageText : Ansistring);
 begin
   if (TWXMenu.CurrentMenu <> nil) then
     Broadcast(#13 + ANSI_CLEARLINE + endl + ANSI_15 + MessageText + ANSI_7 + endl + TWXMenu.GetPrompt)
@@ -426,7 +427,7 @@ begin
     Broadcast(endl + ANSI_15 + MessageText + ANSI_7 + endl);
 end;
 
-procedure TModServer.AddBuffer(Text : string);
+procedure TModServer.AddBuffer(Text : Ansistring);
 begin
   // add text to outgoing buffer
   FBufferOut.Append(Text);
@@ -655,9 +656,9 @@ procedure TModServer.tcpServerClientRead(Sender: TObject;
   Socket: TCustomWinSocket);
 var
   InStr,
-  InString : string;
+  InString : Ansistring;
   I        : Integer;
-  Last     : Char;
+  Last     : AnsiChar;
 begin
   // terminate any logs that are playing
   TWXLog.EndPlayLog;
@@ -887,10 +888,10 @@ begin
   inherited;
 end;
 
-procedure TModClient.Send(Text : string);
+procedure TModClient.Send(Text : ansistring);
 var
   I: Integer;
-  S: String;
+  S: AnsiString;
 begin
   if (Connected) and (Text <> '') then
   begin
@@ -1116,11 +1117,11 @@ end;
 
 procedure TModClient.tcpClientOnRead(Sender: TObject; ScktComp: TCustomWinSocket);
 var
-  InString,
-  NewString,
-  XString  : string;
+  InString : AnsiString;
+  NewString : AnsiString;
+  XString  : Ansistring;
   BufSize : integer;
-  Buffer : array[0..255] of char;
+  Buffer : array[0..255] of ansichar;
 begin
   InString := '';
   // Read from client socket
@@ -1261,12 +1262,12 @@ end;
 
 { TTelnetSocket }
 
-function TTelnetSocket.ProcessTelnet(S: string; Socket: TCustomWinSocket): string;
+function TTelnetSocket.ProcessTelnet(S: Ansistring; Socket: TCustomWinSocket): Ansistring;
 var
   //SktIndex,
   I          : Integer;
-  Retn       : string;
-  TNOp       : Char;
+  Retn       : Ansistring;
+  TNOp       : AnsiChar;
   Func       : TFunc;
   SentThisOp : Boolean;
 

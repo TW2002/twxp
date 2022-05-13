@@ -159,7 +159,7 @@ type
     FUseCache,
     FDataBaseOpen     : Boolean;
     FWarpCount        : Integer;
-    FDataFilename     : string;
+    FDataFilename     : Ansistring;
     DataFile          : File;
     DataCache,
     SectorWarpCache   : Pointer;
@@ -167,7 +167,7 @@ type
     CacheSize         : Integer;
     EmptyRecordGroups : array of TEmptyRecordGroup;
     FDBHeader         : TDataHeader;
-    FProgramDir       : string;
+    FProgramDir       : Ansistring;
     EPWarpCache,
     Que,
     ReverseArray,
@@ -176,9 +176,9 @@ type
     CheckedArray      : array of Byte;
 
     procedure AddSectorVar(SectorIndex: Integer; SectorVar: PSectorVar);
-    procedure FindSectorVar(SectorIndex: Integer; const VarName: string; var SectorVar: PSectorVar; var Index: Integer);
+    procedure FindSectorVar(SectorIndex: Integer; const VarName: Ansistring; var SectorVar: PSectorVar; var Index: Integer);
 //    function LoadSectorVar(SectorIndex: Integer; VarName: string) : PSectorVar;
-    procedure DeleteSectorVar(SectorIndex: Integer; const VarName: string);
+    procedure DeleteSectorVar(SectorIndex: Integer; const VarName: Ansistring);
     procedure AddWarpIn(Sect, Origin : Word);
     function GetEmptyRecord(Size : Integer) : Integer;
     procedure CacheEmptyRecords;
@@ -202,8 +202,8 @@ type
   protected
 
     { ITWXGlobals }
-    function GetProgramDir: string;
-    procedure SetProgramDir(const Value: string);
+    function GetProgramDir: Ansistring;
+    procedure SetProgramDir(const Value: Ansistring);
 
     { IModDatabase }
     function GetDatabaseName: string;
@@ -252,7 +252,7 @@ type
 
     property Sectors[Index : Integer] : TSector read LoadSector;
     property DataBaseOpen : Boolean read FDataBaseOpen;
-    property DBHeader: TDataHeader read FDBHeader;
+    property DBHeader: TDataHeader read FDBHeader write FDBHeader;
     property LastPortCIM: TDateTime read GetLastPortCIM write SetLastPortCIM;
 
   published
@@ -331,12 +331,12 @@ begin
   inherited;
 end;
 
-function TModDatabase.GetProgramDir: string;
+function TModDatabase.GetProgramDir: Ansistring;
 begin
   Result := FProgramDir;
 end;
 
-procedure TModDatabase.SetProgramDir(const Value: string);
+procedure TModDatabase.SetProgramDir(const Value: Ansistring);
 begin
   FProgramDir := Value;
 end;
@@ -1070,7 +1070,7 @@ begin
   end;
 end;
 
-procedure TModDatabase.FindSectorVar(SectorIndex: Integer; const VarName: string; var SectorVar: PSectorVar; var Index: Integer);
+procedure TModDatabase.FindSectorVar(SectorIndex: Integer; const VarName: Ansistring; var SectorVar: PSectorVar; var Index: Integer);
 const
   RecordSize = SizeOf(TSectorVar);
 var
@@ -1167,7 +1167,7 @@ begin
   end;
 end;
 
-procedure TModDatabase.DeleteSectorVar(SectorIndex: Integer; const VarName: string);
+procedure TModDatabase.DeleteSectorVar(SectorIndex: Integer; const VarName: Ansistring);
 const
   RecordSize = SizeOf(TSectorVar);
 var

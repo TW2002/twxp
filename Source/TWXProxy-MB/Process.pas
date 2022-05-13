@@ -55,7 +55,7 @@ type
     FCurrentShip        : TShip;
     FCurrentMessage,
     FTWGSVer,
-    FTW2002Ver          : string;
+    FTW2002Ver          : AnsiString;
     FTWGSType           : integer;
     FTraderList,
     FShipList,
@@ -63,10 +63,10 @@ type
 
     FCurrentLine,
     FCurrentANSILine,
-    FRawANSILine        : string;
+    FRawANSILine        : AnsiString;
     FCurrentSector      : TSector;
     FInAnsi             : Boolean;
-    FMenuKey            : Char;
+    FMenuKey            : AnsiChar;
 
     // MB - Addeded in 2.06
     FCurrentTurns,
@@ -96,43 +96,43 @@ type
     FCurrentPsychicProbe,
     FCurrentPlanetScanner  : Boolean;
     FCurrentScanType       : Word;
-    FCurrentShipClass      : String;
+    FCurrentShipClass      : AnsiString;
 
     procedure SectorCompleted;
     procedure ResetSectorLists;
-    procedure ProcessPrompt(Line : string);
+    procedure ProcessPrompt(Line : ansistring);
     procedure AddWarp(SectNum, Warp : Integer);
-    procedure ProcessWarpLine(Line : String);
-    procedure ProcessCIMLine(Line : String);
-    procedure ProcessQuickStats(Line : String);
-    procedure ProcessSectorLine(Line : String);
-    procedure ProcessLine(Line : String);
-    procedure ProcessPortLine(Line : String);
-    procedure ProcessFigScanLine(Line : String);
+    procedure ProcessWarpLine(Line : ansiString);
+    procedure ProcessCIMLine(Line : ansiString);
+    procedure ProcessQuickStats(Line : ansiString);
+    procedure ProcessSectorLine(Line : ansiString);
+    procedure ProcessLine(Line : ansiString);
+    procedure ProcessPortLine(Line : ansiString);
+    procedure ProcessFigScanLine(Line : ansiString);
     procedure ResetFigDatabase;
 
   protected
-    function GetMenuKey: Char;
-    procedure SetMenuKey(Value: Char);
+    function GetMenuKey: ansiChar;
+    procedure SetMenuKey(Value: ansiChar);
 
   public
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    procedure StripANSI(var S : string);
+    procedure StripANSI(var S : ansistring);
 
     procedure Reset;
-    procedure ProcessInBound(var InData : string);
-    function ProcessOutBound(OutData : string; ClientIndex : Byte) : Boolean;
+    procedure ProcessInBound(var InData : ansistring);
+    function ProcessOutBound(OutData : ansistring; ClientIndex : Byte) : Boolean;
 
-    property CurrentLine: string read FCurrentLine write FCurrentLine;
-    property CurrentANSILine: string read FCurrentANSILine write FCurrentANSILine;
-    property RawANSILine: string read FRawANSILine write FRawANSILine;
+    property CurrentLine: ansistring read FCurrentLine write FCurrentLine;
+    property CurrentANSILine: ansistring read FCurrentANSILine write FCurrentANSILine;
+    property RawANSILine: ansistring read FRawANSILine write FRawANSILine;
     property CurrentSector: integer read FCurrentSectorIndex;
 
     // MB - Addeded in 2.06
     property TWGSType: integer read FTWGSType;
-    property TWGSVer: string read FTWGSVer;
-    property TW2002Ver: string read FTW2002Ver;
+    property TWGSVer: ansistring read FTWGSVer;
+    property TW2002Ver: ansistring read FTW2002Ver;
 
     property CurrentTurns: integer read FCurrentTurns;
     property CurrentCredits: integer read FCurrentCredits;
@@ -161,10 +161,10 @@ type
     property CurrentPsychicProbe: Boolean read FCurrentPsychicProbe;
     property CurrentPlanetScanner: Boolean read FCurrentPlanetScanner;
     property CurrentScanType: Word    read FCurrentScanType;
-    property CurrentShipClass: String  read FCurrentShipClass;
+    property CurrentShipClass: ansiString  read FCurrentShipClass;
 
   published
-    property MenuKey: Char read GetMenuKey write SetMenuKey;
+    property MenuKey: AnsiChar read GetMenuKey write SetMenuKey;
   end;
 
 implementation
@@ -215,12 +215,12 @@ begin
 
 end;
 
-function TModExtractor.GetMenuKey: Char;
+function TModExtractor.GetMenuKey: AnsiChar;
 begin
   Result := FMenuKey;
 end;
 
-procedure TModExtractor.SetMenuKey(Value: Char);
+procedure TModExtractor.SetMenuKey(Value: AnsiChar);
 begin
   FMenuKey := Value;
 end;
@@ -285,7 +285,7 @@ begin
   ResetSectorLists;
 end;
 
-procedure TModExtractor.ProcessPrompt(Line : string);
+procedure TModExtractor.ProcessPrompt(Line : AnsiString);
 var
   Head : TDataHeader;
 begin
@@ -449,7 +449,7 @@ begin
   TWXDatabase.SaveSector(S, SectNum, nil, nil, nil);
 end;
 
-procedure TModExtractor.ProcessWarpLine(Line : String);
+procedure TModExtractor.ProcessWarpLine(Line : AnsiString);
 var
   I,
   CurSect,
@@ -510,10 +510,10 @@ begin
   }
 end;
 
-procedure TModExtractor.ProcessCIMLine(Line : String);
-  function GetCIMValue(M : String; Num : Integer) : Integer;
+procedure TModExtractor.ProcessCIMLine(Line : AnsiString);
+  function GetCIMValue(M : AnsiString; Num : Integer) : Integer;
   var
-    S : String;
+    S : AnsiString;
   begin
     S := GetParameter(M, Num);
 
@@ -538,7 +538,7 @@ var
   POre,
   POrg,
   PEquip : Integer;
-  M      : String;
+  M      : AnsiString;
 begin
   if (FCurrentDisplay = dWarpCIM) then
   begin
@@ -665,9 +665,9 @@ begin
   end;
 end;
 
-procedure TModExtractor.ProcessSectorLine(Line : String);
+procedure TModExtractor.ProcessSectorLine(Line : AnsiString);
 var
-  S         : String;
+  S         : AnsiString;
   I         : Integer;
   NewPlanet : PPlanet;
   NewShip   : PShip;
@@ -881,7 +881,7 @@ end;
 // Sect 1?Turns 1,600?Creds 10,000?Figs 30?Shlds 0?Hlds 40?Ore 0?Org 0?Equ 0
 // Col 0?Phot 0?Armd 0?Lmpt 0?GTorp 0?TWarp No?Clks 0?Beacns 0?AtmDt 0?Crbo 0
 // EPrb 0?MDis 0?PsPrb No?PlScn No?LRS None,Dens,Holo?Aln 0?Exp 0?Ship 1 MerCru
-procedure TModExtractor.ProcessQuickStats(Line : String);
+procedure TModExtractor.ProcessQuickStats(Line : AnsiString);
 var
   I      : Integer;
   Values,
@@ -989,12 +989,12 @@ begin
 end;
 
 
-procedure TModExtractor.ProcessPortLine(Line : String);
+procedure TModExtractor.ProcessPortLine(Line : AnsiString);
 var
   PortClass,
   StatFuel,
   StatOrg,
-  StatEquip : String;
+  StatEquip : AnsiString;
   QtyFuel,
   QtyOrg,
   QtyEquip,
@@ -1085,12 +1085,12 @@ begin
   end;
 end;
 
-procedure TModExtractor.ProcessFigScanLine(Line : String);
+procedure TModExtractor.ProcessFigScanLine(Line : AnsiString);
 var
   SectorNum, FigQty, Code, Multiplier : Integer;
-  SFigAmount, SFigType, SFigOwner : String;
+  SFigAmount, SFigType, SFigOwner : AnsiString;
   Sect  : TSector;
-  TMB : Char;
+  TMB : AnsiChar;
 begin
   // process and record the Fig Scan Info.  specifically parse and record this line:
   //    940           1       Personal    Defensive            N/A
@@ -1176,10 +1176,10 @@ begin
   end;
 end;
 
-procedure TModExtractor.ProcessLine(Line : String);
+procedure TModExtractor.ProcessLine(Line : AnsiString);
 var
   S,
-  X       : String;
+  X       : AnsiString;
   I       : Integer;
   Sect    : TSector;
   INI     : TINIFile;
@@ -1407,10 +1407,10 @@ begin
   TWXInterpreter.ActivateTriggers;
 end;
 
-procedure TModExtractor.StripANSI(var S : String);
+procedure TModExtractor.StripANSI(var S : AnsiString);
 var
   I    : Integer;
-  X    : String;
+  X    : AnsiString;
 begin
   // Remove ANSI codes from text
   X := '';
@@ -1433,14 +1433,14 @@ begin
   S := X;
 end;
 
-procedure TModExtractor.ProcessInBound(var InData : String);
+procedure TModExtractor.ProcessInBound(var InData : AnsiString);
 var
   X        : Integer;
   I        : Integer;
   S,
   ANSIS,
   ANSILine,
-  Line     : string;
+  Line     : Ansistring;
 begin
   S := InData;
   RawANSILine := InData;
@@ -1520,7 +1520,7 @@ end;
 
 
 
-function TModExtractor.ProcessOutBound(OutData : string; ClientIndex : Byte) : Boolean;
+function TModExtractor.ProcessOutBound(OutData : Ansistring; ClientIndex : Byte) : Boolean;
 begin
   Result := TRUE;
 
