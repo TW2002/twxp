@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E65CE1E-A0FA-49C3-9963-E65F17982754}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>TWXP</RootNamespace>
+    <AssemblyName>TWXP</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\TWXP-2.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\TWX-V2.cs" />
+    <Compile Include="Icons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Icons.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\twscript\Commands.cs" />
+    <Compile Include="Database\Ports.cs" />
+    <Compile Include="Database\Sectors.cs" />
+    <Compile Include="Database\Servers.cs" />
+    <Compile Include="Database\Warps.cs" />
+    <Compile Include="Database\XmlBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Scripts\twscript\Params.cs" />
+    <Compile Include="Scripts\roslyn\csharp.cs" />
+    <Compile Include="Scripts\roslyn\vb.cs" />
+    <Compile Include="Scripts\Scripts.cs" />
+    <Compile Include="Scripts\twscript\twscript.cs" />
+    <Compile Include="Terminal\Extractor.cs" />
+    <Compile Include="Terminal\Proxy.cs" />
+    <Compile Include="Terminal\TelnetClient.cs" />
+    <Compile Include="Terminal\TelnetServer.cs" />
+    <EmbeddedResource Include="Icons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ICE9-1.ico" />
+    <Resource Include="Resources\ICE9-2.ico" />
+    <Resource Include="Resources\ICE9-3.ico" />
+    <Resource Include="Resources\ICE9-4.ico" />
+    <Resource Include="Resources\ICE9-5.ico" />
+    <Resource Include="Resources\ICE9-6.ico" />
+    <Resource Include="Resources\ICE9-7.ico" />
+    <Resource Include="Resources\ICE9-8.ico" />
+    <Resource Include="Resources\icon10.ico" />
+    <Resource Include="Resources\icon11.ico" />
+    <Resource Include="Resources\icon12.ico" />
+    <Resource Include="Resources\icon13.ico" />
+    <Resource Include="Resources\icon14.ico" />
+    <Resource Include="Resources\icon15.ico" />
+    <Resource Include="Resources\icon16.ico" />
+    <Resource Include="Resources\icon17.ico" />
+    <Resource Include="Resources\icon18.ico" />
+    <Resource Include="Resources\icon19.ico" />
+    <Resource Include="Resources\icon20.ico" />
+    <Resource Include="Resources\icon21.ico" />
+    <Resource Include="Resources\icon22.ico" />
+    <Resource Include="Resources\icon23.ico" />
+    <Resource Include="Resources\icon9.ico" />
+    <Resource Include="Resources\multicolor.ico" />
+    <Resource Include="Resources\proxy-b.ico" />
+    <Resource Include="Resources\proxy-c.ico" />
+    <Resource Include="Resources\proxy-g.ico" />
+    <Resource Include="Resources\proxy-m.ico" />
+    <Resource Include="Resources\proxy-r.ico" />
+    <Resource Include="Resources\proxy-y.ico" />
+    <Resource Include="Resources\proxy.ico" />
+    <Resource Include="Resources\TWXP-1.ico" />
+    <Resource Include="Resources\TWXP-2.ico" />
+    <Resource Include="Resources\TWXP-3.ico" />
+    <Resource Include="Resources\TWXP-4.ico" />
+    <Resource Include="Resources\TWXP-5.ico" />
+    <Resource Include="Resources\TWXP-6.ico" />
+    <Resource Include="Resources\TWXP-7.ico" />
+    <Resource Include="Resources\TWXP-8.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Icon1.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

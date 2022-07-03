@@ -1,0 +1,30 @@
+﻿<Window x:Class="TWX3.Welcome"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TWX3"
+        mc:Ignorable="d"
+        Title="Welcome to TWX Proxy 3" Height="300" Width="500" Background="Black" Icon="/TWX3;component/resources/notify00.ico"  
+    WindowStyle="None"
+        BorderBrush="Black"
+        BorderThickness="2"
+        AllowsTransparency="True" >
+    <Grid MouseDown="GridMouseDown">
+        <Image Source="/TWX3;component/Images/lightning.png" VerticalAlignment="Top" Stretch="UniformToFill" Opacity=".4" />
+        <Image Source="/TWX3;component/Images/logo.png" VerticalAlignment="Bottom" Width="450" Margin="0,0,0,210" />
+        <Grid >
+            <TextBlock x:Name="WelcomeTextBlock" Margin="15,100,15,10" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="cyan" TextWrapping="Wrap" FontSize="14" Opacity=".7">
+                <TextBlock.Text>Welcome to TWX Proxy! This helper is designed to work in conjunction with your favorite Tradewars Helper or Telnet Terminal. It does not provide a terminal window, so you should read the Getting Started section of the wiki before continuing:</TextBlock.Text>
+            </TextBlock>
+            
+            <Label x:Name="WikiLink" HorizontalAlignment="Left" Margin="75,183,0,0" VerticalAlignment="Top" Foreground="Magenta" MouseDown="WikiLinkClick" Opacity=".7">
+                <TextBlock TextDecorations="Underline" FontSize="12pt"><Run Text="https://github.com/tw2002/twxp/wiki"/></TextBlock>
+            </Label>
+
+            <TextBlock Margin="68,0,-3,52" VerticalAlignment="Bottom" Height="25" Text="You must create a new database before connecting to a server." Foreground="White"/>
+            <Button x:Name="OkButton" Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="25" Width="75" Opacity=".5" Click="OkButtonClick" Content="Ok"/>
+        </Grid>
+        <Border x:Name="innerBorder" BorderThickness="1" BorderBrush="#FF222222" />
+    </Grid>
+</Window>

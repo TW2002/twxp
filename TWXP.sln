@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TWX30", "TWX30", "{1B898E7C-2FB9-47F1-9EE1-FD62DF3714B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Source\TWX30\Library\Library.csproj", "{3E65CE1E-A0FA-49C3-9963-E65F17982754}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Source\TWX30\Proxy\Proxy.csproj", "{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E65CE1E-A0FA-49C3-9963-E65F17982754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E65CE1E-A0FA-49C3-9963-E65F17982754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E65CE1E-A0FA-49C3-9963-E65F17982754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E65CE1E-A0FA-49C3-9963-E65F17982754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3E65CE1E-A0FA-49C3-9963-E65F17982754} = {1B898E7C-2FB9-47F1-9EE1-FD62DF3714B1}
+		{3129B6B0-4337-4D9B-8CA3-D4E808FAFAB4} = {1B898E7C-2FB9-47F1-9EE1-FD62DF3714B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5FA0C678-9E12-4729-A7EE-1094EADEA0A2}
+	EndGlobalSection
+EndGlobal

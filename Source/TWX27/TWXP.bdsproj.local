@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2018/07/19 11:45:20.264.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.280.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Global\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.293.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Process\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.306.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Bubble\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.319.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Core\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.332.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\ScriptCmd\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.361.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\TWXExport\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.374.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Script\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.386.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Utility\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.399.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\TWXProxy\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.411.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\FormHistory\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.424.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\DataBase\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.436.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\TCP\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.448.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\ScriptCmp\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.460.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\FormSetup\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.471.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Menu\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.482.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\FormScript\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.494.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\FormAbout\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.505.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\FormMain\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.516.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Ansi\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.527.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\GUI\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.538.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Observer\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.549.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Persistence\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.560.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\ScriptRef\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.571.txaPackage,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\Log\default.txaPackage=</Transaction>
+    <Transaction>2018/07/19 11:45:20.581.txvpck,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ModelSupport_TWXProxy\default.txvpck=</Transaction>
+    <Transaction>2018/07/19 11:45:20.624.bdsproj,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\TWXProxy.bdsproj=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\TWXP.bdsproj</Transaction>
+    <Transaction>2018/07/23 13:02:54.893.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.pas</Transaction>
+    <Transaction>2018/07/23 13:02:54.893.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.dfm=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.dfm</Transaction>
+    <Transaction>2018/07/23 13:21:25.152.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.pas</Transaction>
+    <Transaction>2018/07/23 13:21:25.152.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ChangeIcon.dfm=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm</Transaction>
+    <Transaction>2018/07/27 10:09:12.136.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.pas=</Transaction>
+    <Transaction>2018/07/27 10:09:12.136.dfm,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\FormChangeIcon.dfm=</Transaction>
+    <Transaction>2018/08/26 20:09:52.625.pas,C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\Unit1.pas=C:\Projects\Tradewars\TWXProxy\TWXProxy\Source\TWXProxy-MB\ShellLink.pas</Transaction>
+  </Transactions>
+</BorlandProject>

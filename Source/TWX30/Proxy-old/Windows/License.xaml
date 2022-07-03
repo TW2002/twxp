@@ -1,0 +1,24 @@
+﻿<Window x:Class="TWX3.License"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TWX3"
+        mc:Ignorable="d"
+        Title="Welcome to TWX Proxy 3" Height="300" Width="500" Background="Black" Icon="/TWX3;component/resources/notify00.ico" 
+        WindowStyle="None"
+        BorderBrush="Black"
+        BorderThickness="2"
+        AllowsTransparency="True">
+    <Grid  MouseDown="GridMouseDown">
+        <Image Source="/TWX3;component/Images/lightning.png" VerticalAlignment="Top" Stretch="UniformToFill" Opacity=".4" />
+        <Image Source="/TWX3;component/Images/logo.png" VerticalAlignment="Bottom" Opacity=".6" Width="450" Margin="0,0,0,210" />
+        <Grid>
+            <TextBox Name="LicenseTextBox" Margin="15,100,15,10" Height="150" Width="470" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="Black" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Opacity=".7">
+            </TextBox>
+
+            <Button Name="OkButton" Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="25" Width="75" Opacity=".5" Click="OkButtonClick">Ok</Button>
+        </Grid>
+        <Border Name="innerBorder" BorderThickness="1" BorderBrush="#FF222222" />
+    </Grid>
+</Window>
