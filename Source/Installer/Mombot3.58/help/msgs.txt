@@ -1,5 +1,0 @@
-UGRID - Displays or Deletes Mesages
-
-        msgs {d}
-       
-        {d}   MailBox CleanUp - without display

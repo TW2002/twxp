@@ -1,2 +1,0 @@
-STOPALL - Stops all non-system scripts and resets 
-          Bot mode to General

@@ -1,3 +1,0 @@
-MAC - Runs a macro
-
-    mac [macro to send]

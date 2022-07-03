@@ -1,7 +1,0 @@
-CITCAP - Citadel Based Ship Capture Command
-
-         citcap [on/off] {""player name""|corp#}
-      
-         - {""player name""} = Player to target, name must be 
-                               surrounded by double quotes
-         - {corp#}           = Corporation number to target

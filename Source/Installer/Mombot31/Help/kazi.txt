@@ -1,8 +1,0 @@
-KAZI - Automates planet invasion.
-
-   - kazi [planet] {shields} {defender} {zdy}
-
-    [planet]   - Planet number to attack
-    [shields]  - Will kill planetary shields. Stops when below 50.  
-    [defender] - Will land defensively to take out military reaction.
-    [zdy]      - Option to blow planet as soon as you land.

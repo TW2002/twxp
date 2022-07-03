@@ -1,3 +1,0 @@
-HTORP - Holo Photon
-        Performs a Holo-Scan and launches a Photon into any
-        adjacent sector that contains another Trader.

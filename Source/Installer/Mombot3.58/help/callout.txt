@@ -1,5 +1,0 @@
-                     
-   
-                <<<< callout >>>>
-   
-     Reports team name and current sector.

@@ -1,7 +1,0 @@
-RUNAWAY - Automatic Flee Mode
-
-       runaway [on/off] {preset flee sector} {evac}
-
-       - [preset flee sector]   = Sector to attempt to flee to first
-       - [evac]                 = attempts to move all level 4 and 
-                                  above planets in the sector

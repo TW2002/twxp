@@ -1,3 +1,0 @@
-TOW - Locks a Tow onto target empty ship.
-
-      tow [ship number] 

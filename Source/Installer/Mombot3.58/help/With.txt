@@ -1,3 +1,0 @@
-WITH - Withdrawls cash from citadel treasury.
-
-       with {cash to withdrawl}

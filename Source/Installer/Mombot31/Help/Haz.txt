@@ -1,3 +1,0 @@
-HAZ - Create 100% NavHaz in Current-Sector
-      Scans the Game-Status (aka V Screen), once, to obtain
-      Maximum Planets per Sector.

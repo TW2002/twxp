@@ -1,4 +1,0 @@
-CMINES - Deploys Corporate Armid Mines into the sector.
-
-        cmine {amount}
-	

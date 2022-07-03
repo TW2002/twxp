@@ -1,6 +1,0 @@
-TSAVEME - TWarp SaveMe MODE
-          Will Twarp to Corpie's Location and attempt to Tow
-          him/her back to starting sector. 
-
-          tsaveme [on/off] 
-

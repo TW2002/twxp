@@ -1,2 +1,0 @@
-FILLSHIPS - Fills all empty ships with fighters from sector.
-                                                    

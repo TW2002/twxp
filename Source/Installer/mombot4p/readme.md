@@ -1,2 +1,0 @@
-# mombot
-Mom Bot Development

@@ -1,2 +1,0 @@
- - sector [sector number]
-    - displays a sector as seen from database information

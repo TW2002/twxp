@@ -1,1 +1,0 @@
-REFRESH - Reloads bot data files to make it up to date

@@ -1,6 +1,0 @@
-PXEX - Photon, Export, Enter, Export
-       Used to launch a Photon into an adjacent Sector then immediately
-       Export into another Ship and Enter Photon'd Sector; then, Export
-       back into Photon-ship.
-
-       pxex [Sector] [ShipNumber]

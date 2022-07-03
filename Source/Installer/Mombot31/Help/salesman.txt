@@ -1,7 +1,0 @@
-SALESMAN - Visits all ports in grid and buys fuel 
-           and sells/buys organics and equipment.
-
-   salesman [min port product] ({neg}otiate OR {hold}byhold) {skipcim} 
-  
-   {neg/hold}   Determines planet negotiate or hold selling approach
-   {skipcim}    Does not run cim before starting route

@@ -1,2 +1,0 @@
-LISTALL - List All Active Scripts on Sub Space
-          

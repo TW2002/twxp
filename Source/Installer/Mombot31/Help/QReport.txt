@@ -1,5 +1,0 @@
-QREPORT - Quasar Cannon Report
-          gives first 5 shots of sector quasar of 
-          all planets entered
-
-          qreport [planet1] [planet2] ... [planet x]  

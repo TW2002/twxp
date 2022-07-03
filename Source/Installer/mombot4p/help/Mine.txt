@@ -1,4 +1,0 @@
-MINES - Deploys Armid Mines into the sector.
-
-        mine [number to deploy]
-	

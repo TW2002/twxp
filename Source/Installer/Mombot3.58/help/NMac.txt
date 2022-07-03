@@ -1,3 +1,0 @@
-NMAC - Sends a Macro n-Cycles
-
-     nmac [cycles] [macro to send] 

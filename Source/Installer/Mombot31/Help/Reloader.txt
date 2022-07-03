@@ -1,8 +1,0 @@
-RELOADER - Sector Reloader Mode
-           Sits above planet and lands/reloads fighters when hit.
-
-           reloader [on/off] [fig minimum]
-
-           [on/off]        Turns Reloader On or Off
-           [fig minimum]   Number of Ship Fighters to Loose before
-                           landing and refilling

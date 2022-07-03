@@ -1,3 +1,0 @@
-PWARP - Planetary Warp to a Target Sector
-
-        pwarp [sector] 
