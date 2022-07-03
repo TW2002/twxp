@@ -1,5 +1,3 @@
-![image](https://user-images.githubusercontent.com/3355654/67166690-3cd7f100-f357-11e9-953f-561864f26fc1.png)
-
 ## What is TWX Proxy?
 
 **TWX Proxy** is a [TradeWars 2002 (TW2002)](http://www.eisonline.com) helper written in Boreland Turbo Pascal.
