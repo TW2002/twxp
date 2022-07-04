@@ -1,3 +1,9 @@
+Changes in 2.07.00
++ Added getDateTime and dateTimeDiff commaands.
++ Added echoEx commaand.
++ Fixed format CURRENCY command.
++ Fixed dirList commaand.
+
 Changes in 2.06.06
 + Added 11 new system vars
 + Added addQuickText and clearQuickText
