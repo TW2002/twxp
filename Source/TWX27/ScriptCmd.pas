@@ -481,7 +481,7 @@ begin
   // MB - Return a UNIX style date (Seconds since January 1, 1970)
    Params[0].Value := InttoStr(DateTimeToUnix(Now));
   // Params[0].Value := Round((Now - UnixStartDate) * 86400);
-  
+
   Result := caNone;
 end;
 
@@ -502,7 +502,7 @@ begin
   days := diff div SecsPerDay;
   diff := diff mod SecsPerDay;
 
-  // MB - for some reason SecsPerHour is not working, 
+  // MB - for some reason SecsPerHour is not working,
   // so just using an int instead.
   hours := diff div 3600;
   diff := diff mod 3600;
@@ -531,6 +531,23 @@ begin
   Result := caNone;
 end;
 
+function CmdDateTimeToStr(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  t  : TDateTime;
+begin
+  // CMD: dateTimeToDtr {Result} {DateTime} <Forrmat>
+
+  // MB - Convert string parmaters to TDateTime.
+  t := UnixToDateTime(StrToInt64(Params[1].Value));
+
+  if(Length(Params) > 2) then
+      Params[0].Value := FormatDateTime(Params[2].Value, t)
+  else
+      Params[0].Value := DateTimeToStr(t);
+
+  Result := caNone;
+end;
+
 
 function CmdFileExists(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
@@ -554,7 +571,11 @@ begin
   if (Params[2].Value = 'CURRENCY') then // ($4,567.22)
   begin
     try
-      Params[1].Value := FloatToStrF(Params[0].DecValue, ffCurrency, TScript(Script).DecimalPrecision, 2);
+      // MB - This is outputting something like 7.6E06
+      //Params[1].Value := FloatToStrF(Params[0].DecValue, ffCurrency, TScript(Script).DecimalPrecision, 2);
+
+      // MB - IDK if this is the best way to handle this
+      Params[1].Value := '$' + FloatToStrF(Params[0].DecValue, ffNumber, 19, 2);
     except on E: Exception do
       // Broadcast the exception
       raise EScriptError.Create('Invalid Currency value');
@@ -694,14 +715,20 @@ var
   Mask : String;
   List : TStringList;
 begin
-  // CMD: getDirList varArray <FileMask>
+  // CMD: getDirList varArray <path> <FileMask>
 
+  // MB - Added path option
   if (Length(Params) = 1) then
+    SetCurrentDir('.')
+  else
+    // EP - Need to make sure Dir doesn't contain "..", so only subdirs can be enumerated
+    SetCurrentDir(Params[1].Value);
+
+  if (Length(Params) = 2) then
     Mask := '*'
-  else begin
-    // EP - Need to make sure Mask doesn't contain "..", so only subdirs can be enumerated
-    Mask := Params[1].Value;
-  end;
+  else
+    Mask := Params[2].Value;
+
   List := TStringList.Create;
   try
     if SysUtils.FindFirst(Mask, faDirectory, SearchRec) = 0 then begin // and not faDirectory
@@ -1512,9 +1539,7 @@ end;
 function CmdLoadVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   INI : TINIFile;
-  Globals,
-  VarName : String;
-  VarNames : TStringList;
+  Globals  : String;
 begin
   // CMD: loadVar var
 
@@ -1679,6 +1704,30 @@ begin
 
   Result := caNone;
 end;
+
+function CmdCenter(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I   : Integer;
+  Pad : string;
+begin
+  // CMD: padRight var <value>
+  // add spaces to the right of a variable
+
+  Pad := '';
+  for I := Length(Params[0].Value) to Floor(Params[1].DecValue / 2) do
+  begin
+    if(Length(Params) = 3) then
+      Pad := Params[0].Value + Pad
+    else
+      Pad := ' ' + Pad;
+  end;
+
+
+  Params[0].Value := Pad + Params[0].Value + Pad;
+
+  Result := caNone;
+end;
+
 
 function CmdPause(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
@@ -5239,15 +5288,15 @@ begin
     AddCommand('LISTAVOIDS', 1, 1, CmdListAvoids, [pkVar], pkValue);
     AddCommand('LISTSECTORPARAMETERS', 2, 2, CmdListSectorParameters, [pkValue, pkVar], pkValue);
     AddCommand('SETAVOID', 1, 1, CmdSetAvoid, [pkValue], pkValue);
+
     // Commands added for 2.05beta
     AddCommand('CUTLENGTHS', 3, 3, CmdCutLengths, [pkValue, pkVar, pkValue], pkValue);
     AddCommand('FORMAT', 3, 3, CmdFormat, [pkValue, pkVar, pkValue], pkValue);
-    AddCommand('GETDIRLIST', 1, 2, CmdGetDirList, [pkVar, pkValue], pkValue);
+    AddCommand('GETDIRLIST', 1, 3, CmdGetDirList, [pkVar, pkValue], pkValue);
     AddCommand('GETWORDCOUNT', 2, 2, CmdGetWordCount, [pkValue, pkVar], pkValue);
     AddCommand('MAKEDIR', 1, 1, CmdMakeDir, [pkValue], pkValue);
     AddCommand('PADLEFT', 2, 2, CmdPadLeft, [pkVar, pkValue], pkValue);
     AddCommand('PADRIGHT', 2, 2, CmdPadRight, [pkVar, pkValue], pkValue);
-
     AddCommand('REMOVEDIR', 1, 1, CmdRemoveDir, [pkValue], pkValue);
     AddCommand('SETMENUKEY', 1, 1, CmdSetMenuKey, [pkValue], pkValue);
     AddCommand('SPLITTEXT', 2, 3, CmdSplitText, [pkValue, pkVar], pkValue);
@@ -5257,23 +5306,16 @@ begin
     // Commands added for 2.06
     AddCommand('GETDEAFCLIENTS', 1, 1, CmdGetDeafClients, [pkValue], pkValue);
     AddCommand('SETDEAFCLIENTS', 0, 1, CmdSetDeafClients, [pkValue], pkValue);
-
     AddCommand('SAVEGLOBAL', 1, 1, CmdSaveGlobal, [pkValue], pkValue);
     AddCommand('LOADGLOBAL', 1, 1, CmdLoadGlobal, [pkValue], pkValue);
     AddCommand('CLEARGLOBALS', 0, 0, CmdClearGlobals, [], pkValue);
-
     AddCommand('SWITCHBOT', 0, 2, CmdSwitchBot, [pkValue], pkValue);
-
     AddCommand('STRIPANSI', 2, 2, CmdStripANSI, [pkValue, pkValue], pkValue);
-
     AddCommand('ADDQUICKTEXT', 2, 2, CmdAddQuickText, [pkValue], pkValue);
     AddCommand('CLEARQUICKTEXT', 0, 1, CmdClearQuickText, [pkValue], pkValue);
-
     AddCommand('GETBOTLIST', 1, 1, CmdGetBotList, [pkVar], pkValue);
-
     AddCommand('SETAUTOTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
     AddCommand('SETAUTOTEXTTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
-
     AddCommand('REQVERSION', 1, 1, CmdReqVersion, [pkValue], pkValue);
     AddCommand('SORT', 2, 2, CmdSort, [pkValue], pkValue);
     AddCommand('FIND', 3, 4, CmdFind, [pkValue], pkValue);
@@ -5281,7 +5323,6 @@ begin
     AddCommand('MODULUS', 2, 2, CmdModulus, [pkValue], pkValue);
     AddCommand('DIREXISTS', 2, 2, CmdDirExists, [pkValue], pkValue);
     AddCommand('LABELEXISTS', 2, 2, CmdLabelExists, [pkValue], pkValue);
-
     AddCommand('OPENINSTANCE', 0, -1, CmdOpenInstance, [pkValue], pkValue);
     AddCommand('CLOSEINSTANCE', 1, 1, CmdCloseInstance, [pkValue], pkValue);
 
@@ -5296,18 +5337,20 @@ begin
 
     AddCommand('STARTTIMER', 1, 1, CmdStartTimer, [pkValue], pkValue);
     AddCommand('STOPTIMER', 1, 1, CmdStopTimer, [pkValue], pkValue);
-
     AddCommand('STOPALL', 0, 1, CmdStopAll, [pkValue], pkValue);
     AddCommand('CONCAT', 2, -1, CmdConcat, [pkVar, pkValue], pkValue);
     AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
+    // MB - This is not implimentd... TODO... Maaybe...
+    AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
+    // Commands added for 2.07
     AddCommand('GETDATETIME', 1, 1, CmdGetDateTime, [pkVar], pkValue);
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
+    AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
+    AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
 
-    AddCommand('LIBCMD', 1, -1, CmdLibCmd
-    , [pkValue], pkValue);
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
     // GETGAMESETTINGS CmdGotoPrompt ??? Switchboard ??? Maybe
