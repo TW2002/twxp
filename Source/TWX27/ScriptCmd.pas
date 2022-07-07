@@ -1707,23 +1707,33 @@ end;
 
 function CmdCenter(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  I   : Integer;
-  Pad : string;
+  I, j, k : Integer;
+  Pad, S : string;
 begin
   // CMD: padRight var <value>
   // add spaces to the right of a variable
 
+  j :=  Floor((Length(Params[0].Value) + 2) / 2);
+  k :=  Floor(Params[1].DecValue / 2);
+
   Pad := '';
-  for I := Length(Params[0].Value) to Floor(Params[1].DecValue / 2) do
+  for I := 0 to k - j do
   begin
     if(Length(Params) = 3) then
-      Pad := Params[0].Value + Pad
+      Pad := Pad + Params[2].Value
     else
-      Pad := ' ' + Pad;
+      Pad := Pad + ' ';
   end;
 
+  S := Pad + Params[0].Value + Pad;
 
-  Params[0].Value := Pad + Params[0].Value + Pad;
+  if(Length(S) < Params[1].DecValue) then
+    if(Length(Params) = 3) then
+      S := S + Params[2].Value
+    else
+      S := S + ' ';
+
+  Params[0].Value := S;
 
   Result := caNone;
 end;
