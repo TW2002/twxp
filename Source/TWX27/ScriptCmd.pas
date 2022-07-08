@@ -1675,13 +1675,16 @@ var
   I   : Integer;
   Pad : string;
 begin
-  // CMD: padLeft var <value>
+  // CMD: padLeft var <value> <pad>
   // add spaces to the left of a variable
 
   Pad := '';
   for I := Length(Params[0].Value) to Trunc(Params[1].DecValue - 1) do
   begin
-    Pad := ' ' + Pad;
+    if(Length(Params) = 3) then
+      Pad := Pad + Params[2].Value
+    else
+      Pad := Pad + ' ';
   end;
 
   Params[0].Value := Pad + Params[0].Value;
@@ -1694,13 +1697,16 @@ var
   I   : Integer;
   Pad : string;
 begin
-  // CMD: padRight var <value>
+  // CMD: padRight var <pad>
   // add spaces to the right of a variable
 
   Pad := '';
   for I := Length(Params[0].Value) to Trunc(Params[1].DecValue - 1) do
   begin
-    Pad := ' ' + Pad;
+    if(Length(Params) = 3) then
+      Pad := Pad + Params[2].Value
+    else
+      Pad := Pad + ' ';
   end;
 
   Params[0].Value := Params[0].Value + Pad;
@@ -1713,7 +1719,7 @@ var
   I, j, k : Integer;
   Pad, S : string;
 begin
-  // CMD: padRight var <value>
+  // CMD: Center var <value> <pad>
   // add spaces to the right of a variable
 
   j :=  Floor((Length(Params[0].Value) + 2) / 2);
@@ -1735,6 +1741,82 @@ begin
       S := S + Params[2].Value
     else
       S := S + ' ';
+
+  Params[0].Value := S;
+
+  Result := caNone;
+end;
+
+function CmdJustify(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I, j, k : Integer;
+  Pad, S : string;
+begin
+  // CMD: padRight var <char>
+  // add spaces to the right of a variable
+
+  j :=  Floor((Length(Params[0].Value) + 2) / 2);
+  k :=  Floor(Params[1].DecValue / 2);
+
+  Pad := '';
+  for I := 0 to k - j do
+  begin
+    if(Length(Params) = 3) then
+      Pad := Pad + Params[2].Value
+    else
+      Pad := Pad + ' ';
+  end;
+
+  S := Pad + Params[0].Value + Pad;
+
+  if(Length(S) < Params[1].DecValue) then
+    if(Length(Params) = 3) then
+      S := S + Params[2].Value
+    else
+      S := S + ' ';
+
+  Params[0].Value := S;
+
+  Result := caNone;
+end;
+
+function CmdRepeat(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I, C : Integer;
+  L, R, S : string;
+begin
+  // CMD: padRight var <value> <pad>
+  // add spaces to the right of a variable
+
+  L := '';
+  R := '';
+
+  if Length(Params[2].Value) = 1 then
+    Begin
+      S := '';
+      for I := 0 to Trunc(Params[1].DecValue - 1) do
+        S := S + Params[2].Value
+    end
+  else
+    Begin
+      C := 1;
+      for I := 0 to Trunc(Params[1].DecValue / 2 - 1) do
+      Begin
+        L := L + Params[2].Value[C];
+        R := Params[2].Value[C] + R;
+
+        C := C + 1;
+        If (C > Length(Params[2].Value)) then
+          c:= 1;
+      End;
+
+      if Length(L + R) < Trunc(Params[1].DecValue) then
+        L:= L + Params[2].Value[C];
+
+      S := L + R;
+    End;
+
+
 
   Params[0].Value := S;
 
@@ -5308,8 +5390,8 @@ begin
     AddCommand('GETDIRLIST', 1, 3, CmdGetDirList, [pkVar, pkValue], pkValue);
     AddCommand('GETWORDCOUNT', 2, 2, CmdGetWordCount, [pkValue, pkVar], pkValue);
     AddCommand('MAKEDIR', 1, 1, CmdMakeDir, [pkValue], pkValue);
-    AddCommand('PADLEFT', 2, 2, CmdPadLeft, [pkVar, pkValue], pkValue);
-    AddCommand('PADRIGHT', 2, 2, CmdPadRight, [pkVar, pkValue], pkValue);
+    AddCommand('PADLEFT', 2, 3, CmdPadLeft, [pkVar, pkValue], pkValue);
+    AddCommand('PADRIGHT', 2, 3, CmdPadRight, [pkVar, pkValue], pkValue);
     AddCommand('REMOVEDIR', 1, 1, CmdRemoveDir, [pkValue], pkValue);
     AddCommand('SETMENUKEY', 1, 1, CmdSetMenuKey, [pkValue], pkValue);
     AddCommand('SPLITTEXT', 2, 3, CmdSplitText, [pkValue, pkVar], pkValue);
@@ -5363,6 +5445,8 @@ begin
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
+    AddCommand('JUSTIFY', 2, 3, CmdJustify, [pkVar, pkValue], pkValue);
+    AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
