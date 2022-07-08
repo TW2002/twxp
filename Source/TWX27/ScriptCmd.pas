@@ -727,7 +727,10 @@ begin
   if (Length(Params) = 2) then
     Mask := '*'
   else
-    Mask := Params[2].Value;
+  //'mom'#$D'.'#$D
+    Mask := StringReplace(Params[2].Value, #$D, '*',
+                          [rfReplaceAll, rfIgnoreCase]);
+
 
   List := TStringList.Create;
   try
