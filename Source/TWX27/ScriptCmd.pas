@@ -1539,7 +1539,8 @@ begin
   Result := caNone;
 end;
 
-function CmdLoadVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdLoadVar
+(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   INI : TINIFile;
   Globals  : String;
@@ -1747,66 +1748,6 @@ begin
   Result := caNone;
 end;
 
-function CmdJustify(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  I, j, k : Integer;
-  S : String;
-  LineMode : Bool;
-  LineLength : Integer;
-  Strings, Lines, Words : TStringList;
-begin
-  // CMD: CmdJustify var lenngth <mode>
-  // Add spaces to each line so that they are all the same length.
-
-  Strings := TStringList.Create;
-  Lines := TStringList.Create;
-  Words := TStringList.Create;
-
-  // MB - Justify by placing spaces only between Words.
-  LineMode := false;
-
-  // MB - If WORD is specified. Justify will place spaces evengly
-  // Througout the entire line and not just between Words.
-  //LineMode := false; TODO
-
-  j :=  Floor((Length(Params[0].Value) + 2) / 2);
-  k :=  Floor(Params[1].DecValue / 2);
-
-  Split(Params[0].Value, Lines, #$D);
-
-  for I := 0 to Lines.Count - 1 do
-  Begin
-    Split(Lines[I], Words, ' ');
-    S := '';
-
-    for J := 0 to Words.Count - 1 do
-    Begin
-      LineLength := length(S + Words[J]);
-     if (LineLength > ConvertToNumber(Params[1].DecValue)) then
-       S := S + Words[J]
-     else
-       Begin
-         Strings.Add(S);
-
-         S := '';
-        End;
-
-      Strings.Add('***-=-***');
-    End;
-
-
-
-
-  End;
-
-  S := '';
-  for K := 0 to Strings.Count - 1 do
-    S := S + Strings[K] + '*';
-
-  Params[0].Value := S;
-
-  Result := caNone;
-end;
 
 function CmdRepeat(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
@@ -2089,13 +2030,13 @@ begin
   Globals := '$COMMAND|$MODE|$USER_COMMAND_LINE|$SILENT_RUNNING|$BOTISDEAF|$SELF_COMMAND'
            + '$BOT~COMMAND|$BOT~MODE|$BOT~USER_COMMAND_LINE'
            + '$BOT~VSILENT_RUNNING|$BOT~BOTISDEAF|$SWITCHBOARD~SELF_COMMAND';
-  if (pos(TVarParam(Params[0]).Name, Globals) > 0) or
-     (pos('PARM', TVarParam(Params[0]).Name) > 0) then
-  begin
+ // if (pos(TVarParam(Params[0]).Name, Globals) > 0) or
+//     (pos('PARM', TVarParam(Params[0]).Name) > 0) then
+//  begin
 //    CmdSaveGlobal(Script, Params);
 //    Result := caNone;
 //    exit
-  end;
+//  end;
 
   // MB - This is a patch for a Mombot 3.1044 / 3.1045 incorrectly storing
   //      $MULTIPLE_PHOTONS as a string instead of bool.
@@ -5473,8 +5414,8 @@ begin
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
-    AddCommand('JUSTIFY', 2, 2, CmdJustify, [pkVar, pkValue], pkValue);
     AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
+    //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);

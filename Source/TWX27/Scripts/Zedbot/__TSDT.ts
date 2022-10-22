@@ -7,11 +7,31 @@
 # 22.08.12 Modified for use as a mombot daemon
 reqVersion "2.6.09"
 reqrecording
-$version := "v22.08a"
+systemScript
+$version := "v22.08b"
 $Unlim := FALSE
+
+#Run Messages - Since cash reported by SDT does not include EQU sitting
+#               on planets, messages are based on turns run.
+setArray $RunMsg 7
+$RunMsg := 7
+$RunMsg[1] := "Wow {redbot}! I didn't think anyone could run that long."
+$RunMsg[2] := "600 Great run {redbot}! You are a god among insects."
+$RunMsg[3] := "400 We are eating Prime Rib tonight! Way to go {redbot}!"
+$RunMsg[4] := "300 Awesome Run! Someone give {redbot} a friggin medal."
+$RunMsg[5] := "200 My grandmother could steal more that that blindfolded {redbot}."
+$RunMsg[6] := "100 Hey little buddy, it's ok! You will do better next time {redbot}!"
+$RunMsg[7] := "50 Thanks a lot {redbot}. We actually lost money on thet run."
+
+setvar $to 1000
+send "'Team SDT " $version " initializing!*"
+gosub :wait
 
 #TODO Help
 #TODO must start at Command
+
+$Prompt := "Command"
+Gosub :GetPrompt
 
 loadvar	$mode
 loadvar $bot_name
@@ -35,22 +55,8 @@ loadvar $bot_name
   $Unlim := TRUE
   pause
 
-
-goto :Start
-$nc := "3"
-$a  := "4 5 6"
-setvar $j 1
-while ($j<=$nc)
-  getword $a $colt[$j] $j
-  setvar $bust[$j] 0
-  add $j 1
-end
-Gosub :GetPlanets
-halt
-
 :start
-  killalltriggers
-
+killalltriggers
 loadvar $bot_name
 $timeout := 30000
 $jet := 2625
@@ -84,12 +90,12 @@ else
 end
 
 :begin
-setvar $to 1000
-send "'Team SDT " $version " initializing!*"
-gosub :wait
+#setvar $to 1000
+#send "'Team SDT " $version " initializing!*"
+#gosub :wait
 setvar $quit 0
 settextouttrigger quit :quit "~"
-echo ansi_15 "*Use '~' key to quit any time.*"
+echo "~H*Press the '~' key to shdown Team SDT.*"
 gosub :wait
 send "'" $bot_name " login*"
 setvar $to 2000
@@ -98,23 +104,28 @@ gosub :info
 
 :main
 if $quit
-    send "'Stop Requested, Team SDT done.*"
+    send "'ShutDown Requested, Team SDT done.*"
     halt
 end
 gosub :who
 if ($who=0)
-  send "'No pairs left, Team SDT done.*"
+  send "'Unable to continue, Team SDT done.*"
   halt
 end
 if $quit
-    send "'Stop Requested, Team SDT done.*"
+    send "'ShutDown Requested, Team SDT done.*"
     halt
 end
+#gosub :info
+echo "~H*Press the '~' key to ShutDown Team SDT.*"
+setvar $to 10000
+gosub :wait
+
 gosub :run
 setvar $to 1000
 gosub :wait
-gosub :info
-gosub :wait
+#gosub :info
+#gosub :wait
 goto :main
 
 :run
@@ -155,6 +166,7 @@ end
 setvar $ss "credits in "
 gosub :waitss
 getword $ss $credits 3
+getword $ss $sdtturns 6
 
 setvar $ss "Busted in "
 setvar $ss2 "Low Turns, Halting Script"
@@ -194,6 +206,26 @@ gosub :coltindex
 setvar $bust[$j] $who
 setvar $last[$who] $j
 gosub :save
+
+# Check if fuel port has fuel 
+send "cr" $port[$j] "*q"
+waiton "Fuel Ore"
+getWord currentline $fs 3
+getWord currentline $pf 4
+
+# Upgrade port if fuel is low
+if ($fs = "Buying") and ($pf < 2000)
+  send "'" $redbot " mac o199" #42 "*"
+  setvar $ss "Macro Complete"
+  gosub :waitss
+
+#remove
+setvar $to 10000
+gosub :wait
+
+end
+
+
 if $furbmethod=0
     if ($furb<>0) and ($furblet<>"0")
       send "'" $bluebot " furb " $bustcolt " " $furbadd " " $furblet "*"
@@ -206,15 +238,6 @@ if $furbmethod=0
       if ($kbot)
         setvar $ss "I now have "
       else
-        send "'" $redbot " mac a y 99" #42 " a y 99" #42 " a n y 99" #42 " a n n y 99" #42 " a n n n y 99" #42 "*"
-        setvar $ss "Macro Complete"
-      end
-      gosub :waitss
-      send "'" $bluebot " mac psspb9999" #42 "c9999" #42 "qqq/*"
-      setvar $ss "Macro Complete"
-      gosub :waitss
-
-
     end
 end
 :run2
@@ -228,32 +251,15 @@ gosub :waitss
 if ($kbot)
     waiton "Shipinfo Loaded"
 end
+
+# TopOff Blue Bot
+# TODO Check fig couunt first if in turn game.
+send "'" $bluebot " mac psspb9999" #42 "c9999" #42 "qqq/*"
+setvar $ss "Macro Complete"
+gosub :waitss
+
 #Always hated this... lol
 #send "'Nice run " $redbot "!*"
-
-stripText $credits ","
-$message := "Wow " $redbot "! I didn't think " $credits " credits was even possible."
-
-if ($credits < 7000000)
-  $message := "Great run " $redbot "! You are a god among insects."
-end
-if ($credits < 5000000)
-  $message := "We are eating Prime Rib tonight! Way to go " $redbot "!"
-end
-if ($credits < 2000000)
-  $message := "Awesome Run! Someone give " $redbot " a friggin medal."
-end
-if ($credits < 1000000)
-  $message := "Not bad " $redbot ", but my mother could steal more that that blindfolded."
-end
-if ($credits < 500000)
-  $message := "Hey buddy, it's ok! You will do better next time " $redbot "!"
-end
-if ($credits < 250000)
-  $message := "Thanks " $redbot ". We actually lost money on thet run."
-end
-send "'[" $mode "] {" $bot_name "} -=- " $message "*"
-
 
 if ($furb<>0) and ($needfurb<>0) and ($furbmethod=1)
   setvar $bot $bluebot
@@ -515,53 +521,102 @@ end
 return
 
 :info
-send "'Team SDT matrix:*"
-send "'Blue bot: " $bluebot
-send "*'Red bots: "
-setvar $i 1
-while ($i<=$nr)
-  if ($skip[$i]=0)
-    send $red[$i] " "
-  end
-  add $i 1
-end
-send "*'Colts: "
-setvar $j 1
-while ($j<=$nc)
-  send "#" $colt[$j] " "
-  add $j 1
-end
-send "*'Planets: "
-setvar $j 1
-while ($j<=$nc)
-  if ($Planet[$j] <> "0") and ($Planet[$j] <> "")
-    send "#" $Planet[$j] " "  
-  end
-  add $j 1
-end
-send "*'Busts: "
-setvar $j 1
-while ($j<=$nc)
-  if ($bust[$j]=0)
-    send "--- "
-  else
-    send $red[($bust[$j])] " "
-  end
-  add $j 1
-end
-send "*'Last Steals: "
-setvar $i 1
-while ($i<=$nr)
-  if ($skip[$i]=0)
-    if ($last[$i]>0)
-      send "#" $colt[($last[$i])] " "
+#$info := "~G Colts Sector Planet Bust Holds    Bots  last exp align turns  *"
+$info := "~g Colts Sector Planet Bust     Bots  Last R/S*"
+$info &= "~f ----- ------ ------ -----    ----- --------*"
+
+#$info &= "~D "  $colt[1] "   " $port[1] "    " $planet[1] "   100"  "~C " $bluebot "      750    2000 UNLIM*"
+
+
+$i := 1
+$j := 0
+while ($i<=$nc) or ($j<=$nr)
+  if ($i <= $nc)
+    if ($bust[$i]=0)
+      $b := " -=- "
     else
-      send "--- "
+      $b := $red[($bust[$i])]
+    end
+    $c := $colt[$i]
+    $p := $port[$i]
+    $t := $planet[$i]
+    padRight $c 3 
+    padRight $p 5 
+    padRight $t 4 
+    padRight $b 5 
+
+    $info &= "~D  " $c "~F   " $p "~G  #" $t "~B " $b
+  else
+    $info &= "                            "
+  end
+  $i++
+
+  if ($j = 0)
+    $b := $bluebot
+    padRight $b 5
+    $info &= "~C    "  $b ""
+  else
+    while ($skip[$j]=1)
+      $j++
+    end
+
+    if ($j <= $nr)
+      if (last[$j]=0)
+        $l := " -=- "
+      else
+        $l := $colt[($last[$j])]
+      end
+      $r :=  $red[$j]
+      padRight $r 5
+      padRight $l 5
+      $info &= "~B    "  $r "~G   " $l
     end
   end
-  add $i 1
+  $j++
+
+  $info &= "*"
 end
-send "*"
+
+#$info &= "*:" $credits ":" $sdtturns ":" $RunMsg ":**"
+stripText $credits ","
+
+if ($sdtturns > 0)
+  if ($credits > 0)
+    $totalcredits += $credits
+    format $credits $rc NUMBER
+    format $totalcredits $tc NUMBER
+    $info &= " *We made " $rc " this run, for a total of " $tc " credits.*"
+  else
+    $info &= " *Equipment was stored on planet, but not sold yet.*"
+  end
+
+  $msg := $RunMsg[1]
+  $i := 2
+  while ($i <= $RunMsg)
+    GetWord $RunMsg[$i] $rt 1
+    #$info &= ":" $rt ":>:" $sdtturns ":"
+    if ($rt > $sdtturns)
+      $msg := $RunMsg[$i]
+      #$info &= "TRUE:"
+      stripText $msg ($rt & " ")
+    end
+   # $info &= "*"
+    $i++
+  end
+  replaceText $msg "{redbot}" $redbot
+  $info &= $msg
+else
+  $info &= "Let's Rock and Roll...*"
+end
+$info &= " **"
+
+stripANSI $txtinfo $info
+send "'*[" $mode "] {" $bot_name "} -=- Team SDT matrix:* *"
+send $txtinfo
+send #145
+waitOn #145 & #8
+echo "~!~F  -=- Team SDT matrix:* *"
+echo $info
 return
 
 :coltindex
@@ -702,7 +757,9 @@ end
 return
 
 :make
-getinput $bluebot "Blue bot name:"
+
+#TODO turn comms off for setup
+getinput $bluebot "Nane of your Blue bot:"
 getinput $nr "how many Reds?"
 getinput $a "enter Red bot names seperated by spaces:"
 setvar $i 1
@@ -719,9 +776,6 @@ while ($j<=$nc)
   setvar $bust[$j] 0
   add $j 1
 end
-Gosub :GetPlanets
-
-
 setvar $furbmethod 0
 getinput $a "Use regular Salvage or Twarpable colts furbing ([S]/T)"
 uppercase $a
@@ -740,6 +794,7 @@ else
       getinput $furbadd "how many holds to add?"
     end
 end
+Gosub :GetPlanets
 return
 
 :show
@@ -1057,6 +1112,20 @@ return
   
 return
 
+:GetPrompt
+send "/" #145
+WaitOn #145 & #8
 
+GetWord currentline $p 1
+if ($p <> $prompt)
+  send "qqq***/" #145
+  WaitOn #145 & #8
+end
 
+GetWord currentline $p 1
+if ($p <> $prompt)
+  send "'-=- This command must ne run from the " $prompt " Prompt. -=-"
+  halt
+end
+return
 
