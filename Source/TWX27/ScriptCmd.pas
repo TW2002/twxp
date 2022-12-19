@@ -1862,7 +1862,10 @@ begin
 
   end
   else
-    raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+    // MB - this should not be a hard crash
+    //raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+    // Retund EOF if file does not exist.
+    Params[1].Value := 'EOF'
 
   Result := caNone;
 end;
@@ -1873,18 +1876,31 @@ function CmdReadToArray(Script : TObject; Params : array of TCmdParam) : TCmdAct
 var
   fileData: TStringList;
 begin
+  fileData := TStringList.Create;
+
   if not (FileExists(Params[0].Value)) then
   begin
-    raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
-    Exit;
-  end;
-  fileData := TStringList.Create;
-  try
-    fileData.LoadFromFile(Params[0].Value);
-    TVarParam(Params[1]).SetArrayFromStrings(fileData);
-    Params[1].Value := IntToStr(fileData.Count);
-  finally
-    fileData.Free;
+  // MB - I am not sure why this is coded as a HARD crash and exit
+  //  raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+  //  Exit;
+  //
+  // Return Empty array if file does not exist.
+    try
+      Params[1].Value := IntToStr(fileData.Count);
+      TVarParam(Params[1]).SetArrayFromStrings(fileData);
+    finally
+      fileData.Free;
+    end;
+  end
+  else
+  begin
+    try
+      fileData.LoadFromFile(Params[0].Value);
+      TVarParam(Params[1]).SetArrayFromStrings(fileData);
+      Params[1].Value := IntToStr(fileData.Count);
+    finally
+      fileData.Free;
+    end;
   end;
   Result := caNone;
 end;

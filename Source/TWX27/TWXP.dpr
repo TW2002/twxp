@@ -352,6 +352,7 @@ end;
 procedure CreateConfig();
 var
    IniFile     : TIniFile;
+   Upgrade     : String;
 begin
   ProgramDir := GetCurrentDir;
 
@@ -360,7 +361,7 @@ begin
     IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
 
     try
-      IniFile.WriteString('TWX Proxy', 'Upgrade', '211702');  // YYMMDD
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '221201');  // YYMMDD
       if TWXGUI.DatabaseName <> '' then
         IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
 
@@ -377,6 +378,10 @@ begin
       IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.ts');
       IniFile.WriteString('Bot:Zed', 'NameVar', '$Z_BOTNAME');
       IniFile.WriteString('Bot:Zed', 'LoginScript', 'z-login.cts');
+
+      IniFile.WriteString('Bot:Mom',    'Theme', '8|~A[~CMombot~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[32m|^[0m^[35m|^[0m^[1;33m');
+      IniFile.WriteString('Bot:1045', 'Theme', '10|~A[~DMom 1044~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[31m|^[0m^[33m|^[0m^[1;31m');
+      IniFile.WriteString('Bot:Zed', 'Theme', '9|~B<<-=Z=->>|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m');
 
       IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
       IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');
@@ -404,26 +409,31 @@ begin
     IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
 
     try
-      IniFile.WriteString('TWX Proxy', 'Upgrade', '211702');  // YYMMDD
-      if TWXGUI.DatabaseName <> '' then
-        IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
+      Upgrade := IniFile.ReadString('TWX Proxy', 'Upgrade', '');
 
-      IniFile.WriteString('Bot:Mom', 'Name', 'Mind Over Matter Bot');
-      IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');
-      IniFile.WriteString('Bot:Mom', 'NameVar', 'FILE:scripts\Mombot\games\{GAME}\bot.cfg');
-      IniFile.WriteString('Bot:Mom', 'CommsVar', '$SWITCHBOARD~BOT_NAME');
-      IniFile.WriteString('Bot:Mom', 'LoginScript', 'Disabled');
-      IniFile.WriteString('Bot:1045', 'NameVar', 'FILE:_MOM_{GAME}.bot');
-      IniFile.WriteString('Bot:1045', 'LoginScript', 'Disabled');
-      IniFile.WriteString('Bot:Zed', 'NameVar', '$Z_BOTNAME');
-      IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.ts');
-      IniFile.WriteString('Bot:Zed', 'LoginScript', 'z-login.cts');
+      if Upgrade <> '221201' then
+      begin
+
+        IniFile.WriteString('TWX Proxy', 'Upgrade', '221201');  // YYMMDD
+        if TWXGUI.DatabaseName <> '' then
+          IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
+
+        IniFile.WriteString('Bot:Mom', 'Name', 'Mind Over Matter Bot');
+        IniFile.WriteString('Bot:Mom', 'Script', 'Mombot\mombot.cts');
+        IniFile.WriteString('Bot:Mom', 'NameVar', 'FILE:scripts\Mombot\games\{GAME}\bot.cfg');
+        IniFile.WriteString('Bot:Mom', 'CommsVar', '$SWITCHBOARD~BOT_NAME');
+        IniFile.WriteString('Bot:Mom', 'LoginScript', 'Disabled');
+        IniFile.WriteString('Bot:1045', 'NameVar', 'FILE:_MOM_{GAME}.bot');
+        IniFile.WriteString('Bot:1045', 'LoginScript', 'Disabled');
+        IniFile.WriteString('Bot:Zed', 'NameVar', '$Z_BOTNAME');
+        IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.ts');
+        IniFile.WriteString('Bot:Zed', 'LoginScript', 'z-login.cts');
 
 
-      IniFile.WriteString('Bot:Mom',    'Theme', '8|~A[~CMombot~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[32m|^[0m^[35m|^[0m^[1;33m');
-      IniFile.WriteString('Bot:1045', 'Theme', '10|~A[~DMom 1044~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[31m|^[0m^[33m|^[0m^[1;31m');
-      IniFile.WriteString('Bot:Zed', 'Theme', '9|~B<<-=Z=->>|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m');
-
+        IniFile.WriteString('Bot:Mom',    'Theme', '8|~A[~CMombot~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[32m|^[0m^[35m|^[0m^[1;33m');
+        IniFile.WriteString('Bot:1045', 'Theme', '10|~A[~DMom 1044~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[31m|^[0m^[33m|^[0m^[1;31m');
+        IniFile.WriteString('Bot:Zed', 'Theme', '9|~B<<-=Z=->>|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m');
+      end;
     finally
       IniFile.Free;
     end;
