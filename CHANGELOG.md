@@ -1,8 +1,10 @@
 Changes in 2.07.00
++ Added Shorter Quickstats Vars
 + Added getDateTime and dateTimeDiff commaands.
 + Added echoEx commaand.
 + Fixed format CURRENCY command.
 + Fixed dirList commaand.
++ Fixed - Issue 37 - Read and readToArray hard crash TWX if the file does not exist
 
 Changes in 2.06.06
 + Added 11 new system vars
