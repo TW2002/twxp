@@ -1,0 +1,4 @@
+UNLOCK - Unlocks ship so that corp members can trade ships 
+         with bot.
+
+         - Originally written by Lonestar

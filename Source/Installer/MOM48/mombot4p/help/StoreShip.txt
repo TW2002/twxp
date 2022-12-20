@@ -1,0 +1,3 @@
+Storeship - Adds ship bot is in into ship data file.
+            Note: Close and restart bot for new ship
+                  types ti take effect.

@@ -1,0 +1,7 @@
+LDROP - Active Limpet Mine, Planet Drop MODE
+
+     ldrop {delay} {direct} - Limpet Dropper
+
+     [delay]  - Delay before drop in milliseconds
+     [direct] - Use this option to try to drop directly onto an
+                active limpet

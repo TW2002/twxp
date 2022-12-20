@@ -1,0 +1,5 @@
+DEP - Deposits cash into citadel treasury.
+
+      dep {cash to deposit} 
+
+      {cash to deposit} - Default is all cash on hand

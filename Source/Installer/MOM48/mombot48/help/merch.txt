@@ -1,0 +1,18 @@
+                     
+   
+                 <<<< merch >>>>
+   
+                Visits all ports in grid and sells organics          
+                and/or equipment.       
+            
+      merch {sector param} {min port product} [o | e] ({neg}otiate OR {hold}byhold)  
+            {buyfuel} {docim}  
+            
+     Options:
+         {neg/hold}   Determines planet negotiate or hold 
+                      selling approach
+          {skipcim}   Uses current cim data and skips searching
+            {docim}   Does cim check before starting and skips searching
+          {buyfuel}   Buys all the fuel in fuel selling ports 
+                      on route  
+             {half}   sell half of port (neg only for now) 

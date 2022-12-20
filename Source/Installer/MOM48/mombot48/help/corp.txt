@@ -1,0 +1,7 @@
+- corp [join/drop] [corp number] [password]                
+      join        - Will join Corporation                          
+      drop        - Will Drop current corporation                  
+      corp number - The corp number to join                        
+      password    - The corp password                              
+NOTE: If corp and password were previously used via bot           
+       the corp number and password will be saved                  

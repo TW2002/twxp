@@ -1,0 +1,11 @@
+                     
+   
+                 <<<< xport >>>>
+   
+     xport [ship number | list] [password]
+           
+       xports into ship or display xport list 
+           
+         {ship number}  ship number to tow
+                {list}  list all xport ships in range
+            {password}  if ship has password

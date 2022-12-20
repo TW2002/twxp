@@ -1,0 +1,5 @@
+PLIMP - Deploys Personal limpets into the sector.
+
+   limp  {number to deploy}   - Personal Limp
+   plimp {number to deploy}   - Personal Limp
+   climp {number to deploy}   - Corp Limp

@@ -1,0 +1,9 @@
+xenter - Quickly exits, then enters game. Clears mail 
+       and cleans mines in sector.
+
+       exit/xenter {number} {refill}
+
+      [number] - Allows multiple exit enters
+
+      [refill] - If started from command prompt, attempts to 
+                 refill on fighters in sector.          

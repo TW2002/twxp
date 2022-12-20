@@ -1,0 +1,5 @@
+DISP Displays current sector over ss
+
+     disp {fed}
+
+     {fed}  - Optionally redirect output over FedComm

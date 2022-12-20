@@ -1,0 +1,16 @@
+MACRO - dnyarri macro trigger
+Triggered grid kill and retreat. Anti-ptorp and pdrop macro.
+0
+vs. theirs:
+5
+A 999999^M Z Q N Z Q N ^M < Z Q N Z Q N ^M
+Variable %0
+Variable %1
+Variable %2
+Variable %3
+Variable %4
+Variable %5
+Variable %6
+Variable %7
+Variable %8
+Variable %9

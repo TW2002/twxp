@@ -1,0 +1,13 @@
+                     
+   
+                <<<< ephaggle >>>>
+   
+     ephaggle {blue|worst} {planet
+       Best haggle routine 
+           Options:  
+                  blue   - haggle without gaining experience 
+                  planet - do planet negotiation too 
+            
+           Default is normal haggle 
+            
+           Author: Elder Prophet 

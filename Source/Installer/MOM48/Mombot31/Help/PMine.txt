@@ -1,0 +1,3 @@
+PMINE - Deploy Personal Mines
+
+        pmine {amount}

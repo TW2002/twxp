@@ -1,0 +1,5 @@
+PEL - Photon, Enter, Land
+      Used to launch a Photon into an adjacent Sector, Enter
+      Photon'd Sector and land on a Planet.
+
+      pel [Sector] [PlanetNumber]

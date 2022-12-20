@@ -1,0 +1,9 @@
+SETVAR - Set Bots Local Vairables
+
+         setvar {a|r|s|h|b|x}
+
+         a  - Alpha Centauri
+         r  - Rylos
+         s  - StarDock
+         b  - BackDoor to Stardock
+         x  - Safe Xport Ship

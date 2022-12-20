@@ -1,0 +1,8 @@
+SDT - Steal Dump Transport
+
+   sdt [ship1] [ship2] [planet1] [planet2]
+
+   - Do NOT need to start in Ship 1 or Ship 2.
+   - First Steal will be from Ship 1.
+
+      - Created by Cherokee

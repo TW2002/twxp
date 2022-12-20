@@ -1,0 +1,4 @@
+SURRNOUD - Surrounds sector with fighters, armids, or limpets.
+
+           - Options for surround can be found in the 
+             preferences menu in bot

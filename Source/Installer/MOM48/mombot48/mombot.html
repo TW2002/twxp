@@ -1,0 +1,21 @@
+
+
+<script>
+var fileInput = "commands"
+
+// files is a FileList object (similar to NodeList)
+var files = fileInput.files;
+var file;
+
+// loop through files
+for (var i = 0; i < files.length; i++) {
+
+    // get item
+    file = files.item(i);
+    //or
+    file = files[i];
+
+    alert(file.name);
+}
+
+</script>

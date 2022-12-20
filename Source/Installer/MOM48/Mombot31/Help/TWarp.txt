@@ -1,0 +1,7 @@
+TWARP - Transwarps to target sector, will land on planet # if possible
+
+        Twarp [sector] {p} {planet #}
+
+        {p}       - attempts to port at arriving sector
+        {planet#} - attempts to land on planet number entered 
+                    when arriving

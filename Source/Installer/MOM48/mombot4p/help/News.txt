@@ -1,0 +1,20 @@
+ news [type] {refresh}
+     News types allowed:
+           rep       - overall reporting of events in the Log
+           foton     - lists fotons fired
+           tow       - who was towed
+           ports     - port activity (construction, demolition)
+           planets   - who popped planet and how many
+           obits     - CBY's, Fuses, Captures, etc..
+           corp      - Corporate news, formations, hirings, firings..
+           fed       - Awarded Commish, Bounties
+           pods      - Possible poddings
+           invasions - Planet invasions
+           overloads - list of sectors with overloaded planets
+           announce  - reporting of any announcements made
+
+      Refresh command line params:
+           r         - does a refresh using current game date
+           yest      - does a refresh of previous game date data
+
+           - Written by Lonestar

@@ -1,0 +1,5 @@
+TRICON - Will Play Tricon until Win or Rounds Hit
+
+      tricon {rounds} 
+
+      [rounds] - Number of rounds to play.

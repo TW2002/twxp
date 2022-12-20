@@ -1,0 +1,9 @@
+PIMP - Makes planets and strips them of product
+
+   pimp {"planet name"} {f} {o} {e}
+
+   [planet name] - creates planet with this name (default 
+                   is random name)
+   [f] - fuel
+   [o] - organics
+   [e] - equipment

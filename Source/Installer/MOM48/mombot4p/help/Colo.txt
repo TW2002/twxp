@@ -1,0 +1,11 @@
+COLO - Gets colos from Terra
+
+    colo [s/m/t] {misc} {t/b} {c:x}
+ 
+     - [s/m/t] = [s]peed/[m]ilk/[t]imed
+       speed = cycles - cycles to grab colos (default max)
+       milk  = min colos - min colos before grab (default 0)
+       timed = delay  - time to wait each cycle (default 15 seconds)
+     - [misc]  = cycles/min colos/delay
+     - [t/b]   = [t]warp/[b]warp  (default is twarp)
+     - [c:x]   = [c]amo holds (example: c:3 adds 3 holds extra fuel)

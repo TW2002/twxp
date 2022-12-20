@@ -1,0 +1,7 @@
+PGRID - Planet-Grid an Adjacent Sector. Warps into sector, 
+        Kills Figs and Calls Saveme
+
+       pgrid [sector] {# of waves}
+ 
+       {# of waves}  = number of waves of figs to attack 
+                       in sector before attempting to land

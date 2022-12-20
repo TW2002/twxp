@@ -1,0 +1,4 @@
+BOT - Turn M()M Bot On or Off Kills all functions 
+      of bot when inactive/off
+
+      bot on/off

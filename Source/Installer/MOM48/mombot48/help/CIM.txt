@@ -1,0 +1,8 @@
+CIM - Computer Interrogation Mode: Port Report
+
+    cim {upgrade level} {warps}
+
+    - {upgrade level} - Amount on port to be considered 
+                        upgraded
+    - {warps}         - Perform warp data instead of 
+                        port CIM

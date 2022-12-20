@@ -1,0 +1,3 @@
+GRIDCHECK - Grid Explore/Patrol
+            Twarps around holo scanning looking for kurking
+            enemies.

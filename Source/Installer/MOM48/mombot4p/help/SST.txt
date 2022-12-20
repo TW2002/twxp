@@ -1,0 +1,9 @@
+SST - Sell, Steal, Transport
+
+      sst [ship1] [ship2] {jet}
+
+      - Do NOT need to start in Ship 1 or Ship 2.
+      - First Steal will be from Ship 1.
+      - {jet} will mega jet product for extra experience
+
+      - Created by Cherokee

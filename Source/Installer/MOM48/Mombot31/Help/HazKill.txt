@@ -1,0 +1,3 @@
+HAZKILL - Remove NavHaz Command
+          Scans Current-Sector and launches Genesis Torpedos
+          to removes any NavHaz

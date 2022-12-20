@@ -1,0 +1,13 @@
+PDROP - Planet Based 'Drop' Mode
+        Attempts to place planet in the path or ontop
+        of Enemies.
+
+        pdrop [on/off] {delay} {drop type} {trigger} {return} {kill}
+
+        [delay]     = delay before dropping in milliseconds       
+        [drop type] = [d]irect, [a]djacent, [da] direct, 
+                      then adjacent, or [s]urround
+        [delay]     = delay before dropping in milliseconds       
+        [trigger]   = [f]igs, [fm] figs/mines, [m]ines, [uf] No-Fig Mines
+        [return]    = will return planet home after 10 seconds
+        [kill]      = checks sector for enemy, and kills if possible

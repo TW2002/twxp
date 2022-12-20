@@ -1,0 +1,14 @@
+BUY - Buy Product from port in Sector or Fighters and/or
+      shields from Rylos or Alpha
+
+  - buy [product] {mode} {cycles}
+  - [product] = [f]uel or [o]rg or [e]quip
+  - [mode]    = [b]est or [s]peed or [w]orst - default is speed
+  - [cycles]  = number of cycles             - default is max
+  - [override] = allows product buydowns with less than 200 holds
+ 
+  - buy [hardware] {amount}
+  - [hardware]= [fig]hters or [sh]ields or [m]ines
+  - [amount]  = number to purchase, default is maximum"
+
+  - Originally written by Cherokee.

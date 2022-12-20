@@ -1,0 +1,5 @@
+                     
+   
+                  <<<< chat >>>>
+   
+     Chat helper to send chat as a macro to avoid problems with scripts.

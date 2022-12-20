@@ -1,0 +1,16 @@
+MACRO - dnyarri macro trigger
+Triggers on ship entry, runs ck shipcap.
+0
+%0 warps into the sector.
+5
+call_shipcap.ts
+Attack whom?
+Variable %1
+Variable %2
+Variable %3
+Variable %4
+Variable %5
+Variable %6
+Variable %7
+Variable %8
+Variable %9

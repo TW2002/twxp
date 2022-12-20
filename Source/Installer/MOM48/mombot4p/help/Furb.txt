@@ -1,0 +1,13 @@
+FURB - Buys and delivers a Ship to a Corpy to attack
+
+    - furb [ship number] {extra holds} {ship letter}
+    - [ship number]   = ship number that needs the furb
+    - [extra holds]   = extra holds to buy      - default is 33
+    - [ship letter]   = ship letter to purchase - default is H
+
+   CK Furb Mode (Mimicks CK Furb)
+    - furb ck {[norm hold] [fake hold] [norm letter] [fake letter]}
+    - [normal holds]  = extra holds to buy - Normal    - default is 33
+    - [fake holds]    = extra holds to buy - Fake      - default is 97
+    - [normal letter] = ship letter to buy - Normal    - default is H
+    - [fake letter]   = ship letter to buy - Fake      - default is O

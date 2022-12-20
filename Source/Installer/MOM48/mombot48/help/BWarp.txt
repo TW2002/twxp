@@ -1,0 +1,3 @@
+BWARP - Teleport From Palnet to a Sector
+
+      bwarp [sector]

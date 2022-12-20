@@ -1,0 +1,207 @@
+* Denotes Bounty Hunter Options
+
+\Daemons 
+
+ - Comms - Windows to sho Communications
+ - FillSector - BROKEN
+ - Ignore - Ignore a user?
+ - nofed - Turn off Fed
+ - planets
+ - quickpanel - SupG's quick access to common functions.
+ - stats - stats window
+ - planets - Is this the planet list under preferences?
+
+ * FARM - Bubble Farm / maintenance script
+ * mcic - Traitors version
+ * worldmega - pwarp around and robs ports
+
+Commands\cashing
+ - bust
+ - sdt - steal dump transfer (run until bust outa turns)
+ - sst - steal sell tranxport (run until bust outa turns)
+ - tricon - will play triconn at dock until win / outa money
+
+commands\data
+ - armids - update amrid mines list
+ - avoids
+ - busts
+ - com
+ - class0
+ - coprinfo
+ - disp
+ - dscan
+ - figs
+ - getnear
+ - holo
+ - limps
+ - msgs
+ - neg
+ - news
+ - overload
+ - ping
+ - plist
+ - qreport
+ - remaliens
+ - slist
+ 
+ * _backdoor
+ * datamine
+ * K_news
+ * lsb
+ * phx
+ * pptfinder
+ * reddata
+ * wizdata
+ * runtrack
+
+commands\defense
+ - call
+ - dock_kit
+ - evac
+ - hazkill
+ - planet_kit
+ - terra_kit
+
+commands\general
+ - page
+
+ * cn9
+ * switchbot
+
+commands\grid
+ - clear
+ - clearfig
+ - climp
+ - cmine
+ - haz
+ - mines
+ - passgrid
+ - pgrid
+ - plimp
+ - pmine
+
+commands\offense
+ - kazi
+ - mex different from pex?
+ - mxex different from pxex?
+
+ * pscan
+
+commands\resource
+ - buy
+ - dock_shopper
+ - dump
+ - scruball
+ - sellship
+
+modes\cashing
+ - furb
+ - merch
+ - psst
+ - salesman
+ - wppt
+ - wrob
+ - wssmsg
+ - wsst
+
+ * xppt
+ * remsst
+ * sstjet
+ * tbust
+ * vbm
+
+modes\data
+ - fedmon
+ - finder
+ - ztm
+
+ * tl05
+ * amtrack
+ * class0
+ * corpinfo
+ * msl
+ * msl_echo
+ * overload
+ * porganize
+ * remaliens
+ * sscrawler
+
+modes\defense
+ - citfill
+ - IG
+ - reloader
+ - runaway
+ - saveme
+ - tsaveme
+
+ * ffk
+ * twarp_foton
+
+
+modes\general
+
+modes\grid
+ - disr
+ - gridcheck
+ - limpshovel
+ - minesweep
+ - mowfuel
+ - mowports
+ - passgrid
+ - plimper
+ - sgrid
+ - ugrid
+
+ * dminesweep
+ * gridinfo
+ * map
+ * probe
+ * sling
+ * chaser
+ * clearfig
+ * clearsector
+ * dugrid
+ * msl
+ * tripdistance
+
+
+mode\offense
+ - ldrop
+ - boton
+ - citcap
+ - dockkill
+ - foton
+ - pdrop
+ - plock
+
+ * _mgrind
+ * dkill
+ * tfoton
+
+modes\resource
+ - colo
+ - farm
+ - fillships
+ - lsd
+ - massupgrade
+ - move
+ - movefig
+ - moveship
+ - patp
+ - pimp
+ - strip
+ - stripships
+
+ * colosg
+ * build
+ * buy
+ * cbuild
+ * cn7
+ * createplanet
+ * dstrip
+ * ecolo
+ * lsect
+ * movecash
+ * sellship
+ * upgrade
+ * wstrip

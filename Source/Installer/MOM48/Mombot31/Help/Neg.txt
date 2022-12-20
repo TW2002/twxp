@@ -1,0 +1,7 @@
+NEG - Planet Negotiate Trade Agrement
+
+      neg [item] 
+
+      [item]   = [f]uel or [o]rg or [e]quip
+
+      - Originally written by Cherokee

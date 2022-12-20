@@ -1,0 +1,3 @@
+:emx
+:reset
+	disconnect

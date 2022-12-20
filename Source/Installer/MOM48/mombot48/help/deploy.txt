@@ -1,0 +1,33 @@
+                     
+   
+                 <<<< deploy >>>>
+   
+       deploy/put/lay/place {number} {type} {pers | corp} 
+          
+       Command to replace old climp/plimp/mines/cmine/pmine 
+       commands.  Old syntax still works but can also use new
+       options
+          
+        [topoff] - will fill ship up with fighters from sector 
+                   Example:
+                         >topoff
+          
+        [plimp | climp | cmine | pmine] - drops mines (default 1)
+                   Examples: 
+                         >plimp 
+                         >place 100 limp
+                         >put p limp
+                         >lay 250 corp mine
+                         >deploy l p 
+                         >plimp 3 
+           
+         [mines] - drops both mine types (default 3) 
+                   Examples:   
+                         >lay 250 mines
+                         >mines
+        
+        [deploy] - puts fighter into sector (default)
+                   Examples: 
+                         >deploy 10000 figs
+                         >deploy 100000
+                         >put 100 personal

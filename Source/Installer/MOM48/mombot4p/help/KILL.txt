@@ -1,0 +1,3 @@
+KILL -  Current Sector Kill Command
+        Scans Current-Sector for any enemy Traders and
+        sends multiple attack waves.

@@ -1,0 +1,10 @@
+SAVEME - Planet Based SaveMe Mode
+         Attempts to move planet to Corpies location.
+         Return option brings it back to starting sector.
+  
+         saveme [on/off] {return delay}
+
+         - (return dely}    Number of Seconds to wait beofore
+                            moving planet back to starting sector
+
+         - Originally written by Cherokee

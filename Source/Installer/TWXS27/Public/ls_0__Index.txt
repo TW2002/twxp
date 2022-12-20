@@ -1,0 +1,131 @@
+Load v20.ts
+Menu script. Double tap X (that's 'X' not 'x"), to pull up the menu. Can be customized
+and entries should be added to: 0_LS_Scripts.txt .. use any number of TAB's to sperate
+script path\filename from brief description.
+**Use of this menu script is optional. Here's how to install it:
+Move all the files in this ZIP file into a folder off of your SCRIPTS folder:
+		
+		c:\TWX\Script\LoneStar_pack
+
+Once you have this in plance open up TWX. 
+-right-click the system tray icon and select: SETUP
+-select the auto run tab
+-Click on 'Add Script'
+-Browse to the LoneStar_pack folder and select: Load v20.ts
+-Click ok and and close TWX Proxy
+
+**NOTE** if TWX close with the error you will have to repeat the above
+steps until it doesn't error-out. 
+
+This setup will start Load v20.ts everytime you begin TWX.
+=====================================================================================
+
+Alien411.ts
+Scans active Aliens in the Game. Select which Alien race to scan for
+
+Bust Manager.ts
+Import BUSTS from the TWX-Proxy SSM/SST bust file to SectorParams, or 
+Export SectorParams to file.
+
+CIM Hunter_v20.ts
+Scans the Computer-Interrogation-Mode for Blocked Ports
+
+CLV.ts
+Saves a copy of the active Traders list in memory for comparison.
+Perform a manual CLV and the script will do the rest
+
+Combined Mover v11.ts
+A smart product/col/fighter to or from a planet
+
+deFILER_v1.ts
+Will Clean up all the game specific files for any given game. Will not
+delete actual Game Databases. Script is aware of 38 different file types.
+
+Dock Me.ts
+Simple util to get a blue or red onto Dock, and back without too much thought
+
+Dock Shopper v33.ts
+StarDock Shopper
+
+FURBY.ts
+Self Furber. Will attempt to find adj fighter to Fed and closest to Sector 1, and purchase
+Holds. will return to starting point.
+
+Grid Maker v104.ts
+Good for making targt list when gridding selectively
+
+LSECTv161.ts
+Express Col & Tow. Is faster than a TWARP col script if used with 4 hops of Terra
+
+LSPassiveGridder.010.ts
+Good for exploring and obtianing MCIC data with hitting enemy figs.
+
+LSurroundv2.ts
+Surround PDrop. When someone surrounds any sector with more than 2 adj's with your
+this script will put your planet in their path. Script does *Not* use fig data.
+
+MapArt.ts
+For early game situations. This will map your existing Grid and remember sectors Mapped
+
+MCIC.001.ts
+Scans EP's MCIC CSV, Cherokee's, and M()M's MCIC data files and allows you to filter out
+specific values.
+
+New Game v191.ts
+Entering a new game.
+
+ORE v16.ts
+Fast and smart ORE Whore. Will stop when planet becomes full
+
+OREerator.ts
+Good to determine how much ore you need when colonizing
+
+PGRiDDER06.ts
+My version of MD's Planet Gridder. 
+
+Planet Creation v10.cts
+Greatly inspired by Alexio's script. The source can be found in PlanetCreation.zip, 
+as it's comprised of a few includes
+
+Planet Stripper v103.ts
+Super fast Sector Planet Stripper. Will stop when a categoy becomes full.
+
+Port Emporium.002.ts
+Shows list of upgraded Ports 
+
+SafeMow.ts
+When you're in a pod and need to get to safety without hitting enemy figs. Complete
+map is helpful, will map out safest course to mow
+
+Ship Buy Out Beater.000.ts
+Designed to get you back in a game when enemies are buying out ships.
+
+Ship Buy Out.003.ts
+Designed to maintin a ship buyout
+
+TL03.ts
+Corp Planet List Organizer. with some basic filtering abilites
+
+Tunnel Finder v10.ts
+Lists sectors in a tunnel with a basic traffic report
+
+UnExScout_v3.ts
+Unexplored Sector Scout. Good idea to keep a ship in tow in case you plow into 
+something. Will keep track of grid to avoid redeploying figs, and will holo-scan 
+only when necessary
+
+WarpFinderv13.ts
+Excellent for finding the closest Warp Information. Try it in Verbose mode
+
+WARPSpec.ts
+Export WarpSpec Infor from TWX to: TWX or SWATH formats. If using the SWATH format 
+you have the option to include PORT data
+
+Who.001.ts
+Who's Playing. Ever wonder who is online while gridding, this script will scan the 
+Who's Playing output every 10 seconds. Press + or - to increas/decrease the interval.
+If there's a change it will sound the ALERT.WAV in the LoneStar_Pack folder
+
+YourItv360.ts
+Regridder/Killer Script. Probably not a good idea to use this on MyTradeWars server 
+--people will actually cry.

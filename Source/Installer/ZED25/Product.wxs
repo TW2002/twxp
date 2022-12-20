@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Product Id="*" Name="Zed Bot Unleashed" Language="1033" Version="2.19.0.0" Manufacturer="eXide" UpgradeCode="8a6c031d-7ae3-4ca2-a92b-32b3ddcaa0e8">
+		<Package InstallerVersion="219" Compressed="yes" InstallScope="perMachine" />
+    <!-- This code would bind the version to the product file, but I dont want to do that at this time...
+      <Product Version="!(bind.FileVersion.MyAssemblyDll)" ...="">
+      <File Id="MyAssemblyDll" Name="$(var.001_Application.MyAssembly.TargetFileName)" Source="$(var.001_Application.MyAssembly.TargetPath)" />-->
+      
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of [ProductName] is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="TWX Proxy" Level="1" Absent="disallow" ConfigurableDirectory="TWXPROXY" Description="Installs the main TWX Proxy program, including Pack 1 / 2">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" /> 
+    </Feature>
+    <Feature Id="ZedbotFeature" Title="Zedbot" Level="1"  Display="expand">
+      <Feature Id="Zedbot25Feature" Title="Zedbot 2.19+" Level="1" TypicalDefault="install" Description="Installs Zedbot25 2.19+ - This is the final version Archie released, but with 'authorized' commands and scripts previously only available to members of Zedcorp.">
+    <ComponentGroupRef Id="Zedbot25Components" />
+    </Feature>
+    </Feature>
+
+		<Property Id="TWXPROXY" Secure="yes">
+			<RegistrySearch Id="ApplicationFolderSearch" Type="raw" Root="HKCU" Key="Software\eXide\TWXP" Name="InstallPath"/>
+		</Property>
+		<Property Id="WIXUI_INSTALLDIR" Value="TWXPROXY" />
+		<UIRef Id="WixUI_Minimal" />
+	</Product>
+
+	<Fragment>
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    <Property Id="ApplicationFolderName" Value="TWXProxy" />
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\banner.jpg" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\sidelogo.jpg" />
+    <SetDirectory Id="APPLICATIONFOLDER" Value="[WindowsVolume]" />
+
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="APPLICATIONFOLDER" Name="AppFolder">
+          <Directory Id="TWXPROXY" Name="TWXProxy" >
+            <Directory Id="SCRIPTS" Name="Scripts" >
+              <Directory Id="INCLUDE" Name="Include" />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="TWX Proxy" />
+      </Directory>
+    </Directory>
+        
+        
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="a80ea87e-bc43-4fda-847a-d7ace2071a08">
+        <util:InternetShortcut 
+                  Id="ZedWikiStartMenuShortcut"
+                  Name="ZedBot WIKI on gitHub"
+                  Target="https://github.com/TW2002/TWXProxy/wiki/Zedbot-Reference"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+  </Fragment>
+
+	<Fragment>
+    <ComponentGroup Id="ProductComponents">
+      <Component Id="ProductComponent" Directory="TWXPROXY" Guid="36d4d996-21c0-4cd5-b943-4bd3effa00fe" >
+        <RegistryValue Id="InstallPath" Root="HKCU" Key="Software\eXide\TWXP"  Name="InstallPath" Type="string" Value="[TWXPROXY]" />
+      </Component>
+	</ComponentGroup>
+
+
+	<ComponentGroup Id="Zedbot25Components" >
+      <Component Id="Zedbot25Component" Directory="SCRIPTS" Guid="c760a58e-8f18-458c-9ea0-8ad79ba4f1f0">
+        <File Source="Zedbot25\Scripts\z-armourer.cts"/>
+        <File Source="Zedbot25\Scripts\z-backdoor.cts"/>
+        <File Source="Zedbot25\Scripts\z-bot.cts"/>
+        <File Source="Zedbot25\Scripts\z-call.cts"/>
+        <File Source="Zedbot25\Scripts\z-coloniser.cts"/>
+        <File Source="Zedbot25\Scripts\z-commsguard.cts"/>
+        <File Source="Zedbot25\Scripts\z-decash.cts"/>
+        <File Source="Zedbot25\Scripts\z-fetch.cts"/>
+        <File Source="Zedbot25\Scripts\z-figmon.cts"/>
+        <File Source="Zedbot25\Scripts\z-figs.cts"/>
+        <File Source="Zedbot25\Scripts\z-limps.cts"/>
+        <File Source="Zedbot25\Scripts\z-listgridder.cts"/>
+        <File Source="Zedbot25\Scripts\z-login.cts"/>
+        <File Source="Zedbot25\Scripts\z-mines.cts"/>
+        <File Source="Zedbot25\Scripts\z-ontime.cts"/>
+        <File Source="Zedbot25\Scripts\z-oreup.cts"/>
+        <File Source="Zedbot25\Scripts\z-panel.cts"/>
+        <File Source="Zedbot25\Scripts\z-pdriver.cts"/>
+        <File Source="Zedbot25\Scripts\z-rescue.cts"/>
+        <File Source="Zedbot25\Scripts\z-safetynet.cts"/>
+        <File Source="Zedbot25\Scripts\z-scout.cts"/>
+        <File Source="Zedbot25\Scripts\z-sectorlister.cts"/>
+        <File Source="Zedbot25\Scripts\z-sptool.cts"/>
+        <File Source="Zedbot25\Scripts\z-strip.cts"/>
+        <File Source="Zedbot25\Scripts\z-transcash.cts"/>
+        <File Source="Zedbot25\Scripts\z-unload.cts"/>
+        <File Source="Zedbot25\Scripts\z-watch.cts"/>
+        <File Source="Zedbot25\Scripts\z_kazi.cts"/>
+        <File Source="Zedbot25\Scripts\z_merch.cts"/>
+        <File Source="Zedbot25\Scripts\z_minesweep.cts"/>
+        <File Source="Zedbot25\Scripts\z_pimp.cts"/>
+        <File Source="Zedbot25\Scripts\z_psst.cts"/>
+        <File Source="Zedbot25\Scripts\z_ugrid.cts"/>
+        <File Source="Zedbot25\Scripts\z_upgrade.cts"/>
+        <File Source="Zedbot25\Scripts\z_worldtrade.cts"/>
+        <File Source="Zedbot25\Scripts\z_wsst.cts"/>
+        <File Source="Zedbot25\Scripts\z_buydown.cts"/>
+        <File Source="Zedbot25\Scripts\z-authorise.cts"/>
+        <File Source="Zedbot25\Scripts\z-charger.cts"/>
+        <File Source="Zedbot25\Scripts\z-clearbusts.cts"/>
+        <File Source="Zedbot25\Scripts\z-grid.cts"/>
+        <File Source="Zedbot25\Scripts\z-mcicprimer.cts"/>
+        <File Source="Zedbot25\Scripts\z-pursuit.cts"/>
+        <File Source="Zedbot25\Scripts\z-rapidresponse.cts"/>
+        <File Source="Zedbot25\Scripts\z_citcap.cts"/>
+        <File Source="Zedbot25\Scripts\z_gridtest.cts"/>
+      </Component>
+      <Component Id="SoundsComponent" Directory="TWXPROXY" Guid="0fcdc5f3-153a-40f2-b78d-744b00535589">
+        <File Source="Zedbot25\alert.wav"/>
+        <File Source="Zedbot25\cuckoclk.wav"/>
+        <File Source="Zedbot25\ding.wav"/>
+        <File Source="Zedbot25\failed.wav"/>
+        <File Source="Zedbot25\pdropalert.wav"/>
+        <File Source="Zedbot25\proximity.wav"/>
+        <File Source="Zedbot25\z_page.wav"/>
+        <File Source="Zedbot25\Z-Bot Installation Notes.txt"/>
+        <File Source="Zedbot25\ZedPack-Readme.zip"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

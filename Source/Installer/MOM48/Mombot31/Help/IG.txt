@@ -1,0 +1,5 @@
+IG - Interdictor Control Resetter
+     Turns ship IG on, if it's off, or when hit by
+     a Photon
+
+     IG [on/off] 

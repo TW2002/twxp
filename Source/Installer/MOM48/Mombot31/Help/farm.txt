@@ -1,0 +1,11 @@
+FARM - Visits sectors in list and farms the planets there. 
+       The default will visit all planets on the TL list
+
+     farm {set} {clear} {list}                                 
+
+     [set] {sector1} {...} {sectorx}  - set puts sectors 
+                      in the order you enter into a file
+
+     [clear] - clear deletes the farm file                        
+     [list]  - show lists of all sectors in the farm file 
+              in order

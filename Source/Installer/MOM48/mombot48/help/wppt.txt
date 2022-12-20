@@ -1,0 +1,20 @@
+                     
+   
+                  <<<< wppt >>>>
+   
+     - wppt {holoscan} {evade} {toll} {pay}
+       World PPT - Originally written by Xide                          
+                                                                       
+          {holoscan}      0 - doesnt holoscan                         
+                          1 - holoscans on odd densities               
+                          2 - always holoscans (default)               
+                                                                       
+          {evade}         0 - normal (default)                         
+                          1 - paranoid                                 
+                          2 - avoids nothing                           
+                                                                       
+          {toll}            - drops toll figs instead of defensive     
+                                                                       
+          {pay}             - pays tolls                               
+                                                                       
+          {nohaggle}        - doesnt haggle                           

@@ -1,0 +1,5 @@
+DOCKKILL - StarDock Kill Mode
+           Continually scans the Current Sector for an enemy
+           and send an attack wave on sight.
+
+          dockkill [on/off]

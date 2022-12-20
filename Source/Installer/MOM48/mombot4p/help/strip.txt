@@ -1,0 +1,15 @@
+                     
+   
+                 <<<< strip >>>>
+   
+     Strips planets of resources and places them on starting planet.  
+      
+     Options:
+     [planet# | all] - Planet number or all to strip all planets in sector.
+                 {f} - Strip fuel ore
+                 {o} - Strip organics
+                 {e} - Strip equipment
+                {fc} - Strip fuel ore colonists
+                {oc} - Strip organic colonists
+                {ec} - Strip equipment colonists
+               {fig} - Strip fighters

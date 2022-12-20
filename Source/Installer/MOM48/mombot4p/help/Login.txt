@@ -1,0 +1,8 @@
+LOGIN - Login to a Bot
+
+   login                          - default logs into all 
+                                    active M()M Bots
+
+   login [trader name] [bot name] - Logs into st-bot 
+
+   (ex. login "bounty hunter" hunt ..or..  login bounty hunt)

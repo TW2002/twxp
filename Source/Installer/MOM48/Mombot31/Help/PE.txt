@@ -1,0 +1,4 @@
+PE - Photon, Enter
+     Launch a Photon into an Adjacent Sector and immedately Enters.
+
+     pe [Sector]

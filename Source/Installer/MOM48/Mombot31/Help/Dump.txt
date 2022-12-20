@@ -1,0 +1,8 @@
+DUMP - Jettisons colos off of planet
+  
+       dump [type]
+ 
+       [type] = use [f]uel,
+                    [o]rg, 
+                    [e]quip, 
+                    [a]ll

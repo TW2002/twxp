@@ -1,0 +1,6 @@
+PXEL - Photon, Export, Enter, Land
+       Used to launch a Photon into an adjacent Sector then immediately
+       Export into another Ship and Enter Photon'd Sector; then Lands
+       on a planet.
+
+       pxel [Sector] [ShipNumber] [PlanetNumber]

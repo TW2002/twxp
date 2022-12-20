@@ -1,0 +1,12 @@
+PSCAN - Sends Planet Data Over SubSpace. 
+
+   pscan {Planet #} 
+
+   [Planet #] - Is optional. However if left out you must
+                start it from Citadel,  or Planet command
+                and current planet will be displayed.  If
+                a Planet Number is specified, that planet
+                will be  displayed assuming  it's in the 
+                current sector.
+
+              - Written by Lonestar

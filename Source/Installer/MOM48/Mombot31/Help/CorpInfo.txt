@@ -1,0 +1,4 @@
+CORPINFO - Scans Corporate Assets and displays results over
+           Sub-Space.
+
+           Written by Promethius

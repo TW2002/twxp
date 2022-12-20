@@ -1,0 +1,7 @@
+XPORT - Transports bot into another ship. Will attempt 
+        to reland on planet if started there and possible.
+
+        xport [ship number] {Password}
+
+	{Password}   - Include if target ship requires a
+                       Password

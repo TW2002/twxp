@@ -1,0 +1,11 @@
+BOTON - Bwarp Photon
+        Uses Planet TelePort-Pad to arrive adjacent a Fighter
+        hit; Launches a Photon, returns and lands
+
+        boton {Scrub sector} {h} {d} {m} 
+   
+        - [scrub sector] - use this if you want to scrub somewhere other
+                           than your starting sector
+        - [h]olo         - holoscan after photon
+        - [d]ensity      - density scan after photon
+        - [m]ines        - trigger on mine hits too

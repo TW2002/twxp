@@ -1,0 +1,1 @@
+ - moveship/shipmove [sector] - Moves all empty ships to target sector.

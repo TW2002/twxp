@@ -1,0 +1,1591 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 587A-1F86
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          commands
+12/18/2022  01:40 AM               299 compile_all.bat
+12/18/2022  01:40 AM                56 compile_bot.bat
+12/18/2022  01:40 AM               156 compile_commands.bat
+12/18/2022  01:40 AM               315 compile_daemons.bat
+12/18/2022  01:40 AM               162 compile_modes.bat
+12/18/2022  01:42 AM               532 custom_commands.cfg
+12/18/2022  01:42 AM                99 custom_keys.cfg
+12/19/2022  03:30 AM    <DIR>          daemons
+12/19/2022  03:30 AM    <DIR>          games
+12/19/2022  03:30 AM    <DIR>          help
+12/18/2022  01:42 AM               779 hotkeys.cfg
+12/19/2022  03:30 AM    <DIR>          modes
+12/18/2022  01:40 AM           487,917 mombot.cts
+12/18/2022  01:40 AM               322 mombot.html
+12/18/2022  01:40 AM             7,516 mombot.ts
+12/18/2022  01:40 AM             8,184 move_public.bat
+12/19/2022  03:30 AM    <DIR>          source
+12/19/2022  03:30 AM    <DIR>          startups
+12/18/2022  01:40 AM           948,224 twxc.exe
+              13 File(s)      1,454,561 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          cashing
+12/19/2022  06:19 AM    <DIR>          data
+12/19/2022  03:30 AM    <DIR>          defense
+12/19/2022  03:30 AM    <DIR>          general
+12/19/2022  03:30 AM    <DIR>          grid
+12/19/2022  03:30 AM    <DIR>          offense
+12/19/2022  03:30 AM    <DIR>          resource
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\cashing
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            70,296 mega.cts
+12/18/2022  01:40 AM             4,243 mega.ts
+12/18/2022  01:40 AM           129,921 neg.cts
+12/18/2022  01:40 AM             3,790 neg.ts
+12/18/2022  01:40 AM           106,024 ppt.cts
+12/18/2022  01:40 AM            29,023 ppt.ts
+12/18/2022  01:40 AM            70,318 rob.cts
+12/18/2022  01:40 AM             4,321 rob.ts
+12/18/2022  01:40 AM            71,154 trade.cts
+12/18/2022  01:40 AM            10,254 trade.ts
+12/18/2022  01:40 AM            26,952 tricon.cts
+12/18/2022  01:40 AM             3,090 tricon.ts
+              12 File(s)        529,386 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\data
+
+12/19/2022  06:19 AM    <DIR>          .
+12/19/2022  06:19 AM    <DIR>          ..
+12/18/2022  01:40 AM            33,970 armids.cts
+12/18/2022  01:40 AM            60,114 avoids.cts
+12/18/2022  01:40 AM             4,613 avoids.ts
+12/18/2022  01:40 AM            47,725 busts.cts
+12/18/2022  01:40 AM             1,228 busts.ts
+12/18/2022  01:40 AM            35,344 cim.cts
+12/18/2022  01:40 AM            46,644 clearbusts.cts
+12/18/2022  01:40 AM               888 clearbusts.ts
+12/18/2022  01:40 AM            62,064 corpinfo.cts
+12/18/2022  01:40 AM            23,257 corpinfo.ts
+12/18/2022  01:40 AM            57,152 course.cts
+12/18/2022  01:40 AM             2,060 course.ts
+12/18/2022  01:40 AM            72,487 disp.cts
+12/18/2022  01:40 AM             7,026 disp.ts
+12/18/2022  01:40 AM            72,373 dscan.cts
+12/18/2022  01:40 AM             6,931 dscan.ts
+12/18/2022  01:40 AM            45,399 figs.cts
+12/18/2022  01:40 AM            84,140 find.cts
+12/18/2022  01:40 AM             1,258 find.ts
+12/18/2022  01:40 AM            49,518 getvar.cts
+12/18/2022  01:40 AM             2,507 getvar.ts
+12/18/2022  01:40 AM            49,488 history.cts
+12/18/2022  01:40 AM             2,557 history.ts
+12/18/2022  01:40 AM            70,783 holo.cts
+12/18/2022  01:40 AM             6,929 holo.ts
+12/18/2022  01:40 AM            35,124 limps.cts
+12/18/2022  01:40 AM            66,929 overload.cts
+12/18/2022  01:40 AM             5,295 overload.ts
+12/18/2022  01:40 AM            50,512 param.cts
+12/18/2022  01:40 AM             3,534 param.ts
+12/18/2022  01:40 AM             5,174 ping.cts
+12/18/2022  01:40 AM                 0 placeholder.file
+12/18/2022  01:40 AM            68,205 plist.cts
+12/18/2022  01:40 AM             3,071 plist.ts
+12/18/2022  01:40 AM            69,127 pscan.cts
+12/18/2022  01:40 AM             6,950 pscan.ts
+12/18/2022  01:40 AM            20,026 sector.cts
+12/18/2022  01:40 AM               799 sector.ts
+12/18/2022  01:40 AM            93,289 select.cts
+12/18/2022  01:40 AM            29,469 select.ts
+12/18/2022  01:40 AM            47,659 setparam.cts
+12/18/2022  01:40 AM             1,349 setparam.ts
+12/18/2022  01:40 AM            47,659 setparms.cts
+12/18/2022  01:40 AM             1,351 setparms.ts
+12/18/2022  01:40 AM            51,383 setvar.cts
+12/18/2022  01:40 AM             3,953 setvar.ts
+12/18/2022  01:40 AM            79,025 slist.cts
+12/18/2022  01:40 AM             9,771 slist.ts
+12/18/2022  01:40 AM            76,162 status.cts
+12/18/2022  01:40 AM            10,747 status.ts
+12/18/2022  01:40 AM            54,130 storeship.cts
+12/18/2022  01:40 AM               732 storeship.ts
+12/18/2022  01:40 AM            46,352 time.cts
+12/18/2022  01:40 AM               573 time.ts
+12/18/2022  01:40 AM           107,756 update.cts
+12/18/2022  01:40 AM             5,136 update.ts
+              56 File(s)      1,847,697 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\defense
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            58,857 call.cts
+12/18/2022  01:40 AM             3,002 call.ts
+12/18/2022  01:40 AM            65,329 evac.cts
+12/18/2022  01:40 AM             4,430 evac.ts
+12/18/2022  01:40 AM            36,349 hazkill.cts
+12/18/2022  01:40 AM             2,607 hazkill.ts
+12/18/2022  01:40 AM                 0 placeholder.file
+12/18/2022  01:40 AM           110,116 _macro_kit.cts
+12/18/2022  01:40 AM            47,033 _macro_kit.ts
+               9 File(s)        327,723 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\general
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            49,709 bg2019.cts
+12/18/2022  01:40 AM            66,437 bwarp.cts
+12/18/2022  01:40 AM             3,230 bwarp.ts
+12/18/2022  01:40 AM            55,638 callout.cts
+12/18/2022  01:40 AM               741 callout.ts
+12/18/2022  01:40 AM            21,313 cn9.cts
+12/18/2022  01:40 AM            59,705 corp.cts
+12/18/2022  01:40 AM             4,862 corp.ts
+12/18/2022  01:40 AM            59,714 dep.cts
+12/18/2022  01:40 AM             2,302 dep.ts
+12/18/2022  01:40 AM               121 emq.cts
+12/18/2022  01:40 AM                76 emq.ts
+12/18/2022  01:40 AM            46,021 fed.cts
+12/18/2022  01:40 AM               277 fed.ts
+12/18/2022  01:40 AM           186,320 help.cts
+12/18/2022  01:40 AM            13,031 help.ts
+12/18/2022  01:40 AM           106,178 hht2020.cts
+12/18/2022  01:40 AM            57,413 keep.cts
+12/18/2022  01:40 AM             2,215 keep.ts
+12/18/2022  01:40 AM            61,730 land.cts
+12/18/2022  01:40 AM             2,537 land.ts
+12/18/2022  01:40 AM               102 lift.cts
+12/18/2022  01:40 AM                51 lift.ts
+12/18/2022  01:40 AM            48,870 login.cts
+12/18/2022  01:40 AM               565 login.ts
+12/18/2022  01:40 AM            51,694 mac.cts
+12/18/2022  01:40 AM             3,610 mac.ts
+12/18/2022  01:40 AM            51,858 nmac.cts
+12/18/2022  01:40 AM             3,768 nmac.ts
+12/18/2022  01:40 AM            58,200 photon.cts
+12/18/2022  01:40 AM             1,814 photon.ts
+12/18/2022  01:40 AM            42,478 port.cts
+12/18/2022  01:40 AM            66,619 pwarp.cts
+12/18/2022  01:40 AM             5,049 pwarp.ts
+12/18/2022  01:40 AM            54,875 qset.cts
+12/18/2022  01:40 AM            47,133 reboot.cts
+12/18/2022  01:40 AM             1,021 reboot.ts
+12/18/2022  01:40 AM            74,710 relog.cts
+12/18/2022  01:40 AM             9,100 relog.ts
+12/18/2022  01:40 AM                71 reset.cts
+12/18/2022  01:40 AM                27 reset.ts
+12/18/2022  01:40 AM           150,143 run.cts
+12/18/2022  01:40 AM             7,025 run.ts
+12/18/2022  01:40 AM            46,019 ss.cts
+12/18/2022  01:40 AM               276 ss.ts
+12/18/2022  01:40 AM            57,327 subspace.cts
+12/18/2022  01:40 AM             1,311 subspace.ts
+12/18/2022  01:40 AM            48,446 switch.cts
+12/18/2022  01:40 AM             2,054 switch.ts
+12/18/2022  01:40 AM            67,635 tow.cts
+12/18/2022  01:40 AM             4,913 tow.ts
+12/18/2022  01:40 AM            78,256 twarp.cts
+12/18/2022  01:40 AM             4,865 twarp.ts
+12/18/2022  01:40 AM            49,985 unlock.cts
+12/18/2022  01:40 AM             1,623 unlock.ts
+12/18/2022  01:40 AM            47,796 wait.cts
+12/18/2022  01:40 AM             1,807 wait.ts
+12/18/2022  01:40 AM            59,899 with.cts
+12/18/2022  01:40 AM             2,484 with.ts
+12/18/2022  01:40 AM            72,967 xport.cts
+12/18/2022  01:40 AM             6,734 xport.ts
+              61 File(s)      2,032,750 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\grid
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            73,639 clear.cts
+12/18/2022  01:40 AM               806 clear.ts
+12/18/2022  01:40 AM            36,844 climp.cts
+12/18/2022  01:40 AM            36,881 cmine.cts
+12/18/2022  01:40 AM            95,311 deploy.cts
+12/18/2022  01:40 AM             6,825 deploy.ts
+12/18/2022  01:40 AM            41,550 exit.cts
+12/18/2022  01:40 AM               595 exit.ts
+12/18/2022  01:40 AM            38,459 mines.cts
+12/18/2022  01:40 AM            82,518 pgrid.cts
+12/18/2022  01:40 AM            14,015 pgrid.ts
+12/18/2022  01:40 AM            63,250 plimp.cts
+12/18/2022  01:40 AM             6,825 plimp.ts
+12/18/2022  01:40 AM            36,911 pmine.cts
+12/18/2022  01:40 AM            88,217 port.cts
+12/18/2022  01:40 AM             3,151 port.ts
+12/18/2022  01:40 AM            45,304 surround.cts
+12/18/2022  01:40 AM            65,893 xenter.cts
+12/18/2022  01:40 AM               640 xenter.ts
+              19 File(s)        737,634 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\offense
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             3,772 hkill.cts
+12/18/2022  01:40 AM             3,180 hkill.ts
+12/18/2022  01:40 AM            36,659 htorp.cts
+12/18/2022  01:40 AM             3,035 htorp.ts
+12/18/2022  01:40 AM            46,435 pe.cts
+12/18/2022  01:40 AM               683 pe.ts
+12/18/2022  01:40 AM            46,549 ped.cts
+12/18/2022  01:40 AM               773 ped.ts
+12/18/2022  01:40 AM            46,718 pel.cts
+12/18/2022  01:40 AM               898 pel.ts
+12/18/2022  01:40 AM            46,660 pelk.cts
+12/18/2022  01:40 AM               858 pelk.ts
+12/18/2022  01:40 AM            46,568 pex.cts
+12/18/2022  01:40 AM               795 pex.ts
+12/18/2022  01:40 AM            46,634 pxe.cts
+12/18/2022  01:40 AM               832 pxe.ts
+12/18/2022  01:40 AM            46,738 pxed.cts
+12/18/2022  01:40 AM               912 pxed.ts
+12/18/2022  01:40 AM            46,745 pxedx.cts
+12/18/2022  01:40 AM               914 pxedx.ts
+12/18/2022  01:40 AM            46,739 pxel.cts
+12/18/2022  01:40 AM               913 pxel.ts
+12/18/2022  01:40 AM            46,759 pxelk.cts
+12/18/2022  01:40 AM               930 pxelk.ts
+12/18/2022  01:40 AM            46,748 pxex.cts
+12/18/2022  01:40 AM               924 pxex.ts
+12/18/2022  01:40 AM            45,735 _kazi.cts
+12/18/2022  01:40 AM             8,456 _kazi.ts
+              28 File(s)        623,562 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\commands\resource
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            80,386 buy.cts
+12/18/2022  01:40 AM            34,504 dump.cts
+12/18/2022  01:40 AM            41,223 max.cts
+12/18/2022  01:40 AM            29,696 sellship.cts
+12/18/2022  01:40 AM            84,711 _dock_shopper.cts
+12/18/2022  01:40 AM            43,290 _dock_shopper.ts
+               6 File(s)        313,810 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\daemons
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM           174,810 alienhunt.cts
+12/18/2022  01:40 AM            22,818 at.cts
+12/18/2022  01:40 AM            53,242 chat.cts
+12/18/2022  01:40 AM             4,554 chat.ts
+12/18/2022  01:40 AM            18,219 comms.cts
+12/18/2022  01:40 AM            13,543 comms.ts
+12/18/2022  01:40 AM           114,309 ephaggle.cts
+12/18/2022  01:40 AM            42,843 ephaggle.ts
+12/18/2022  01:40 AM             1,780 ignore.cts
+12/18/2022  01:40 AM             1,287 ignore.ts
+12/18/2022  01:40 AM             8,877 online.cts
+12/18/2022  01:40 AM             4,071 online.ts
+12/18/2022  01:40 AM            20,042 repeat.cts
+12/18/2022  01:40 AM            23,356 stats.cts
+12/18/2022  01:40 AM            18,892 stats.ts
+12/18/2022  01:40 AM            52,886 teammega.cts
+12/18/2022  01:40 AM            99,326 viewscreen.cts
+12/18/2022  01:40 AM            22,691 viewscreen.ts
+12/18/2022  01:40 AM            31,751 watcher.cts
+12/18/2022  01:40 AM            24,970 watcher.ts
+              20 File(s)        754,267 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\games
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          FlipH2
+12/19/2022  03:30 AM    <DIR>          flipS1
+12/19/2022  03:30 AM    <DIR>          SKb5Z
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\games\FlipH2
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  03:35 AM                 5 bot.cfg
+12/18/2022  08:28 PM                41 bot_users.lst
+12/18/2022  03:35 AM               104 game_settings.cfg
+12/18/2022  03:36 AM             1,090 planets.cfg
+12/18/2022  03:36 AM             1,885 ships.cfg
+               5 File(s)          3,125 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\games\flipS1
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  05:04 AM                 5 bot.cfg
+12/18/2022  05:04 AM                42 bot_users.lst
+12/18/2022  03:40 AM               105 game_settings.cfg
+12/18/2022  03:41 AM             1,090 planets.cfg
+12/18/2022  03:41 AM             1,885 ships.cfg
+               5 File(s)          3,127 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\games\SKb5Z
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:43 AM               624 20221218.comms
+12/18/2022  01:42 AM                 5 bot.cfg
+12/18/2022  02:45 AM                26 bot_users.lst
+12/18/2022  01:43 AM               105 game_settings.cfg
+12/18/2022  01:43 AM               419 planets.cfg
+12/18/2022  01:43 AM               663 ships.cfg
+               6 File(s)          1,842 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\help
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                32 About.txt
+12/18/2022  01:40 AM               163 armids.txt
+12/18/2022  01:40 AM               608 avoids.txt
+12/18/2022  01:40 AM               102 Bot.txt
+12/18/2022  01:40 AM               651 boton.txt
+12/18/2022  01:40 AM                83 Bust.txt
+12/18/2022  01:40 AM                62 bustcount.txt
+12/18/2022  01:40 AM               547 Buy.txt
+12/18/2022  01:40 AM                64 BWarp.txt
+12/18/2022  01:40 AM               114 Call.txt
+12/18/2022  01:40 AM               112 callout.txt
+12/18/2022  01:42 AM               141 chat.txt
+12/18/2022  01:40 AM               264 CIM.txt
+12/18/2022  01:40 AM               761 citkill.txt
+12/18/2022  01:40 AM                68 class0.txt
+12/18/2022  01:40 AM                73 Clear.txt
+12/18/2022  01:40 AM               120 CLimp.txt
+12/18/2022  01:40 AM                84 CMine.txt
+12/18/2022  01:40 AM                45 cn.txt
+12/18/2022  01:40 AM                46 cn9.txt
+12/18/2022  01:40 AM               468 Colo.txt
+12/18/2022  01:40 AM               475 corp.txt
+12/18/2022  01:40 AM                87 course.txt
+12/18/2022  01:11 PM               186 dep.txt
+12/18/2022  05:09 AM             1,166 deploy.txt
+12/18/2022  01:40 AM               112 DISP.txt
+12/18/2022  01:40 AM               574 DisR.txt
+12/18/2022  01:40 AM               110 DScan.txt
+12/18/2022  01:40 AM               179 Dump.txt
+12/18/2022  01:40 AM                46 EMQ.txt
+12/18/2022  01:40 AM                49 EMX.txt
+12/18/2022  01:43 AM               376 ephaggle.txt
+12/18/2022  01:40 AM               301 Exit.txt
+12/18/2022  01:40 AM               334 FigMove.txt
+12/18/2022  01:40 AM                38 Figs.txt
+12/18/2022  01:40 AM               501 Find.txt
+12/18/2022  01:40 AM               503 Finder.txt
+12/18/2022  01:40 AM               688 Furb.txt
+12/18/2022  01:40 AM               230 GetVar.txt
+12/18/2022  01:40 AM               114 GridCheck.txt
+12/18/2022  01:43 AM               125 help.txt
+12/18/2022  01:40 AM               152 HKILL.txt
+12/18/2022  01:40 AM               123 Holo.txt
+12/18/2022  01:40 AM               135 HTorp.txt
+12/18/2022  01:40 AM               121 IG.txt
+12/18/2022  01:40 AM               129 KILL.txt
+12/18/2022  01:40 AM                68 Land.txt
+12/18/2022  01:40 AM                30 Lift.txt
+12/18/2022  01:40 AM               178 Limp.txt
+12/18/2022  01:40 AM                38 Limps.txt
+12/18/2022  01:40 AM                58 ListAll.txt
+12/18/2022  01:40 AM               260 Login.txt
+12/18/2022  01:40 AM               153 Logoff.txt
+12/18/2022  01:40 AM               540 LSD.txt
+12/18/2022  01:40 AM                45 Mac.txt
+12/18/2022  01:40 AM               167 Max.txt
+12/18/2022  01:40 AM               167 MaxPort.txt
+12/18/2022  01:40 AM                28 Mega.txt
+12/18/2022  03:43 AM               741 merch.txt
+12/18/2022  01:40 AM                82 Mine.txt
+12/18/2022  01:40 AM                82 Mines.txt
+12/18/2022  01:40 AM               257 MOVE.txt
+12/18/2022  01:40 AM               461 MoveFig.txt
+12/18/2022  01:40 AM               480 moveship.txt
+12/18/2022  03:28 AM               858 mow.txt
+12/18/2022  01:40 AM               113 msgs.txt
+12/18/2022  03:50 AM               691 neg.txt
+12/18/2022  01:40 AM               897 News.txt
+12/18/2022  01:40 AM                68 NMac.txt
+12/18/2022  01:40 AM               327 Overload.txt
+12/18/2022  01:40 AM                22 Page.txt
+12/18/2022  01:40 AM               292 param.txt
+12/18/2022  01:40 AM               645 patp.txt
+12/18/2022  01:40 AM               640 pdrop.txt
+12/18/2022  01:40 AM               107 PE.txt
+12/18/2022  01:40 AM               166 PED.txt
+12/18/2022  01:40 AM               169 PEL.txt
+12/18/2022  01:40 AM               220 PELK.txt
+12/18/2022  01:40 AM               183 PEX.txt
+12/18/2022  01:40 AM               256 PGrid.txt
+12/18/2022  01:40 AM               238 Pimp.txt
+12/18/2022  01:40 AM                88 Ping.txt
+12/18/2022  01:40 AM               188 Plimp.txt
+12/18/2022  01:40 AM                48 PList.txt
+12/18/2022  01:40 AM               346 Plock.txt
+12/18/2022  01:40 AM                57 PMine.txt
+12/18/2022  01:40 AM               434 PScan.txt
+12/18/2022  01:40 AM               132 PSST.txt
+12/18/2022  05:03 AM               631 pwarp.txt
+12/18/2022  01:40 AM               199 PXE.txt
+12/18/2022  01:40 AM               247 PXED.txt
+12/18/2022  01:40 AM               251 PXEL.txt
+12/18/2022  01:40 AM               270 PXELK.txt
+12/18/2022  01:40 AM               250 PXEX.txt
+12/18/2022  01:40 AM                42 QSS.txt
+12/18/2022  01:40 AM                54 Refresh.txt
+12/18/2022  01:43 AM               131 relog.txt
+12/18/2022  01:40 AM                41 Reset.txt
+12/18/2022  01:40 AM                49 Rob.txt
+12/18/2022  01:40 AM               149 SafeMow.txt
+12/18/2022  03:52 AM               731 salesman.txt
+12/18/2022  01:40 AM               369 Saveme.txt
+12/18/2022  01:40 AM               192 SDT.txt
+12/18/2022  01:40 AM                86 Sector.txt
+12/18/2022  05:02 AM               278 setvar.txt
+12/18/2022  01:40 AM                71 ShipMove.txt
+12/18/2022  01:40 AM                58 SList.txt
+12/18/2022  01:40 AM               247 SST.txt
+12/18/2022  01:40 AM                70 Stats.txt
+12/18/2022  01:40 AM               369 status.txt
+12/18/2022  01:40 AM                81 Stopall.txt
+12/18/2022  01:40 AM               147 StoreShip.txt
+12/18/2022  01:40 AM               543 strip.txt
+12/18/2022  01:40 AM               158 Surround.txt
+12/18/2022  01:40 AM               607 tbust.txt
+12/18/2022  01:40 AM                60 TopOff.txt
+12/18/2022  01:40 AM                69 Tow.txt
+12/18/2022  01:40 AM               121 TRICON.txt
+12/18/2022  01:40 AM               271 TWarp.txt
+12/18/2022  01:40 AM               124 Unlock.txt
+12/18/2022  01:42 AM               116 viewscreen.txt
+12/18/2022  01:40 AM                80 With.txt
+12/18/2022  03:05 AM             1,205 wppt.txt
+12/18/2022  03:22 AM               905 wsst.txt
+12/18/2022  01:40 AM               303 xenter.txt
+12/18/2022  05:12 AM               330 xport.txt
+12/18/2022  01:40 AM               110 ZTM.txt
+             127 File(s)         32,497 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          cashing
+12/19/2022  03:30 AM    <DIR>          data
+12/19/2022  03:30 AM    <DIR>          defense
+12/19/2022  03:30 AM    <DIR>          grid
+12/19/2022  03:30 AM    <DIR>          offense
+12/19/2022  03:30 AM    <DIR>          resource
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\cashing
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            74,506 bbb.cts
+12/18/2022  01:40 AM             9,690 bbb.ts
+12/18/2022  01:40 AM           110,300 furb.cts
+12/18/2022  01:40 AM            26,714 furb.ts
+12/18/2022  01:40 AM           104,811 fusing-WSST.cts
+12/18/2022  01:40 AM            53,853 fusing-wsst.ts
+12/18/2022  01:40 AM            70,170 marco.cts
+12/18/2022  01:40 AM           155,073 Merch.cts
+12/18/2022  01:40 AM            14,288 merch.ts
+12/18/2022  01:40 AM           203,424 mooexp_p.cts
+12/18/2022  01:40 AM           189,695 moo_p.cts
+12/18/2022  01:40 AM           189,863 salesman.cts
+12/18/2022  01:40 AM            30,013 salesman.ts
+12/18/2022  01:40 AM           117,456 sdt.cts
+12/18/2022  01:40 AM            59,832 sdt.ts
+12/18/2022  01:40 AM           105,293 sst.cts
+12/18/2022  01:40 AM            43,015 sst.ts
+12/18/2022  01:40 AM            29,451 Tbust.cts
+12/18/2022  01:40 AM           105,685 wppt.cts
+12/18/2022  01:40 AM             4,992 wppt.ts
+12/18/2022  03:18 AM           165,279 wsst.cts
+              21 File(s)      1,863,403 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\data
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            31,054 beam.cts
+12/18/2022  01:40 AM             9,797 beam.ts
+12/18/2022  01:40 AM            37,738 list.cts
+12/18/2022  01:40 AM            13,859 list.ts
+12/18/2022  01:40 AM            79,460 sentinel.cts
+12/18/2022  01:40 AM            29,222 sentinel.ts
+12/18/2022  01:40 AM            67,394 ztm.cts
+12/18/2022  01:40 AM            10,587 ztm.ts
+               8 File(s)        279,111 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\defense
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            52,598 citfill.cts
+12/18/2022  01:40 AM            13,204 citfill.ts
+12/18/2022  01:40 AM            11,899 ig.cts
+12/18/2022  01:40 AM             2,915 ig.ts
+12/18/2022  01:40 AM            75,405 reloader.cts
+12/18/2022  01:40 AM             9,675 reloader.ts
+12/18/2022  01:40 AM            25,100 runaway.cts
+12/18/2022  01:40 AM            10,470 runaway.ts
+12/18/2022  01:40 AM            88,239 saveme.cts
+12/18/2022  01:40 AM            20,472 saveme.ts
+12/18/2022  01:40 AM               104 savevar.cts
+12/18/2022  01:40 AM                52 savevar.ts
+12/18/2022  01:40 AM            62,972 unstack.cts
+12/18/2022  01:40 AM            11,321 unstack.ts
+              14 File(s)        384,426 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\grid
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM           100,388 dora.cts
+12/18/2022  01:40 AM            46,013 dora.ts
+12/18/2022  01:40 AM           121,069 lspassgrid.cts
+12/18/2022  01:40 AM            51,457 lspassgrid.ts
+12/18/2022  01:40 AM           107,072 mow.cts
+12/18/2022  01:40 AM            15,738 mow.ts
+12/18/2022  01:40 AM            64,534 pgridder.cts
+12/18/2022  01:40 AM             9,537 pgridder.ts
+12/18/2022  01:40 AM            26,846 plimper.cts
+12/18/2022  01:40 AM            12,675 plimper.ts
+12/18/2022  01:40 AM            45,208 ramgrid.cts
+12/18/2022  01:40 AM            16,203 ramgrid.ts
+12/18/2022  01:40 AM            50,574 wall.cts
+12/18/2022  01:40 AM            24,535 wall.ts
+12/18/2022  01:40 AM           180,491 wander.cts
+12/18/2022  01:40 AM            28,266 wander.ts
+              16 File(s)        900,606 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\offense
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM           126,846 Boton.cts
+12/18/2022  01:40 AM           123,943 CitCap.cts
+12/18/2022  01:40 AM             8,587 citcap.ts
+12/18/2022  01:40 AM           132,863 Citkill.cts
+12/18/2022  01:40 AM             9,184 citkill.ts
+12/18/2022  01:40 AM           216,465 density.cts
+12/18/2022  01:40 AM            15,723 density.ts
+12/18/2022  01:40 AM            94,844 DockKill.cts
+12/18/2022  01:40 AM             9,472 dockkill.ts
+12/18/2022  01:40 AM           205,817 drop.cts
+12/18/2022  01:40 AM            32,386 drop.ts
+12/18/2022  01:40 AM           140,764 Foton.cts
+12/18/2022  01:40 AM            54,369 foton.ts
+12/18/2022  01:40 AM           183,973 PDrop.cts
+12/18/2022  01:40 AM            51,858 pdrop.ts
+12/18/2022  01:40 AM           118,140 Plock.cts
+12/18/2022  01:40 AM            11,294 plock.ts
+              17 File(s)      1,536,528 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\modes\resource
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            80,326 colo.cts
+12/18/2022  01:40 AM            28,383 colo.ts
+12/18/2022  01:40 AM            47,188 dump.cts
+12/18/2022  01:40 AM            10,740 dump.ts
+12/18/2022  01:40 AM            50,945 ecolo.cts
+12/18/2022  01:40 AM             4,475 ecolo.ts
+12/18/2022  01:40 AM            39,679 fillships.cts
+12/18/2022  01:40 AM             3,097 fillships.ts
+12/18/2022  01:40 AM            72,539 lsd.cts
+12/18/2022  01:40 AM            45,165 lsd.ts
+12/18/2022  01:40 AM           207,898 makeplanet.cts
+12/18/2022  01:40 AM            12,239 makeplanet.ts
+12/18/2022  01:40 AM            21,975 Move.cts
+12/18/2022  01:40 AM            19,020 movefig.cts
+12/18/2022  01:40 AM            64,092 moveship.cts
+12/18/2022  01:40 AM            12,994 moveship.ts
+12/18/2022  01:40 AM            85,081 PATP.cts
+12/18/2022  01:40 AM            14,095 patp.ts
+12/18/2022  01:40 AM            62,757 Pimp.cts
+12/18/2022  01:40 AM            19,408 pimp.ts
+12/18/2022  01:40 AM            77,405 strip.cts
+12/18/2022  01:40 AM            13,024 strip.ts
+              22 File(s)        992,525 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          bot_includes
+12/18/2022  01:40 AM             2,597 Directory Structure.txt
+12/19/2022  03:30 AM    <DIR>          module_includes
+12/18/2022  01:40 AM            41,668 page.wav
+12/18/2022  01:40 AM            24,574 StripExample.cts
+12/18/2022  01:40 AM            22,647 StripExample.ts
+               4 File(s)         91,486 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,240 ai.ts
+12/19/2022  03:30 AM    <DIR>          bot
+12/18/2022  01:40 AM            29,740 bot.ts
+12/19/2022  03:30 AM    <DIR>          combat
+12/19/2022  03:30 AM    <DIR>          external
+12/19/2022  03:30 AM    <DIR>          game
+12/18/2022  01:40 AM            17,089 game.ts
+12/19/2022  03:30 AM    <DIR>          grid
+12/19/2022  03:30 AM    <DIR>          map
+12/18/2022  01:40 AM            29,285 map.ts
+12/19/2022  03:30 AM    <DIR>          planet
+12/18/2022  01:40 AM            64,309 planet.ts
+12/19/2022  03:30 AM    <DIR>          player
+12/18/2022  01:40 AM            64,390 player.ts
+12/19/2022  03:30 AM    <DIR>          sector
+12/19/2022  03:30 AM    <DIR>          ship
+12/18/2022  01:40 AM            12,440 ship.ts
+12/18/2022  01:40 AM             5,756 switchboard.ts
+12/19/2022  03:30 AM    <DIR>          targeting
+12/18/2022  01:40 AM             1,531 validation.ts
+               9 File(s)        226,780 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\bot
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            15,944 connectivity.ts
+12/18/2022  01:40 AM            20,481 internal_commands.ts
+12/18/2022  01:40 AM             2,410 listener.ts
+12/18/2022  01:40 AM            66,950 menus.ts
+12/18/2022  01:40 AM            43,482 user_interface.ts
+               5 File(s)        149,267 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          fastattack
+12/19/2022  03:30 AM    <DIR>          fastcapture
+12/19/2022  03:30 AM    <DIR>          fastcitadelattack
+12/19/2022  03:30 AM    <DIR>          holokill
+12/19/2022  03:30 AM    <DIR>          holoscan
+12/19/2022  03:30 AM    <DIR>          init
+12/19/2022  03:30 AM    <DIR>          passiveholokill
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\fastattack
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             5,082 combat.ts
+               1 File(s)          5,082 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\fastcapture
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            14,078 combat.ts
+               1 File(s)         14,078 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\fastcitadelattack
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             5,720 combat.ts
+               1 File(s)          5,720 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\holokill
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             8,411 combat.ts
+               1 File(s)          8,411 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\holoscan
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               748 combat.ts
+               1 File(s)            748 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\init
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,847 combat.ts
+               1 File(s)          2,847 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\combat\passiveholokill
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             3,406 combat.ts
+               1 File(s)          3,406 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\external
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               888 buy.ts
+12/18/2022  01:40 AM               635 buyfig.ts
+12/18/2022  01:40 AM               644 buyfuel.ts
+12/18/2022  01:40 AM               653 buyshield.ts
+12/18/2022  01:40 AM               938 call.ts
+12/18/2022  01:40 AM               749 dep.ts
+12/18/2022  01:40 AM               635 dscan.ts
+12/18/2022  01:40 AM               623 holo.ts
+12/18/2022  01:40 AM               454 htorp.ts
+12/18/2022  01:40 AM               914 max.ts
+12/18/2022  01:40 AM               799 movefig.ts
+12/18/2022  01:40 AM               680 moveship.ts
+12/18/2022  01:40 AM               784 mow.ts
+12/18/2022  01:40 AM               937 patp.ts
+12/18/2022  01:40 AM               805 pe.ts
+12/18/2022  01:40 AM               765 pel.ts
+12/18/2022  01:40 AM               448 pgrid.ts
+12/18/2022  01:40 AM               683 photon.ts
+12/18/2022  01:40 AM               717 pwarp.ts
+12/18/2022  01:40 AM               766 scrub.ts
+12/18/2022  01:40 AM               754 with.ts
+12/18/2022  01:40 AM               646 xenter.ts
+              22 File(s)         15,917 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\game
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          gamestats
+12/19/2022  03:30 AM    <DIR>          getcost
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\game\gamestats
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            17,797 game.ts
+               1 File(s)         17,797 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\game\getcost
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               187 game.ts
+               1 File(s)            187 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\grid
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          surround
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\grid\surround
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             6,054 grid.ts
+               1 File(s)          6,054 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          addfigtodata
+12/19/2022  03:30 AM    <DIR>          commas
+12/19/2022  03:30 AM    <DIR>          displayadjacentgridansi
+12/19/2022  03:30 AM    <DIR>          displaynavigation
+12/19/2022  03:30 AM    <DIR>          displaysector
+12/19/2022  03:30 AM    <DIR>          formatsectorowner
+12/19/2022  03:30 AM    <DIR>          removefigfromdata
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\addfigtodata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                66 map.ts
+               1 File(s)             66 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\commas
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               561 map.ts
+               1 File(s)            561 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\displayadjacentgridansi
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             9,422 map.ts
+               1 File(s)          9,422 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\displaynavigation
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             6,686 map.ts
+               1 File(s)          6,686 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\displaysector
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             3,510 map.ts
+               1 File(s)          3,510 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\formatsectorowner
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,711 map.ts
+               1 File(s)          2,711 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\map\removefigfromdata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               238 map.ts
+               1 File(s)            238 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          countplanets
+12/19/2022  03:30 AM    <DIR>          getplanetinfo
+12/19/2022  03:30 AM    <DIR>          getplanetnumber
+12/19/2022  03:30 AM    <DIR>          getplanetstats
+12/19/2022  03:30 AM    <DIR>          landingsub
+12/19/2022  03:30 AM    <DIR>          landonplanetentercitadel
+12/19/2022  03:30 AM    <DIR>          loadplanetinfo
+12/19/2022  03:30 AM    <DIR>          makeplanetarray
+12/19/2022  03:30 AM    <DIR>          planetneg
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\countplanets
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               844 planet.ts
+               1 File(s)            844 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\getplanetinfo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             6,361 planet.ts
+               1 File(s)          6,361 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\getplanetnumber
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               514 planet.ts
+               1 File(s)            514 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\getplanetstats
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,115 planet.ts
+               1 File(s)          2,115 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\landingsub
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,340 planet.ts
+               1 File(s)          2,340 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\landonplanetentercitadel
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               378 planet.ts
+               1 File(s)            378 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\loadplanetinfo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,928 planet.ts
+               1 File(s)          1,928 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\makeplanetarray
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            49,675 planet.ts
+               1 File(s)         49,675 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\planet\planetneg
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            42,195 planet.ts
+               1 File(s)         42,195 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          addfigtodata
+12/19/2022  03:30 AM    <DIR>          buy
+12/19/2022  03:30 AM    <DIR>          bwarp
+12/19/2022  03:30 AM    <DIR>          checkcorp
+12/19/2022  03:30 AM    <DIR>          checkfortravelname
+12/19/2022  03:30 AM    <DIR>          clearadjacent
+12/19/2022  03:30 AM    <DIR>          commasize
+12/19/2022  03:30 AM    <DIR>          currentprompt
+12/19/2022  03:30 AM    <DIR>          findjumpsector
+12/19/2022  03:30 AM    <DIR>          formatnumberforspaces
+12/19/2022  03:30 AM    <DIR>          formatpercentagesforspaces
+12/19/2022  03:30 AM    <DIR>          getcourse
+12/19/2022  03:30 AM    <DIR>          getinfo
+12/19/2022  03:30 AM    <DIR>          getportinfo
+12/19/2022  03:30 AM    <DIR>          isephaggle
+12/19/2022  03:30 AM    <DIR>          moveintosector
+12/19/2022  03:30 AM    <DIR>          pwarp
+12/19/2022  03:30 AM    <DIR>          quikstats
+12/19/2022  03:30 AM    <DIR>          removefigfromdata
+12/19/2022  03:30 AM    <DIR>          setconnectiontriggers
+12/19/2022  03:30 AM    <DIR>          startcnsettings
+12/19/2022  03:30 AM    <DIR>          starthaggle
+12/19/2022  03:30 AM    <DIR>          swathoff
+12/19/2022  03:30 AM    <DIR>          topoff
+12/19/2022  03:30 AM    <DIR>          turnoffansi
+12/19/2022  03:30 AM    <DIR>          turnonansi
+12/19/2022  03:30 AM    <DIR>          twarp
+12/19/2022  03:30 AM    <DIR>          voidadjacent
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\addfigtodata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               119 player.ts
+               1 File(s)            119 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\buy
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            14,197 player.ts
+               1 File(s)         14,197 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\bwarp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,074 player.ts
+               1 File(s)          2,074 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\checkcorp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,015 player.ts
+               1 File(s)          1,015 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\checkfortravelname
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,488 player.ts
+               1 File(s)          1,488 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\clearadjacent
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               479 player.ts
+               1 File(s)            479 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\commasize
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                48 player.ts
+               1 File(s)             48 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\currentprompt
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               965 player.ts
+               1 File(s)            965 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\findjumpsector
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,536 player.ts
+               1 File(s)          1,536 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\formatnumberforspaces
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               406 player.ts
+               1 File(s)            406 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\formatpercentagesforspaces
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               342 player.ts
+               1 File(s)            342 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\getcourse
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,059 player.ts
+               1 File(s)          2,059 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\getinfo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             5,971 player.ts
+               1 File(s)          5,971 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\getportinfo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,798 player.ts
+               1 File(s)          1,798 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\isephaggle
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               244 player.ts
+               1 File(s)            244 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\moveintosector
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               863 player.ts
+               1 File(s)            863 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\pwarp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,313 player.ts
+               1 File(s)          2,313 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\quikstats
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             5,401 player.ts
+               1 File(s)          5,401 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\removefigfromdata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               240 player.ts
+               1 File(s)            240 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\setconnectiontriggers
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,666 player.ts
+               1 File(s)          1,666 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\startcnsettings
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,461 player.ts
+               1 File(s)          1,461 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\starthaggle
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,411 player.ts
+               1 File(s)          2,411 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\swathoff
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               659 player.ts
+               1 File(s)            659 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\topoff
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               760 player.ts
+               1 File(s)            760 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\turnoffansi
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               345 player.ts
+               1 File(s)            345 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\turnonansi
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               222 player.ts
+               1 File(s)            222 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\twarp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             4,945 player.ts
+               1 File(s)          4,945 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\player\voidadjacent
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               514 player.ts
+               1 File(s)            514 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          getautosectordata
+12/19/2022  03:30 AM    <DIR>          getemptyships
+12/19/2022  03:30 AM    <DIR>          getfaketraders
+12/19/2022  03:30 AM    <DIR>          getsectordata
+12/19/2022  03:30 AM    <DIR>          gettraders
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector\getautosectordata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             4,332 sector.ts
+               1 File(s)          4,332 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector\getemptyships
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,382 sector.ts
+               1 File(s)          1,382 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector\getfaketraders
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,213 sector.ts
+               1 File(s)          2,213 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector\getsectordata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,938 sector.ts
+               1 File(s)          1,938 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\sector\gettraders
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             5,173 sector.ts
+               1 File(s)          5,173 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\ship
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          getshipcapstats
+12/19/2022  03:30 AM    <DIR>          getshipstats
+12/19/2022  03:30 AM    <DIR>          loadshipinfo
+12/19/2022  03:30 AM    <DIR>          savetheship
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\ship\getshipcapstats
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             3,585 ship.ts
+               1 File(s)          3,585 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\ship\getshipstats
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,637 ship.ts
+               1 File(s)          2,637 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\ship\loadshipinfo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,969 ship.ts
+               1 File(s)          1,969 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\ship\savetheship
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             3,641 ship.ts
+               1 File(s)          3,641 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          fastcitadelattack
+12/19/2022  03:30 AM    <DIR>          getemptyships
+12/19/2022  03:30 AM    <DIR>          getfaketraders
+12/19/2022  03:30 AM    <DIR>          getsectordata
+12/19/2022  03:30 AM    <DIR>          gettraders
+12/19/2022  03:30 AM    <DIR>          initializetargeting
+12/19/2022  03:30 AM    <DIR>          scanitcitkill
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\fastcitadelattack
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,179 targeting.ts
+               1 File(s)          2,179 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\getemptyships
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,217 sector.ts
+               1 File(s)          1,217 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\getfaketraders
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,624 sector.ts
+               1 File(s)          2,624 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\getsectordata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               962 sector.ts
+               1 File(s)            962 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\gettraders
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,058 sector.ts
+               1 File(s)          2,058 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\initializetargeting
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,750 targeting.ts
+               1 File(s)          2,750 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\bot_includes\targeting\scanitcitkill
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               432 targeting.ts
+               1 File(s)            432 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          bot
+12/18/2022  01:40 AM             8,863 bot.ts
+12/19/2022  03:30 AM    <DIR>          deploy
+12/19/2022  03:30 AM    <DIR>          game
+12/19/2022  03:30 AM    <DIR>          modules
+12/19/2022  03:30 AM    <DIR>          update
+               1 File(s)          8,863 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          addfigtodata
+12/19/2022  03:30 AM    <DIR>          banner
+12/19/2022  03:30 AM    <DIR>          checkstartingprompt
+12/19/2022  03:30 AM    <DIR>          commas
+12/19/2022  03:30 AM    <DIR>          disconnecttriggers
+12/19/2022  03:30 AM    <DIR>          displayhelp
+12/19/2022  03:30 AM    <DIR>          echo
+12/19/2022  03:30 AM    <DIR>          formathelpline
+12/19/2022  03:30 AM    <DIR>          helpfile
+12/19/2022  03:30 AM    <DIR>          loadvars
+12/19/2022  03:30 AM    <DIR>          menu
+12/19/2022  03:30 AM    <DIR>          removefigfromdata
+12/19/2022  03:30 AM    <DIR>          wait_for_command
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\addfigtodata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                66 bot.ts
+               1 File(s)             66 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\banner
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               111 bot.ts
+               1 File(s)            111 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\checkstartingprompt
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               436 bot.ts
+               1 File(s)            436 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\commas
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                47 bot.ts
+               1 File(s)             47 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\disconnecttriggers
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               560 bot.ts
+               1 File(s)            560 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\displayhelp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,101 bot.ts
+               1 File(s)          2,101 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\echo
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               206 bot.ts
+               1 File(s)            206 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\formathelpline
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               794 bot.ts
+               1 File(s)            794 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\helpfile
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            24,156 bot.ts
+               1 File(s)         24,156 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\loadvars
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,223 bot.ts
+               1 File(s)          1,223 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\menu
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               543 bot.ts
+               1 File(s)            543 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\removefigfromdata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               238 bot.ts
+               1 File(s)            238 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\bot\wait_for_command
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                25 bot.ts
+               1 File(s)             25 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\deploy
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             4,056 armid.ts
+12/18/2022  01:40 AM             1,576 fighter.ts
+12/18/2022  01:40 AM             3,935 limp.ts
+12/18/2022  01:40 AM             4,157 mines.ts
+12/18/2022  01:40 AM             1,774 topoff.ts
+               5 File(s)         15,498 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          addfigtodata
+12/19/2022  03:30 AM    <DIR>          banner
+12/19/2022  03:30 AM    <DIR>          checkstartingprompt
+12/19/2022  03:30 AM    <DIR>          commas
+12/19/2022  03:30 AM    <DIR>          disconnecttriggers
+12/19/2022  03:30 AM    <DIR>          displayhelp
+12/19/2022  03:30 AM    <DIR>          formathelpline
+12/19/2022  03:30 AM    <DIR>          helpfile
+12/19/2022  03:30 AM    <DIR>          loadvars
+12/19/2022  03:30 AM    <DIR>          menu
+12/19/2022  03:30 AM    <DIR>          removefigfromdata
+12/19/2022  03:30 AM    <DIR>          wait_for_command
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\addfigtodata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                66 bot.ts
+               1 File(s)             66 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\banner
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               111 bot.ts
+               1 File(s)            111 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\checkstartingprompt
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               375 bot.ts
+               1 File(s)            375 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\commas
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               561 bot.ts
+               1 File(s)            561 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\disconnecttriggers
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               560 bot.ts
+               1 File(s)            560 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\displayhelp
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,116 bot.ts
+               1 File(s)          2,116 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\formathelpline
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               500 bot.ts
+               1 File(s)            500 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\helpfile
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             1,890 bot.ts
+               1 File(s)          1,890 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\loadvars
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               825 bot.ts
+               1 File(s)            825 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\menu
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               543 bot.ts
+               1 File(s)            543 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\removefigfromdata
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM               238 bot.ts
+               1 File(s)            238 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\game\wait_for_command
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM                25 bot.ts
+               1 File(s)             25 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\modules
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/19/2022  03:30 AM    <DIR>          clear
+12/19/2022  03:30 AM    <DIR>          xenter
+               0 File(s)              0 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\modules\clear
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             7,489 modules.ts
+               1 File(s)          7,489 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\modules\xenter
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,130 modules.ts
+               1 File(s)          2,130 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\source\module_includes\update
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM             2,885 armids.ts
+12/18/2022  01:40 AM             5,417 cim.ts
+12/18/2022  01:40 AM             9,123 fighters.ts
+12/18/2022  01:40 AM             3,941 limpets.ts
+               4 File(s)         21,366 bytes
+
+ Directory of C:\Projects\TW2002\twxp\Source\Installer\MOM48\mombot48\startups
+
+12/19/2022  03:30 AM    <DIR>          .
+12/19/2022  03:30 AM    <DIR>          ..
+12/18/2022  01:40 AM            31,751 watcher.cts
+               1 File(s)         31,751 bytes
+
+     Total Files Listed:
+             613 File(s)     15,514,950 bytes
+             416 Dir(s)  56,969,015,296 bytes free

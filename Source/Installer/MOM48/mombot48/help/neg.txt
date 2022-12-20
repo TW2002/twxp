@@ -1,0 +1,18 @@
+                     
+   
+                  <<<< neg >>>>
+   
+                Planet Negotiate Trade Agrement          
+                
+         neg {f | o | e} {half}    
+                                  
+     Options:
+              {f}   sells as much fuel as possible
+              {o}   sells as much organics as possible
+              {e}   sells as much equipment as possible
+                                                         
+           {half}   sell only half of port amount      
+                                                         
+               default is to sell all org and equip
+               
+                - Originally written by Cherokee

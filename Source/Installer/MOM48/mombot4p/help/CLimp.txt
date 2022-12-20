@@ -1,0 +1,5 @@
+CLIMP - Deploy Corp Limpet Mine
+
+     climp {number to deploy} 
+
+     - {number to deploy} Number Of Limps To Deploy

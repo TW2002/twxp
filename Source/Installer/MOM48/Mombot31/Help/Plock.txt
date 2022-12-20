@@ -1,0 +1,9 @@
+PLOCK - Pre-Lock, Planet Drop Mode
+        Locks onto a Fig'd Sector and engages the Planetary-
+        Warp when the Fighter(s) are removed, or a Mine is
+        tripped.
+
+        plock [sector (0 for plock stop) ] {kill} {Delay}.
+
+         -  [kill]  = Citkill right after successful firing
+         -  [Delay] = Delay to launch Plock

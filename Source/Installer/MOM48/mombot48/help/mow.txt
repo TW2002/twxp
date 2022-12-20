@@ -1,0 +1,20 @@
+                     
+   
+                  <<<< mow >>>>
+   
+                   <<<< mow >>>>
+      
+      mow [destination] {figs} {kill} {cap} {saveme} {p} {back}
+                        {personal} {backdoor} {i1/i2/i3} 
+                         
+      Options:
+             {p} - port ship immediately upon arrival.
+          {kill} - attempt to kill immediately upon arrival.
+           {cap} - attempt to capture immediately upon arrival.
+        {saveme} - call saveme to be picked up at destination.
+          {back} - twarp back to start sector after mow
+        {hoover} - attempts to pull fighters from sectors 
+      {personal} - drops personal fighters instead of corp  
+      {backdoor} - mow to sector via backdoor
+      {i1/i2/i3} - Indirect mow, void 1-3 sectors
+      {holo} - holo scans every sector - no checks/pauses

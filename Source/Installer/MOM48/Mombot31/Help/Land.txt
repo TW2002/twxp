@@ -1,0 +1,3 @@
+LAND - Lands on planet in the sector.
+
+       land [planet number]
