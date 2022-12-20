@@ -253,9 +253,9 @@
         <File Source="Mombot48\commands\resource\sellship.cts"/>
         <File Source="Mombot48\commands\resource\_dock_shopper.cts"/>
 
-		  <File Source="Mombot4p\commands\resource\max.cts"/>
-		  <File Id="ms1.1600" Source="Mombot31\commands\resource\scruball.cts"/>
-      </Component>
+		  <File Id="m31.1600" Source="Mombot31\commands\resource\scruball.cts"/>
+		  <File Id="m31.1601" Source="Mombot31\commands\resource\max.cts"/>
+	  </Component>
       <Component Id="MombotDaemonsComponent" Directory="MOM48_DAEMONS" Guid="78a6c5ec-dbc0-4d82-a127-444df32491cd">
 		  <File Source="Mombot48\daemons\alienhunt.cts"/>
 		  <File Source="Mombot48\daemons\at.cts"/>

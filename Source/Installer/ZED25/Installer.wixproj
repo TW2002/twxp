@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>{c9aba1b9-be18-4346-ab9e-474529bea210}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>Zed250+</OutputName>
+    <OutputName>Zed250</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
