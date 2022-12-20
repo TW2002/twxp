@@ -1865,7 +1865,7 @@ begin
     // MB - this should not be a hard crash
     //raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
     // Retund EOF if file does not exist.
-    Params[1].Value := 'EOF'
+    Params[1].Value := 'EOF';
 
   Result := caNone;
 end;
@@ -5191,7 +5191,58 @@ begin
     AddSysConstant('SECTOR.FIGS.TYPE', SCSector_Figs_Type);
     AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
 
+    // Added in 2.07
+    AddSysConstant('TURNS', SCCurrentTurns);
+    AddSysConstant('CREDITS', SCCurrentCredits);
+    AddSysConstant('FIGHTERS', SCCurrentFighters);
+    AddSysConstant('SHIELDS', SCCurrentShields);
+    AddSysConstant('TOTALHOLDS', SCCurrentTotalHolds);
+    AddSysConstant('OREHOLDS', SCCurrentOreHolds);
+    AddSysConstant('ORGHOLDS', SCCurrentOrgHolds);
+    AddSysConstant('EQUHOLDS', SCCurrentEquHolds);
+    AddSysConstant('COLHOLDS', SCCurrentColHolds);
+    AddSysConstant('EMPTYHOLDS', SCCurrentEmptyHolds);
+    AddSysConstant('PHOTONS', SCCurrentPhotons);
+    AddSysConstant('ARMIDS', SCCurrentArmids);
+    AddSysConstant('LIMPETS', SCCurrentLimpets);
+    AddSysConstant('GENTORPS', SCCurrentGenTorps);
+    AddSysConstant('TWARPTYPE', SCCurrentTwarpType);
+    AddSysConstant('CLOAKS', SCCurrentCloaks);
+    AddSysConstant('BEACONS', SCCurrentBeacons);
+    AddSysConstant('ATOMICS', SCCurrentAtomics);
+    AddSysConstant('CORBOMITE', SCCurrentCorbomite);
+    AddSysConstant('EPROBES', SCCurrentEprobes);
+    AddSysConstant('MINEDISR', SCCurrentMineDisr);
+    AddSysConstant('PSYCHICPROBE', SCCurrentPsychicProbe);
+    AddSysConstant('PLANETSCANNER', SCCurrentPlanetScanner);
+    AddSysConstant('SCANTYPE', SCCurrentScanType);
+    AddSysConstant('ALIGNMENT', SCCurrentAlignment);
+    AddSysConstant('EXPERIENCE', SCCurrentExperience);
+    AddSysConstant('CORP', SCCurrentCorp);
+    AddSysConstant('SHIPNUMBER', SCCurrentShipNumber);
+    AddSysConstant('SHIPCLASS', SCCurrentShipClass);
+    AddSysConstant('ANSIQUICKSTATS',SCCurrentAnsiQuickStats);
+    AddSysConstant('QUICKSTATS',SCCurrentQuickStats);
+    AddSysConstant('QS',SCCurrentQS);
+    AddSysConstant('QSTAT',SCCurrentQSTAT);
+
+
     // Added in 2.06
+    AddSysConstant('GAMEDATA',SCGameData);
+    AddSysConstant('BOTLIST',SCBotList);
+    AddSysConstant('ACTIVEBOT',SCActiveBot);
+    AddSysConstant('ACTIVEBOTS',SCActiveBots);
+    AddSysConstant('ACTIVEBOTDIR',SCActiveBotDir);
+    AddSysConstant('ACTIVEBOTSCRIPT',SCActiveBotScript);
+    AddSysConstant('ACTIVEBOTNAME',SCActiveBotName);
+    AddSysConstant('VERSION',SCTWXVersion);
+    AddSysConstant('TWGSTYPE',SCTWGSTYPE);
+    AddSysConstant('TWGSVER',SCTWGSVer);
+    AddSysConstant('TW2002VER',SCTW2002Ver);
+    AddSysConstant('SECTOR.DEADEND', SCSector_DeadEnd);
+
+    // Added in 2.06 - replaced in 2.07 with shorted names,
+     //but keeping this for compatability.
     AddSysConstant('CURRENTTURNS', SCCurrentTurns);
     AddSysConstant('CURRENTCREDITS', SCCurrentCredits);
     AddSysConstant('CURRENTFIGHTERS', SCCurrentFighters);
@@ -5225,18 +5276,7 @@ begin
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQS',SCCurrentQS);
     AddSysConstant('CURRENTQSTAT',SCCurrentQSTAT);
-    AddSysConstant('GAMEDATA',SCGameData);
-    AddSysConstant('BOTLIST',SCBotList);
-    AddSysConstant('ACTIVEBOT',SCActiveBot);
-    AddSysConstant('ACTIVEBOTS',SCActiveBots);
-    AddSysConstant('ACTIVEBOTDIR',SCActiveBotDir);
-    AddSysConstant('ACTIVEBOTSCRIPT',SCActiveBotScript);
-    AddSysConstant('ACTIVEBOTNAME',SCActiveBotName);
-    AddSysConstant('VERSION',SCTWXVersion);
-    AddSysConstant('TWGSTYPE',SCTWGSTYPE);
-    AddSysConstant('TWGSVER',SCTWGSVer);
-    AddSysConstant('TW2002VER',SCTW2002Ver);
-    AddSysConstant('SECTOR.DEADEND', SCSector_DeadEnd);
+
 
     // MB - Internal system vars for library Parms and Parm count.
     AddSysConstant('LIBPARM', SCLIBPARM);

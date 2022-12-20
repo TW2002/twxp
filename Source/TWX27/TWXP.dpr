@@ -176,7 +176,7 @@ begin
   // TODO: Set TWXProxy as the devault Telnet application in the registry.
 
   PersistenceManager := TPersistenceManager.Create(Application);
-  PersistenceManager.OutputFile := 'TWX26.dat';
+  PersistenceManager.OutputFile := 'TWX27.dat';
 
   // call object constructors
   for ModuleType := Low(TModuleType) to High(TModuleType) do
@@ -375,7 +375,7 @@ begin
       IniFile.WriteString('Bot:1045', 'NameVar', 'FILE:_MOM_{GAME}.bot');
       IniFile.WriteString('Bot:1045', 'LoginScript', 'Disabled');
       IniFile.WriteString('Bot:Zed', 'Name', 'Zed Bot Unleashed');
-      IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.ts');
+      IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.cts');
       IniFile.WriteString('Bot:Zed', 'NameVar', '$Z_BOTNAME');
       IniFile.WriteString('Bot:Zed', 'LoginScript', 'z-login.cts');
 
@@ -426,7 +426,7 @@ begin
         IniFile.WriteString('Bot:1045', 'NameVar', 'FILE:_MOM_{GAME}.bot');
         IniFile.WriteString('Bot:1045', 'LoginScript', 'Disabled');
         IniFile.WriteString('Bot:Zed', 'NameVar', '$Z_BOTNAME');
-        IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.ts');
+        IniFile.WriteString('Bot:Zed', 'Script', 'z-bot.cts');
         IniFile.WriteString('Bot:Zed', 'LoginScript', 'z-login.cts');
 
 
@@ -486,7 +486,10 @@ begin
     end;
 
     if dbFile <> '' then
-      TWXDatabase.OpenDataBase(dbFile);
+      TWXDatabase.OpenDataBase(dbFile)
+    else
+      ShowForm(gfSetup);
+
   end;
 
   if TWXDatabase.DataBaseOpen then
