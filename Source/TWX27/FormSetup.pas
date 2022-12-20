@@ -226,8 +226,12 @@ begin
   // build list of data headers from databases in data\ folder
   DataLinkList := TList.Create;
 
-//  UpdateGameList(TWXDatabase.DatabaseName);
-  UpdateGameList('data\' + TWXGUI.DatabaseName + '.xdb');
+// MB - if there is no databse loaded, then we need to add one.
+  if TWXGUI.DatabaseName <> '' then
+    UpdateGameList('data\' + TWXGUI.DatabaseName + '.xdb')
+  else
+    btnAddClick(Self);
+
 end;
 
 procedure TfrmSetup.FormHide(Sender: TObject);
@@ -514,7 +518,7 @@ end;
 procedure TfrmSetup.btnSaveClick(Sender: TObject);
 var
   Error,
-  S        : string;
+  S, DB    : string;
   Focus    : TWinControl;
   Port,
   ListenPort,
@@ -522,6 +526,8 @@ var
   I        : Integer;
   Head     : PDataHeader;
   DoCreate : Boolean;
+  HFileRes : HFILE;
+
 begin
   // verify values
   S := tbDescription.Text;
@@ -621,7 +627,59 @@ begin
   if (Edit) then
   begin
     TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).Modified := TRUE;
-    Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader)
+    Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader);
+
+    // MB - if sectors has changed, we must warn user.
+    if (Head^.Sectors <> Sectors) then
+    begin
+    if (MessageDlg('Resizing this database will delete all data. Are you sure?', mtWarning, [mbYes, mbNo], 0) = mrNo) then
+    begin
+      // MB - Don't resize database and keep previous sector count.
+      Sectors := Head^.Sectors;
+      tbSectors.Text := IntToStr(Sectors);
+    end
+    else
+    begin
+
+    // Stop all running scrits
+    while (I < TWXInterpreter.Count) do
+      TWXInterpreter.Stop(I);
+
+    // Disconnect from server
+    if TWXGUI.Connected then
+      TWXClient.Disconnect;
+
+    // Create a new DB heaader, and set StarDock locaaaaation to unknown
+    Head := @(TDatabaseLink(DataLinkList[cbGames.ItemIndex]^).DataHeader);
+    Head.StarDock := 65535;
+
+    S := UpperCase('data\' + cbGames.Text + '.xdb');
+    DB := UpperCase(TWXDatabase.DatabaseName);
+
+    // close the current database if it is being deleted
+    if S = DB then
+      TWXDatabase.CloseDataBase;
+
+    // MB - check to see if the database is open in another instance
+    HFileRes := CreateFile(PChar(S),GENERIC_READ or GENERIC_WRITE,0,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+    if HFileRes = INVALID_HANDLE_VALUE then
+    Begin
+      MessageDlg('Error - Database is locked by another instance.', mtWarning, [mbOK], 0);
+      Exit;
+    End;
+    CloseHandle(HFileRes);
+
+    // delete selected database and refresh headers held in memory
+    TWXServer.ClientMessage('Reszing database: ' + ANSI_7 + S);
+    SetCurrentDir(FProgramDir);
+    DeleteFile(S);
+
+      // create new database
+      Head := GetBlankHeader;
+      Edit := False;
+
+      end
+    end
   end
   else
     Head := GetBlankHeader;
@@ -771,6 +829,10 @@ begin
   tbHost.Enabled := TRUE;
   tbPort.Enabled := TRUE;
   tbListenPort.Enabled := TRUE;
+
+// MB - allowing Database Resize
+  tbSectors.Enabled := TRUE;
+
   cbUseLogin.Enabled := TRUE;
   cbUseRLogin.Enabled := TRUE;
   cbUseLoginClick(Sender);
@@ -831,7 +893,7 @@ begin
     HFileRes := CreateFile(PChar(S),GENERIC_READ or GENERIC_WRITE,0,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
     if HFileRes = INVALID_HANDLE_VALUE then
     Begin
-      MessageDlg('Error - Database is locked by anither instance.', mtWarning, [mbOK], 0);
+      MessageDlg('Error - Database is locked by another instance.', mtWarning, [mbOK], 0);
       Exit;
     End;
     CloseHandle(HFileRes);
