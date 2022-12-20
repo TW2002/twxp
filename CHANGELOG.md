@@ -2,6 +2,8 @@ Changes in 2.07.00
 + Added Shorter Quickstats Vars
 + Added getDateTime and dateTimeDiff commaands.
 + Added echoEx commaand.
++ Added center commaand.
++ Added repeat commaand.
 + Allow Database to be resized.
 + Fixed format CURRENCY command.
 + Fixed dirList commaand.
