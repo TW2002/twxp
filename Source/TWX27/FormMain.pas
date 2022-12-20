@@ -1006,13 +1006,13 @@ begin
         miUpdateNow.Visible := True;
         TWXServer.Broadcast(endl + endl + ANSI_15 + endl +
           'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
-          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + endl + ANSI_7);
+          'https://github.com/TW2002/TWXP/wiki' + endl + endl + ANSI_7);
         if Sender <> nil then
         begin
           if Application.MessageBox('An updated verion of TWX Proxy is available.'  + endl +
           'Would you like to download it now?',
 			    'Checking for Updates', MB_YESNO) = IDYES then
-          ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+          ShellExecute(Handle,'open','https://github.com/TW2002/TWXP/wiki',nil,nil, SW_SHOWNORMAL) ;
         end;
       end
       else
@@ -1037,7 +1037,7 @@ end;
 procedure TfrmMain.miUpdateNowClick(Sender: TObject);
 begin
   miUpdateNow.Visible := False;
-  ShellExecute(Handle,'open','https://github.com/MicroBlaster/TWXProxy/wiki',nil,nil, SW_SHOWNORMAL) ;
+  ShellExecute(Handle,'open','https://github.com/TW2002/TWXP/wiki',nil,nil, SW_SHOWNORMAL) ;
 end;
 
 // ************************************************************************

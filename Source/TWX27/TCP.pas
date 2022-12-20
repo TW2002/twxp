@@ -733,7 +733,7 @@ begin
       begin
         Socket.SendText(endl + ANSI_15 +
           'An updated verion of TWX Proxy is available. To download please visit: ' + endl +
-          'https://github.com/MicroBlaster/TWXProxy/wiki' + endl + ANSI_7);
+          'https://github.com/Tw2002/TWXP/wiki' + endl + ANSI_7);
       end;
     finally
       IniFile.Free;

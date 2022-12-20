@@ -1539,7 +1539,8 @@ begin
   Result := caNone;
 end;
 
-function CmdLoadVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdLoadVar
+(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   INI : TINIFile;
   Globals  : String;
@@ -1675,13 +1676,16 @@ var
   I   : Integer;
   Pad : string;
 begin
-  // CMD: padLeft var <value>
+  // CMD: padLeft var <value> <pad>
   // add spaces to the left of a variable
 
   Pad := '';
   for I := Length(Params[0].Value) to Trunc(Params[1].DecValue - 1) do
   begin
-    Pad := ' ' + Pad;
+    if(Length(Params) = 3) then
+      Pad := Pad + Params[2].Value
+    else
+      Pad := Pad + ' ';
   end;
 
   Params[0].Value := Pad + Params[0].Value;
@@ -1694,13 +1698,16 @@ var
   I   : Integer;
   Pad : string;
 begin
-  // CMD: padRight var <value>
+  // CMD: padRight var <pad>
   // add spaces to the right of a variable
 
   Pad := '';
   for I := Length(Params[0].Value) to Trunc(Params[1].DecValue - 1) do
   begin
-    Pad := ' ' + Pad;
+    if(Length(Params) = 3) then
+      Pad := Pad + Params[2].Value
+    else
+      Pad := Pad + ' ';
   end;
 
   Params[0].Value := Params[0].Value + Pad;
@@ -1713,7 +1720,7 @@ var
   I, j, k : Integer;
   Pad, S : string;
 begin
-  // CMD: padRight var <value>
+  // CMD: Center var <value> <pad>
   // add spaces to the right of a variable
 
   j :=  Floor((Length(Params[0].Value) + 2) / 2);
@@ -1735,6 +1742,50 @@ begin
       S := S + Params[2].Value
     else
       S := S + ' ';
+
+  Params[0].Value := S;
+
+  Result := caNone;
+end;
+
+
+function CmdRepeat(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I, C : Integer;
+  L, R, S : string;
+begin
+  // CMD: padRight var <value> <pad>
+  // add spaces to the right of a variable
+
+  L := '';
+  R := '';
+
+  if Length(Params[2].Value) = 1 then
+    Begin
+      S := '';
+      for I := 0 to Trunc(Params[1].DecValue - 1) do
+        S := S + Params[2].Value
+    end
+  else
+    Begin
+      C := 1;
+      for I := 0 to Trunc(Params[1].DecValue / 2 - 1) do
+      Begin
+        L := L + Params[2].Value[C];
+        R := Params[2].Value[C] + R;
+
+        C := C + 1;
+        If (C > Length(Params[2].Value)) then
+          c:= 1;
+      End;
+
+      if Length(L + R) < Trunc(Params[1].DecValue) then
+        L:= L + Params[2].Value[C];
+
+      S := L + R;
+    End;
+
+
 
   Params[0].Value := S;
 
@@ -1811,7 +1862,10 @@ begin
 
   end
   else
-    raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+    // MB - this should not be a hard crash
+    //raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+    // Retund EOF if file does not exist.
+    Params[1].Value := 'EOF';
 
   Result := caNone;
 end;
@@ -1822,18 +1876,31 @@ function CmdReadToArray(Script : TObject; Params : array of TCmdParam) : TCmdAct
 var
   fileData: TStringList;
 begin
+  fileData := TStringList.Create;
+
   if not (FileExists(Params[0].Value)) then
   begin
-    raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
-    Exit;
-  end;
-  fileData := TStringList.Create;
-  try
-    fileData.LoadFromFile(Params[0].Value);
-    TVarParam(Params[1]).SetArrayFromStrings(fileData);
-    Params[1].Value := IntToStr(fileData.Count);
-  finally
-    fileData.Free;
+  // MB - I am not sure why this is coded as a HARD crash and exit
+  //  raise EScriptError.Create('File ''' + Params[0].Value + ''' not found');
+  //  Exit;
+  //
+  // Return Empty array if file does not exist.
+    try
+      Params[1].Value := IntToStr(fileData.Count);
+      TVarParam(Params[1]).SetArrayFromStrings(fileData);
+    finally
+      fileData.Free;
+    end;
+  end
+  else
+  begin
+    try
+      fileData.LoadFromFile(Params[0].Value);
+      TVarParam(Params[1]).SetArrayFromStrings(fileData);
+      Params[1].Value := IntToStr(fileData.Count);
+    finally
+      fileData.Free;
+    end;
   end;
   Result := caNone;
 end;
@@ -1979,13 +2046,13 @@ begin
   Globals := '$COMMAND|$MODE|$USER_COMMAND_LINE|$SILENT_RUNNING|$BOTISDEAF|$SELF_COMMAND'
            + '$BOT~COMMAND|$BOT~MODE|$BOT~USER_COMMAND_LINE'
            + '$BOT~VSILENT_RUNNING|$BOT~BOTISDEAF|$SWITCHBOARD~SELF_COMMAND';
-  if (pos(TVarParam(Params[0]).Name, Globals) > 0) or
-     (pos('PARM', TVarParam(Params[0]).Name) > 0) then
-  begin
+ // if (pos(TVarParam(Params[0]).Name, Globals) > 0) or
+//     (pos('PARM', TVarParam(Params[0]).Name) > 0) then
+//  begin
 //    CmdSaveGlobal(Script, Params);
 //    Result := caNone;
 //    exit
-  end;
+//  end;
 
   // MB - This is a patch for a Mombot 3.1044 / 3.1045 incorrectly storing
   //      $MULTIPLE_PHOTONS as a string instead of bool.
@@ -5124,7 +5191,58 @@ begin
     AddSysConstant('SECTOR.FIGS.TYPE', SCSector_Figs_Type);
     AddSysConstant('SECTOR.ANOMALY', SCSector_Anomaly);
 
+    // Added in 2.07
+    AddSysConstant('TURNS', SCCurrentTurns);
+    AddSysConstant('CREDITS', SCCurrentCredits);
+    AddSysConstant('FIGHTERS', SCCurrentFighters);
+    AddSysConstant('SHIELDS', SCCurrentShields);
+    AddSysConstant('TOTALHOLDS', SCCurrentTotalHolds);
+    AddSysConstant('OREHOLDS', SCCurrentOreHolds);
+    AddSysConstant('ORGHOLDS', SCCurrentOrgHolds);
+    AddSysConstant('EQUHOLDS', SCCurrentEquHolds);
+    AddSysConstant('COLHOLDS', SCCurrentColHolds);
+    AddSysConstant('EMPTYHOLDS', SCCurrentEmptyHolds);
+    AddSysConstant('PHOTONS', SCCurrentPhotons);
+    AddSysConstant('ARMIDS', SCCurrentArmids);
+    AddSysConstant('LIMPETS', SCCurrentLimpets);
+    AddSysConstant('GENTORPS', SCCurrentGenTorps);
+    AddSysConstant('TWARPTYPE', SCCurrentTwarpType);
+    AddSysConstant('CLOAKS', SCCurrentCloaks);
+    AddSysConstant('BEACONS', SCCurrentBeacons);
+    AddSysConstant('ATOMICS', SCCurrentAtomics);
+    AddSysConstant('CORBOMITE', SCCurrentCorbomite);
+    AddSysConstant('EPROBES', SCCurrentEprobes);
+    AddSysConstant('MINEDISR', SCCurrentMineDisr);
+    AddSysConstant('PSYCHICPROBE', SCCurrentPsychicProbe);
+    AddSysConstant('PLANETSCANNER', SCCurrentPlanetScanner);
+    AddSysConstant('SCANTYPE', SCCurrentScanType);
+    AddSysConstant('ALIGNMENT', SCCurrentAlignment);
+    AddSysConstant('EXPERIENCE', SCCurrentExperience);
+    AddSysConstant('CORP', SCCurrentCorp);
+    AddSysConstant('SHIPNUMBER', SCCurrentShipNumber);
+    AddSysConstant('SHIPCLASS', SCCurrentShipClass);
+    AddSysConstant('ANSIQUICKSTATS',SCCurrentAnsiQuickStats);
+    AddSysConstant('QUICKSTATS',SCCurrentQuickStats);
+    AddSysConstant('QS',SCCurrentQS);
+    AddSysConstant('QSTAT',SCCurrentQSTAT);
+
+
     // Added in 2.06
+    AddSysConstant('GAMEDATA',SCGameData);
+    AddSysConstant('BOTLIST',SCBotList);
+    AddSysConstant('ACTIVEBOT',SCActiveBot);
+    AddSysConstant('ACTIVEBOTS',SCActiveBots);
+    AddSysConstant('ACTIVEBOTDIR',SCActiveBotDir);
+    AddSysConstant('ACTIVEBOTSCRIPT',SCActiveBotScript);
+    AddSysConstant('ACTIVEBOTNAME',SCActiveBotName);
+    AddSysConstant('VERSION',SCTWXVersion);
+    AddSysConstant('TWGSTYPE',SCTWGSTYPE);
+    AddSysConstant('TWGSVER',SCTWGSVer);
+    AddSysConstant('TW2002VER',SCTW2002Ver);
+    AddSysConstant('SECTOR.DEADEND', SCSector_DeadEnd);
+
+    // Added in 2.06 - replaced in 2.07 with shorted names,
+     //but keeping this for compatability.
     AddSysConstant('CURRENTTURNS', SCCurrentTurns);
     AddSysConstant('CURRENTCREDITS', SCCurrentCredits);
     AddSysConstant('CURRENTFIGHTERS', SCCurrentFighters);
@@ -5158,18 +5276,7 @@ begin
     AddSysConstant('CURRENTQUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('CURRENTQS',SCCurrentQS);
     AddSysConstant('CURRENTQSTAT',SCCurrentQSTAT);
-    AddSysConstant('GAMEDATA',SCGameData);
-    AddSysConstant('BOTLIST',SCBotList);
-    AddSysConstant('ACTIVEBOT',SCActiveBot);
-    AddSysConstant('ACTIVEBOTS',SCActiveBots);
-    AddSysConstant('ACTIVEBOTDIR',SCActiveBotDir);
-    AddSysConstant('ACTIVEBOTSCRIPT',SCActiveBotScript);
-    AddSysConstant('ACTIVEBOTNAME',SCActiveBotName);
-    AddSysConstant('VERSION',SCTWXVersion);
-    AddSysConstant('TWGSTYPE',SCTWGSTYPE);
-    AddSysConstant('TWGSVER',SCTWGSVer);
-    AddSysConstant('TW2002VER',SCTW2002Ver);
-    AddSysConstant('SECTOR.DEADEND', SCSector_DeadEnd);
+
 
     // MB - Internal system vars for library Parms and Parm count.
     AddSysConstant('LIBPARM', SCLIBPARM);
@@ -5308,8 +5415,8 @@ begin
     AddCommand('GETDIRLIST', 1, 3, CmdGetDirList, [pkVar, pkValue], pkValue);
     AddCommand('GETWORDCOUNT', 2, 2, CmdGetWordCount, [pkValue, pkVar], pkValue);
     AddCommand('MAKEDIR', 1, 1, CmdMakeDir, [pkValue], pkValue);
-    AddCommand('PADLEFT', 2, 2, CmdPadLeft, [pkVar, pkValue], pkValue);
-    AddCommand('PADRIGHT', 2, 2, CmdPadRight, [pkVar, pkValue], pkValue);
+    AddCommand('PADLEFT', 2, 3, CmdPadLeft, [pkVar, pkValue], pkValue);
+    AddCommand('PADRIGHT', 2, 3, CmdPadRight, [pkVar, pkValue], pkValue);
     AddCommand('REMOVEDIR', 1, 1, CmdRemoveDir, [pkValue], pkValue);
     AddCommand('SETMENUKEY', 1, 1, CmdSetMenuKey, [pkValue], pkValue);
     AddCommand('SPLITTEXT', 2, 3, CmdSplitText, [pkValue, pkVar], pkValue);
@@ -5363,6 +5470,8 @@ begin
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
+    AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
+    //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
