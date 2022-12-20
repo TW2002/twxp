@@ -2,6 +2,7 @@ Changes in 2.07.00
 + Added Shorter Quickstats Vars
 + Added getDateTime and dateTimeDiff commaands.
 + Added echoEx commaand.
++ Allow Database to be resized.
 + Fixed format CURRENCY command.
 + Fixed dirList commaand.
 + Fixed - Issue 56 - Exception occured saving module states. On TWXGUI during First Run.
