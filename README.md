@@ -4,7 +4,7 @@
 
 Originally written by Remco Mulder, and Elder Prophit. 
 
-## TWXP 2.07.00a Installer
+## TWXP 2.7 Installer
 
 Installing TWX Proxy has never been easier, thanks to the TWX Proxy installers!!!
 
