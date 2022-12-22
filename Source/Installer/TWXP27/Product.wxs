@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.7.0.0" Manufacturer="eXide" UpgradeCode="6b37de4c-889d-4651-b405-debf3bdafad5">
+	<Product Id="*" Name="TWX Proxy" Language="1033" Version="2.7.0.0" Manufacturer="Xide" UpgradeCode="6b37de4c-889d-4651-b405-debf3bdafad5">
 		<Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
     <!-- This code would bind the version to the product file, but I dont want to do that at this time...
       <Product Version="!(bind.FileVersion.MyAssemblyDll)" ...="">
@@ -21,7 +21,7 @@
     </Feature>
 
 		<Property Id="TWXPROXY" Secure="yes">
-			<RegistrySearch Id="ApplicationFolderSearch" Type="raw" Root="HKCU" Key="Software\eXide\TWXP" Name="InstallPath"/>
+			<RegistrySearch Id="ApplicationFolderSearch" Type="raw" Root="HKCU" Key="Software\Xide\TWXP" Name="InstallPath"/>
 		</Property>
 		<Property Id="WIXUI_INSTALLDIR" Value="TWXPROXY" />
 		<UIRef Id="WixUI_InstallDir" />
@@ -67,7 +67,7 @@
 					  Target="[TWXPROXY]putty.exe"
 					  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
 			<RemoveFolder Id="CleanUpDesktopShortCut" Directory="DesktopFolder" On="uninstall"/>
-          <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          <RegistryValue Root="HKCU" Key="Software\Xide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
         </Component>
       </Directory>
     </Directory>
@@ -100,7 +100,7 @@
                   Name="TWX WIKI on gitHub"
                   Target="https://github.com/TW2002/TWXProxy/wiki"/>
         <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\eXide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryValue Root="HKCU" Key="Software\Xide\TWXP" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
       </Component>
     </DirectoryRef>
 
@@ -109,17 +109,19 @@
 	<Fragment>
     <ComponentGroup Id="ProductComponents">
       <Component Id="ProductComponent" Directory="TWXPROXY" Guid="36d4d996-21c0-4cd5-b943-4bd3effa00fe" >
-        <RegistryValue Id="InstallPath" Root="HKCU" Key="Software\eXide\TWXP"  Name="InstallPath" Type="string" Value="[TWXPROXY]" />
-        <ProgId Id="TWXP" Description="The Veteran's Trade Wars Helper">
+		  <RegistryValue Id="InstallPath" Root="HKCU" Key="Software\Xide\TWXP"  Name="InstallPath" Type="string" Value="[TWXPROXY]" />
+		  <RegistryValue Id="Scripts" Root="HKCU" Key="Software\Xide\TWXP"  Name="Scripts" Type="string" Value="[TWXPROXY]Scripts\" />
+		  <RegistryValue Id="Mombot" Root="HKCU" Key="Software\Xide\TWXP"  Name="Mombot" Type="string" Value="[TWXPROXY]Scripts\Mombot\" />
+		  <ProgId Id="TWXP" Description="The Veteran's Trade Wars Helper">
           <Extension Id="xdb">
             <Verb Id="open" TargetFile="MainExe" Argument="&quot;%1&quot;" />
           </Extension>
         </ProgId>
-        <Shortcut Id="ProgramShortcut"
+ <!--       <Shortcut Id="ProgramShortcut"
                   Name="TWX Proxy 2.7"
                   Description="The Veteran's Trade Wars Helper"
                   Target="[TWXPROXY]twxp.exe"
-                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>        
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>        -->
         <File Id="MainExe" Source="TWXP27\twxp.exe"/>
         <File Source="TWXP27\twxp.dll"/>
         <File Source="TWXP27\twxc.exe"/>
@@ -134,7 +136,7 @@
         <File Source="TWXP25\Readme.txt"/>
       </Component>
       <Component Id="ScriptsComponent" Directory="SCRIPTS" Guid="6bc774d9-13ba-4194-b4f9-fd316a9905a5">
-        <File Source="TWXP25\Scripts\1_ECol.ts"/>
+<!--        <File Source="TWXP25\Scripts\1_ECol.ts"/>
         <File Source="TWXP25\Scripts\1_KeepAlive.ts"/>
         <File Source="TWXP25\Scripts\1_Login.ts"/>
         <File Source="TWXP25\Scripts\1_Move.ts"/>
@@ -154,75 +156,75 @@
         <File Source="TWXP25\Scripts\2_Col.ts"/>
         <File Source="TWXP25\Scripts\2_Evil.ts"/>
         <File Source="TWXP25\Scripts\2_Find.ts"/>
-        <File Source="TWXP25\Scripts\2_Gather.ts"/>
+        <File Source="TWXP25\Scripts\2_Gather.ts"/>-->
         <File Source="TWXP25\Scripts\2_MassColonise.ts"/>
         <File Source="TWXP25\Scripts\2_MassUpgrade.ts"/>
-        <File Source="TWXP25\Scripts\2_Ping.ts"/>
+<!--        <File Source="TWXP25\Scripts\2_Ping.ts"/>
         <File Source="TWXP25\Scripts\2_Probe.ts"/>
         <File Source="TWXP25\Scripts\2_Query.ts"/>
         <File Source="TWXP25\Scripts\2_SDF.ts"/>
         <File Source="TWXP25\Scripts\2_SDT.ts"/>
         <File Source="TWXP25\Scripts\2_Sentinel.ts"/>
         <File Source="TWXP25\Scripts\2_SSF.ts"/>
-        <File Source="TWXP25\Scripts\2_SST.ts"/>
+        <File Source="TWXP25\Scripts\2_SST.ts"/>-->
         <File Source="TWXP25\Scripts\2_WorldSSM.ts"/>
         <File Source="TWXP25\Scripts\2_WorldTrade.ts"/>
         <File Source="TWXP25\Scripts\_EP_Haggle2019.cts"/>
       </Component>
       <Component Id="IncludeComponent" Directory="INCLUDE" Guid="a1a5311e-8e93-433c-b333-ec694165e65b">
-        <File Source="TWXP25\Scripts\Include\Approach.ts"/>
+<!--        <File Source="TWXP25\Scripts\Include\Approach.ts"/>
         <File Source="TWXP25\Scripts\Include\Cache.ts"/>
         <File Source="TWXP25\Scripts\Include\Capture.ts"/>
         <File Source="TWXP25\Scripts\Include\CheckCIM.ts"/>
         <File Source="TWXP25\Scripts\Include\CheckCLV.ts"/>
         <File Source="TWXP25\Scripts\Include\CheckOnline.ts"/>
-        <File Source="TWXP25\Scripts\Include\Colonise.ts"/>
         <File Source="TWXP25\Scripts\Include\Evil.ts"/>
         <File Source="TWXP25\Scripts\Include\FastSST.ts"/>
-        <File Source="TWXP25\Scripts\Include\FindProduct.ts"/>
-        <File Source="TWXP25\Scripts\Include\GamePrefs.ts"/>
-        <File Source="TWXP25\Scripts\Include\Gather.ts"/>
         <File Source="TWXP25\Scripts\Include\GetAttack.ts"/>
         <File Source="TWXP25\Scripts\Include\GetTarget.ts"/>
-        <File Source="TWXP25\Scripts\Include\Haggle.ts"/>
-        <File Source="TWXP25\Scripts\Include\Haggle.old"/>
-        <File Source="TWXP25\Scripts\Include\Header.ts"/>
         <File Source="TWXP25\Scripts\Include\Land.ts"/>
         <File Source="TWXP25\Scripts\Include\MakePlanet.ts"/>
+		<File Source="TWXP25\Scripts\Include\Haggle.old"/>-->
+		  <File Source="TWXP25\Scripts\Include\GamePrefs.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Haggle.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Gather.ts"/>
+		  <File Source="TWXP25\Scripts\Include\FindProduct.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Colonise.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Header.ts"/>
         <File Source="TWXP25\Scripts\Include\MassColonise.ts"/>
         <File Source="TWXP25\Scripts\Include\MassUpgrade.ts"/>
         <File Source="TWXP25\Scripts\Include\Move.ts"/>
+		  <File Source="TWXP25\Scripts\Include\NearFig.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PlanetUpgrade.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PPT.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Refurb.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PlanetCheck.ts"/>
         <File Source="TWXP25\Scripts\Include\MoveProduct.ts"/>
-        <File Source="TWXP25\Scripts\Include\MoveShip.ts"/>
-        <File Source="TWXP25\Scripts\Include\NearFig.ts"/>
-        <File Source="TWXP25\Scripts\Include\PlanetCheck.ts"/>
-        <File Source="TWXP25\Scripts\Include\PlanetInfo.ts"/>
-        <File Source="TWXP25\Scripts\Include\PlanetLoop.ts"/>
-        <File Source="TWXP25\Scripts\Include\PlanetUpgrade.ts"/>
-        <File Source="TWXP25\Scripts\Include\PlayerInfo.ts"/>
-        <File Source="TWXP25\Scripts\Include\PortCheck.ts"/>
-        <File Source="TWXP25\Scripts\Include\PPT.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PortCheck.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PlanetLoop.ts"/>
+		  <!--       <File Source="TWXP25\Scripts\Include\MoveShip.ts"/>
         <File Source="TWXP25\Scripts\Include\Probe.ts"/>
-        <File Source="TWXP25\Scripts\Include\Refurb.ts"/>
         <File Source="TWXP25\Scripts\Include\Rob.ts"/>
         <File Source="TWXP25\Scripts\Include\Routes.ts"/>
         <File Source="TWXP25\Scripts\Include\SDF.ts"/>
         <File Source="TWXP25\Scripts\Include\SDT.ts"/>
         <File Source="TWXP25\Scripts\Include\SeekProduct.ts"/>
         <File Source="TWXP25\Scripts\Include\SeekTarget.ts"/>
-        <File Source="TWXP25\Scripts\Include\SellSteal.ts"/>
         <File Source="TWXP25\Scripts\Include\ShipStats.ts"/>
         <File Source="TWXP25\Scripts\Include\SSF.ts"/>
-        <File Source="TWXP25\Scripts\Include\SSM.ts"/>
-        <File Source="TWXP25\Scripts\Include\SST.ts"/>
         <File Source="TWXP25\Scripts\Include\SSTScout.ts"/>
         <File Source="TWXP25\Scripts\Include\StealDump.ts"/>
         <File Source="TWXP25\Scripts\Include\StripCorp.ts"/>
         <File Source="TWXP25\Scripts\Include\StripRank.ts"/>
-        <File Source="TWXP25\Scripts\Include\TestSector.ts"/>
-        <File Source="TWXP25\Scripts\Include\Warp.ts"/>
-        <File Source="TWXP25\Scripts\Include\WorldSSM.ts"/>
-        <File Source="TWXP25\Scripts\Include\WorldSST.ts"/>
+        <File Source="TWXP25\Scripts\Include\TestSector.ts"/>-->
+		  <File Source="TWXP25\Scripts\Include\SellSteal.ts"/>
+		  <File Source="TWXP25\Scripts\Include\SSM.ts"/>
+		  <File Source="TWXP25\Scripts\Include\SST.ts"/>
+		  <File Source="TWXP25\Scripts\Include\Warp.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PlayerInfo.ts"/>
+		  <File Source="TWXP25\Scripts\Include\PlanetInfo.ts"/>
+		  <File Source="TWXP25\Scripts\Include\WorldSSM.ts"/>
+       <!-- <File Source="TWXP25\Scripts\Include\WorldSST.ts"/>-->
         <File Source="TWXP25\Scripts\Include\WorldTrade.ts"/>
       </Component>
     </ComponentGroup>
