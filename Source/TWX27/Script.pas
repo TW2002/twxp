@@ -112,6 +112,7 @@ type
     FTimerEventCount: Integer;
     FLastScript,
     FActiveBot,
+    FActiveBotAlias,
     FActiveBotScript,
     FActiveBotNameVar,
     FActiveCommsVar,
@@ -162,6 +163,7 @@ type
     property Count : Integer read GetCount;
     property LastScript : string read FLastScript;
     property ActiveBot : string read FActiveBot;
+    property ActiveBotAlias : string read FActiveBotAlias;
     property ActiveBotDir : string read GetActiveBotDir;
     property ActiveBotScript : string read FActiveBotScript;
     property ActiveBotName   : string read GetActiveBotName;
@@ -544,6 +546,7 @@ begin
 
       FActiveBotScript := StringReplace(ScriptName, FProgramDir + '\scripts\', '', [rfReplaceAll]);
       FActiveBot := '';
+      FActiveBotAlias := '';
       FActiveBotNameVar := '';
       FActiveCommsVar := '';
       FActiveBotTagLength := 0;
@@ -560,6 +563,7 @@ begin
             if (Pos(LowerCase(FActiveBotScript), LowerCase(BotScript)) = 1) then
             begin
               FActiveBot := IniFile.ReadString(Section, 'Name', '');
+              FActiveBotAlias := StringReplace(Section, 'bot:', '', [rfReplaceAll, rfIgnoreCase]);
               FActiveBotNameVar := IniFile.ReadString(Section, 'NameVar', '');
               FActiveCommsVar := IniFile.ReadString(Section, 'CommsVar', '');
               FActiveLoginScript := IniFile.ReadString(Section, 'LoginScript', '');

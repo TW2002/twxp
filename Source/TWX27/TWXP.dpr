@@ -488,7 +488,7 @@ begin
     if dbFile <> '' then
       TWXDatabase.OpenDataBase(dbFile)
     else
-      ShowForm(gfSetup);
+      TWXGUI.ShowForm(gfSetup);
 
   end;
 

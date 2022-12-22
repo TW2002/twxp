@@ -3597,7 +3597,7 @@ var
   FS       : TFileStream;
 begin
   // CMD: saveHelp <text> <cmd> <mode> <keywords> <date>
-  // Date shou be in the format YYYYMMDD with no other formatting.
+  // Date should be in the format YYYYMMDD with no other formatting.
 
   // Load bot paramater PARM1 from globals.
   for I := 0 to TWXGlobalVars.Count - 1 do
@@ -5459,9 +5459,13 @@ begin
     AddCommand('STOPTIMER', 1, 1, CmdStopTimer, [pkValue], pkValue);
     AddCommand('STOPALL', 0, 1, CmdStopAll, [pkValue], pkValue);
     AddCommand('CONCAT', 2, -1, CmdConcat, [pkVar, pkValue], pkValue);
+
+    // MB - This is not implimentd... TODO... Maaybe...
     AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
+
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
+
     // MB - This is not implimentd... TODO... Maaybe...
     AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
