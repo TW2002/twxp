@@ -72,6 +72,10 @@ type
     RobFactor,
     StealFactor : Byte;
     LastPortCIM : TDateTime;
+
+// New field ideas for future version
+// database vars tylos, alpha lastbust lastbuts.datetime lastR/S MCIC +- figsec minesec
+
   end;
   PDataHeader = ^TDataHeader;
 

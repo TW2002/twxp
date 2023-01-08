@@ -800,7 +800,9 @@ begin
   begin
     // write 32-bit constant reference
 
-    if (ParamKind <> pkValue) then
+    // MB - Making Some system Vars writeable
+    //if (ParamKind <> pkValue) then
+    if (ParamKind <> pkValue) and (ParamKind <> pkVar) then
       ParamTypeError;
 
     NewConst := TCmdParam.Create;
@@ -1623,19 +1625,22 @@ procedure TScriptCmp.CompileFromStrings(ScriptText : TStringList; ScriptName : s
 var
   ScriptID    : Byte;
   Line,
-  I           : Integer;
+  I, J           : Integer;
   ParamStr,
-  LineText    : string;
+  LineText,
+  VarName     : string;
   Last        : Char;
   Linked,
   InQuote     : Boolean;
   ParamLine,
-  ParamList   : TStringList;
+  ParamList,
+  Indices     : TStringList;
 begin
   FLineCount := FLineCount + ScriptText.Count;
   ScriptID := IncludeScriptList.Add(UpperCase(ScriptName));
   ParamLine := TStringList.Create;
   ParamList := TStringList.Create;
+  Indices   := TStringList.Create;
 
   Line := 1;
 
@@ -1689,7 +1694,21 @@ begin
                 ParamList.Clear;
                 ExtractStrings([' '], [], PChar(LineText), ParamList);
 
-                ParamLine.Append(Uppercase(stringreplace(ParamList[0], chr(9), '',
+                if (pos('$', ParamList[0]) <> 1) then
+                begin
+                VarName := Uppercase(stringreplace(ParamList[0], chr(9), '',
+                          [rfReplaceAll, rfIgnoreCase]));
+                Indices.Clear;
+                Split(VarName, Indices, '[');
+
+                ParamLine.Append('"!' + Indices[0] + '"');
+
+                for J := 1 to Indices.Count - 1 do
+                  ParamLine.Append(Uppercase(stringreplace(Indices[J], ']', '',
+                          [rfReplaceAll, rfIgnoreCase])))
+                end
+                else
+                  ParamLine.Append(Uppercase(stringreplace(ParamList[0], chr(9), '',
                           [rfReplaceAll, rfIgnoreCase])));
                 ParamStr := '';
                 Continue;
@@ -1790,6 +1809,7 @@ begin
     end;
   finally
     ParamLine.Free;
+    Indices.Free;
   end;
 end;
 
