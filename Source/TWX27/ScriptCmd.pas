@@ -1094,237 +1094,6 @@ begin
   end;
 end;
 
-function CmdSetSystemVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  I,
-  Index    : Integer;
-  S        : TSector;
-  Items    : TList;
-  VarName,
-  Value    : string;
-  DecValue : Integer;
-  Warp     : TStringList;
-  Head     : TDataHeader;
-begin
-  // CMD: setSector <index> var vaule
-  //      e.e. setSector 2 backdoor 5500
-
-  Warp := TStringList.Create();
-
-
-  VarName := Uppercase(stringreplace(Params[0].Value, '!', '',
-             [rfReplaceAll, rfIgnoreCase]));
-
-  if (pos('SECTOR.', VarName) <> 1) and (pos('PORT.', VarName) <> 1) then
-  begin
-    Value := Params[1].Value;
-    DecValue := StrToIntDef(Params[1].Value,0);
-
-    Head := TWXDatabase.DBHeader;
-
-    if VarName = 'ALPHACENTAURI' then
-      Head.AlphaCentauri := DecValue
-    else if VarName = 'RYLOS' then
-      Head.Rylos := DecValue
-    else if VarName = 'STARDOCK' then
-      Head.StarDock := DecValue
-    else if VarName = 'ADDRESS' then
-      Head.Address := Value
-    else if VarName = 'SERVERPORT' then
-      Head.ServerPort := DecValue
-    else if VarName = 'LISTENPORT' then
-      Head.ListenPort := DecValue
-    else if VarName = 'USERLOGIN' then
-      if DecValue = 1 then
-        Head.UseRLogin := True
-      else
-        Head.UseRLogin := False
-    else if VarName = 'USELOGIN' then
-      if DecValue = 1 then
-        Head.UseLogin := True
-      else
-        Head.UseLogin := False
-    else if VarName = 'LOGINSCRIPT' then
-        Head.LoginScript := Value
-    else if VarName = 'LOGINNAME' then
-      Head.LOGINNAME := Value
-    else if VarName = 'PASSWORD' then
-      Head.PASSWORD := Value
-    else if VarName = 'GAME' then
-      Head.Game := Value[1];
-
-
-
-    TWXDatabase.DBHeader := Head;
-    TWXDatabase.WriteHeader;
-
-  end
-  else
-  begin
-    VarName := stringreplace(VarName, 'Sector.', '',
-                [rfReplaceAll, rfIgnoreCase]);
-    VarName := stringreplace(VarName, 'Port.', '',
-                [rfReplaceAll, rfIgnoreCase]);
-    Value := Params[2].Value;
-    DecValue := StrToIntDef(Params[2].Value,0);
-
-    ConvertToNumber(Params[1].Value, Index);
-
-    // Ignore invalid call with index of zero
-    if (index = 0) then begin
-      Result := caNone;
-      exit
-    end;
-
-    CheckSector(Index);
-
-    S := TWXDatabase.LoadSector(Index);
-
-    if VarName = 'EXPLORED' then
-    begin
-      if UpperCase(Value) = 'NO' then
-        S.Explored := etNo
-      else if UpperCase(Value) = 'CALC' then
-        S.Explored := etCalc
-      else if UpperCase(Value) = 'DENSITY' then
-        S.Explored := etDensity
-      else if UpperCase(Value) = 'YES' then
-        S.Explored := etHolo
-    end
-    else if VarName = 'WARPS' then
-    begin
-//      for I := 1 to 6 do
-//        S.Warp[I] := 0;
-//      Split(Value, Warp, ',');
-//      for I := 0 to Warp.Count - 1 do
-//        S.Warp[I + 1] := StrToIntDef(Warp[I],0);
-      //S.Warps := Warp.Count;
-
-      S.Warp[DecValue] := StrToIntDef(Params[3].Value,0);
-    end
-    else if VarName = 'BEACON' then
-      S.Beacon := Value
-    else if VarName = 'CONSTELLATION' then
-      S.Constellation := Value
-    else if VarName = 'MINES.QUANTITY' then
-      S.Mines_Armid.Quantity := DecValue
-    else if VarName = 'LIMPETS.QUANTITY' then
-      S.Mines_Limpet.Quantity := DecValue
-    else if VarName = 'MINES.OWNER' then
-      S.Mines_Armid.Owner := Value
-    else if VarName = 'LIMPETS.OWNER' then
-      S.Mines_Limpet.Owner := Value
-    else if VarName = 'FIGS.QUANTITY' then
-      S.Figs.Quantity := DecValue
-    else if VarName = 'FIGS.OWNER' then
-      S.Figs.Owner := Value
-    else if VarName = 'FIGS.TYPE' then
-    begin
-      if UpperCase(Value) = 'TOLL' then
-        S.Figs.FigType := ftToll
-      else if UpperCase(Value) = 'DEFENSIVE' then
-        S.Figs.FigType := ftDefensive
-      else if UpperCase(Value) = 'OFFENSIVE' then
-        S.Figs.FigType := ftOffensive
-    end
-    else if VarName = 'DENSITY' then
-      S.Density := DecValue
-    else if VarName = 'NAVHAZ' then
-      S.NavHaz := DecValue
-    else if VarName = 'ANOMALY' then
-      if (UpperCase(Value) = 'YES') or (UpperCase(Value) = 'TRUE') or (DecValue = 1) then
-        S.Anomaly := True
-      else
-        S.Anomaly := False
-    else if VarName = 'NAME' then //PORT.Name
-    begin
-      S.SPort.Name := Value;
-      if (S.SPort.Name = '') then
-      begin
-        S.SPort.ClassIndex := 0;
-        //S.SPort.Exists := 0;
-      end
-    end
-    else if VarName = 'CLASS' then
-    begin
-      S.SPort.ClassIndex := DecValue;
-      S.SPort.BuyProduct[ptFuelOre] := False;
-      S.SPort.BuyProduct[ptOrganics] := False;
-      S.SPort.BuyProduct[ptEquipment] := False;
-      if DecValue = 1 then // BBS
-      begin
-        S.SPort.BuyProduct[ptFuelOre] := True;
-        S.SPort.BuyProduct[ptOrganics] := True;
-      end
-      else if DecValue = 2 then // BSB
-      begin
-        S.SPort.BuyProduct[ptFuelOre] := True;
-        S.SPort.BuyProduct[ptEquipment] := True;
-      end
-      else if DecValue = 3 then // SBB
-      begin
-        S.SPort.BuyProduct[ptOrganics] := True;
-        S.SPort.BuyProduct[ptEquipment] := True;
-      end
-      else if DecValue = 4 then // SSB
-        S.SPort.BuyProduct[ptEquipment] := True
-
-      else if DecValue = 5 then // SBS
-        S.SPort.BuyProduct[ptOrganics] := True
-
-      else if DecValue = 6 then // BSS
-        S.SPort.BuyProduct[ptFuelOre] := True
-
-      else if (DecValue = 8) or (DecValue = 9) then // BBB
-      begin
-        S.SPort.BuyProduct[ptFuelOre] := True;
-        S.SPort.BuyProduct[ptOrganics] := True;
-        S.SPort.BuyProduct[ptEquipment] := True;
-      end
-    end
-    else if VarName = 'BUILDTIME' then
-      S.SPort.BuildTime := DecValue
-    else if VarName = 'PERC_ORE' then
-      S.SPort.ProductPercent[ptFuelOre] := DecValue
-    else if VarName = 'PERC_ORG' then
-      S.SPort.ProductPercent[ptOrganics] := DecValue
-    else if VarName = 'PERC_EQU' then
-      S.SPort.ProductPercent[ptEquipment] := DecValue
-    else if VarName = 'ORE' then
-      S.SPort.ProductAmount[ptFuelOre] := DecValue
-    else if VarName = 'ORG' then
-      S.SPort.ProductAmount[ptOrganics] := DecValue
-    else if VarName = 'EQU' then
-      S.SPort.ProductAmount[ptEquipment] := DecValue
-    else if VarName = 'BUY_ORE' then
-      if (UpperCase(Value) = 'YES') or (UpperCase(Value) = 'TRUE') or (DecValue = 1) then
-        S.SPort.BuyProduct[ptFuelOre] := True
-      else
-        S.SPort.BuyProduct[ptFuelOre] := False
-    else if VarName = 'BUY_ORG' then
-      if (UpperCase(Value) = 'YES') or (UpperCase(Value) = 'TRUE') or (DecValue = 1) then
-        S.SPort.BuyProduct[ptOrganics] := True
-      else
-        S.SPort.BuyProduct[ptOrganics] := False
-    else if VarName = 'BUY_EQU' then
-      if (UpperCase(Value) = 'YES') or (UpperCase(Value) = 'TRUE') or (DecValue = 1) then
-        S.SPort.BuyProduct[ptEquipment] := True
-      else
-        S.SPort.BuyProduct[ptEquipment] := False
-    else if VarName = 'UPDATED' then
-      if (pos('PORT.', UpperCase(Params[0].Value)) > 0) then
-        S.SPort.Update := StrToDateTime(Value)
-      else
-        S.Update := StrToDateTime(Value);
-
-      //TWXDatabase.SaveSector(S, FCurrentSectorIndex, FShipList, FTraderList, FPlanetList);
-      TWXDatabase.SaveSector(S, index, nil, nil, nil);
-  end;
-  Result := caNone;
-end;
-
-
-
 function CmdGetSectorParameter(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Index: Integer;
@@ -2572,16 +2341,6 @@ var
 begin
   // CMD: setVar var <value>
 
-  // MB - check is this is a System Variable
-  if Pos('!', Params[0].Value) = 1 then
-  begin
-    CmdSetSystemVar(Script, Params);
-    Result := caNone;
-    Exit;
-  end;
-
-
-
   if Length(Params) > 2 then
   begin
     // MB - Now you can string together parameters like echo without concatting.
@@ -2590,7 +2349,8 @@ begin
 
     Params[0].Value := ParamText;
   end
-  else if (Params[1].IsNumeric = TRUE) and (Length(Params) = 2) then
+  else
+    if (Params[1].IsNumeric = TRUE) and (Length(Params) = 2) then
       //Params[0].DecValue := Params[1].DecValue
       //UpdateParam(Params[0], Params[1].DecValue, TScript(Script).DecimalPrecision) // this way Precision is captured
       UpdateParam(Params[0], Params[1].DecValue, Params[1].SigDigits)
@@ -5420,22 +5180,14 @@ begin
     AddSysConstant('PORT.BUYFUEL', SCPort_BuyFuel);
     AddSysConstant('PORT.BUYORG', SCPort_BuyOrg);
     AddSysConstant('PORT.BUYEQUIP', SCPort_BuyEquip);
-    AddSysConstant('PORT.BUY_ORE', SCPort_BuyFuel);
-    AddSysConstant('PORT.BUY_ORG', SCPort_BuyOrg);
-    AddSysConstant('PORT.BUY_EQU', SCPort_BuyEquip);
     AddSysConstant('PORT.EXISTS', SCPort_Exists);
     AddSysConstant('PORT.FUEL', SCPort_Fuel);
-    AddSysConstant('PORT.ORE', SCPort_Fuel);
     AddSysConstant('PORT.NAME', SCPort_Name);
     AddSysConstant('PORT.ORG', SCPort_Org);
     AddSysConstant('PORT.EQUIP', SCPort_Equip);
-    AddSysConstant('PORT.EQU', SCPort_Equip);
     AddSysConstant('PORT.PERCENTFUEL', SCPort_PercentFuel);
     AddSysConstant('PORT.PERCENTORG', SCPort_PercentOrg);
     AddSysConstant('PORT.PERCENTEQUIP', SCPort_PercentEquip);
-    AddSysConstant('PORT.PERC_ORE', SCPort_PercentFuel);
-    AddSysConstant('PORT.PERC_ORG', SCPort_PercentOrg);
-    AddSysConstant('PORT.PERC_EQU', SCPort_PercentEquip);
     AddSysConstant('SECTOR.ANOMOLY', SCSector_Anomaly);
     AddSysConstant('SECTOR.BACKDOORCOUNT', SCSector_BackDoorCount);
     AddSysConstant('SECTOR.BACKDOORS', SCSector_BackDoors);
@@ -5760,7 +5512,6 @@ begin
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
     AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
-    AddCommand('SETSYSTEMVAR', 2, -1, CmdSetSystemVar, [pkValue], pkValue);
     //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
 
 
