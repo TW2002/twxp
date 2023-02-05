@@ -95,6 +95,7 @@ type
     procedure SetMultiArraysFromLists(ListArray : array of TList);
     property Name : string read FName write FName;
     property ArraySize : Integer read FArraySize write FArraySize;
+    property ArrayData : TList read Vars write Vars;
   end;
 
   // TScriptLabel: A jump label within a script.
