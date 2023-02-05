@@ -1502,10 +1502,10 @@ begin
   begin
     if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
     begin
-      Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
-      TVarParam(Params[0]).ArraySize := TGlobalVarItem(TWXGlobalVars[I]).ArraySize;
-      if TGlobalVarItem(TWXGlobalVars[I]).ArrayData.count > 0 then
-        TVarParam(Params[0]).ArrayData := TGlobalVarItem(TWXGlobalVars[I]).ArrayData;
+      if TGlobalVarItem(TWXGlobalVars[I]).ArrayCount > 0 then
+        TVarParam(Params[0]).SetArrayFromStrings(TGlobalVarItem(TWXGlobalVars[I]).Data)
+      else
+        Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
     end;
   end;
 
@@ -1999,64 +1999,27 @@ end;
 function CmdSaveGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Found : Boolean;
-  I, J, Index, DataIndex : Integer;
+  I     : Integer;
+  Data  : TStringList;
   Indexes : TStringArray;
-  Item    : TGlobalVarItem;
-  VarName : String;
-  Strings : TStringList;
 begin
   Found := False;
-  Strings := TStringList.Create();
 
-  try
-    for I := 0 to Length(Params) - 1 do
+  // Search for an existing item and update if found
+  //Find := TGlobalVarItem.Create(VarName, '0');
+  //Index := TWXGlobalVars.IndexOf(Find);
+
+  if TVarParam(Params[0]).ArraySize > 0 then
+  begin
+    Data :=  TStringList.Create;
+
+    for I := 1 to TVarParam(Params[0]).ArraySize do
     begin
-      VarName := TVarParam(Params[I]).Name;
-      if Pos('~', VarName) > 0 then
-      begin
-        Split(VarName, Strings, '~');
-        if Strings.Count > 1 then
-          VarName := Strings[1];
-      end;
+      SetLength(Indexes, 1);
+      Indexes[0] := IntToStr(I);
 
-      // Search for an existing item and update if found
-      for Index := 0 to TWXGlobalVars.Count - 1 do
-        if TGlobalVarItem(TWXGlobalVars[Index]).Name = VarName then
-        begin
-          Found := True;
-          break;
-        end;
-
-
-        if Found then
-        begin
-          // update existing item.
-          TGlobalVarItem(TWXGlobalVars[Index]).Value := Params[I].Value;
-          TGlobalVarItem(TWXGlobalVars[Index]).ArraySize := TVarParam(Params[I]).ArraySize;
-          TGlobalVarItem(TWXGlobalVars[Index]).ArrayData.Clear;
-          if TVarParam(Params[I]).ArrayData.Count > 0 then
-            for DataIndex := 0 to TVarParam(Params[I]).ArrayData.Count - 1 do
-              TGlobalVarItem(TWXGlobalVars[Index]).ArrayData.Add(TVarParam(Params[I]).ArrayData[DataIndex]);
-
-        end
-        else
-        begin
-          // Create a new item.
-          Item := TGlobalVarItem.Create(VarName, Params[I].Value);
-          Item.ArraySize := TVarParam(Params[I]).ArraySize;
-          Item.ArrayData.Clear;
-          if TVarParam(Params[I]).ArrayData.Count > 0 then
-            for DataIndex := 0 to TVarParam(Params[I]).ArrayData.Count - 1 do
-              Item.ArrayData.Add(TVarParam(Params[I]).ArrayData[DataIndex]);
-
-
-            //        Item.ArrayData := TVarParam(Params[I]).ArrayData;
-
-          TWXGlobalVars.Add(Item);
-        end
-      end
-  finally
-    Strings.Free;
+      Data.Add(TVarParam(Params[0]).GetIndexVar(Indexes).Value)
+    end;
   end;
 end;
 

@@ -1952,7 +1952,7 @@ begin
 
     try
       // Append the Library Commands to the Code
-      if ScriptText.count > 0 then
+      if ScriptText.count > 21 then
         FCmp.CompileFromStrings(ScriptText, '');
     finally
       ScriptText.Free;

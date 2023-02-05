@@ -219,6 +219,13 @@ begin
   if (FirstLoad) then
   begin
     // Give the user a welcome message
+    MessageDlg('Welcome to TWX Proxy 2.07!  This helper is designed to work in' + endl +
+               'conjunction with your favorite Tradewars Helper or Telnet' + endl +
+               'Terminal. It does not provide a terminal window, so you should' + endl +
+               'read the Getting Started section of the wiki before continuing' + endl +
+               '(https://github.com/tw2002/TWXP/wiki).' + endl + endl +
+               'You will need to create a new database before connecting' + endl +
+               'to a server.', mtInformation, [mbOk], 0);
 
     // MB - License is displayed and accested in the setup progrsm, no need to display it here.
     //ShowForm(gfLicense);
