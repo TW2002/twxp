@@ -49,6 +49,7 @@ type
     FProgramDir: string;
     FDatabaseName: string;
     FStartupScripts: TStringList;
+    FCmdLine: string;
     FGUIForms: array[TGUIFormType] of TForm;
     FConnected: Boolean;
     FFirstLoad: Boolean;
@@ -87,6 +88,7 @@ type
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
     property StartupScripts: TStringList read GetStartupScripts write SetStartupScripts;
+    property CmdLine: string read FCmdLine write FCmdLine;
     property TrayHint: string write SetTrayHint;
     property FirstLoad: Boolean read FFirstLoad write FFirstLoad;
   end;
