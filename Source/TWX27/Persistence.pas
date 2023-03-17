@@ -130,10 +130,7 @@ begin
       end;
     end;
   except
-    // MB - Don't throw exception on modult 9 (TWXGUI)
-    if I <> 8 then
-      MessageDlg('Exception occured saving module states.', mtError, [mbOK], 0);
-
+    MessageDlg('Exception occured saving module states.', mtError, [mbOK], 0);
     exit;
 //  finally
   end;
