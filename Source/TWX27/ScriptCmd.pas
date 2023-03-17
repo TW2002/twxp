@@ -477,14 +477,20 @@ end;
 function CmdGetDateTime(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Hour : Integer;
+  dt : tDateTime;
 begin
   // CMD: GetDateTime {CurrentDateTime}
 
+  if(Length(Params) > 1) then
+    dt := StrToDateTime(Params[1].Value)
+  else
+    dt := Now;
+
   // MB - Return a UNIX style date (Seconds since January 1, 1970)
-   Params[0].Value := InttoStr(DateTimeToUnix(Now));
+   Params[0].Value := InttoStr(DateTimeToUnix(dt));
   // Params[0].Value := Round((Now - UnixStartDate) * 86400);
 
-  Hour := HourOf(Now);
+  Hour := HourOf(dt);
   if (Hour = 0 ) then
     Hour := 12;
   if (Hour > 12) then
@@ -494,20 +500,20 @@ begin
   with (Script as TScript) do
   begin
 
-    SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(dt)), '');
     SetVariable(TVarParam(Params[0]).Name + '.HOUR', IntToStr(Hour), '');
-    SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', Now), '');
-    SetVariable(TVarParam(Params[0]).Name + '.MINUTE', IntToStr(MinuteOf(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.SECOND', IntToStr(SecondOf(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(Now)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(IncDay(Now, -1)), '');
-    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(IncDay(Now, 1))), '');
-    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', Now), '');
-    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', Now), '')
+    SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MINUTE', IntToStr(MinuteOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.SECOND', IntToStr(SecondOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(IncDay(dt, -1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(IncDay(dt, 1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', dt), '')
   end;
 
 
@@ -536,10 +542,64 @@ begin
     SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', Now), '')
   end;
 
-
-
   Result := caNone;
 end;
+
+function CmdDateTimeAdd(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Hour : Integer;
+  dt : tDateTime;
+Begin
+  // CMD: DateTimeAdd $var $value Part  zzz
+  dt := UnixToDateTime(StrToInt64(Params[0].Value));
+
+      if (uppercase(Params[2].Value) = 'DAY') then
+        dt := IncDay(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'HOUR') then
+        dt := IncHour(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'MIN') then
+        dt := IncMinute(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'SEC') then
+        dt := IncSecond(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'WEEK') then
+        dt := IncWeek(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'MONTH') then
+        dt := IncMonth(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'YEAR') then
+        dt := IncYear(dt, StrToInt64(Params[1].Value));
+
+      Params[0].Value := InttoStr(DateTimeToUnix(dt));
+
+
+  Hour := HourOf(dt);
+  if (Hour = 0 ) then
+    Hour := 12;
+  if (Hour > 12) then
+    Hour := Hour - 12;
+
+  // MB -- add date parts
+  with (Script as TScript) do
+  begin
+
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR', IntToStr(Hour), '');
+    SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MINUTE', IntToStr(MinuteOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.SECOND', IntToStr(SecondOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(IncDay(dt, -1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(IncDay(dt, 1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', dt), '')
+  end;
+
+      //Params[0].Value := InttoStr(DateTimeToUnix(Now));
+      Result := caNone;
+End;
 
 function CmdDateTimeDiff(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
@@ -5600,29 +5660,26 @@ begin
     AddCommand('OPENDATABASE', 1, 1, CmdOpenDatabase, [pkValue], pkValue);
     AddCommand('CLOSEDATABASE', 0, 0, CmdCloseDatabase, [pkValue], pkValue);
     AddCommand('RESETDATABASE', 1, 2, CmdResetDatabase, [pkValue], pkValue);
-
     AddCommand('STARTTIMER', 1, 1, CmdStartTimer, [pkValue], pkValue);
     AddCommand('STOPTIMER', 1, 1, CmdStopTimer, [pkValue], pkValue);
     AddCommand('STOPALL', 0, 1, CmdStopAll, [pkValue], pkValue);
     AddCommand('CONCAT', 2, -1, CmdConcat, [pkVar, pkValue], pkValue);
-
-    // MB - This is not implimentd... TODO... Maaybe...
-    AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
-
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
 
-    // MB - This is not implimentd... TODO... Maaybe...
-    // AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
-
     // Commands added for 2.07
-    AddCommand('GETDATETIME', 1, 1, CmdGetDateTime, [pkVar], pkValue);
+    AddCommand('GETDATETIME', 1, 2, CmdGetDateTime, [pkVar], pkValue);
     AddCommand('GETDATEONLY', 1, 1, CmdGetDateOnly, [pkVar], pkValue);
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
+    AddCommand('DATETIMEADD', 3, 3, CmdDateTimeADD, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
     AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
     //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
+
+    // MB - This is not implimentd... TODO... Maaybe...
+    // AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
+    // AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);
