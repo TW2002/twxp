@@ -475,15 +475,131 @@ begin
 end;
 
 function CmdGetDateTime(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Hour : Integer;
+  dt : tDateTime;
 begin
   // CMD: GetDateTime {CurrentDateTime}
 
+  if(Length(Params) > 1) then
+    dt := StrToDateTime(Params[1].Value)
+  else
+    dt := Now;
+
   // MB - Return a UNIX style date (Seconds since January 1, 1970)
-   Params[0].Value := InttoStr(DateTimeToUnix(Now));
+   Params[0].Value := InttoStr(DateTimeToUnix(dt));
   // Params[0].Value := Round((Now - UnixStartDate) * 86400);
+
+  Hour := HourOf(dt);
+  if (Hour = 0 ) then
+    Hour := 12;
+  if (Hour > 12) then
+    Hour := Hour - 12;
+
+  // MB -- add date parts
+  with (Script as TScript) do
+  begin
+
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR', IntToStr(Hour), '');
+    SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MINUTE', IntToStr(MinuteOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.SECOND', IntToStr(SecondOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(IncDay(dt, -1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(IncDay(dt, 1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', dt), '')
+  end;
+
 
   Result := caNone;
 end;
+
+function CmdGetDateOnly(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  // CMD: GetDateOnly {CurrentDate at Midnight}
+
+  // MB - Return a UNIX style date (Seconds since January 1, 1970)
+   Params[0].Value := InttoStr(DateTimeToUnix(DateOf(Now)));
+  // Params[0].Value := Round((Now - UnixStartDate) * 86400);
+
+  // MB -- add date parts
+  with (Script as TScript) do
+  begin
+    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(Now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(Now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(Now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(Now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(Now)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(Yesterday)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(Tomorrow)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', Now), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', Now), '')
+  end;
+
+  Result := caNone;
+end;
+
+function CmdDateTimeAdd(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Hour : Integer;
+  dt : tDateTime;
+Begin
+  // CMD: DateTimeAdd $var $value Part  zzz
+  dt := UnixToDateTime(StrToInt64(Params[0].Value));
+
+      if (uppercase(Params[2].Value) = 'DAY') then
+        dt := IncDay(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'HOUR') then
+        dt := IncHour(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'MIN') then
+        dt := IncMinute(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'SEC') then
+        dt := IncSecond(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'WEEK') then
+        dt := IncWeek(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'MONTH') then
+        dt := IncMonth(dt, StrToInt64(Params[1].Value));
+      if (uppercase(Params[2].Value) = 'YEAR') then
+        dt := IncYear(dt, StrToInt64(Params[1].Value));
+
+      Params[0].Value := InttoStr(DateTimeToUnix(dt));
+
+
+  Hour := HourOf(dt);
+  if (Hour = 0 ) then
+    Hour := 12;
+  if (Hour > 12) then
+    Hour := Hour - 12;
+
+  // MB -- add date parts
+  with (Script as TScript) do
+  begin
+
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.HOUR', IntToStr(Hour), '');
+    SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MINUTE', IntToStr(MinuteOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.SECOND', IntToStr(SecondOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAY', IntToStr(DayOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MONTH', IntToStr(MonthOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YEAR', IntToStr(YearOf(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFYEAR', IntToStr(DayOfTheYear(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.DAYOFWEEK', IntToStr(DayOfTheWeek(dt)), '');
+    SetVariable(TVarParam(Params[0]).Name + '.YESTERDAY', InttoStr(DateTimeToUnix(IncDay(dt, -1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.TOMORROW', InttoStr(DateTimeToUnix(IncDay(dt, 1))), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFWEEKDAY', FormatDateTime('dddd', dt), '');
+    SetVariable(TVarParam(Params[0]).Name + '.NAMEOFMONTH', FormatDateTime('mmmm', dt), '')
+  end;
+
+      //Params[0].Value := InttoStr(DateTimeToUnix(Now));
+      Result := caNone;
+End;
 
 function CmdDateTimeDiff(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
@@ -1502,10 +1618,10 @@ begin
   begin
     if TGlobalVarItem(TWXGlobalVars[I]).Name = TVarParam(Params[0]).Name then
     begin
-      if TGlobalVarItem(TWXGlobalVars[I]).ArrayCount > 0 then
-        TVarParam(Params[0]).SetArrayFromStrings(TGlobalVarItem(TWXGlobalVars[I]).Data)
-      else
-        Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
+      Params[0].Value := TGlobalVarItem(TWXGlobalVars[I]).Value;
+      TVarParam(Params[0]).ArraySize := TGlobalVarItem(TWXGlobalVars[I]).ArraySize;
+      if TGlobalVarItem(TWXGlobalVars[I]).ArrayData.count > 0 then
+        TVarParam(Params[0]).ArrayData := TGlobalVarItem(TWXGlobalVars[I]).ArrayData;
     end;
   end;
 
@@ -1999,27 +2115,64 @@ end;
 function CmdSaveGlobal(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Found : Boolean;
-  I     : Integer;
-  Data  : TStringList;
+  I, J, Index, DataIndex : Integer;
   Indexes : TStringArray;
+  Item    : TGlobalVarItem;
+  VarName : String;
+  Strings : TStringList;
 begin
   Found := False;
+  Strings := TStringList.Create;
 
-  // Search for an existing item and update if found
-  //Find := TGlobalVarItem.Create(VarName, '0');
-  //Index := TWXGlobalVars.IndexOf(Find);
-
-  if TVarParam(Params[0]).ArraySize > 0 then
-  begin
-    Data :=  TStringList.Create;
-
-    for I := 1 to TVarParam(Params[0]).ArraySize do
+  try
+    for I := 0 to Length(Params) - 1 do
     begin
-      SetLength(Indexes, 1);
-      Indexes[0] := IntToStr(I);
+      VarName := TVarParam(Params[I]).Name;
+      if Pos('~', VarName) > 0 then
+      begin
+        Split(VarName, Strings, '~');
+        if Strings.Count > 1 then
+          VarName := Strings[1];
+      end;
 
-      Data.Add(TVarParam(Params[0]).GetIndexVar(Indexes).Value)
-    end;
+      // Search for an existing item and update if found
+      for Index := 0 to TWXGlobalVars.Count - 1 do
+        if TGlobalVarItem(TWXGlobalVars[Index]).Name = VarName then
+        begin
+          Found := True;
+          break;
+        end;
+
+
+        if Found then
+        begin
+          // update existing item.
+          TGlobalVarItem(TWXGlobalVars[Index]).Value := Params[I].Value;
+          TGlobalVarItem(TWXGlobalVars[Index]).ArraySize := TVarParam(Params[I]).ArraySize;
+          TGlobalVarItem(TWXGlobalVars[Index]).ArrayData.Clear;
+          if TVarParam(Params[I]).ArrayData.Count > 0 then
+            for DataIndex := 0 to TVarParam(Params[I]).ArrayData.Count - 1 do
+              TGlobalVarItem(TWXGlobalVars[Index]).ArrayData.Add(TVarParam(Params[I]).ArrayData[DataIndex]);
+
+        end
+        else
+        begin
+          // Create a new item.
+          Item := TGlobalVarItem.Create(VarName, Params[I].Value);
+          Item.ArraySize := TVarParam(Params[I]).ArraySize;
+          Item.ArrayData.Clear;
+          if TVarParam(Params[I]).ArrayData.Count > 0 then
+            for DataIndex := 0 to TVarParam(Params[I]).ArrayData.Count - 1 do
+              Item.ArrayData.Add(TVarParam(Params[I]).ArrayData[DataIndex]);
+
+
+            //        Item.ArrayData := TVarParam(Params[I]).ArrayData;
+
+          TWXGlobalVars.Add(Item);
+        end
+      end
+  finally
+    Strings.Free;
   end;
 end;
 
@@ -3086,6 +3239,7 @@ begin
   Result := caNone;
 end;
 
+
 function CmdCloseInstance(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 const
   WM_CLOSE = $0010;
@@ -3097,6 +3251,9 @@ var
   IniFile      : TIniFile;
   Handle       : THandle;
 begin
+  if Params[0].Value = 'SELF' then
+    TWXMenu.OpenMenu('TWX_EXIT', 0);
+
 
   if Params[0].Value = 'ALL' then
   begin
@@ -3597,7 +3754,7 @@ var
   FS       : TFileStream;
 begin
   // CMD: saveHelp <text> <cmd> <mode> <keywords> <date>
-  // Date shou be in the format YYYYMMDD with no other formatting.
+  // Date should be in the format YYYYMMDD with no other formatting.
 
   // Load bot paramater PARM1 from globals.
   for I := 0 to TWXGlobalVars.Count - 1 do
@@ -4824,6 +4981,54 @@ Result := Format('%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s
   SCCurrentScanType(Indexes)]);
 end;
 
+function SCTWXCmdLine(Indexes : TStringArray) : string;
+begin
+  Result := TWXGUI.CmdLine;
+
+end;
+
+function SCTWXParam(Indexes : TStringArray) : string;
+var
+  ParamIndex : Integer;
+  Params   : TStringList;
+begin
+
+  ConvertToNumber(Indexes[0], ParamIndex);
+  Params := TStringList.Create;
+
+  try
+    Split(TWXGUI.CmdLine, Params, ' ');
+
+    //if (ParamIndex < 1) then
+    //  Result := IntToStr(Params.Count)
+    //else
+      if (Params.Count > ParamIndex) then
+        Result := Params[ParamIndex]
+      else
+        Result := '';
+
+  finally
+    Params.Free;
+  end;
+
+end;
+
+function SCTWXParamCount(Indexes : TStringArray) : string;
+var
+  ParamIndex : Integer;
+  Params   : TStringList;
+begin
+  Params := TStringList.Create;
+
+  try
+    Split(TWXGUI.CmdLine, Params, ' ');
+    Result := IntToStr(Params.Count - 1);
+  finally
+    Params.Free;
+  end;
+end;
+
+
 function SCGameData(Indexes : TStringArray) : string;
 begin
   Result := StripFileExtension(TWXDatabase.DatabaseName) + '\';
@@ -5131,7 +5336,9 @@ begin
     AddSysConstant('ANSI_15', SCAnsi_15);
     AddSysConstant('CONNECTED', SCConnected);
     AddSysConstant('CURRENTANSILINE', SCCurrentANSILine);
+    AddSysConstant('ANSILINE', SCCurrentANSILine);
     AddSysConstant('CURRENTLINE', SCCurrentLine);
+    AddSysConstant('LINE', SCCurrentLine);
     AddSysConstant('DATE', SCDate);
     AddSysConstant('FALSE', SCFalse);
     AddSysConstant('GAME', SCGame);
@@ -5225,6 +5432,9 @@ begin
     AddSysConstant('QUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('QS',SCCurrentQS);
     AddSysConstant('QSTAT',SCCurrentQSTAT);
+    AddSysConstant('TWXCMDLINE',SCTwxCmdLine);
+    AddSysConstant('TWXPARAM',SCTwxParam);
+    AddSysConstant('TWXPARAMCOUNT',SCTwxParamCount);
 
 
     // Added in 2.06
@@ -5454,24 +5664,26 @@ begin
     AddCommand('OPENDATABASE', 1, 1, CmdOpenDatabase, [pkValue], pkValue);
     AddCommand('CLOSEDATABASE', 0, 0, CmdCloseDatabase, [pkValue], pkValue);
     AddCommand('RESETDATABASE', 1, 2, CmdResetDatabase, [pkValue], pkValue);
-
     AddCommand('STARTTIMER', 1, 1, CmdStartTimer, [pkValue], pkValue);
     AddCommand('STOPTIMER', 1, 1, CmdStopTimer, [pkValue], pkValue);
     AddCommand('STOPALL', 0, 1, CmdStopAll, [pkValue], pkValue);
     AddCommand('CONCAT', 2, -1, CmdConcat, [pkVar, pkValue], pkValue);
-    AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
-    // MB - This is not implimentd... TODO... Maaybe...
-    AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
     // Commands added for 2.07
-    AddCommand('GETDATETIME', 1, 1, CmdGetDateTime, [pkVar], pkValue);
+    AddCommand('GETDATETIME', 1, 2, CmdGetDateTime, [pkVar], pkValue);
+    AddCommand('GETDATEONLY', 1, 1, CmdGetDateOnly, [pkVar], pkValue);
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
+    AddCommand('DATETIMEADD', 3, 3, CmdDateTimeADD, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
     AddCommand('CENTER', 2, 3, CmdCenter, [pkVar, pkValue], pkValue);
     AddCommand('REPEAT', 2, 3, CmdRepeat, [pkVar, pkValue], pkValue);
     //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
+
+    // MB - This is not implimentd... TODO... Maaybe...
+    // AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
+    // AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);

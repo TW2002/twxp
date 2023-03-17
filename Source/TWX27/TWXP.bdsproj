@@ -130,7 +130,7 @@
 			<Directories Name="UsePackages">False</Directories>
 		</Directories>
 		<Parameters>
-			<Parameters Name="RunParams"></Parameters>
+			<Parameters Name="RunParams">__Test.ts B 0 21:00</Parameters>
 			<Parameters Name="HostApplication"></Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
@@ -172,6 +172,12 @@
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProgramID">com.embarcadero.TWXProxy</VersionInfoKeys>
 		</VersionInfoKeys>  
+    
+    
+    
+    
+    
+    
     
     
     
