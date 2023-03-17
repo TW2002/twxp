@@ -3239,6 +3239,7 @@ begin
   Result := caNone;
 end;
 
+
 function CmdCloseInstance(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 const
   WM_CLOSE = $0010;
@@ -3250,6 +3251,9 @@ var
   IniFile      : TIniFile;
   Handle       : THandle;
 begin
+  if Params[0].Value = 'SELF' then
+    TWXMenu.OpenMenu('TWX_EXIT', 0);
+
 
   if Params[0].Value = 'ALL' then
   begin
