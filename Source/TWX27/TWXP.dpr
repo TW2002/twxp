@@ -1,4 +1,4 @@
-{
+                                                        {
 Copyright (C) 2005  Remco Mulder
 
 This program is free software; you can redistribute it and/or modify
@@ -143,7 +143,7 @@ end;
 {$HINTS OFF}
 procedure InitProgram;
 var
-  I,
+  I, J,
   Sectors   : Integer;
   DBName,
   Usage,
@@ -200,7 +200,24 @@ begin
       if ExtractFileExt(Switch) = '.XDB' then
         TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Switch))
       else
+      begin
         TWXGUI.StartupScripts.Add(Switch);
+
+        if (I = 1) then
+        begin
+          J := I;
+          while (J <= ParamCount) do
+          begin
+            if (Copy(ParamStr(J), 1, 1) = '/') then
+              break;
+
+            TWXGUI.CmdLine := TWXGUI.CmdLine + ParamStr(J) + ' ';
+
+            Inc(J)
+          end;
+          TWXGUI.CmdLine := Trim(TWXGUI.CmdLine);
+        end;
+      end;
 
     end
     else if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
@@ -253,6 +270,19 @@ begin
       else if Switch = '/SCRIPT' then
       begin
         // Launch the specified script
+        TWXGUI.StartupScripts.Add(ParamStr(I));
+
+        J := I;
+        while (J <= ParamCount) do
+        begin
+          if (Copy(ParamStr(J), 1, 1) = '/') then
+            break;
+
+          TWXGUI.CmdLine := TWXGUI.CmdLine + ParamStr(J) + ' ';
+
+          Inc(J)
+        end;
+        TWXGUI.CmdLine := Trim(TWXGUI.CmdLine);
       end;
     end; // End Multi-Parameters
   Inc(I);
@@ -361,7 +391,7 @@ begin
     IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
 
     try
-      IniFile.WriteString('TWX Proxy', 'Upgrade', '221201');  // YYMMDD
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '230318');  // YYMMDD
       if TWXGUI.DatabaseName <> '' then
         IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
 
@@ -411,10 +441,10 @@ begin
     try
       Upgrade := IniFile.ReadString('TWX Proxy', 'Upgrade', '');
 
-      if Upgrade <> '221201' then
+      if Upgrade <> '230318' then
       begin
 
-        IniFile.WriteString('TWX Proxy', 'Upgrade', '221201');  // YYMMDD
+        IniFile.WriteString('TWX Proxy', 'Upgrade', '230318');  // YYMMDD
         if TWXGUI.DatabaseName <> '' then
           IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
 
@@ -488,7 +518,7 @@ begin
     if dbFile <> '' then
       TWXDatabase.OpenDataBase(dbFile)
     else
-      ShowForm(gfSetup);
+      TWXGUI.ShowForm(gfSetup);
 
   end;
 
@@ -497,7 +527,7 @@ begin
 
   for I := 0 to TWXGUI.StartupScripts.Count - 1 do
   begin
-    Filename := ProgramDir + '\dcripts\' + TWXGUI.StartupScripts[i];
+    Filename := ProgramDir + '\scripts\' + TWXGUI.StartupScripts[i];
 
     if (Pos('bot', LowerCase(ExtractFileName(Filename))) > 0) and
        (Pos('switchbot', LowerCase(ExtractFileName(Filename))) = 0)
@@ -521,3 +551,4 @@ begin
 
 
 end.
+

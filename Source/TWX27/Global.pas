@@ -55,19 +55,19 @@ type
   TGlobalVarItem = class(TObject)
   public
     constructor Create(Name, Value : String); overload;
-    constructor Create(Name : String; Data : TStringList);  overload;
+    constructor Create(Name : String; ArrayData : TList);  overload;
     destructor Destroy(); override;
 
   protected
     FName, FValue : string;
-    FArray        : TStringList;
-    FArrayCount   : Integer;
+    FArrayData    : TList;
+    FArraySize    : Integer;
 
   published
     property Name : string read FName write FName;
     property Value : string read FValue write FValue;
-    property Data : TStringList read FArray write FArray;
-    property ArrayCount : Integer read FArrayCount write FArrayCount;
+    property ArrayData : TList read FArrayData write FArrayData;
+    property ArraySize : Integer read FArraySize write FArraySize;
   end;
 
 // Module variables:
@@ -99,24 +99,26 @@ constructor TGlobalVarItem.Create(Name, Value : String);
 begin
   FName  := Name;
   FValue := Value;
-  FArrayCount := 0;
+
+  FArrayData := TList.Create;
+  FArraySize := 0;
 end;
 
-constructor TGlobalVarItem.Create(Name : String; Data : TStringList);
+constructor TGlobalVarItem.Create(Name : String; ArrayData : TList);
 begin
   FName  := Name;
   FValue := '';
 
-  //FArray := TStringList.Create;
-  FArray := Data;
-  FArrayCount := Data.Count;
+  FArrayData := ArrayData;
+  FArraySize := ArrayData.Count;
 end;
 
 destructor TGlobalVarItem.Destroy();
 begin
-  Data.Free;
+  FArrayData.Free;
 end;
 
 
 
 end.
+

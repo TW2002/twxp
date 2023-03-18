@@ -33,10 +33,10 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.6.21';
+  ProgramVersion = '2.6.28';
   ReleaseNumber = 1;
   ReleaseVersion = 'Beta';
-  SetupFile = 'TWX27.dat';
+  SetupFile = 'TWX27z.dat';
 
   endl = #13 + #10;
 

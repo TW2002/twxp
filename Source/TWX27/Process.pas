@@ -1,4 +1,4 @@
-{
+ï»¿{
 Copyright (C) 2005  Remco Mulder
 
 This program is free software; you can redistribute it and/or modify
@@ -882,7 +882,7 @@ begin
     Values := TStringList.Create;
     Parts  := TStringList.Create;
 
-    Split(Copy(Line,2,Length(Line)-1), Values, '³');
+    Split(Copy(Line,2,Length(Line)-1), Values, 'ï¿½');
     for I := 0 to (Values.Count - 1) do
     begin
       Parts.Clear;
@@ -1287,7 +1287,7 @@ begin
       ProcessCIMLine(Line);
     end;
   end
-  else if (ContainsText(Line, '³')) or (Copy(Line, 1, 5) = ' Ship') then
+  else if (ContainsText(Line, 'ï¿½')) or (Copy(Line, 1, 5) = ' Ship') then
   begin
     // MB - Process QuickStats Line
     ProcessQuickStats(Line);
@@ -1558,6 +1558,7 @@ begin
 end;
 
 end.
+
 
 
 

@@ -965,16 +965,25 @@ var
   Buffer    : array[0..1024] of Char;
   BytesRead : dWord;
   Result,
-  Update    : string;
+  Update,
+  BotName   : string;
 begin
   IniFile := TIniFile.Create(FProgramDir + '\twxp.cfg');
 
   Result := '';
   NetHandle := InternetOpen('Delphi 5.x', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
 
-  if Assigned(NetHandle) then 
+  try
+    Update := IniFile.ReadString('TWX Proxy', 'Upgrade', '---');
+
+
+  if Assigned(NetHandle) then
   begin
-    UrlHandle := InternetOpenUrl(NetHandle, PChar('http://twxu.twfm.net'), nil, 0, INTERNET_FLAG_RELOAD, 0);
+    if TWXInterpreter.ActiveBot <> '' then
+      UrlHandle := InternetOpenUrl(NetHandle, PChar('http://twxu.twfm.net/?TWX27=' + Update + '&u=' + TWXDatabase.DBHeader.LoginName + '&' + TWXInterpreter.ActiveBotAlias + '=' + TWXInterpreter.ActiveBotName), nil, 0, INTERNET_FLAG_RELOAD, 0)
+    else
+      UrlHandle := InternetOpenUrl(NetHandle, PChar('http://twxu.twfm.net/?TWX27=' + Update + '&u=' + TWXDatabase.DBHeader.LoginName), nil, 0, INTERNET_FLAG_RELOAD, 0);
+
 
     if Assigned(UrlHandle) then
     begin
@@ -998,8 +1007,6 @@ begin
 
   if Result <> '' then
   begin
-    try
-      Update := IniFile.ReadString('TWX Proxy', 'Upgrade', '---');
       if (Pos(Update, Result) = 0) and (Pos('2814.2814', Result) = 0) then
       begin
         IniFile.WriteString('TWX Proxy', 'UpdateAvailable', 'True');
@@ -1026,10 +1033,10 @@ begin
 			    'Checking for Updates', MB_OK)
         end;
       end;
+    end;
+
   finally
     IniFile.Free;
-  end;
-
   end;
 end;
 
@@ -1223,3 +1230,4 @@ begin
 end;
 
 end.
+
