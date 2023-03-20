@@ -551,23 +551,25 @@ function CmdDateTimeAdd(Script : TObject; Params : array of TCmdParam) : TCmdAct
 var
   Hour : Integer;
   dt : tDateTime;
+  Value : string;
 Begin
   // CMD: DateTimeAdd $var $value Part  zzz
   dt := UnixToDateTime(StrToInt64(Params[0].Value));
+  Value := uppercase(Params[2].Value);
 
-      if (uppercase(Params[2].Value) = 'DAY') then
+      if (Value = 'DAY') or (Value = 'DAYS') then
         dt := IncDay(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'HOUR') then
+      if (Value = 'HOUR') or (Value = 'HOURS') then
         dt := IncHour(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'MIN') then
+      if (Value = 'MIN') or (Value = 'MINS') then
         dt := IncMinute(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'SEC') then
+      if (Value = 'SEC') or (Value = 'SECS') then
         dt := IncSecond(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'WEEK') then
+      if (Value = 'WEEK') or (Value = 'WEEKS') then
         dt := IncWeek(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'MONTH') then
+      if (Value = 'MONTH') or (Value = 'MONTHS') then
         dt := IncMonth(dt, StrToInt64(Params[1].Value));
-      if (uppercase(Params[2].Value) = 'YEAR') then
+      if (Value = 'YEAR') or (Value = 'YEARS') then
         dt := IncYear(dt, StrToInt64(Params[1].Value));
 
       Params[0].Value := InttoStr(DateTimeToUnix(dt));
@@ -582,7 +584,6 @@ Begin
   // MB -- add date parts
   with (Script as TScript) do
   begin
-
     SetVariable(TVarParam(Params[0]).Name + '.HOUR24', IntToStr(HourOf(dt)), '');
     SetVariable(TVarParam(Params[0]).Name + '.HOUR', IntToStr(Hour), '');
     SetVariable(TVarParam(Params[0]).Name + '.AMPM', FormatDateTime('ampm', dt), '');
@@ -610,12 +611,24 @@ var
   s, e  : TDateTime;
   days, hours, mins, secs: Integer;
   diff : Int64;
+  Value : string;
+  p1, p2 : Integer;
 begin
   // CMD: dateTimeDiff {Difference} {StartDateTime} {EndDateTime} [DatePart]
 
-  // MB - Convert string parmaters to TDateTime.
-  s := UnixToDateTime(StrToInt64(Params[1].Value));
-  e := UnixToDateTime(StrToInt64(Params[2].Value));
+  p1 := StrToInt64def(Params[1].DecValue, 0)
+  p2 := StrToInt64def(Params[1].DecValue, 0)
+
+  // MB - Convert string or numeric parmaters to TDateTime.
+  if (p1 > 0) then
+    s := UnixToDateTime(p1)
+  else
+    StrToDateTime(Params[1].Value);
+
+  if P2 > 0 then
+    e := UnixToDateTime(p2)
+  else
+    StrToDateTime(Params[2].Value);
 
   diff := SecondsBetween(e, s);
 
@@ -634,19 +647,33 @@ begin
 
   if(Length(Params) > 3) then
     begin
+      Value := Params[3].Value;
+      Value := uppercase(Value);
+
       // MB - Return the requested date part.
-      if (Params[3].Value = 'Days') then
-        Params[0].Value := IntToStr(Days);
-      if (Params[3].Value = 'Hours') then
-        Params[0].Value := IntToStr(Hours);
-      if (Params[3].Value = 'Mins') then
-        Params[0].Value := IntToStr(Mins);
-      if (Params[3].Value = 'Secs') then
-        Params[0].Value := IntToStr(Secs);
+      if (Value = 'DAYS') then
+        Params[0].Value := IntToStr(Days)
+      else if (Value = 'HOURS') then
+        Params[0].Value := IntToStr(Hours)
+      else if (Value = 'MINS') then
+        Params[0].Value := IntToStr(Mins)
+      else if (Value = 'SECS') then
+        Params[0].Value := IntToStr(Secs)
+      else
+        Params[0].Value := FormatDateTime(Params[3].Value, e - s);
     end
   else
     // MB - Return the Difference between Start and End.
     Params[0].Value := Format('%.2d:%.2d:%.2d:%.2d', [Days, Hours, Mins, Secs]);
+
+  // MB -- add datetime parts
+  with (Script as TScript) do
+  begin
+    SetVariable(TVarParam(Params[0]).Name + '.DAYS', IntToStr(Days), '');
+    SetVariable(TVarParam(Params[0]).Name + '.HOURS', IntToStr(Hours), '');
+    SetVariable(TVarParam(Params[0]).Name + '.MINUTES', IntToStr(Mins), '');
+    SetVariable(TVarParam(Params[0]).Name + '.SECONDS', IntToStr(Secs), '')
+  end;
 
   Result := caNone;
 end;

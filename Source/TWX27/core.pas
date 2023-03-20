@@ -34,7 +34,7 @@ uses
 
 const
   ProgramVersion = '2.6.28';
-  ReleaseNumber = 1;
+  ReleaseNumber = 2;
   ReleaseVersion = 'Beta';
   SetupFile = 'TWX27z.dat';
 
