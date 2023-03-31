@@ -97,6 +97,7 @@ type
     FCurrentPlanetScanner  : Boolean;
     FCurrentScanType       : Word;
     FCurrentShipClass      : String;
+    FCurrentUpdated        : tDateTime;
 
     procedure SectorCompleted;
     procedure ResetSectorLists;
@@ -162,6 +163,7 @@ type
     property CurrentPlanetScanner: Boolean read FCurrentPlanetScanner;
     property CurrentScanType: Word    read FCurrentScanType;
     property CurrentShipClass: String  read FCurrentShipClass;
+    property CurrentUpdated: tDateTime  read FCurrentUpdated;
 
   published
     property MenuKey: Char read GetMenuKey write SetMenuKey;
@@ -882,7 +884,8 @@ begin
     Values := TStringList.Create;
     Parts  := TStringList.Create;
 
-    Split(Copy(Line,2,Length(Line)-1), Values, '�');
+    //Split(Copy(Line,2,Length(Line)-1), Values, '�');
+    Split(Copy(Line,2,Length(Line)-1), Values, #179);
     for I := 0 to (Values.Count - 1) do
     begin
       Parts.Clear;
@@ -972,6 +975,7 @@ begin
         begin
           FCurrentShipNumber := StrToIntSafe(Parts[1]);
           FCurrentShipClass  := Parts[2];
+          FCurrentUpdated := NOW;
         end;
       end;
     end;
@@ -1287,7 +1291,8 @@ begin
       ProcessCIMLine(Line);
     end;
   end
-  else if (ContainsText(Line, '�')) or (Copy(Line, 1, 5) = ' Ship') then
+//  else if (ContainsText(Line, '�')) or (Copy(Line, 1, 5) = ' Ship') then
+  else if (ContainsText(Line, #179)) or (Copy(Line, 1, 5) = ' Ship') then
   begin
     // MB - Process QuickStats Line
     ProcessQuickStats(Line);

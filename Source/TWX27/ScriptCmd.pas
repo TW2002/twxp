@@ -1,3 +1,4 @@
+
 {
 Copyright (C) 2005  Remco Mulder
 
@@ -370,13 +371,28 @@ var
 begin
   // CMD: cutText <value> var <start> <length>
 
-  ConvertToNumber(Params[2].Value, V1);
-  ConvertToNumber(Params[3].Value, V2);
+  if (Length(Params) = 3) then
+  begin
+    ConvertToNumber(Params[1].Value, V1);
+    ConvertToNumber(Params[2].Value, V2);
 
-  if (V1 > Length(Params[0].Value)) then
-    raise EScriptError.Create('CutText: Start position beyond End Of Line');
+    if (V1 > Length(TWXExtractor.CurrentLine)) then
+      //raise EScriptError.Create('CutText: Start position beyond End Of Line');
+      Params[0].Value := ''
+    else
+      Params[0].Value := Copy(TWXExtractor.CurrentLine, V1, V2);
+  end
+  else
+  begin
+    ConvertToNumber(Params[2].Value, V1);
+    ConvertToNumber(Params[3].Value, V2);
 
-  Params[1].Value := Copy(Params[0].Value, V1, V2);
+    if (V1 > Length(Params[0].Value)) then
+      //raise EScriptError.Create('CutText: Start position beyond End Of Line');
+      Params[1].Value := ''
+    else
+      Params[1].Value := Copy(Params[0].Value, V1, V2);
+  end;
   Result := caNone;
 end;
 
@@ -435,7 +451,6 @@ begin
 
   Result := caNone;
 end;
-
 function CmdEcho(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   EchoText : string;
@@ -553,7 +568,7 @@ var
   dt : tDateTime;
   Value : string;
 Begin
-  // CMD: DateTimeAdd $var $value Part  zzz
+  // CMD: DateTimeAdd $var $value Part
   dt := UnixToDateTime(StrToInt64(Params[0].Value));
   Value := uppercase(Params[2].Value);
 
@@ -612,23 +627,23 @@ var
   days, hours, mins, secs: Integer;
   diff : Int64;
   Value : string;
-  p1, p2 : Integer;
+  p1, p2 : Int64;
 begin
   // CMD: dateTimeDiff {Difference} {StartDateTime} {EndDateTime} [DatePart]
 
-  p1 := StrToInt64def(Params[1].DecValue, 0)
-  p2 := StrToInt64def(Params[1].DecValue, 0)
+  p1 := StrToInt64def(Params[1].Value, 0);
+  p2 := StrToInt64def(Params[2].Value, 0);
 
   // MB - Convert string or numeric parmaters to TDateTime.
   if (p1 > 0) then
     s := UnixToDateTime(p1)
   else
-    StrToDateTime(Params[1].Value);
+    s := StrToDateTime(Params[1].Value);
 
   if P2 > 0 then
     e := UnixToDateTime(p2)
   else
-    StrToDateTime(Params[2].Value);
+    e := StrToDateTime(Params[2].Value);
 
   diff := SecondsBetween(e, s);
 
@@ -695,6 +710,41 @@ begin
   Result := caNone;
 end;
 
+
+function CmdTextVar (Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I : Integer;
+  F : Extended;
+  VarName, Value : String;
+begin
+  // CMD: setVar var <value>
+
+  VarName := '';
+  try
+    VarName := TVarParam(Params[0]).Name;
+  Except
+    VarName := '$$' + Params[0].Value;
+  end;
+
+  // MB - Now you can string together parameters like echo without concatting.
+  for I := 1 to Length(Params) - 1 do
+    Value := Value + Params[I].Value;
+
+  //if (copy(VarName ,0 ,1) = '$' ) then
+  //begin
+    // Upadate varName from string value.
+    if (copy(VarName ,2 ,1) = '$' ) then
+      VarName := uppercase(copy(VarName ,2))
+    else
+      VarName := '$' + uppercase(Params[0].Value);
+
+    with (Script as TScript) do
+      SetVariable(VarName, Value, '');
+
+  //end
+
+  Result := caNone;
+end;
 
 function CmdFileExists(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 begin
@@ -1244,20 +1294,20 @@ end;
 
 function CmdSetSystemVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  I,
+//  I,
   Index    : Integer;
   S        : TSector;
-  Items    : TList;
+//  Items    : TList;
   VarName,
   Value    : string;
   DecValue : Integer;
-  Warp     : TStringList;
+  //Warp     : TStringList;
   Head     : TDataHeader;
 begin
   // CMD: setSector <index> var vaule
   //      e.e. setSector 2 backdoor 5500
 
-  Warp := TStringList.Create();
+  //Warp := TStringList.Create();
 
 
   VarName := Uppercase(stringreplace(Params[0].Value, '!', '',
@@ -1520,39 +1570,76 @@ var
   EndPos   : Integer;
 begin
   // CMD: getText <line> var <startValue> <endValue>
-
-  Line := Params[0].Value;
-  StartStr := Params[2].Value;
-  EndStr := Params[3].Value;
-
-  if (StartStr = '') then
-    StartPos := 1
-  else
-    StartPos := Pos(StartStr, Line);
-
-  if (StartPos = 0) then
+  if (Length(Params) = 3) then
   begin
-    Params[1].Value := '';
-    Result := caNone;
-    Exit;
-  end;
+    Line := TWXExtractor.CurrentLine;
+    StartStr := Params[1].Value;
+    EndStr := Params[2].Value;
 
-  Inc(StartPos, Length(StartStr));
-  Line := Copy(Line, StartPos, Length(Line) - StartPos + 1);
+    if (StartStr = '') then
+      StartPos := 1
+    else
+      StartPos := Pos(StartStr, Line);
 
-  if (EndStr = '') then
-    EndPos := Length(Line) + 1
-  else
-    EndPos := Pos(EndStr, Line);
+    if (StartPos = 0) then
+    begin
+      Params[0].Value := '';
+      Result := caNone;
+      Exit;
+    end;
 
-  if (EndPos > 0) then
-  begin
-    S := Copy(Line, 1, EndPos - 1);
-    Params[1].Value := S;
+    Inc(StartPos, Length(StartStr));
+    Line := Copy(Line, StartPos, Length(Line) - StartPos + 1);
+
+    if (EndStr = '') then
+      EndPos := Length(Line) + 1
+    else
+      EndPos := Pos(EndStr, Line);
+
+    if (EndPos > 0) then
+    begin
+      S := Copy(Line, 1, EndPos - 1);
+      Params[0].Value := S;
+    end
+    else
+      Params[0].Value := '';
+
   end
   else
-    Params[1].Value := '';
+  begin
+    Line := Params[0].Value;
+    StartStr := Params[2].Value;
+    EndStr := Params[3].Value;
 
+    if (StartStr = '') then
+      StartPos := 1
+    else
+      StartPos := Pos(StartStr, Line);
+
+    if (StartPos = 0) then
+    begin
+      Params[1].Value := '';
+      Result := caNone;
+      Exit;
+    end;
+
+    Inc(StartPos, Length(StartStr));
+    Line := Copy(Line, StartPos, Length(Line) - StartPos + 1);
+
+    if (EndStr = '') then
+      EndPos := Length(Line) + 1
+    else
+      EndPos := Pos(EndStr, Line);
+
+    if (EndPos > 0) then
+    begin
+      S := Copy(Line, 1, EndPos - 1);
+      Params[1].Value := S;
+    end
+    else
+      Params[1].Value := '';
+
+  end;
   Result := caNone;
 end;
 
@@ -1584,15 +1671,26 @@ var
 begin
   // CMD: getWord <line> var <index> <default>
 
-  ConvertToNumber(Params[2].Value, I);
-  Params[1].Value := GetParameter(Params[0].Value, I);
-
-  if (Params[1].Value = '') then
+  if (Length(Params) = 2) then
   begin
-    if (Length(Params) > 3) then
-      Params[1].Value := Params[3].Value
-    else
-      Params[1].Value := '0';
+    ConvertToNumber(Params[1].Value, I);
+    Params[0].Value := GetParameter(TWXExtractor.CurrentLine, I);
+
+    if (Params[0].Value = '') then
+      Params[0].Value := '0';
+  end
+  else
+  begin
+    ConvertToNumber(Params[2].Value, I);
+    Params[1].Value := GetParameter(Params[0].Value, I);
+
+    if (Params[1].Value = '') then
+    begin
+      if (Length(Params) > 3) then
+        Params[1].Value := Params[3].Value
+      else
+        Params[1].Value := '0';
+    end;
   end;
 
   Result := caNone;
@@ -1610,16 +1708,32 @@ begin
   WordCount := 0;
   Last := ' ';
 
-  Line := Params[0].Value;
-  for I := 1 to length(Line) do
+  if (Length(Params) = 1) then
   begin
-    if (Line[I] <> ' ') and (Line[I] <> #9) then // If it isn't white space
-      if (Last = ' ') or (Last = #9) then        // but previously was
-        Inc(WordCount);                          // then it's a new word
+    Line := TWXExtractor.CurrentLine;
+    for I := 1 to length(Line) do
+    begin
+      if (Line[I] <> ' ') and (Line[I] <> #9) then // If it isn't white space
+        if (Last = ' ') or (Last = #9) then        // but previously was
+          Inc(WordCount);                          // then it's a new word
 
-    Last := Line[I];
+      Last := Line[I];
+    end;
+    Params[0].Value := IntToStr(WordCount);
+  end
+  else
+  begin
+    Line := Params[0].Value;
+    for I := 1 to length(Line) do
+    begin
+      if (Line[I] <> ' ') and (Line[I] <> #9) then // If it isn't white space
+        if (Last = ' ') or (Last = #9) then        // but previously was
+          Inc(WordCount);                          // then it's a new word
+
+      Last := Line[I];
+    end;
+    Params[1].Value := IntToStr(WordCount);
   end;
-  Params[1].Value := IntToStr(WordCount);
 
   Result := caNone;
 end;
@@ -1628,7 +1742,10 @@ function CmdGetWordPos(Script : TObject; Params : array of TCmdParam) : TCmdActi
 begin
   // CMD: getWordPos <text> storageVar <subString>
 
-  Params[1].Value := IntToStr(Pos(Params[2].Value, Params[0].Value));
+  if (Length(Params) = 2) then
+    Params[0].Value := IntToStr(Pos(Params[1].Value, TWXExtractor.CurrentLine))
+  else
+    Params[1].Value := IntToStr(Pos(Params[2].Value, Params[0].Value));
   Result := caNone;
 end;
 
@@ -1780,10 +1897,13 @@ begin
 end;
 
 function CmdKillTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+VAR
+  I : Integer;
 begin
   // CMD: killTrigger <name>
+  for I := 0 to Length(Params) - 1 do
+    TScript(Script).KillTrigger(Params[I].Value);
 
-  TScript(Script).KillTrigger(Params[0].Value);
   Result := caNone;
 end;
 
@@ -2372,7 +2492,7 @@ function CmdSaveGlobal(Script : TObject; Params : array of TCmdParam) : TCmdActi
 var
   Found : Boolean;
   I, J, Index, DataIndex : Integer;
-  Indexes : TStringArray;
+//  Indexes : TStringArray;
   Item    : TGlobalVarItem;
   VarName : String;
   Strings : TStringList;
@@ -2430,6 +2550,8 @@ begin
   finally
     Strings.Free;
   end;
+
+  Result := caNone;
 end;
 
 function CmdClearGlobals(Script : TObject; Params : array of TCmdParam) : TCmdAction;
@@ -2709,17 +2831,18 @@ function CmdSetVar(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   I : Integer;
   F : Extended;
-  ParamText : String;
+  Value : String;
 begin
   // CMD: setVar var <value>
 
   if Length(Params) > 2 then
   begin
+  
     // MB - Now you can string together parameters like echo without concatting.
     for I := 1 to Length(Params) - 1 do
-      ParamText := ParamText + Params[I].Value;
+      Value := Value + Params[I].Value;
 
-    Params[0].Value := ParamText;
+      Params[0].Value := Value;
   end
   else
     if (Params[1].IsNumeric = TRUE) and (Length(Params) = 2) then
@@ -2752,10 +2875,21 @@ end;
 {$HINTS ON}
 
 function CmdSetWindowContents(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+  I : Integer;
+  Contents : string;
 begin
   // CMD: setWindowContents <windowName> <value>
 
-  TScriptWindow(TScript(Script).FindWindow(Params[0].Value)).TextContent := Params[1].Value;
+  // string together the parameters and echo to all terms
+  for I := 1 to Length(Params) - 1 do
+    Contents := Contents + Params[I].Value;
+
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+
+  if (Window <> nil) then
+    Window.TextContent := Contents;
 
   Result := caNone;
 end;
@@ -2774,6 +2908,7 @@ var
   Strings : TStringList;
 begin
   // CMD: splitText <text> varArray {delims}
+
   if (Length(Params) > 2) then // Delimiters were specified
     Delims := Params[2].Value
   else
@@ -2814,25 +2949,30 @@ end;
 
 function CmdStripText(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  I       : Integer;
+  I , J       : Integer;
   RemText,
   Value   : string;
 begin
   // CMD: stripText var <value>
 
   Value := Params[0].Value;
-  RemText := Params[1].Value;
 
-  I := 1;
-  while (I <= Length(Value)) do
+  for J := 1 to Length(Params) - 1 do
   begin
-    if (Copy(Value, I, Length(RemText)) = RemText) then
-    begin
-      Delete(Value, I, Length(RemText));
-      I := 0;
-    end;
 
-    Inc(I);
+    RemText := Params[J].Value;
+
+    I := 1;
+    while (I <= Length(Value)) do
+    begin
+      if (Copy(Value, I, Length(RemText)) = RemText) then
+      begin
+        Delete(Value, I, Length(RemText));
+        I := 0;
+      end;
+
+     Inc(I);
+    end;
   end;
 
   Params[0].Value := Value;
@@ -2959,6 +3099,19 @@ begin
 
   ConvertToNumber(Params[1].Value, SizeX);
   ConvertToNumber(Params[2].Value, SizeY);
+  
+  // mb - Search for existing window and show
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window <> nil) then
+  begin
+    Window.Caption := Params[3].Value;
+    Window.width := SizeX;
+    Window.height := SizeY;
+    Window.Show;  
+    Result := caNone;
+    exit  
+  end;
+
 
   Window := TScriptWindow.Create(
     Params[0].Value,
@@ -2974,12 +3127,221 @@ begin
   Result := caNone;
 end;
 
+function CmdDefaultWindowStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+   IniFile     : TIniFile;
+begin
+  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
+
+  try
+    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
+      IniFile.WriteString('Window Style', 'Foreground', Params[0].Value);
+    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+      IniFile.WriteString('Window Style', 'Background', Params[1].Value);
+    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+      IniFile.WriteString('Window Style', 'WindowSize', Params[2].Value);
+
+  finally
+    IniFile.Free;
+  end;
+
+  Result := caNone;
+end;
+
+function CmdDefaultWindowFont(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+   IniFile     : TIniFile;
+begin
+  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
+
+  try
+    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
+      IniFile.WriteString('Window Style', 'FontName', Params[0].Value);
+    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+      IniFile.WriteString('Window Style', 'FontStyle', Params[1].Value);
+    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+      IniFile.WriteString('Window Style', 'FontSize', Params[2].Value);
+
+  finally
+    IniFile.Free;
+  end;
+
+  Result := caNone;
+end;
+
+function CmdDefaultWindowPosition(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Alignment : string;
+  Margin : string;
+  I : Integer;
+  IniFile : TIniFile;
+begin
+  //  DefaultWindowPosition  Align Margin
+  //  Margin can be All or {}
+
+  Alignment := Params[0].Value + ' ' + Params[1].Value;
+
+  for I := 2 to Length(Params) - 1 do
+    Margin := Margin + Params[I].Value + ' ';
+    
+  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
+  try
+      IniFile.WriteString('Window Style', 'Alignment', Alignment);
+      IniFile.WriteString('Window Style', 'Margin', Margin);
+  finally
+    IniFile.Free;
+  end;
+
+  Result := caNone;
+end;
+
+function CmdDefaultDrawStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+   IniFile     : TIniFile;
+begin
+  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
+
+  try
+    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
+      IniFile.WriteString('Window Style', 'PenWidth', Params[0].Value);
+    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+      IniFile.WriteString('Window Style', 'PenColor', Params[1].Value);
+    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+      IniFile.WriteString('Window Style', 'BrushStyle', Params[2].Value);
+    if (Params[3].Value <> '') and (Params[3].Value <> '0') then
+      IniFile.WriteString('Window Style', 'BrushColor', Params[3].Value);
+  finally
+    IniFile.Free;
+  end;
+
+  Result := caNone;
+end;
+
+function CmdPositionWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+  Alingment : string;
+  Margin : string;
+  I : Integer;
+begin
+  //  PositionWindow  Align Margin
+  //  Margin can be All or {}
+
+  Result := caNone;
+
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window = nil) then
+    exit;
+
+  Alingment := Params[1].Value + ' ' + Params[2].Value;
+
+  for I := 3 to Length(Params) - 1 do
+    Margin := Margin + Params[I].Value + ' ';
+
+  Window.Position(Alingment, Margin);
+end;
+
+function CmdWindowStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+  ForeGround, Background, FontName: string;
+  FontSize: Integer;
+begin
+  Result := caNone;
+  
+   Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window = nil) then
+    exit;  
+
+  ForeGround := Params[1].Value;
+
+  if Length(Params) > 2 then
+    Background := Params[2].Value;
+
+  if Length(Params) > 3 then
+    FontName := Params[3].Value;
+
+  if Length(Params) > 4 then
+    FontSize := Floor(Params[4].DecValue)
+  else 
+    FontSize := 0;
+     
+  Window.Style(ForeGround, Background, FontName, FontSize);    
+
+end;
+
+function CmdDrawStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+begin
+  Result := caNone;
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window = nil) then
+    exit;  
+
+
+end;
+
+function CmdAppendWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+  Text : string;
+  I : Integer;
+begin
+  Result := caNone;
+
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window = nil) then
+    exit;  
+
+  for I := 1 to Length(Params) - 1 do
+  Text := Text + Params[I].Value;
+
+  Window.Append(Text);
+end;
+
+function CmdDrawOnWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+begin
+  Result := caNone;
+end;
+
+function CmdWindowImage(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+begin
+  Result := caNone;
+end;
+
+function CmdClearWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  Window : TScriptWindow;
+begin
+  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
+  if (Window = nil) then
+    exit;  
+
+  Window.Clear;
+    
+  Result := caNone;
+end;
+
+
+
 function CmdWrite(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
+  I : Integer;
   F : TextFile;
+  Text : string;
 begin
   // CMD: write <file> <value>
 
+  // string together the parameters and echo to all terms
+  for I := 1 to Length(Params) - 1 do
+    Text := Text + Params[I].Value;
+
+  
   if not directoryexists(ExtractFileDir(Params[0].Value)) then
     CreateDir(ExtractFileDir(Params[0].Value));
 
@@ -2996,7 +3358,7 @@ begin
     raise EScriptError.Create('Unable to write to file ''' + Params[0].Value + '''');
 {$I+}
 
-  WriteLn(F, Params[1].Value);
+  WriteLn(F, Text);
   CloseFile(F);
 
   Result := caNone;
@@ -4078,10 +4440,14 @@ var
   BotIsDeaf,
   SilentRunning : Boolean;
 begin
+  // mb - Disabline... this does not work!
+  Result := caNone;
+  exit;
+
   // CMD: LibCmd <label> <params>
 
-  LibSubSpace := False;
-  LibSilent := False;
+  //LibSubSpace := False;
+  //LibSilent := False;
 
   // string together the parameters and ssve as LibMessage.
   for I := 1 to Length(Params) - 1 do
@@ -4127,6 +4493,62 @@ begin
   Result := caNone;
 end;
 
+//zzz
+function CmdSync(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  if (TWXClient.Connected) then
+  begin
+    TWXClient.Send(#145);
+
+    TScript(Script).WaitText := #145 + #8;
+    TScript(Script).WaitForActive := TRUE;
+
+    Result := caPause;
+    exit
+  end;
+
+  Result := caNone;
+end;
+
+function CmdUpdateQS(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  if (TWXClient.Connected) then
+  begin
+    TWXClient.Send('/' + #145);
+
+    TScript(Script).WaitText := #145 + #8;
+    TScript(Script).WaitForActive := TRUE;
+    // todo timeoiut
+    //TScript(Script).SetSleepTrigger(1000);
+
+    Result := caPause;
+    exit
+  end;
+
+  Result := caNone;
+end;
+
+function CmdSleep(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  P: TStringList;
+  M: Integer;
+begin
+  P := TStringList.Create;
+
+  try
+    Split('0' + Params[0].Value, P, '.');
+    if P.count > 1 then
+      M := (StrToInt(P[0]) * 1000) + StrToInt(copy(P[1] + '00', 1, 3))
+    else
+      M := StrToInt(P[0]) * 1000
+  finally
+    P.Free;
+  end;
+
+  TScript(Script).SetSleepTrigger(M);
+
+  Result := caPause;
+end;
 
 
 // *****************************************************************************
@@ -5124,6 +5546,11 @@ begin
   Result := TWXExtractor.CurrentShipClass
 end;
 
+function SCCurrentUpdated(Indexes : TStringArray) : string;
+begin
+  Result := DateTimeToStr(TWXExtractor.CurrentUpdated)
+end;
+
 function SCCurrentAnsiQuickStats(Indexes : TStringArray) : string;
 begin
 
@@ -5683,6 +6110,7 @@ begin
     AddSysConstant('QUICKSTATS',SCCurrentQuickStats);
     AddSysConstant('QS',SCCurrentQS);
     AddSysConstant('QSTAT',SCCurrentQSTAT);
+    AddSysConstant('UPDATED', SCCurrentUpdated);
 
 
     // Added in 2.06
@@ -5761,7 +6189,7 @@ begin
     AddCommand('CLIENTMESSAGE', 1, 1, CmdClientMessage, [pkValue], pkValue);
     AddCommand('CLOSEMENU', 0, 0, CmdCloseMenu, [], pkValue);
     AddCommand('CONNECT', 0, 0, CmdConnect, [], pkValue);
-    AddCommand('CUTTEXT', 4, 4, CmdCutText, [pkValue, pkVar, pkValue, pkValue], pkValue);
+    AddCommand('CUTTEXT', 3, 4, CmdCutText, [pkValue], pkValue);
     AddCommand('DELETE', 1, 1, CmdDelete, [pkValue], pkValue);
     AddCommand('DISCONNECT', 0, 1, CmdDisconnect, [], pkValue);
 
@@ -5781,13 +6209,13 @@ begin
     AddCommand('GETRND', 3, 3, CmdGetRnd, [pkVar, pkValue, pkValue], pkValue);
     AddCommand('GETSECTOR', 2, 2, CmdGetSector, [pkValue, pkVar], pkValue);
     AddCommand('GETSECTORPARAMETER', 3, 3, CmdGetSectorParameter, [pkValue, pkValue, pkVar], pkValue);
-    AddCommand('GETTEXT', 4, 4, CmdGetText, [pkValue, pkVar, pkValue, pkValue], pkValue);
+    AddCommand('GETTEXT', 3, 4, CmdGetText, [pkValue], pkValue);
     AddCommand('GETTIME', 1, 2, CmdGetTime, [pkVar, pkValue], pkValue);
     AddCommand('GOSUB', 1, 1, CmdGosub, [pkValue], pkValue);
     AddCommand('GOTO', 1, 1, CmdGoto, [pkValue], pkValue);
-    AddCommand('GETWORD', 3, 4, CmdGetWord, [pkValue, pkVar, pkValue], pkValue);
+    AddCommand('GETWORD', 2, 4, CmdGetWord, [pkValue], pkValue);
 
-    AddCommand('GETWORDPOS', 3, 3, CmdGetWordPos, [pkValue, pkVar, pkValue], pkValue);
+    AddCommand('GETWORDPOS', 2, 3, CmdGetWordPos, [pkValue], pkValue);
     AddCommand('HALT', 0, 0, CmdHalt, [], pkValue);
     AddCommand('ISEQUAL', 3, 3, CmdIsEqual, [pkVar, pkValue, pkValue], pkValue);
     AddCommand('ISGREATER', 3, 3, CmdIsGreater, [pkVar, pkValue, pkValue], pkValue);
@@ -5799,7 +6227,7 @@ begin
     AddCommand('KILLWINDOW', 1, 1, CmdKillWindow, [pkValue], pkValue);
 
     AddCommand('KILLALLTRIGGERS', 0, 0, CmdKillAllTriggers, [], pkValue);
-    AddCommand('KILLTRIGGER', 1, 1, CmdKillTrigger, [pkValue], pkValue);
+    AddCommand('KILLTRIGGER', 1, -1, CmdKillTrigger, [pkValue], pkValue);
     AddCommand('LOAD', 1, 1, CmdLoad, [pkValue], pkValue);
     AddCommand('LOADVAR', 1, 1, CmdLoadVar, [pkVar], pkValue);
     AddCommand('LOGGING', 1, 1, CmdLogging, [pkValue], pkValue);
@@ -5835,10 +6263,10 @@ begin
     AddCommand('SETTEXTOUTTRIGGER', 2, 3, CmdSetTextOutTrigger, [pkValue, pkValue, pkValue], pkValue);
     AddCommand('SETTEXTTRIGGER', 2, 3, CmdSetTextTrigger, [pkValue, pkValue, pkValue], pkValue);
     AddCommand('SETVAR', 2, -1, CmdSetVar, [pkVar, pkValue], pkValue);
-    AddCommand('SETWINDOWCONTENTS', 2, 2, CmdSetWindowContents, [pkValue, pkValue], pkValue);
+    AddCommand('SETWINDOWCONTENTS', 2, -1, CmdSetWindowContents, [pkValue], pkValue);
     AddCommand('SOUND', 1, 1, CmdSound, [pkValue], pkValue);
     AddCommand('STOP', 1, 1, CmdStop, [pkValue], pkValue);
-    AddCommand('STRIPTEXT', 2, 2, CmdStripText, [pkVar, pkValue], pkValue);
+    AddCommand('STRIPTEXT', 2, -1, CmdStripText, [pkVar, pkValue], pkValue);
     AddCommand('SUBTRACT', 2, 2, CmdSubtract, [pkVar, pkValue], pkValue);
     AddCommand('SYS_CHECK', 0, 0, CmdSys_Check, [pkValue], pkValue);
 
@@ -5853,7 +6281,7 @@ begin
     AddCommand('WAITFOR', 1, 1, CmdWaitFor, [pkValue], pkValue);
     AddCommand('WINDOW', 4, 5, CmdWindow, [pkValue, pkValue, pkValue, pkValue, pkValue], pkValue);
 
-    AddCommand('WRITE', 2, 2, CmdWrite, [pkValue, pkValue], pkValue);
+    AddCommand('WRITE', 2, -1, CmdWrite, [pkValue, pkValue], pkValue);
     // Commands added for 2.04beta
     AddCommand('GETTIMER', 1, 1, CmdGetTimer, [pkVar], pkValue);
     AddCommand('READTOARRAY', 2, 2, CmdReadToArray, [pkValue, pkValue], pkValue);
@@ -5874,7 +6302,7 @@ begin
     AddCommand('CUTLENGTHS', 3, 3, CmdCutLengths, [pkValue, pkVar, pkValue], pkValue);
     AddCommand('FORMAT', 3, 3, CmdFormat, [pkValue, pkVar, pkValue], pkValue);
     AddCommand('GETDIRLIST', 1, 3, CmdGetDirList, [pkVar, pkValue], pkValue);
-    AddCommand('GETWORDCOUNT', 2, 2, CmdGetWordCount, [pkValue, pkVar], pkValue);
+    AddCommand('GETWORDCOUNT', 1, 2, CmdGetWordCount, [pkValue], pkValue);
     AddCommand('MAKEDIR', 1, 1, CmdMakeDir, [pkValue], pkValue);
     AddCommand('PADLEFT', 2, 3, CmdPadLeft, [pkVar, pkValue], pkValue);
     AddCommand('PADRIGHT', 2, 3, CmdPadRight, [pkVar, pkValue], pkValue);
@@ -5921,13 +6349,14 @@ begin
     AddCommand('STOPALL', 0, 1, CmdStopAll, [pkValue], pkValue);
     AddCommand('CONCAT', 2, -1, CmdConcat, [pkVar, pkValue], pkValue);
 
-    // MB - This is not implimentd... TODO... Maaybe...
+    // MB - This is not implimented... TODO... Maaybe...
     AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
 
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
 
-    // MB - This is not implimentd... TODO... Maaybe...
+    // MB - This is not implimented...
+    //      Will not work due to memory allocation.
     AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
     // Commands added for 2.07
@@ -5939,8 +6368,37 @@ begin
     AddCommand('SETSYSTEMVAR', 2, -1, CmdSetSystemVar, [pkValue], pkValue);
     AddCommand('GETDATEONLY', 1, 1, CmdGetDateOnly, [pkVar], pkValue);
     AddCommand('DATETIMEADD', 3, 3, CmdDateTimeADD, [pkVar, pkValue], pkValue);
+    AddCommand('TEXTVAR', 2, -1, CmdTextVar, [pkValue], pkValue);
+    AddCommand('SYNC', 0, 0, CmdSync, [pkValue], pkValue);
+    AddCommand('UPDATEQS', 0, 0, CmdUpdateQS, [pkValue], pkValue);
+    AddCommand('UPDATEQUICKSTATS', 0, 0, CmdUpdateQS, [pkValue], pkValue);
+    AddCommand('SLEEP', 1, 1, CmdSleep, [pkValue], pkValue);
+
+    AddCommand('DEFAULTWINDOWSTYLE', 3, 3, CmdDefaultWindowStyle, [pkValue], pkValue);
+    AddCommand('DEFAULTWINDOWFONT', 3, 3, CmdDefaultWindowFont, [pkValue], pkValue);
+    AddCommand('DEFAULTWINDOWPOSITION', 2, 6, CmdDefaultWindowPosition, [pkValue], pkValue);
+    AddCommand('DEFAULTDRAWSTYLE', 4, 4, CmdDefaultDrawStyle, [pkValue], pkValue);
+    AddCommand('WINDOWSTYLE', 2, -1, CmdWindowStyle, [pkValue], pkValue);
+    AddCommand('DRAWSTYLE', 2, -1, CmdDrawStyle, [pkValue], pkValue);
+    AddCommand('APPENDWINDOW', 2, -1, CmdAppendWindow, [pkValue], pkValue);
+    AddCommand('CLEARWINDOW', 1, 1, CmdClearWindow, [pkValue], pkValue);
+    AddCommand('POSITIONWINDOW', 3, 7, CmdPositionWindow, [pkValue], pkValue);
+
+    // MB - These is not implimented... TODO... Maaybe...
+    AddCommand('WINDOWIMAGE', 2, -1, CmdWindowImage, [pkValue], pkValue);
+    AddCommand('DRAWONWINDOW', 2, -1, CmdDrawOnWindow, [pkValue], pkValue);
+
+
+    // gosub :label $Param $P2 "const"
+    // return result
+    // parseCmsLine TWX/Bot $BuyDownFuel "F" "FO" "FE" "FOE" "ALL"
+    // default bot name AutoStart
+     // keyboard and mose events from window
+    // multi wait
+    // grab trigger
 
     //AddCommand('', 2, 2, Cmd, [pkVar, pkValue], pkValue);
+
 
 
     //    AddCommand('', 1, 1, Cmd, [pkValue], pkValue);

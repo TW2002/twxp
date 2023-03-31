@@ -745,7 +745,7 @@ procedure TScriptCmp.CompileValue(Value : string; var CmdCode : string; ParamKin
     Name := RetnName;
   end;
 
-  procedure WriteIndexList(IndexList : TStringList);
+procedure WriteIndexList(IndexList : TStringList);
   var
     CodeByte : Byte;
     I        : Integer;
@@ -1409,7 +1409,7 @@ begin
       RecurseCmd([':WAITON' + IntToStr(WaitOnCount)], Line, ScriptID);
     end
     // MB - Macro added for 2.06
-    else if (ParamLine[0] = 'UPDATEQUICKSTATS') then
+    else if (ParamLine[0] = 'OLDQS') then
     begin
       Inc(WaitOnCount);
 
@@ -1444,9 +1444,9 @@ begin
       end;
     end
     // MB - Library command injection
-    else if (ParamLine[0] = 'SYNC') or
-            (ParamLine[0] = 'LOADGLOBALS') or
-            (ParamLine[0] = 'SENDMSG') then
+    else if (ParamLine[0] = 'xxx') or
+            (ParamLine[0] = 'xxx') or
+            (ParamLine[0] = 'xxx') then
       begin
         SetLength(CmdLine, ParamLine.Count + 1);
         CmdLine[0] := 'LIBCMD';
