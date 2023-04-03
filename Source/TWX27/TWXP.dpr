@@ -176,7 +176,7 @@ begin
   // TODO: Set TWXProxy as the devault Telnet application in the registry.
 
   PersistenceManager := TPersistenceManager.Create(Application);
-  PersistenceManager.OutputFile := 'TWX27.dat';
+  PersistenceManager.OutputFile := 'TWX2301.dat';
 
   // call object constructors
   for ModuleType := Low(TModuleType) to High(TModuleType) do
@@ -391,7 +391,7 @@ begin
     IniFile := TIniFile.Create(ProgramDir + '\twxp.cfg');
 
     try
-      IniFile.WriteString('TWX Proxy', 'Upgrade', '230318');  // YYMMDD
+      IniFile.WriteString('TWX Proxy', 'Upgrade', '230401');  // YYMMDD
       if TWXGUI.DatabaseName <> '' then
         IniFile.WriteString('Instances', StripFileExtension(ShortFilename(TWXGUI.DatabaseName)), IntToStr(GetCurrentProcessId()));
 
@@ -441,7 +441,7 @@ begin
     try
       Upgrade := IniFile.ReadString('TWX Proxy', 'Upgrade', '');
 
-      if Upgrade <> '230318' then
+      if Upgrade <> '230401' then
       begin
 
         IniFile.WriteString('TWX Proxy', 'Upgrade', '230318');  // YYMMDD

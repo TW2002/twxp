@@ -182,6 +182,8 @@ begin
 end;
 
 procedure TfrmSetup.FormShow(Sender: TObject);
+var
+  S        : TSearchRec;
 begin
   // centre on screen
   Left := (Screen.Width DIV 2) - (Width DIV 2);
@@ -227,10 +229,18 @@ begin
   DataLinkList := TList.Create;
 
 // MB - if there is no databse loaded, then we need to add one.
-  if TWXGUI.DatabaseName <> '' then
-    UpdateGameList('data\' + TWXGUI.DatabaseName + '.xdb')
+//  if TWXGUI.DatabaseName <> '' then
+//    UpdateGameList('data\' + TWXGUI.DatabaseName + '.xdb')
+  if TWXDatabase.DatabaseName <> '' then
+    UpdateGameList(TWXDatabase.DatabaseName)
   else
-    btnAddClick(Self);
+  begin
+    // MB - only show <new game> if there are no databases
+    if (FindFirst('data\*.xdb', faAnyfile, S) = 0) then
+      UpdateGameList('')
+    else
+      btnAddClick(Self);
+  end;
 
 end;
 
@@ -314,7 +324,7 @@ begin
     end
     else
     begin
-      btnAddClick(Self);
+      //btnAddClick(Self);
     end;
   end;
 

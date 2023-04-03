@@ -36,7 +36,8 @@ const
   ProgramVersion = '2.6.30';
   ReleaseNumber = 1;
   ReleaseVersion = 'Beta';
-  SetupFile = 'TWX27x.dat';
+  SetupFile = 'TWX2301.dat';
+  // Must also change in DPR persistamce outputfile.
 
   endl = #13 + #10;
 
