@@ -164,7 +164,17 @@ begin
 
   // Create dirs if they aren't there
   if not (DirectoryExists(ProgramDir + '\data')) then
+  begin
     CreateDir(ProgramDir + '\data');
+
+    MessageDlg('Welcome to TWX Proxy!' + endl + endl +
+    'This helper does not have a graphical terminal as usual' + endl +
+    'Helpers do, so it is strongly recommended that you visit' + endl +
+    'the WIKI before Continuing:' + endl + endl +
+    'https://github.com/TW2002/twxp/wiki/Getting-Started' + endl + endl +
+    'You will need to create a new database' + endl +
+    'before connecting to a server.', mtInformation, [mbOk], 0);
+  end;
 
   if not (DirectoryExists(ProgramDir + '\scripts')) then
     CreateDir(ProgramDir + '\scripts');
@@ -205,6 +215,7 @@ begin
 
         if (I = 1) then
         begin
+          TWXGUI.CmdLine := '';
           J := I;
           while (J <= ParamCount) do
           begin
@@ -271,7 +282,7 @@ begin
       begin
         // Launch the specified script
         TWXGUI.StartupScripts.Add(ParamStr(I));
-
+        TWXGUI.CmdLine := '';
         J := I;
         while (J <= ParamCount) do
         begin

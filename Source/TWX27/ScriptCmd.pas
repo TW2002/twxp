@@ -1749,11 +1749,31 @@ begin
   Result := caNone;
 end;
 
-function CmdGosub(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdGetWords(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I, Word, Skip : Integer;
+  Strings : TStringList;
 begin
-  // CMD: gosub <label>
+  Word := 0;
+  Strings := TStringList.Create;
+  try
+    Split(TWXExtractor.CurrentLine, Strings, ' ');
 
-  TScript(Script).Gosub(Params[0].Value);
+    for I := 0 to length(Params) - 1 do
+    begin
+      if (uppercase(copy(Params[I].Value,1,5)) = 'SKIP:') then
+        Word := Word + StrToIntDef(copy(Params[I].Value, 6), 0)
+      else
+      begin
+        Params[I].Value := Strings[Word];
+        Inc(Word);
+      end;
+    end;
+
+  finally
+    Strings.Free;
+  end;
+
   Result := caNone;
 end;
 
@@ -1762,6 +1782,14 @@ begin
   // CMD: goto <label>
 
   TScript(Script).GotoLabel(Params[0].Value);
+  Result := caNone;
+end;
+
+function CmdGosub(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+begin
+  // CMD: gosub <label>
+
+  TScript(Script).Gosub(Params[0].Value);
   Result := caNone;
 end;
 
@@ -1972,8 +2000,17 @@ begin
 end;
 
 function CmdLoad(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I : Integer;
 begin
   // CMD: load <scriptName>
+  TWXGUI.CmdLine := '';
+
+  for I := 0 to Length(Params) - 1 do
+    TWXGUI.CmdLine := TWXGUI.CmdLine + Params[I].Value + ' ';
+
+  TWXGUI.CmdLine := Trim(TWXGUI.CmdLine);
+
 
   TWXInterpreter.Load(FetchScript(Params[0].Value, FALSE), TRUE);
 
@@ -3094,8 +3131,9 @@ var
   Window : TScriptWindow;
   SizeX,
   SizeY  : Integer;
+  ontop, scale: Boolean;
 begin
-  // CMD: window <windowName> <sizeX> <sizeY> <title> [<ontop>]
+  // CMD: window <windowName> <sizeX> <sizeY> <title> [<ontop|noscale>]
 
   ConvertToNumber(Params[1].Value, SizeX);
   ConvertToNumber(Params[2].Value, SizeY);
@@ -3112,13 +3150,23 @@ begin
     exit  
   end;
 
+  ontop := False;
+  scale := True;
+
+  if (Length(Params) = 5) then
+    if (Params[4].Value = 'NOSCALE') then
+      scale := False
+    else
+      ontop := True;
+
 
   Window := TScriptWindow.Create(
     Params[0].Value,
     Params[3].Value,
     SizeX,
     SizeY,
-    (Length(Params) = 5)
+    ontop,
+    scale
     );
 
   TScript(Script).AddWindow(Window);
@@ -3127,125 +3175,90 @@ begin
   Result := caNone;
 end;
 
-function CmdDefaultWindowStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdDefaultStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-   IniFile     : TIniFile;
-begin
-  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
-
-  try
-    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
-      IniFile.WriteString('Window Style', 'Foreground', Params[0].Value);
-    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
-      IniFile.WriteString('Window Style', 'Background', Params[1].Value);
-    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
-      IniFile.WriteString('Window Style', 'WindowSize', Params[2].Value);
-
-  finally
-    IniFile.Free;
-  end;
-
-  Result := caNone;
-end;
-
-function CmdDefaultWindowFont(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-   IniFile     : TIniFile;
-begin
-  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
-
-  try
-    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
-      IniFile.WriteString('Window Style', 'FontName', Params[0].Value);
-    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
-      IniFile.WriteString('Window Style', 'FontStyle', Params[1].Value);
-    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
-      IniFile.WriteString('Window Style', 'FontSize', Params[2].Value);
-
-  finally
-    IniFile.Free;
-  end;
-
-  Result := caNone;
-end;
-
-function CmdDefaultWindowPosition(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  Alignment : string;
-  Margin : string;
-  I : Integer;
+  Command, FontStyle, Alignment, Margin : string;
   IniFile : TIniFile;
+  I : Integer;
 begin
-  //  DefaultWindowPosition  Align Margin
-  //  Margin can be All or {}
-
-  Alignment := Params[0].Value + ' ' + Params[1].Value;
-
-  for I := 2 to Length(Params) - 1 do
-    Margin := Margin + Params[I].Value + ' ';
-    
   IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
+  Command := uppercase(Params[0].Value);
+
   try
+    if (Command = 'COLOR') then
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', 'Foreground', Params[1].Value);
+      if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+        IniFile.WriteString('Window Style', 'Background', Params[2].Value);
+
+    end
+    else if (Command = 'FONT') Then
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', 'FontName', Params[1].Value);
+      if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+        IniFile.WriteString('Window Style', 'FontSize', Params[2].Value);
+
+      for I := 3 to Length(Params) - 1 do
+        FontStyle := FontStyle + Params[I].Value + ' ';
+      if (FontStyle <> '') and (FontStyle <> '0') then
+        IniFile.WriteString('Window Style', 'FontStyle', FontStyle)
+      else
+        IniFile.DeleteKey('Window Style', 'FontStyle');
+
+    end
+    else if (Command = 'PEN') Then
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', 'PenWidth', Params[1].Value);
+      if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+        IniFile.WriteString('Window Style', 'PenColor', Params[2].Value);
+
+    end
+    else if (Command = 'BRUSH') Then
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', 'BrushStyle', Params[1].Value);
+      if (Params[2].Value <> '') and (Params[2].Value <> '0') then
+        IniFile.WriteString('Window Style', 'BrushColor', Params[2].Value);
+    end
+    else if (Command = 'SCALE') Then
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', 'Scale', Params[1].Value);
+
+    end
+    else if (Command = 'POSITION') or (Command = 'POS') Then
+    begin
+      Alignment := Params[1].Value + ' ' + Params[2].Value;
+      for I := 3 to Length(Params) - 1 do
+        Margin := Margin + Params[I].Value + ' ';
       IniFile.WriteString('Window Style', 'Alignment', Alignment);
       IniFile.WriteString('Window Style', 'Margin', Margin);
+
+    end
+    else
+    begin
+      if (Params[1].Value <> '') and (Params[1].Value <> '0') then
+        IniFile.WriteString('Window Style', Params[0].Value, Params[1].Value)
+      else
+        IniFile.DeleteKey('Window Style', Params[0].Value);
+    end
+
   finally
     IniFile.Free;
   end;
 
   Result := caNone;
-end;
-
-function CmdDefaultDrawStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-   IniFile     : TIniFile;
-begin
-  IniFile := TIniFile.Create(GetCurrentDir + '\twxp.cfg');
-
-  try
-    if (Params[0].Value <> '') and (Params[0].Value <> '0') then
-      IniFile.WriteString('Window Style', 'PenWidth', Params[0].Value);
-    if (Params[1].Value <> '') and (Params[1].Value <> '0') then
-      IniFile.WriteString('Window Style', 'PenColor', Params[1].Value);
-    if (Params[2].Value <> '') and (Params[2].Value <> '0') then
-      IniFile.WriteString('Window Style', 'BrushStyle', Params[2].Value);
-    if (Params[3].Value <> '') and (Params[3].Value <> '0') then
-      IniFile.WriteString('Window Style', 'BrushColor', Params[3].Value);
-  finally
-    IniFile.Free;
-  end;
-
-  Result := caNone;
-end;
-
-function CmdPositionWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  Window : TScriptWindow;
-  Alingment : string;
-  Margin : string;
-  I : Integer;
-begin
-  //  PositionWindow  Align Margin
-  //  Margin can be All or {}
-
-  Result := caNone;
-
-  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
-  if (Window = nil) then
-    exit;
-
-  Alingment := Params[1].Value + ' ' + Params[2].Value;
-
-  for I := 3 to Length(Params) - 1 do
-    Margin := Margin + Params[I].Value + ' ';
-
-  Window.Position(Alingment, Margin);
 end;
 
 function CmdWindowStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Window : TScriptWindow;
-  ForeGround, Background, FontName: string;
-  FontSize: Integer;
+  ForeGround, Background, FontName, FontStyle: string;
+  FontSize, I: Integer;
+  Alingment, Margin : string;
 begin
   Result := caNone;
   
@@ -3253,33 +3266,39 @@ begin
   if (Window = nil) then
     exit;  
 
-  ForeGround := Params[1].Value;
+  if (uppercase(Params[1].Value) = 'COLOR') then
+  begin
+    ForeGround := Params[2].Value;
 
-  if Length(Params) > 2 then
-    Background := Params[2].Value;
+    if Length(Params) > 3 then
+      Background := Params[3].Value;
 
-  if Length(Params) > 3 then
-    FontName := Params[3].Value;
+    Window.Style(ForeGround, Background);
+  end
+  else if (uppercase(Params[1].Value) = 'FONT') then
+  begin
+    FontStyle := '';
+    FontName := Params[2].Value;
+    if Length(Params) > 3 then
+      FontSize := Floor(Params[3].DecValue)
+    else
+      FontSize := 0;
 
-  if Length(Params) > 4 then
-    FontSize := Floor(Params[4].DecValue)
-  else 
-    FontSize := 0;
-     
-  Window.Style(ForeGround, Background, FontName, FontSize);    
+    if Length(Params) > 4 then
+      for I := 4 to Length(Params) - 1 do
+        FontStyle := FontStyle + Params[I].Value + ' ';
 
-end;
+    Window.FONT(FontName, FontStyle, FontSize);
+  end
+  else if (uppercase(Params[1].Value) = 'POS') then
+  begin
+    Alingment := Params[2].Value + ' ' + Params[3].Value;
 
-function CmdDrawStyle(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  Window : TScriptWindow;
-begin
-  Result := caNone;
-  Window := TScriptWindow(TScript(Script).FindWindow(Params[0].Value));
-  if (Window = nil) then
-    exit;  
+    for I := 4 to Length(Params) - 1 do
+      Margin := Margin + Params[I].Value + ' ';
 
-
+    Window.Position(Alingment, Margin);
+  end;
 end;
 
 function CmdAppendWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
@@ -3307,13 +3326,6 @@ begin
   Result := caNone;
 end;
 
-function CmdWindowImage(Script : TObject; Params : array of TCmdParam) : TCmdAction;
-var
-  Window : TScriptWindow;
-begin
-  Result := caNone;
-end;
-
 function CmdClearWindow(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
   Window : TScriptWindow;
@@ -3326,8 +3338,6 @@ begin
     
   Result := caNone;
 end;
-
-
 
 function CmdWrite(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
@@ -6228,7 +6238,7 @@ begin
 
     AddCommand('KILLALLTRIGGERS', 0, 0, CmdKillAllTriggers, [], pkValue);
     AddCommand('KILLTRIGGER', 1, -1, CmdKillTrigger, [pkValue], pkValue);
-    AddCommand('LOAD', 1, 1, CmdLoad, [pkValue], pkValue);
+    AddCommand('LOAD', 1, -1, CmdLoad, [pkValue], pkValue);
     AddCommand('LOADVAR', 1, 1, CmdLoadVar, [pkVar], pkValue);
     AddCommand('LOGGING', 1, 1, CmdLogging, [pkValue], pkValue);
     AddCommand('LOWERCASE', 1, 1, CmdLowerCase, [pkVar], pkValue);
@@ -6373,20 +6383,15 @@ begin
     AddCommand('UPDATEQS', 0, 0, CmdUpdateQS, [pkValue], pkValue);
     AddCommand('UPDATEQUICKSTATS', 0, 0, CmdUpdateQS, [pkValue], pkValue);
     AddCommand('SLEEP', 1, 1, CmdSleep, [pkValue], pkValue);
+    AddCommand('GETWORDS', 1, -1, CmdGetWords, [pkValue], pkValue);
 
-    AddCommand('DEFAULTWINDOWSTYLE', 3, 3, CmdDefaultWindowStyle, [pkValue], pkValue);
-    AddCommand('DEFAULTWINDOWFONT', 3, 3, CmdDefaultWindowFont, [pkValue], pkValue);
-    AddCommand('DEFAULTWINDOWPOSITION', 2, 6, CmdDefaultWindowPosition, [pkValue], pkValue);
-    AddCommand('DEFAULTDRAWSTYLE', 4, 4, CmdDefaultDrawStyle, [pkValue], pkValue);
-    AddCommand('WINDOWSTYLE', 2, -1, CmdWindowStyle, [pkValue], pkValue);
-    AddCommand('DRAWSTYLE', 2, -1, CmdDrawStyle, [pkValue], pkValue);
+    AddCommand('DEFAULTSTYLE', 2, -1, CmdDefaultStyle, [pkValue], pkValue);
+    AddCommand('WINDOWSTYLE', 3, -1, CmdWindowStyle, [pkValue], pkValue);
     AddCommand('APPENDWINDOW', 2, -1, CmdAppendWindow, [pkValue], pkValue);
     AddCommand('CLEARWINDOW', 1, 1, CmdClearWindow, [pkValue], pkValue);
-    AddCommand('POSITIONWINDOW', 3, 7, CmdPositionWindow, [pkValue], pkValue);
 
     // MB - These is not implimented... TODO... Maaybe...
-    AddCommand('WINDOWIMAGE', 2, -1, CmdWindowImage, [pkValue], pkValue);
-    AddCommand('DRAWONWINDOW', 2, -1, CmdDrawOnWindow, [pkValue], pkValue);
+    AddCommand('DRAW', 2, -1, CmdDrawOnWindow, [pkValue], pkValue);
 
 
     // gosub :label $Param $P2 "const"

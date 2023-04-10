@@ -36,7 +36,7 @@ type
 
   private
     FWindowName, FTextContent, FFontName: string;
-    FFontSize, FPenWidth, FWindowSize: Integer;
+    FFontSize, FPenWidth, FWindowScale: Integer;
     FForeGround, FBackground, FPenColor, FBrushColor: TColor;
     FFontStyle: TFontStyles;
     FBrushStyle: TBrushStyle;
@@ -51,9 +51,10 @@ type
     //procedure FormKeyUp; override;
 
   public
-    constructor Create(AWindowName, Title : string; SizeX, SizeY : Integer; OnTop : Boolean); reintroduce;
+    constructor Create(AWindowName, Title : string; SizeX, SizeY : Integer; OnTop, Scale : Boolean); reintroduce;
     procedure Position(Alignment, Margin : string );
-    procedure Style(ForeGround, Background, FontName : string; FontSize: Integer);
+    procedure Style(ForeGround, Background : string );
+    procedure Font(FontName, FontStyle : string; FontSize: Integer);
     procedure Image(ImageName: string; TileImage, StretchImaage: Boolean);
     procedure Draw(Shape: string; Params: array of Integer);
     procedure Append(Text: string);
@@ -70,7 +71,7 @@ uses
 
 function StrToFontStyle (S: string) : tFontStyles;
 const
-  Names: Array[0..3] of string = ('Bold', 'Italic', 'Underline', 'Strikeout');
+  Names: Array[0..3] of string = ('BOLD', 'ITALIC', 'UNDERLINE', 'STRIKEOUT');
   //Styles: Array[0..3] of tFontStyle = (fsBold, fsItalic, fsUnderline, fsStrikeout);
 var
   I: Integer;
@@ -79,20 +80,21 @@ begin
 
   for I := 0 to 3 do
   begin
-    if (pos(S, Names[I]) > 0) then
+    if (pos(Names[I], uppercase(S)) > 0) then
+    //if (uppercase(S) = Names[I]) then
       result := result + [TFontStyle(I)];
   end;
 end;
 
 function StringToBrushStyle (S: string) : TBrushStyle;
 const
-  Names: Array[0..7] of string = ('Solid', 'Clear', 'Horizontal', 'Vertical', 'FDiagonal', 'BDiagonal', 'Cross', 'DiagCross');
+  Names: Array[0..7] of string = ('SOLID', 'CLEAR', 'HORIZONTAL', 'VERTICAL', 'FDIAGONAL', 'BDIAGONAL', 'CROSS', 'DiagCross');
 var
   I: Integer;
 begin
 
   for I := 0 to 3 do
-    if (pos(S, Names[I]) > 0) then
+    if (pos(Names[I], uppercase(S)) > 0) then
       result := TBrushStyle(I);
 
 end;
@@ -113,7 +115,7 @@ begin
 
 end;
 
-constructor TScriptWindow.Create(AWindowName, Title : string; SizeX, SizeY : Integer; OnTop : Boolean);
+constructor TScriptWindow.Create(AWindowName, Title : string; SizeX, SizeY : Integer; OnTop, Scale : Boolean);
 var
   IniFile: TIniFile;
   S: string;
@@ -142,7 +144,11 @@ begin
     FFontName   := IniFile.ReadString('Window Style', 'FontName', 'Lucida Console');
     FFontStyle  := StrToFontStyle(IniFile.ReadString('Window Style', 'FontStyle', 'fsBold'));
     FFontSize   := StrToInt(IniFile.ReadString('Window Style', 'FontSize', '9'));
-    FWindowSize := StrToInt(IniFile.ReadString('Window Style', 'WindowSize', '100'));
+
+    if Scale then
+      FWindowScale := StrToInt(IniFile.ReadString('Window Style', 'Scale', '100'))
+    else
+      FWindowScale := 100;
 
     FPenWidth   := StringToColor(IniFile.ReadString('Window Style', 'PenWidth', '3'));
     FPenColor   := StringToColor(IniFile.ReadString('Window Style', 'PenColor', 'clBlack'));
@@ -155,8 +161,8 @@ begin
   end;
     IniFile.Free;
 
-  Width := (SizeX * FWindowSize) div 100;
-  Height := (SizeY * FWindowSize) div 100;
+  Width := (SizeX * FWindowScale) div 100;
+  Height := (SizeY * FWindowScale) div 100;
 
   DoubleBuffered := TRUE;
   FormStyle := fsStayOnTop;
@@ -231,16 +237,24 @@ begin
 
 end;
 
-procedure TScriptWindow.Style(ForeGround, Background, FontName: string; FontSize: Integer);
+procedure TScriptWindow.Style(ForeGround, Background: string);
 begin
 
   FForeGround := StringToColor(ForeGround);
   if Background <> '' then
     FBackground := StringToColor(Background);
+
+  Paint;
+end;
+
+procedure TScriptWindow.Font(FontName, FontStyle : string; FontSize: Integer);
+begin
   if FontName <> '' then
     FFontName := FontName;
   if FontSize <> 0 then
     FFontSize := FontSize;
+  if FontStyle <> '' then
+    FFontStyle  := StrToFontStyle(FontStyle);
 
   Paint;
 end;

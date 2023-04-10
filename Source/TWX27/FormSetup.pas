@@ -964,6 +964,7 @@ begin
       MessageDlg('Error - Database is locked by anither instance.', mtWarning, [mbOK], 0);
       Exit;
     End;
+    CloseHandle(HFileRes);
 
     // delete selected database and refresh headers held in memory
     TWXServer.ClientMessage('Deleting database: ' + ANSI_7 + S);
