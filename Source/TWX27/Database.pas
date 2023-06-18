@@ -218,7 +218,7 @@ type
     procedure BeforeDestruction; override;
 
     // DB control methods
-    procedure OpenDataBase(Filename : string);
+    procedure OpenDataBase(Filename : string; ListenPort : Integer);
     procedure CloseDataBase;
     procedure CreateDatabase(Filename : string; Head : TDataHeader);
 
@@ -346,7 +346,7 @@ end;
 // ---------------------------
 // DB control methods
 
-procedure TModDatabase.OpenDataBase(Filename : string);
+procedure TModDatabase.OpenDataBase(Filename : string; ListenPort : Integer);
 var
   I,
   X,
@@ -444,11 +444,9 @@ begin
         Break;
   end;
 
-  TWXLog.DatabaseChanged;
-  TWXServer.Broadcast(endl + ANSI_15 + 'Database successfully loaded - ' + IntToStr(DBHeader.Sectors) + ' sectors, ' + IntToStr(WarpCount) + ' warps' + endl);
-  TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Filename));
-  TWXGUI.TrayHint := StripFileExtension(ShortFilename(Filename)) + ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
-  TWXGUI.LoadTrayIcon(DBHeader.IconFile);
+  // MB - applying ListenPort from CommandLine
+  if ListenPort <> 0 then
+    TWXDatabase.ListenPort := ListenPort;
 
   if TWXServer.ListenPort <> TWXDatabase.ListenPort then
   begin
@@ -457,6 +455,12 @@ begin
     TWXServer.Deactivate;
     TWXServer.Activate;
   end;
+
+  TWXLog.DatabaseChanged;
+  TWXServer.Broadcast(endl + ANSI_15 + 'Database successfully loaded - ' + IntToStr(DBHeader.Sectors) + ' sectors, ' + IntToStr(WarpCount) + ' warps' + endl);
+  TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Filename));
+  TWXGUI.TrayHint := StripFileExtension(ShortFilename(Filename)) + ' (' + IntToStr(TWXDatabase.ListenPort) + ')';
+  TWXGUI.LoadTrayIcon(DBHeader.IconFile);
 
 end;
 
@@ -1432,7 +1436,7 @@ begin
         CurDatabase := FDataFilename;
         TWXServer.ClientMessage('Not enough free memory available for cache extensions - database cache disabled');
         CloseDataBase;
-        OpenDatabase(CurDatabase);
+        OpenDatabase(CurDatabase, 0);
         WriteData(Data, Index, Size);
         Exit;
       end;
@@ -1503,7 +1507,7 @@ begin
   if (Value <> FDataFilename) then
   begin
     CloseDatabase;
-    OpenDatabase(Value);
+    OpenDatabase(Value, 0);
   end;
 end;
 

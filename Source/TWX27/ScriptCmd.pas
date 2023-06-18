@@ -1738,7 +1738,7 @@ begin
   Result := caNone;
 end;
 
-function CmdGetWordPos(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+function CmdGetWordPos(Script :TObject; Params : array of TCmdParam) : TCmdAction;
 begin
   // CMD: getWordPos <text> storageVar <subString>
 
@@ -2707,7 +2707,8 @@ begin
   if (Length(Params) < 4) then
     Param := ''
   else
-    Param := Params[3].Value;
+    Param := ExtractFileName(Params[3].Value);
+    Param := StringReplace(Param, ExtractFileExt(Param), '', [rfReplaceAll]);
 
   TScript(Script).SetEventTrigger(Params[0].Value, Params[1].Value, Params[2].Value, Param);
   Result := caNone;
@@ -3632,17 +3633,16 @@ end;
 
 function CmdSetAutoTrigger(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
-  Value : Integer;
+  Response : string;
+  I : Integer;
 begin
-  // CMD: setAutoTrigger <name> <label> [<value>]
+  // CMD: setAutoTrigger <name> <lifecycle> <ytigger> <response>[...<response>]
 
-  // mb - set default lifecycle to 1 if not present
-  if (Length(Params) < 4) then
-    Value := 1
-  else
-    Value := Floor(Params[3].DecValue);
+  // mb - Concat response from remaining Params
+  for I := 3 to Length(Params) - 1 do
+    Response := Response + Params[I].Value;
 
-  TScript(Script).SetAutoTrigger(Params[0].Value, Params[1].Value, Params[2].Value, Value);
+  TScript(Script).SetAutoTrigger(Params[0].Value, Params[2].Value, Response, strtointdef(Params[1].Value, 0));
   Result := caNone;
 end;
 
@@ -4212,7 +4212,7 @@ begin
   Database := StripFileExtension(ShortFilename(Params[0].Value));
 
   TWXDatabase.CloseDataBase;
-  TWXDatabase.OpenDatabase('data\' + Database + '.xdb');
+  TWXDatabase.OpenDatabase('data\' + Database + '.xdb', 0);
   Result := caNone;
 end;
 
@@ -4290,7 +4290,7 @@ begin
   end;
 
   if UpperCase(DB) = UpperCase(Database) then
-    TWXDatabase.OpenDatabase('data\' + Database + '.xdb');
+    TWXDatabase.OpenDatabase('data\' + Database + '.xdb', 0);
 
   Result := caNone;
 end;
@@ -6175,6 +6175,8 @@ begin
     AddSysConstant('TWXCMDLINE',SCTwxCmdLine);
     AddSysConstant('TWXPARAM',SCTwxParam);
     AddSysConstant('TWXPARAMCOUNT',SCTwxParamCount);
+    AddSysConstant('ANSI', SCCurrentANSILine);
+    AddSysConstant('LINE', SCCurrentLine);
 
 
     // MB - Internal system vars for library Parms and Parm count.
@@ -6333,8 +6335,8 @@ begin
     AddCommand('ADDQUICKTEXT', 2, 2, CmdAddQuickText, [pkValue], pkValue);
     AddCommand('CLEARQUICKTEXT', 0, 1, CmdClearQuickText, [pkValue], pkValue);
     AddCommand('GETBOTLIST', 1, 1, CmdGetBotList, [pkVar], pkValue);
-    AddCommand('SETAUTOTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
-    AddCommand('SETAUTOTEXTTRIGGER', 3, 4, CmdSetAutoTrigger, [pkValue, pkValue, pkValue, pkValue], pkValue);
+    AddCommand('SETAUTOTRIGGER', 4, -1, CmdSetAutoTrigger, [pkValue], pkValue);
+    AddCommand('SETAUTOTEXTTRIGGER', 4, -1, CmdSetAutoTrigger, [pkValue], pkValue);
     AddCommand('REQVERSION', 1, 1, CmdReqVersion, [pkValue], pkValue);
     AddCommand('SORT', 2, 2, CmdSort, [pkValue], pkValue);
     AddCommand('FIND', 3, 4, CmdFind, [pkValue], pkValue);

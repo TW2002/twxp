@@ -48,6 +48,7 @@ type
   private
     FProgramDir: string;
     FDatabaseName: string;
+    FlistenPort: Integer;
     FStartupScripts: TStringList;
     FCmdLine: string;
     FGUIForms: array[TGUIFormType] of TForm;
@@ -87,6 +88,7 @@ type
     property Recording: Boolean read GetRecording write SetRecording;
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
+    property ListenPort: Integer read FListenPort write FListenPort;
     property StartupScripts: TStringList read GetStartupScripts write SetStartupScripts;
     property CmdLine: string read FCmdLine write FCmdLine;
     property TrayHint: string write SetTrayHint;

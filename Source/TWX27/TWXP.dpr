@@ -194,6 +194,7 @@ begin
 
   PersistenceManager.LoadStateValues;
   TWXGUI.DatabaseName := '';
+  TWXGUI.ListenPort := 0;
   TWXGUI.StartupScripts := TStringList.Create;
   // check command line values
   I := 1;
@@ -211,10 +212,9 @@ begin
         TWXGUI.DatabaseName := StripFileExtension(ShortFilename(Switch))
       else
       begin
-        TWXGUI.StartupScripts.Add(Switch);
-
         if (I = 1) then
         begin
+          TWXGUI.StartupScripts.Add(Switch);
           TWXGUI.CmdLine := '';
           J := I;
           while (J <= ParamCount) do
@@ -231,10 +231,11 @@ begin
       end;
 
     end
-    else if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
-    begin
-      TWXDatabase.ListenPort := StrToIntSafe(Copy(Switch, 3, Length(Switch)));
-    end
+// MB - duplicat this switch is defined below
+//    else if (Copy(Switch, 1, 2) = '/P') and (Length(Switch) > 2) then
+//    begin
+//      TWXDatabase.ListenPort := StrToIntSafe(Copy(Switch, 4, Length(Switch)));
+//    end
 
     // EP - New Switches
     // Single Parameters
@@ -261,7 +262,7 @@ begin
       // Alternate syntax for listening port, e.g. "twxproxy /p 2002"
       if Switch = '/P' then
       begin
-        TWXDatabase.ListenPort := StrToIntSafe(ParamStr(I));
+        TWXGUI.ListenPort := StrToIntSafe(ParamStr(I));
       end
       else if Switch = '/DBCREATE' then // Create a new Database
       begin
@@ -424,7 +425,8 @@ begin
       IniFile.WriteString('Bot:1045', 'Theme', '10|~A[~DMom 1044~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[31m|^[0m^[33m|^[0m^[1;31m');
       IniFile.WriteString('Bot:Zed', 'Theme', '9|~B<<-=Z=->>|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m');
 
-      IniFile.WriteString('QuickLoad', '1_', 'Xide Pack1');
+      IniFile.WriteString('QuickLoad', 'Ignore', 'LIBRARY,SOURCE,COMMAND');
+      IniFile.WriteString('QuickLoadc', '1_', 'Xide Pack1');
       IniFile.WriteString('QuickLoad', '2_', 'Xide Pack2');
       IniFile.WriteString('QuickLoad', 'Al_', 'Alexio');
       IniFile.WriteString('QuickLoad', 'end_', 'Ender');
@@ -474,6 +476,9 @@ begin
         IniFile.WriteString('Bot:Mom',    'Theme', '8|~A[~CMombot~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[32m|^[0m^[35m|^[0m^[1;33m');
         IniFile.WriteString('Bot:1045', 'Theme', '10|~A[~DMom 1044~A]~5|^[0m^[1;36m|^[0m^[1;35m|^[0m^[31m|^[0m^[33m|^[0m^[1;31m');
         IniFile.WriteString('Bot:Zed', 'Theme', '9|~B<<-=Z=->>|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m|^[0m^[1;37m');
+
+        IniFile.WriteString('QuickLoad', 'Ignore', 'LIBRARY,SOURCE,COMMAND');
+
       end;
     finally
       IniFile.Free;
@@ -501,7 +506,7 @@ begin
   InitProgram;
 
   if TWXGUI.DatabaseName <> '' then
-    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb')
+    TWXDatabase.OpenDataBase( 'data\' + TWXGUI.DatabaseName + '.xdb', TWXGUI.ListenPort)
   else
   begin
     dbFile := '';
@@ -512,7 +517,10 @@ begin
     begin
     repeat
       // MB - Check to see if the file is open
-      HFileRes := CreateFile(PChar('data\' + S.Name),GENERIC_READ or GENERIC_WRITE,0,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+      HFileRes := CreateFile(PChar('data\' + S.Name)
+        ,GENERIC_READ or GENERIC_WRITE
+        ,0,nil,OPEN_EXISTING
+        ,FILE_ATTRIBUTE_NORMAL,0);
       if HFileRes <>  INVALID_HANDLE_VALUE then
       Begin
         // MB - set the file name if it is newer
@@ -527,7 +535,7 @@ begin
     end;
 
     if dbFile <> '' then
-      TWXDatabase.OpenDataBase(dbFile)
+      TWXDatabase.OpenDataBase(dbFile, TWXGUI.ListenPort)
     else
       TWXGUI.ShowForm(gfSetup);
 

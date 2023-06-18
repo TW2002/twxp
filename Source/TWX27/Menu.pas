@@ -2226,7 +2226,7 @@ begin
     Name := Name + '.xdb';
 
   TWXDatabase.CloseDatabase;
-  TWXDatabase.OpenDatabase('data\' + Name);
+  TWXDatabase.OpenDatabase('data\' + Name, 0);
   CloseMenu(FALSE);
 end;
 

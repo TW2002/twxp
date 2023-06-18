@@ -446,7 +446,9 @@ begin
 
   if not (Error) then
   begin
-    ProgramEvent('SCRIPT LOADED', Filename, TRUE);
+    // MB - Setting 'exclusive' = True requires
+    //      an exact match. changing to False
+    ProgramEvent('SCRIPT LOADED', Filename, FALSE);
     TWXServer.NotifyScriptLoad;
 
     // add menu option for script
@@ -478,7 +480,9 @@ begin
   ScriptList.Delete(Index);
 
   // trigger program event
-  ProgramEvent('SCRIPT STOPPED', ScriptName, TRUE);
+  // MB - Setting 'exclusive' = True requires
+  //      an exact match. changing to False
+  ProgramEvent('SCRIPT STOPPED', ScriptName, FALSE);
 
   TWXServer.NotifyScriptStop;
 end;
@@ -1073,7 +1077,7 @@ Response  := TTrigger(TriggerList[I]^).Response;
       if Length(Response) > 0 then
       begin
         // mb - handle new autotrigger type
-        Sleep(250);
+        Sleep(50);
         TWXClient.Send(Response);
         exit;
         //Result := TRUE;
@@ -1208,7 +1212,13 @@ begin
   begin
     E := TTrigger(FTriggers[ttEvent][I]^);
 
-    if (E.Value = EventName) and ((((not Exclusive) and (Pos(E.Param, MatchText) > 0)) or ((Exclusive) and (E.Param = MatchText))) or (MatchText = '') or (E.Param = '')) then
+    if (E.Value = EventName) and
+    ((((not Exclusive) and
+    (Pos(uppercase(E.Param), uppercase(MatchText)) > 0))
+    or ((Exclusive)
+    and (uppercase(E.Param) = uppercase(MatchText))))
+    or (MatchText = '')
+    or (E.Param = '')) then
     begin
       // remove this trigger and enact it
       LabelName := E.LabelName;
@@ -1344,9 +1354,7 @@ procedure TScript.SetAutoTrigger(Name, Value, Response : String; LifeCycle : Int
 var
   Trigger : PTrigger;
 begin
-  // mb - doto - do I need this for autotriggers?
-  //Cmp.ExtendName(Name, ExecScriptID);
-  //Cmp.ExtendLabelName(LabelName, ExecScriptID);
+  Cmp.ExtendName(Name, ExecScriptID);
 
   if (TriggerExists(Name)) then
     raise EScriptError.Create('Trigger already exists: ''' + Name + '''');

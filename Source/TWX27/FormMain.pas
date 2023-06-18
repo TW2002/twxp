@@ -265,6 +265,7 @@ var
   IniFile    : TIniFile;
   searchDir,
   searchFile : TSearchRec;
+  IgnoreDir,
   virtualName,
   virtualDir,
   dirName    : String;
@@ -280,7 +281,9 @@ begin
     if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
     repeat
       // skip directories
-      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      if (not ((searchFile.attr and faDirectory) = faDirectory))
+        and ((pos('.ts', lowercase(searchFile.Name)) > 0)
+        or (pos('.cts', lowercase(searchFile.Name)) > 0)) then
       begin
         virtualDir := 'Misc';
 
@@ -318,8 +321,11 @@ begin
       // Only show directories
       if (searchDir.attr and faDirectory) = faDirectory then
       begin
+
+        IgnoreDir := Lowercase(IniFile.ReadString('QuickLoad', 'Ignore', 'LIBRARY,SOURCE,COMMAND'));
+
         // Exclude undesired directories
-        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,mombot3,Mombot4p,qubot,zedbot') = 0) then
+        if (pos(Lowercase(searchDir.Name),IgnoreDir + '.,..,include,mombot,mombot3,Mombot4p,qubot,zedbot') = 0) then
         begin
           if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
           repeat
@@ -349,7 +355,10 @@ begin
     if findfirst(FProgramDir + '\scripts\*', faAnyFile, searchFile) = 0 then
     repeat
       // skip directories
-      if not ((searchFile.attr and faDirectory) = faDirectory) then
+      if(not ((searchFile.attr and faDirectory) = faDirectory))
+        and ((pos('.ts', lowercase(searchFile.Name)) > 0)
+        or (pos('.cts', lowercase(searchFile.Name)) > 0)) then
+
       begin
         virtualDir := 'Misc';
 
@@ -385,13 +394,15 @@ begin
       // Only show directories
       if (searchDir.attr and faDirectory) = faDirectory then
       begin
-        // Exclude undesired directories
-        if (pos(Lowercase(searchDir.Name),'.,..,include,mombot,mombot3,mombot4p,qubot,zedbot') = 0) then
+        // 2 Exclude undesired directories
+        if (pos(Lowercase(searchDir.Name),IgnoreDir + '.,..,include,mombot,mombot3,mombot4p,qubot,zedbot') = 0) then
         begin
           if findfirst(FProgramDir + '\scripts\' + searchDir.Name + '\*', faAnyFile, searchFile) = 0 then
           repeat
             // skip directories
-            if not ((searchFile.attr and faDirectory) = faDirectory) then
+            if (not ((searchFile.attr and faDirectory) = faDirectory))
+             and ((pos('.ts', lowercase(searchFile.Name)) > 0)
+             or (pos('.cts', lowercase(searchFile.Name)) > 0)) then
               AddQuickMenu(searchDir.Name + '\' + searchFile.Name, '\scripts\' + searchDir.Name + '\' + searchFile.Name);
           until FindNext(searchFile) <> 0;
         end;
@@ -745,7 +756,7 @@ begin
       // reload database
       DB := TWXDatabase.DatabaseName;
       TWXDatabase.CloseDatabase;
-      TWXDatabase.OpenDatabase(DB);
+      TWXDatabase.OpenDatabase(DB, 0);
 
       ShowMessage('Warp data successfully imported.');
     end;
@@ -937,7 +948,7 @@ begin
       // reload database
       DB := TWXDatabase.DatabaseName;
       TWXDatabase.CloseDatabase;
-      TWXDatabase.OpenDatabase(DB);
+      TWXDatabase.OpenDatabase(DB, 0);
     end;
   end;
 end;
