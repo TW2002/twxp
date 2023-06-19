@@ -464,7 +464,6 @@ begin
     EchoText := EchoText + Params[I].Value;
 
   // #13 on its own will warp the terminal display - add a linefeed with it
- 
   TWXServer.Broadcast(StringReplace(EchoText, #13, #13 + #10, [rfReplaceAll]),TRUE,TRUE,FALSE,FALSE);
 
   Result := caNone;
@@ -3374,6 +3373,59 @@ begin
 
   Result := caNone;
 end;
+
+
+
+
+
+
+
+function CmdWriteEx(Script : TObject; Params : array of TCmdParam) : TCmdAction;
+var
+  I : Integer;
+  F : TextFile;
+  Text : string;
+begin
+  // CMD: write <file> <value>
+
+  // string together the parameters and echo to all terms
+  for I := 1 to Length(Params) - 1 do
+    Text := Text + Params[I].Value;
+
+    // MB - Extend the text
+    Text := TWXServer.ApplyQuickText(Text);
+    Text := TWXServer.ApplyCP437Text(Text);
+
+
+
+  if not directoryexists(ExtractFileDir(Params[0].Value)) then
+    CreateDir(ExtractFileDir(Params[0].Value));
+
+  SetCurrentDir(TScript(Script).ProgramDir);
+  AssignFile(F, Params[0].Value);
+
+{$I-}
+  Append(F);
+
+  if (IOResult <> 0) then
+    ReWrite(F);
+
+  if (IOResult <> 0) then
+    raise EScriptError.Create('Unable to write to file ''' + Params[0].Value + '''');
+{$I+}
+
+  WriteLn(F, Text);
+  CloseFile(F);
+
+  Result := caNone;
+end;
+
+
+
+
+
+
+
 
 function CmdXor(Script : TObject; Params : array of TCmdParam) : TCmdAction;
 var
@@ -6364,6 +6416,7 @@ begin
     // MB - This is not implimented... TODO... Maaybe...
     AddCommand('SAVEHELP', 2, 5, CmdSaveHelp, [pkValue, pkValue], pkValue);
 
+   // Commands added for 2.07
     AddCommand('LISTGLOBALS', 2, 2, CmdListGlobals, [pkValue], pkValue);
     AddCommand('ECHOEX', 1, -1, CmdEchoEx, [pkValue], pkValue);
 
@@ -6371,7 +6424,6 @@ begin
     //      Will not work due to memory allocation.
     AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
-    // Commands added for 2.07
     AddCommand('GETDATETIME', 1, 2, CmdGetDateTime, [pkVar], pkValue);
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
     AddCommand('DATETIMETOSTR', 2, 3, CmdDateTimeToStr, [pkVar, pkValue], pkValue);
@@ -6391,6 +6443,7 @@ begin
     AddCommand('WINDOWSTYLE', 3, -1, CmdWindowStyle, [pkValue], pkValue);
     AddCommand('APPENDWINDOW', 2, -1, CmdAppendWindow, [pkValue], pkValue);
     AddCommand('CLEARWINDOW', 1, 1, CmdClearWindow, [pkValue], pkValue);
+    AddCommand('WRITEEX', 2, -1, CmdWriteEx, [pkValue, pkValue], pkValue);
 
     // MB - These is not implimented... TODO... Maaybe...
     AddCommand('DRAW', 2, -1, CmdDrawOnWindow, [pkValue], pkValue);
