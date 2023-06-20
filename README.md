@@ -4,8 +4,6 @@
 
 Originally written by Remco Mulder, and Elder Prophit. 
 
-## TWXP 2.7 Installer
-
 ## we need your help!
 
 I would love to continue working on this application, but I need your help. 
@@ -15,6 +13,7 @@ Any donation you can make is greatly appreciated!
 
 [Buy me a Coffee](https://www.buymeacoffee.com/TheTavern)
 
+## TWXP 2.7 Installer
 
 Installing TWX Proxy has never been easier, thanks to the TWX Proxy installers!!!
 
