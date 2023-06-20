@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Product Id="*" Name="TWX Proxy Public Scripts" Language="1033" Version="2.6.5.2" Manufacturer="eXide" UpgradeCode="e00ce659-8829-4a30-a00b-113f9057485e">
+	<Product Id="*" Name="TWX Proxy Public Scripts" Language="1033" Version="2.6.5.3" Manufacturer="eXide" UpgradeCode="e00ce659-8829-4a30-a00b-113f9057485e">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <!-- This code would bind the version to the product file, but I dont want to do that at this time...
       <Product Version="!(bind.FileVersion.MyAssemblyDll)" ...="">
