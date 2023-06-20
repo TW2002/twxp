@@ -6,10 +6,20 @@ Originally written by Remco Mulder, and Elder Prophit.
 
 ## TWXP 2.7 Installer
 
+## we need your help!
+
+I would love to continue working on this application, but I need your help. 
+I am currently legally blind and I need your support to continue.
+Since the current bots are abandoned I would love to start working on a new bot.
+Any donation you can make is greatly appreciated!
+
+[Buy me a Coffee](https://www.buymeacoffee.com/TheTavern)
+
+
 Installing TWX Proxy has never been easier, thanks to the TWX Proxy installers!!!
 
-- TWX Proxy 2.07.00a - With new Quick Script Loader! [TWXP27-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXP27-Pre1.msi)
-
+ - TWX Proxy 2.07.00a - With new Quick Script Loader! [TWXP27-Pre2.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXP27-Pre2.msi)
+ 
  - Mombot 4.7beta - An ALL new public mombot! [Mombot47-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/Mombot47-Pre1.msi)
  - Zedbot 2.20+ Unleashed - With previously unreleased scripts. [Zedbot220-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/Zedbot220-Pre1.msi)
  - Over 350+ public scripts just to get you started. [TWXS27-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXS27-Pre1.msi)
