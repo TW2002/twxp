@@ -896,8 +896,16 @@ begin
         begin
           // No corp is displayed if player is not a member of a corp
           FCurrentCorp := 0;
-          FCurrentSectorIndex := StrToIntSafe(stringreplace(Parts[1],',','',
-                                        [rfReplaceAll, rfIgnoreCase]))
+
+           if not (FSectorSaved) then
+            SectorCompleted;
+
+           FCurrentSectorIndex := StrToIntSafe(stringreplace(Parts[1],',','',
+                                     [rfReplaceAll, rfIgnoreCase]));
+
+            FPortSectorIndex := FCurrentSectorIndex;
+            FCurrentSector := TWXDatabase.LoadSector(FPortSectorIndex)
+            //FSectorSaved := FALSE
         end
         else if Parts[0] = 'Turns' then
         begin
