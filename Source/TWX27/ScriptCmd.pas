@@ -1756,9 +1756,11 @@ begin
   Word := 0;
   Strings := TStringList.Create;
   try
-    Split(TWXExtractor.CurrentLine, Strings, ' ');
+    // MB - using param1 instead of currentline
+    //Split(TWXExtractor.CurrentLine, Strings, ' ');
+    Split (Params[0].Value, Strings, ' ');
 
-    for I := 0 to length(Params) - 1 do
+    for I := 1 to length(Params) - 1 do
     begin
       if (uppercase(copy(Params[I].Value,1,5)) = 'SKIP:') then
         Word := Word + StrToIntDef(copy(Params[I].Value, 6), 0)
@@ -6422,7 +6424,7 @@ begin
 
     // MB - This is not implimented...
     //      Will not work due to memory allocation.
-    AddCommand('LIBCMD', 1, -1, CmdLibCmd, [pkValue], pkValue);
+    AddCommand('CALL', 1, -1, CmdLibCmd, [pkValue], pkValue);
 
     AddCommand('GETDATETIME', 1, 2, CmdGetDateTime, [pkVar], pkValue);
     AddCommand('DATETIMEDIFF', 3, 4, CmdDateTimeDiff, [pkVar, pkValue], pkValue);
