@@ -892,10 +892,15 @@ begin
       Split(Values[I], Parts, ' ');
       if (Parts.Count = 2) then
       begin
-        if Parts[0] = 'Turns' then
+        if Parts[0] = 'Sect' then
         begin
           // No corp is displayed if player is not a member of a corp
           FCurrentCorp := 0;
+          FCurrentSectorIndex := StrToIntSafe(stringreplace(Parts[1],',','',
+                                        [rfReplaceAll, rfIgnoreCase]))
+        end
+        else if Parts[0] = 'Turns' then
+        begin
           FCurrentTurns := StrToIntSafe(stringreplace(Parts[1],',','',
                                         [rfReplaceAll, rfIgnoreCase]))
         end

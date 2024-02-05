@@ -33,10 +33,10 @@ uses
   Windows;
 
 const
-  ProgramVersion = '2.6.31';
+  ProgramVersion = '2.7.00';
   ReleaseNumber = 1;
   ReleaseVersion = 'Beta';
-  SetupFile = 'TWX2301.dat';
+  SetupFile = 'TWX2401.dat';
   // Must also change in DPR persistamce outputfile.
 
   endl = #13 + #10;

@@ -186,7 +186,7 @@ begin
   // TODO: Set TWXProxy as the devault Telnet application in the registry.
 
   PersistenceManager := TPersistenceManager.Create(Application);
-  PersistenceManager.OutputFile := 'TWX2301.dat';
+  PersistenceManager.OutputFile := 'TWX2401.dat';
 
   // call object constructors
   for ModuleType := Low(TModuleType) to High(TModuleType) do
