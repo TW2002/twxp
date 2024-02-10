@@ -17,11 +17,11 @@ Any donation you can make is greatly appreciated!
 
 Installing TWX Proxy has never been easier, thanks to the TWX Proxy installers!!!
 
- - TWX Proxy 2.07.00a - With new Quick Script Loader! [TWXP27-Pre2.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXP27-Pre2.msi)
+ - TWX Proxy 2.07.00a - With new Quick Script Loader! [TWXP27.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXP27.msi)
  
  - Mombot 4.7beta - An ALL new public mombot! [Mombot47-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/Mombot47-Pre1.msi)
  - Zedbot 2.20+ Unleashed - With previously unreleased scripts. [Zedbot220-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/Zedbot220-Pre1.msi)
- - Over 350+ public scripts just to get you started. [TWXS27-Pre1.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXS27-Pre1.msi)
+ - Over 350+ public scripts just to get you started. [TWXScripts.msi](https://github.com/TW2002/twxp/raw/master/msi/TWXScripts.msi)
 
 Note: Script packs will install to the same path as TWX Proxy, 
       so you should install the base product first!
