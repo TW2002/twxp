@@ -16,7 +16,7 @@ The current version **[TWX 3.0](https://github.com/TW2002/twxp/tree/master/Sourc
  - Updated compiler (TWXC) and included decompiler (TWXD) that can decompile any .cts/.inc file from any version
  - Included native Mombot and script Mombot 5.0, with major enhancements/bug fixes to most of the scripts
 
-The **TWX 3.0** installers are available on SourceForge, and include Mombot 5.0:
+The **TWX 3.0** installers are available on [SourceForge](https://sourceforge.net/projects/twx30/files/), and include Mombot 5.0:
 
 Direct download - [win64](https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download), [osx-arm64](https://sourceforge.net/projects/twx30/files/twx30-osx-arm64.pkg/download), [osx-x64](https://sourceforge.net/projects/twx30/files/twx30-osx-x64.pkg/download), [Linux .deb](https://sourceforge.net/projects/twx30/files/twx30-linux-x64.deb/download]), [Linux .rpm](https://sourceforge.net/projects/twx30/files/twx30-linux-x64.rpm/download)
 
