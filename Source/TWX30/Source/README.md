@@ -1,16 +1,16 @@
-# twxproxy 3.0 beta5
+# TWX Proxy 3.0 beta5 (Aug 2026)
 
 Trade Wars 2002 proxy, scripting, compiler, and decompiler toolchain rewritten in C# on .NET 10.
 
 **Version:** 3.0 beta5
 **Original Author:** Remco Mulder
-**C# Port / Ongoing Development:** Matt Mosley
+**C# Rewrite / Ongoing Development:** Matt Mosley
 **TWX 2.6 / 2.7 Lineage:** David O. McCartney (MicroBlaster)
 **License:** GPL v2+
 
 ## Overview
 
-twxproxy 3.0 beta5 is the modern C# rewrite of the classic TWXProxy codebase. The repository includes:
+TWX 3.0 is the modern C# rewrite of the classic TWXProxy codebase. The repository includes:
 
 - a shared Core runtime used by the proxy, compiler, decompiler, and client apps
 - `TWXC`, which compiles TWX source scripts (`.ts`) to compiled bytecode (`.cts`)
@@ -18,7 +18,7 @@ twxproxy 3.0 beta5 is the modern C# rewrite of the classic TWXProxy codebase. Th
 - `MTC`, an Avalonia desktop client that can connect to a proxy or run one natively
 - `TWXP`, a multi threaded proxy with management interface
 
-The current focus is compatibility with the original Pascal TWX 2.7 behavior, especially for script compile, decompile, and runtime execution.
+TWX 3.0 is designed to be fully compatible with the Pascal TWX 2.7 behavior, especially for script compile, decompile, and runtime execution.
 
 ## Project Structure
 
@@ -79,15 +79,15 @@ twxd --output-dir /tmp/twxd-out myscript.cts
 
 ### TWXP
 
-- MAUI-based UI shell still included in the repository
-- currently targets `net10.0-maccatalyst`
+- Avalonia desktop client
+- supports multiple simultaneous connections
+- uses the shared Core runtime for script execution and database behavior
 
 ## Building
 
 ### Prerequisites
 
 - .NET 10 SDK
-- macOS for the current `TWXP` target
 - Avalonia dependencies restored for `MTC`
 
 ### Build Everything
@@ -113,10 +113,6 @@ dotnet build TWXD/TWXD.csproj
 # Avalonia client
 dotnet build MTC/MTC.csproj
 
-# MAUI shell
-dotnet build TWXP/TWXP.csproj -f net10.0-maccatalyst
-```
-
 ### Publish Standalone Tool Binaries
 
 From `Source/`:
@@ -133,14 +129,6 @@ From `Source/`:
 
 # Standalone proxy local release binaries: ../bin/<rid>/twxp
 ./build-twxp.sh
-
-# Build all standalone binaries into ../bin/<rid>, package
-# ../bin/twx30-osx-*.pkg, ../bin/twx30-win-x64.zip,
-# ../bin/twx30-linux-x64.{deb,rpm}, plus split Linux
-# twx30-{mtc,twxp,tools,scripts}-linux-x64.{deb,rpm},
-# upload to SourceForge, and post Discord.
-./publish-sourceforge-bundles.sh --rebuild
-```
 
 The top-level `bin/` directory is local/generated output and is not committed to GitHub. SourceForge is the
 only supported release route for MTC, TWXP, TWXC, and TWXD binary packages.
