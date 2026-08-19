@@ -9,7 +9,7 @@ The most recent Turbo Pascal version, TWXP 2.7, was updated and maintained from 
 
 ## TWX 3.0
 
-The current version **TWX 3.0** is a complete rewrite in C# .NET by Matt Mosley (aka reaper). This version introduces several new features:
+The current version **[TWX 3.0[(https://github.com/TW2002/twxp/tree/master/Source/TWX30)** is a complete rewrite in C# .NET by Matt Mosley (aka reaper). This version introduces several new features:
  - Native releases for Windows (x64), MacOS (arm & x64), and Linux (x64)
  - Multithreaded TWXP app that can run multiple proxies under a single process, with unified configuration/management
  - New integrated MTC client that connects to one or more servers (tabbed connections) with the proxy as part of the client itself
