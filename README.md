@@ -4,7 +4,7 @@
 
 It is free, open source software released under the GNU General Public License (GPL).
 
-The most recent Turbo Pascal version, TWXP 2.7, was updated and maintained from 2005-2025 by MicroBlaster.
+The most recent Turbo Pascal version, TWXP 2.7, was updated and maintained from 2012-2022 by MicroBlaster.
 
 
 ## TWX 3.0
@@ -33,14 +33,7 @@ Note: Script packs will install to the same path as TWX Proxy,
       so you should install the base product first!
 
 
-## MicroBlaster needs your help!
-
-MicroBlaster is currently legally blind and needs your support to continue working on TWX Proxy.  He has supported our community for
-many years and is deserving of any help you can give.
-
-Any donation you can make is greatly appreciated!
-
-[Buy me a Coffee](https://www.buymeacoffee.com/TheTavern)
+## MicroBlaster is currently legally blind and is unable continue working on TWX Proxy under Turbo Pascal because there is limited accessibility for that compiler. He will continue to supported our community with the help of A..I. on newer platforms as much as possible.
 
 
 ## Other Versions
