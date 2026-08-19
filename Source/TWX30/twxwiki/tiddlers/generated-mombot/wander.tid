@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: wander
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: wander
+
+! wander
+
+wander {file | sector param | auto} {share}
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; wander &gt;&gt;&gt;&gt;
+   
+     wander {file | sector param | auto} {share}
+          Warps around the universe, attempting to be turn efficient.
+          Turn efficiency goes away when its an unlimited turn game.
+          Requires twarp.                
+                          
+                  file - path to target file
+          sector param - Will target sector marked with sector param.
+                          
+                         Using UNFIGGED as param will target all
+                         sectors where FIGSEC is not true. 
+               {share} - reports figged sectors over subspace
+             {nearest} - does nearest fig calc when possible
+               
+               Planet avoid options can be set in the bot menu
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

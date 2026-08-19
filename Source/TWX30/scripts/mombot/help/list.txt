@@ -1,0 +1,14 @@
+                     
+   
+                  <<<< list >>>>
+   
+     Searches database sectors by port, MCIC, figs, and warp count.
+        
+     Usage:  list {port type} {mcic} {pair} {figged} {warp filter}
+        
+     Arguments:
+        {port type}   sbb/bbs/xxx/xbb/xxb/etc. B buys, S sells, X is any.
+             {mcic}   positive or negative MCIC threshold.
+             {pair}   require a matching paired adjacent port.
+           {figged}   include figged sectors instead of unfigged sectors.
+      {warp filter}   deadend, 2way, 3way, 4way, 5way, 6way, or 7way.

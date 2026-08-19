@@ -1,0 +1,25 @@
+                     
+   
+                  <<<< dora >>>>
+   
+      Dora the Explorer
+      Expores universe, no ZTM required, optional trades.
+      
+      dora [turnsstop] {all/org/buys/none} {ports/warps} 
+                         {mcicsell/mcicbuy/mcicboth}
+      - [turnsstop] - Will stop exploring once we reach these turns.
+      - {all}       - All fuel<>equip org<>equip options
+      - {org}       - All org<>equip options
+      - {buys}      - BSB<>BSB combos
+      - {none}      - No trading
+                    When any trades applied, script will trade any port
+                    it passes where it can sell a full load.
+      
+      - {ports}     - Priortises gridding ports
+      - {warps}     - Priortises gridding high warp density
+      
+      - {mcicsell}  - Test XXS ports for MCIC 
+      - {mcicbuy}   - Test XXB ports for MCIC 
+      - {mcicboth}  - Test all ports for MCIC 
+      
+      - {deldata }  Deletes explored sectors 

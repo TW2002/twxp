@@ -1,0 +1,23 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: class0
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: class0
+
+! class0
+
+CLASS0 - Sends over Sub-Space known Class 0 Port
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+CLASS0 - Sends over Sub-Space known Class 0 Port
+         Locations
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

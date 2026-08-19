@@ -1,0 +1,37 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: history
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: history
+
+! history
+
+history {limit:#} {filter:x}
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; history &gt;&gt;&gt;&gt;
+   
+      history {limit:#} {filter:x}
+        
+          Displays the most recent self commands
+          this bot has given.
+              
+           {limit:#} - display the last # of commands
+          {filter:x} - only show commands matching this
+                           
+          Example:                      
+              &gt;history 10                      
+              &gt;history pdrop                   
+              &gt;history 3 pdrop
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

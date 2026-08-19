@@ -1,0 +1,5 @@
+                     
+   
+                 <<<< reset >>>>
+   
+     Disconnects from the game server; also used by the EMX alias.

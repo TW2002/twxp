@@ -1,0 +1,12 @@
+                     
+   
+                <<<< unstack >>>>
+   
+       Moves overloaded planets automatically
+       into FARM or BUBBLE sectors.
+            
+      unstack {planet#1} {planet#2} ... {planet#x} {restack}
+            
+           Options: 
+             {planet#} - will not move listed planets
+             {restack} - restacks last unstacked planets

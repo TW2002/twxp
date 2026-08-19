@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< cn9 >>>>
+   
+     cn9
+       - Resets the cn settings in the game to bot desirable settings.

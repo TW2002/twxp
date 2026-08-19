@@ -1,0 +1,30 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: exit
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-command
+caption: exit
+
+! exit
+
+EXIT - Quickly exits, then enters game. Clears mail
+
+''Categories:'' Grid
+''Kinds:'' Command
+''Source matches:'' Command (Grid)
+
+!! Help
+<pre>
+EXIT - Quickly exits, then enters game. Clears mail 
+       and cleans mines in sector.
+
+       exit/xenter {number} {refill}
+
+      [number] - Allows multiple exit enters
+
+      [refill] - If started from command prompt, attempts to 
+                 refill on fighters in sector.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

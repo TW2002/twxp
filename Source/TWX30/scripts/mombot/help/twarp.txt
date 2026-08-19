@@ -1,0 +1,23 @@
+                     
+   
+                 <<<< twarp >>>>
+   
+     twarp {sector:#} {"trader_name"} {p} 
+           
+             transwarps to sector as quickly 
+             and safely as possible.   
+           
+         Options: 
+                {sector:#} - sector to twarp to 
+           {"trader_name"} - trader to twarp to
+                       {p} - attempt to port after twarp
+              
+         Examples:
+                 >t 233    - normal twarp
+                 >t 233 12 - twarp, then land on planet 12
+                 >t 233 p  - twarp, then port
+              >t planet 12 - twarp to last known 
+                             location of planet 12 and land
+                   >t mind - twarp to a corp member with mind
+                             in their name
+          >t "mind dagger" - twarp to corp member

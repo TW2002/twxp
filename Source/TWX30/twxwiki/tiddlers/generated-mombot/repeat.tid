@@ -1,0 +1,32 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: repeat
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-daemon kind-daemon
+caption: repeat
+
+! repeat
+
+Repeats bot commands
+
+''Categories:'' Daemons
+''Kinds:'' Daemon
+''Source matches:'' Daemon (Daemons)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; repeat &gt;&gt;&gt;&gt;
+   
+     Repeats bot commands 
+           
+     repeat [delay in seconds] [bot command]
+              
+     Options: 
+     {delay in seconds} - seconds to delay before calling bot command again
+          {bot command} - bot command to run, parameters and all
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

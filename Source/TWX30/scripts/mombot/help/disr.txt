@@ -1,0 +1,11 @@
+                     
+   
+                  <<<< disr >>>>
+   
+     DisR - Disrupt Mines in Adjacent Sectors
+        
+     Usage: >disr {burst} {nscan}
+         
+     Options: 
+             {burst} - Sends only 1 Disruptor into each Sector
+             {nscan} - Do Not Perform Holo Scan

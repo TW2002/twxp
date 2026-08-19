@@ -1,0 +1,33 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: keep
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: keep
+
+! keep
+
+keep {amount}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; keep &gt;&gt;&gt;&gt;
+   
+     keep {amount} 
+        Will withdraw or deposit to/from citadel so you
+        have the amount of credits requested.
+          
+        Examples:
+           &gt;keep 500k
+           &gt;keep 2m
+                          - Author: Deign
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

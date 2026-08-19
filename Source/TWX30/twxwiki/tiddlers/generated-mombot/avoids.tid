@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: avoids
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: avoids
+
+! avoids
+
+Set, clear, or display avoids
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; avoids &gt;&gt;&gt;&gt;
+   
+     Set, clear, or display avoids
+     Using the avoids command without a parameter will display
+     current avoids over subspace. 
+            
+     Options:
+             {set} -  Will set an avoid 
+                                             
+           {clear} -  Will clear an avoid if a sector number
+                      is provided, otherwise clear by itself
+                      will clear all avoids.
+            
+     Usage: 
+            &gt;avoids set 45
+            &gt;avoids clear 45
+            &gt;avoids clear
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

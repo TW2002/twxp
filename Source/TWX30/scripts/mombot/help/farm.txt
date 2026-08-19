@@ -1,0 +1,40 @@
+                     
+   
+                  <<<< farm >>>>
+   
+     Visits sectors in list and farms the planets there.
+            
+       Usage:  farm set {sector1} {sector2} {...}
+       Usage:  farm list
+       Usage:  farm clear
+       Usage:  farm balance
+       Usage:  farm fill {planets}/{all} {options}
+       Usage:  farm 
+            
+     Examples:
+            
+       >farm set 1224 1925 3176     
+       >farm     
+       >farm fill 12 13 14     
+       >farm fill all     
+            
+     Modes:
+            
+        set - Adds sectors in the order entered into the farm set.
+        list - Lists all sectors in the farm set.
+        clear - Removes all sectors from the farm set.
+        balance - Attempts to balance colos on farm planets.
+           
+        Running farm with no options attempts to farm all products.
+        If you specify one or more options, only those will be farmed.
+        Planet numbers or all specify planets to be filled.
+            
+            Product Options:
+                 {f}   - Farm fuel ore
+                 {o}   - Farm organics
+                 {e}   - Farm equipment
+                {fc}   - Farm fuel ore colonists
+                {oc}   - Farm organic colonists
+                {ec}   - Farm equipment colonists
+               {fig}   - Farm fighters
+                {sh}   - Farm shields

@@ -1,0 +1,9 @@
+                     
+   
+                 <<<< scrub >>>>
+   
+     scrub {seek} 
+          
+        Gets rid of limpets off of your hull
+          
+        {seek} - twarp to class 9 or 0 port and back

@@ -1,0 +1,12 @@
+                     
+   
+                  <<<< keep >>>>
+   
+     keep {amount} 
+        Will withdraw or deposit to/from citadel so you
+        have the amount of credits requested.
+          
+        Examples:
+           >keep 500k
+           >keep 2m
+                          - Author: Deign 

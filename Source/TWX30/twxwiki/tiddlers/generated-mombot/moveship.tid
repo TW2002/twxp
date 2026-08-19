@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: moveship
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: moveship
+
+! moveship
+
+Moves empty ships from one sector to another.
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; moveship &gt;&gt;&gt;&gt;
+   
+     Moves empty ships from one sector to another.
+                     
+       moveship [sector] {back} {sell} {dep} {&quot;ship filter&quot;}
+                       
+        Options:            
+             [sector] - target sector
+               [back] - will grab ships from target sector and bring
+                        them back to current sector   
+               [sell] - if moving to stardock, attempt to sell ships
+      [&quot;ship filter&quot;] - move ships only matching this filter
+                        
+                  -  Ship filter list can be comma delimited.    
+                  -  Can use either planet or SXX port in        
+                     starting sector for fuel.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

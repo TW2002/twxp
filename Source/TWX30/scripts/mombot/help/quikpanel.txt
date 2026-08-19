@@ -1,0 +1,8 @@
+                     
+   
+               <<<< quikpanel >>>>
+   
+     SupG cashing control panel and automation helper.
+     Opens an interactive panel for haggle, bust warning, PPT,
+     display options, auto steal/rob, blind warp, and fighter kill helpers.
+     After setup it remains loaded and reacts to game prompts.

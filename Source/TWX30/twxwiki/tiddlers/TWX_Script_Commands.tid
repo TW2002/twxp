@@ -1,0 +1,52 @@
+created: 20260511173000000
+modified: 20260511173000000
+title: TWX Script Commands
+type: text/vnd.tiddlywiki
+tags: guide scripts twx30
+
+! TWX Script Commands
+
+!! GETCOURSES
+
+`GETCOURSES` returns every unique shortest directed course between two sectors.
+
+Syntax:
+
+{{{
+getcourses $courses $source $destination
+}}}
+
+Arguments:
+
+* `$courses`: output array to populate.
+* `$source`: starting sector.
+* `$destination`: ending sector.
+
+Return structure:
+
+* `$courses` scalar value is the number of shortest courses returned.
+* `$courses[n]` is one complete course.
+* `$courses[n]` scalar value is the course hop count, matching `GETCOURSE`.
+* `$courses[n][1]` through `$courses[n][m]` contain the sector numbers from source through destination, matching the path-array structure returned by `GETCOURSE`.
+
+Ordering:
+
+* `$courses[1]` is seeded from the legacy TWX/Pascal breadth-first path.
+* `$courses[2]` is seeded from the current `GETCOURSE` bidirectional path when that route is different.
+* Remaining equal-hop routes are then enumerated in stored warp order.
+* If legacy BFS and current `GETCOURSE` pick the same route, it is returned only once because `GETCOURSES` returns unique courses.
+
+Example:
+
+{{{
+getcourses $courses 14952 7635
+echo "courses=" $courses "*"
+echo "first hop count=" $courses[1] "*"
+echo "first sector=" $courses[1][1] "*"
+}}}
+
+Notes:
+
+* Only shortest courses are returned. Longer alternate routes are not included.
+* Avoided sectors are honored using the same active avoid list as pathing commands.
+* The command was appended to the end of the TWX30 native command table to avoid shifting existing compiled command IDs.

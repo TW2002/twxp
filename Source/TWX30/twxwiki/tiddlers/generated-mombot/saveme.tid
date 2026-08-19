@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: saveme
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: saveme
+
+! saveme
+
+saveme [on/off] {delay} {"target name"}
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; saveme &gt;&gt;&gt;&gt;
+   
+     saveme [on/off] {delay} {&quot;target name&quot;} 
+            
+           {delay} - number of seconds to wait before 
+                     moving planet back to starting sector
+     {target name} - saveme for only one player 
+        {defender} - Lets corp mates ride shields
+                     and lift. 
+            {kill} - Kill option to attack.
+                                   
+         While running saveme, you can say: 
+              bot_name personal limp - drop personal limp 
+              bot_name deploy mines - drop corporate mines
+              abort saveme - cancel saveme call
+              
+                    - Originally written by Cherokee
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

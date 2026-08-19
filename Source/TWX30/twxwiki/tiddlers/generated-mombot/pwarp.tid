@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: pwarp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: pwarp
+
+! pwarp
+
+pwarp {sector:#} {"trader_name"}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; pwarp &gt;&gt;&gt;&gt;
+   
+     pwarp {sector:#} {&quot;trader_name&quot;} 
+           
+             planet warps to sector 
+           
+         Options: 
+                {sector:#} - sector to pwarp to 
+           {&quot;trader_name&quot;} - trader to pwarp to
+              
+         Examples:
+                    &gt;p 233 - normal pwarp
+              &gt;p planet 12 - pwarp to last known 
+                             location of planet 12 
+                   &gt;p mind - pwarp to a corp member with mind
+                             in their name
+          &gt;p &quot;mind dagger&quot; - pwarp to corp member
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

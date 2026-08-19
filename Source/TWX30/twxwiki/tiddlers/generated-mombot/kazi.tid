@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: kazi
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: kazi
+
+! kazi
+
+KAZI - Automates planet invasion.
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+KAZI - Automates planet invasion.
+
+   - kazi [planet] {shields} {defender} {zdy}
+
+    [planet]   - Planet number to attack
+    [shields]  - Will kill planetary shields. Stops when below 50.  
+    [defender] - Will land defensively to take out military reaction.
+    [zdy]      - Option to blow planet as soon as you land.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

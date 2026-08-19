@@ -1,0 +1,235 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Directory
+type: text/vnd.tiddlywiki
+tags: mombot directory
+
+! Mombot Directory
+
+Topics: 211
+Topics missing live help: 15
+
+!! Browse by Category
+* [[Mombot Category: General]] (38)
+* [[Mombot Category: Offense]] (26)
+* [[Mombot Category: Defense]] (10)
+* [[Mombot Category: Resource]] (20)
+* [[Mombot Category: Data]] (44)
+* [[Mombot Category: Cashing]] (21)
+* [[Mombot Category: Grid]] (27)
+* [[Mombot Category: Daemons]] (6)
+* [[Mombot Category: Startups]] (1)
+* [[Mombot Category: Reference]] (19)
+
+!! All Topics
+* [[0]] - Data - Refreshes Deployed Fighter List
+* [[about]] - Reference - ABOUT - ReDisplays Splash Screen
+* [[alienhunt]] - Cashing - alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}
+* [[armids]] - Data - Refreshes Deployed Armid List
+* [[at]] - Daemons - Does bot command at certain time
+* [[avoids]] - Data - Set, clear, or display avoids
+* [[bbb]] - Cashing - Buys minimum Ore/Org/Equip and dumps to planet
+* [[beam]] - Data - Beam Data to Corp Mate
+* [[bot]] - General - BOT - Turn M()M Bot On or Off Kills all functions
+* [[boton]] - Offense - Bwarp Photon
+* [[bust]] - Cashing - BUST - Pops Planets to Reach desired Experience
+* [[bustcount]] - Reference - BUSTCOUNT - Scan the TWX-DBase SectorParams for BUSTED Sectors
+* [[busts]] - Data - busts -
+* [[buy]] - Resource - BUY - Buy Product from port in Sector or Fighters and/or
+* [[bwarp]] - General - bwarp {sector:#} {"trader_name"} {p}
+* [[call]] - Defense - CALL - Call SaveMe Command
+* [[callout]] - General - Reports team name and current sector.
+* [[cap]] - Offense - cap
+* [[chaser]] - Reference - - farm {set} {clear} {list} | {fuel} {org} {equ} {figs}
+* [[chat]] - Reference - Chat helper to send chat as a macro to avoid problems with scripts.
+* [[cim]] - Data - Computer Interrogation Mode: Port Report
+* [[citcap]] - Offense - citcap {"player name" | corp#}
+* [[citfill]] - Defense - citfill {number of fighters to refill} {auto}
+* [[citkill]] - Offense - citkill {"player name"|corp#} {sg} {dt}
+* [[class0]] - Data - CLASS0 - Sends over Sub-Space known Class 0 Port
+* [[clear]] - Grid - CLEAR - Quickly cleans sector of enemy armid and
+* [[clearbusts]] - Data - clearbusts
+* [[clearfig]] - Grid - CLEARFIG - Clears adjacent fighters and calls saveme
+* [[climp]] - Grid - climp - place corporate limpets in sector
+* [[cmine]] - Grid - CMINES - Deploys Corporate Armid Mines into the sector.
+* [[cn]] - Reference - CN - Resets your cn settings to bot defaults.
+* [[cn9]] - General - cn9
+* [[colo]] - Resource - Gets colos from Terra
+* [[corp]] - General - - corp [join/drop] [corp number] [password]
+* [[corpinfo]] - Data - CORPINFO - Scans Corporate Assets and displays results over
+* [[course]] - Data - Shows course path to sectors
+* [[density]] - Offense - density {kill} {escape:#} {photon} {pel}
+* [[dep]] - General - dep {cash to deposit}
+* [[deploy]] - Grid - deploy/put/lay/place {number} {type} {pers | corp}
+* [[disp]] - Data - dep {cash to deposit}
+* [[disr]] - Grid - DISR - Disrupt Armid Mines in Adjacent Sectors
+* [[dockkill]] - Offense - DOCKKILL - StarDock Kill Mode
+* [[dora]] - Grid - Dora the Explorer
+* [[drop]] - Offense - drop [on | off]{delay}{drop type}{trigger}{return}{kill}
+* [[dscan]] - Data - dscan
+* [[dump]] - Resource - Dump resources from planet quickly and jettisons them
+* [[ecolo]] - Resource - Uses ecolo {all}
+* [[emq]] - General - EMQ - Attempts to return to the command prompt
+* [[emx]] - Reference - EMX - Attempts disconnect in attempt to reset bot
+* [[evac]] - Defense - EVAC - Evacuate Planet(s)
+* [[exit]] - Grid - EXIT - Quickly exits, then enters game. Clears mail
+* [[farm]] - Resource - FARM - Visits sectors in list and farms the planets there.
+* [[fed]] - General - fed - send subspace messages
+* [[fedmon]] - Data - Topic without live help text.
+* [[figmove]] - Reference - FIGMOVE - Fighter Move
+* [[figs]] - Data - Refreshes Deployed Fighter List
+* [[fillsector]] - Daemons - fillsector {fighters}
+* [[fillships]] - Resource - FILLSHIPS - Fills all empty ships with fighters from sector.
+* [[find]] - Data - find - Search TWX-DBase for Fighter/Port data
+* [[finder]] - Data - FINDER - Search TWX-DBase for Fighter/Port data
+* [[foton]] - Offense - FOTON - Multipurpose Photon Mode
+* [[furb]] - Cashing - FURB - Buys and delivers a Ship to a Corpy to attack
+* [[getnear]] - Data - Topic without live help text.
+* [[getvar]] - Data - getvar
+* [[gridcheck]] - Grid - GRIDCHECK - Grid Explore/Patrol
+* [[haz]] - Grid - HAZ - Create 100% NavHaz in Current-Sector
+* [[hazkill]] - Defense - HAZKILL - Remove NavHaz Command
+* [[help]] - General - help - displays help files for commands
+* [[history]] - Data - history {limit:#} {filter:x}
+* [[hkill]] - Offense - HKILL - Holo Kill
+* [[holo]] - Data - holo
+* [[htorp]] - Offense - htorp
+* [[ig]] - Defense - IG - Interdictor Control Resetter
+* [[kazi]] - Reference - KAZI - Automates planet invasion.
+* [[keep]] - General - keep {amount}
+* [[kill]] - Offense - kill
+* [[land]] - General - Lands on a planet.
+* [[ldrop]] - Reference - LDROP - Active Limpet Mine, Planet Drop MODE
+* [[lift]] - General - LIFT - Lifts bot off of planet
+* [[limp]] - Reference - LIMP - Deploys Limpets into the sector.
+* [[limps]] - Data - Refreshes Deployed Limpet List
+* [[limpshovel]] - Grid - LIMPSHOVEL - Limpet reorganizer. Dumps limpets to borders
+* [[list]] - Data - LIST - List sectors that match port and topology filters
+* [[listall]] - General - LISTALL - List All Active Scripts on Sub Space
+* [[login]] - General - LOGIN - Login to a Bot
+* [[logoff]] - General - logoff {minutes} {cloak}
+* [[lsd]] - Resource - LSD - LoneStar's Dock Shopper (BAck End) - MOMBot Version
+* [[mac]] - General - Macro
+* [[makeplanet]] - Resource - makeplanet {ewarp} {create:} {"custom planet name"}
+* [[marco]] - Cashing - Marco Polo - Trade Route for PPTing
+* [[max]] - Resource - MAX - Upgrades a Port in sector to its maximum
+* [[maxport]] - Reference - MAX - Upgrades a Port in sector to its maximum
+* [[mega]] - Cashing - MEGA - Attempts A Mega Rob
+* [[merch]] - Cashing - Visits all ports in grid and sells organics
+* [[mex]] - Offense - MEX - Mass Exter Xport
+* [[mine]] - Reference - MINES - Deploys Armid Mines into the sector.
+* [[mines]] - Grid - MINES - Deploys Armid Mines into the sector.
+* [[minesweep]] - Grid - MINESWEEP - Visits sectors in list and clears limps and armids.
+* [[move]] - Resource - MOVE - Product Mover
+* [[movefig]] - Resource - MOVEFIG - Fighter Move
+* [[moveship]] - Resource - Moves empty ships from one sector to another.
+* [[mow]] - Grid - mow [destination] {figs} {kill} {cap} {saveme} {p} {back}
+* [[mowfuel]] - Grid - MOWFUEL - Mows to unfigged upgraded fuel ports in grid.
+* [[msgs]] - Data - UGRID - Displays or Deletes Mesages
+* [[msl]] - Data - Topic without live help text.
+* [[mxex]] - Offense - MXEX - Mass Xport Exter Xport
+* [[neg]] - Cashing - Planet Negotiate Trade Agrement
+* [[news]] - Data - news [type] {refresh}
+* [[nmac]] - General - NMAC - Sends a Macro n-Cycles
+* [[nofed]] - Daemons - Topic without live help text.
+* [[online]] - Daemons - Topic without live help text.
+* [[overload]] - Data - overload {under} {bubble}
+* [[page]] - General - PAGE - Pages bot owner
+* [[param]] - Data - PARAM - Displays sector parameters saved in game.
+* [[passgrid]] - Grid - LS Passive Gridder - Still the best
+* [[patp]] - Resource - PATP - Pay At The Pump
+* [[pdrop]] - Offense - pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill}
+* [[pe]] - Offense - PE - Photon, Enter
+* [[ped]] - Offense - PED - Photon, Enter, Defend
+* [[pel]] - Offense - PEL - Photon, Enter, Land
+* [[pelk]] - Offense - PELK - Photon, Enter, Land, Kill
+* [[pex]] - Offense - PEX - Photon, Enter, Export
+* [[pgrid]] - Grid - pgrid - planet grid into sector
+* [[pgridder]] - Grid - Pgrids automatically until stopped. pgrid {fighterToDrop}
+* [[pimp]] - Resource - PIMP - Makes planets and strips them of product
+* [[ping]] - Data - PING - Determine current server ping times.
+* [[plimp]] - Grid - PLIMP - Deploys Personal limpets into the sector.
+* [[plimper]] - Grid - Topic without live help text.
+* [[plist]] - Data - PLIST - Displays Sector planet scan on subspace
+* [[plock]] - Offense - plock {sector} {kill} {fastkill} {fastdrop}
+* [[pmine]] - Grid - PMINE - Deploy Personal Mines
+* [[port]] - General, Grid - port {build/create} {destroy/kill} {upgrade/max}
+* [[ppt]] - Cashing - Scans and offers available PPT trades to adj sectors
+* [[proztm]] - Data - Topic without live help text.
+* [[pscan]] - Data - PSCAN - Sends Planet Data Over SubSpace.
+* [[psst]] - Cashing - - psst [ship2] [planet1] [planet2] - Planet SST.
+* [[pwarp]] - General - pwarp {sector:#} {"trader_name"}
+* [[pxe]] - Offense - PXE - Photon, Export, Enter
+* [[pxed]] - Offense - PXED - Photon, Export, Enter, Defend
+* [[pxedx]] - Offense - Topic without live help text.
+* [[pxel]] - Offense - PXEL - Photon, Export, Enter, Land
+* [[pxelk]] - Offense - PXELK - Photon, Export, Enter, Land, Kill
+* [[pxex]] - Offense - PXEX - Photon, Export, Enter, Export
+* [[qreport]] - Data - QREPORT - Quasar Cannon Report
+* [[qset]] - General - QSET - Quasar Cannon Setter
+* [[qss]] - Reference - QSS - Displays quick view of player stats.
+* [[quikpanel]] - Cashing - Topic without live help text.
+* [[ramgrid]] - Grid - Rammars Legendary gridder converted to mombot
+* [[reboot]] - General - Reboot
+* [[refresh]] - General - refresh - refresh cached bot state from the live game
+* [[refurb]] - Resource - refurb {holds} {fighters} {shields} {seek}
+* [[reloader]] - Defense - RELOADER - Sector Reloader Mode
+* [[relog]] - General - relog
+* [[remaliens]] - Data - Topic without live help text.
+* [[repeat]] - Daemons - Repeats bot commands
+* [[reset]] - General - RESET - Disconnect From Server and Relogs
+* [[rob]] - Cashing - ROB - Attempts to Rob credits from port in Sector
+* [[run]] - General - Topic without live help text.
+* [[runaway]] - Defense - RUNAWAY - Automatic Flee Mode
+* [[safemow]] - Reference - SAFEMOW - Travels passively to target sector. Will
+* [[salesman]] - Cashing - Visits all ports in grid and buys fuel
+* [[saveme]] - Defense - saveme [on/off] {delay} {"target name"}
+* [[scrub]] - General - scrub {seek}
+* [[scruball]] - Resource - Topic without live help text.
+* [[sdt]] - Cashing - sdt {resetlra} [ship1] [ship2] [planet1] [planet2]
+* [[sector]] - Data - - sector [sector number]
+* [[select]] - Data - select {planet|trader|ship|anomoly|unexplored|sector|port}
+* [[sellship]] - Resource - sellship
+* [[sentinel]] - Data - sentinel {cim} {clv} {cycletime}
+* [[setparam]] - Data - Set sector parameters
+* [[setvar]] - Data - setvar
+* [[shipmove]] - Reference - - moveship/shipmove [sector] - Moves all empty ships to target sector.
+* [[slist]] - Data - Ship list
+* [[smow]] - Reference - - safemow [sector] [fighters to drop] - Travels passively to target sector. Will stop if blocked by non-passive sector.
+* [[ss]] - General - ss - send subspace messages
+* [[sst]] - Cashing - sst {resetlra} [ship1] [ship2] {jet} {resetlra}
+* [[stats]] - Reference - STATS - Opens up a stat window.
+* [[status]] - Data - Reports information about bot on subspace
+* [[stopall]] - Reference - STOPALL - Stops all non-system scripts and resets
+* [[storeship]] - Data - Storeship - Adds ship bot is in into ship data file.
+* [[strip]] - Resource - Strips planets of resources and places them on starting planet.
+* [[stripships]] - Resource - Stripship - Strips fighters from all empty ships
+* [[subspace]] - General - subspace [channel]
+* [[surround]] - Grid - surround
+* [[switch]] - General - switch {"trader_name"}
+* [[tbust]] - Cashing - - tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}
+* [[teammega]] - Daemons - Topic without live help text.
+* [[time]] - Data - Displays systems local time
+* [[topoff]] - General - TOPOFF - Fills a ship with fighters using the sector figs.
+* [[tow]] - General - TOW - Locks a Tow onto target empty ship.
+* [[trade]] - Cashing - Day 1 trader aimed at doing the best trade and testing MCIC
+* [[tricon]] - Cashing - Plays tricon for you
+* [[tsaveme]] - Defense - TSAVEME - TWarp SaveMe MODE
+* [[twarp]] - General - twarp {sector:#} {"trader_name"} {p}
+* [[ugrid]] - Grid - UGRID - Ultimate-Turn Gridder. Visits all targeted sectors.
+* [[unlock]] - General - UNLOCK - Unlocks ship so that corp members can trade ships
+* [[unstack]] - Defense - Topic without live help text.
+* [[update]] - Data - update {figs} {limps} {armids} {cim}
+* [[upgrade]] - Resource - Topic without live help text.
+* [[viewscreen]] - Reference - Information screen for self use only.
+* [[wait]] - General - wait {ms:#}
+* [[wall]] - Grid - The Wall
+* [[wander]] - Grid - wander {file | sector param | auto} {share}
+* [[watcher]] - Startups - refresh - refresh cached bot state from the live game
+* [[with]] - General - with {cash to withdrawl}
+* [[wppt]] - Cashing - - wppt {holoscan} {evade} {pay}
+* [[wrob]] - Cashing - - wrob [minimum rob amount] {upgraded} {skipcim}
+* [[wsst]] - Cashing - World Sell-Steal-Transport
+* [[xenter]] - General - xenter - exit/enter to clear sector of enemy mines/fighters
+* [[xport]] - General - xport [ship number | list] [password]
+* [[ztm]] - Data - Zero Turn Mapping

@@ -1,0 +1,35 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: list
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-mode
+caption: list
+
+! list
+
+LIST - List sectors that match port and topology filters
+
+''Categories:'' Data
+''Kinds:'' Mode
+''Source matches:'' Mode (Data)
+
+!! Help
+<pre>
+LIST - List sectors that match port and topology filters
+
+  - list [port type] {pair} {mcic {value}} {figged} {shape}
+  - [port type] = bbb, bsb, sbb, sss, xxx, or partial masks
+                  such as bxx, bbx, xbb, xxb, sxx, xss, or sxb
+  - {pair}      = only show ports with a valid adjacent port pair
+  - {mcic}      = require stored MCIC data
+  - {value}     = MCIC cutoff from -70 to 70, example: 20 or -20
+  - {figged}    = only show figged sectors
+                  default is unfigged sectors
+  - {shape}     = deadend, 2way, 3way, 4way, 5way, 6way, or 7way
+
+  - Displays sector, distance from current sector, figged status,
+    port mix, MCIC, and optional adjacent port pair.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

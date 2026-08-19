@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: corp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: corp
+
+! corp
+
+- corp [join/drop] [corp number] [password]
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+- corp [join/drop] [corp number] [password]                
+      join        - Will join Corporation                          
+      drop        - Will Drop current corporation                  
+      corp number - The corp number to join                        
+      password    - The corp password                              
+
+NOTE: If corp and password were previously used via bot           
+       the corp number and password will be saved
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

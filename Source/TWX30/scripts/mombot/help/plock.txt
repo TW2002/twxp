@@ -1,0 +1,12 @@
+                     
+   
+                 <<<< plock >>>>
+   
+     plock {sector} {kill} {fastkill} {fastdrop}
+         
+        Pre-locks with planet onto a sector.
+         
+         Options: 
+           {kill} - attempts citkill after landing
+       {fastkill} - macro kill after landing
+       {fastdrop} - deploys fighters after landing

@@ -1,0 +1,24 @@
+                     
+   
+                 <<<< ugrid >>>>
+   
+     Ultimate gridder. Visits all targeted sectors.
+            
+       Usage: ugrid [targeting] {figs} {armids} {limpets} {safety}
+                    {planets} {warp} {refurb} {scrub} {avoid}
+                    {aggressive} {passive} {clear}
+            
+     Options:
+        [targeting]  Filename to pull targets from or auto.
+        [figs]       Fighters to drop. Default: 1.
+        [armids]     Armid mines to drop. Default: 3.
+        [limps]      Limpet mines to drop. Default: 3.
+        [safety]     ultra, safe, or none. Default: ultra.
+        [planets]    all, shielded, or none. Default: all.
+        [warp]       twarp or bwarp. Default: twarp.
+        {norefurb}   Turns off auto-refurbing mines at Stardock.
+        {scrub}      Scrub at dock when catching a limpet.
+        {avoid}      Avoid sectors with enemy limpets.
+        {aggressive} Do not avoid big fighter groups.
+        {passive}    Avoid hitting player fighters or mines.
+        {clear}      Clears internal avoided-sector list.

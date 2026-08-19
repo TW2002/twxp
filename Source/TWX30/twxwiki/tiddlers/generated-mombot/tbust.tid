@@ -1,0 +1,32 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: tbust
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: tbust
+
+! tbust
+
+- tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+- tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}
+  Traitors Planet Buster Modified for M()M Bot Use 
+                                                            
+   - [Experience]   = Desired Experience
+   - [safe]         = Create and Destroy one at a time
+   - [2fer]         = Create and Destroy two at a time
+   - [max]          = Create and Destroy the max amount
+   - [override]     = Override Turns low Limit
+   - [delay]        = Random delay for each bust
+   - [bank]         = Corpie will pass credits through bank
+   - [red]          = Will Attempt negative align
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

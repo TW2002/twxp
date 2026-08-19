@@ -1,0 +1,46 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Offense
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Offense
+
+Attack, photon, capture, and offensive combat topics.
+
+!! Command List
+
+[[boton]] [[cap]] [[citcap]] [[citkill]] [[density]] [[dockkill]] [[drop]] [[foton]] [[hkill]] [[htorp]]
+[[kill]] [[mex]] [[mxex]] [[pdrop]] [[pe]] [[ped]] [[pel]] [[pelk]] [[pex]] [[plock]] [[pxe]] [[pxed]]
+[[pxedx]] [[pxel]] [[pxelk]] [[pxex]]
+
+Topics: 26
+
+!! Detailed List
+
+* [[boton]] - Bwarp Photon
+* [[cap]] - cap
+* [[citcap]] - citcap {"player name" | corp#}
+* [[citkill]] - citkill {"player name"|corp#} {sg} {dt}
+* [[density]] - density {kill} {escape:#} {photon} {pel}
+* [[dockkill]] - DOCKKILL - StarDock Kill Mode
+* [[drop]] - drop [on | off]{delay}{drop type}{trigger}{return}{kill}
+* [[foton]] - FOTON - Multipurpose Photon Mode
+* [[hkill]] - HKILL - Holo Kill
+* [[htorp]] - htorp
+* [[kill]] - kill
+* [[mex]] - MEX - Mass Exter Xport
+* [[mxex]] - MXEX - Mass Xport Exter Xport
+* [[pdrop]] - pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill}
+* [[pe]] - PE - Photon, Enter
+* [[ped]] - PED - Photon, Enter, Defend
+* [[pel]] - PEL - Photon, Enter, Land
+* [[pelk]] - PELK - Photon, Enter, Land, Kill
+* [[pex]] - PEX - Photon, Enter, Export
+* [[plock]] - plock {sector} {kill} {fastkill} {fastdrop}
+* [[pxe]] - PXE - Photon, Export, Enter
+* [[pxed]] - PXED - Photon, Export, Enter, Defend
+* [[pxedx]] - Topic without live help text.
+* [[pxel]] - PXEL - Photon, Export, Enter, Land
+* [[pxelk]] - PXELK - Photon, Export, Enter, Land, Kill
+* [[pxex]] - PXEX - Photon, Export, Enter, Export

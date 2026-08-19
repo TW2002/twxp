@@ -1,0 +1,16 @@
+                     
+   
+                <<<< history >>>>
+   
+      history {limit:#} {filter:x}
+        
+          Displays the most recent self commands
+          this bot has given.
+              
+           {limit:#} - display the last # of commands
+          {filter:x} - only show commands matching this
+                           
+          Example:                      
+              >history 10                      
+              >history pdrop                   
+              >history 3 pdrop                   

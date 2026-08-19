@@ -1,0 +1,9 @@
+                     
+   
+                <<<< safemow >>>>
+   
+     Safe Mow - Move to a sector safely
+      
+        Usage: safemow {sector} {figs to drop} {p}
+      
+        {p} - port at destination

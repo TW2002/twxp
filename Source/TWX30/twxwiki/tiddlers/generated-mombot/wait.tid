@@ -1,0 +1,36 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: wait
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: wait
+
+! wait
+
+wait {ms:#}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; wait &gt;&gt;&gt;&gt;
+   
+       wait {ms:#}    
+                                                                 
+         Waits for time specified.  This is a utility script  
+         created mostly for the multicommand functionality.     
+                                                                  
+              {ms:#} - How many milliseconds to wait            
+                                                                  
+             Examples:                                           
+                   &gt;wait 10000                             
+                   &gt;mow 1|wait 5000|mow 25                   
+                   &gt;wait     (waits default of 1 second)
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

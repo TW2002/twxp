@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: wppt
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: wppt
+
+! wppt
+
+- wppt {holoscan} {evade} {pay}
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; wppt &gt;&gt;&gt;&gt;
+   
+     - wppt {holoscan} {evade} {pay}
+       World PPT using the legacy worldtrade engine                     
+                                                                       
+          {holoscan}      0 - doesnt holoscan                         
+                          1 - holoscans on odd densities               
+                          2 - always holoscans (default)               
+                                                                       
+          {evade}         0 - normal (default)                         
+                          1 - paranoid                                 
+                          2 - avoids nothing                           
+                                                                       
+          {pay}             - pays tolls                               
+                                                                       
+          Fig type/count come from your Mombot tab-~ preferences
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

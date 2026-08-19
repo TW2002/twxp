@@ -1,0 +1,10 @@
+                     
+   
+               <<<< gridcheck >>>>
+   
+     Checks unexplored sectors in your fig grid.
+        
+     Usage:  gridcheck {b}
+        
+        {b} - use BWarp instead of TWarp.
+        Run from Citadel. Visits figged unexplored sectors and scans them.

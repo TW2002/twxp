@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: login
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: login
+
+! login
+
+LOGIN - Login to a Bot
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+LOGIN - Login to a Bot
+
+   login                          - default logs into all 
+                                    active M()M Bots
+
+   login [trader name] [bot name] - Logs into st-bot 
+
+   (ex. login &quot;bounty hunter&quot; hunt ..or..  login bounty hunt)
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

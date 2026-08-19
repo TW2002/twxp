@@ -1,0 +1,7 @@
+                     
+   
+                 <<<< class0 >>>>
+   
+     Reports both Class 0 sectors if known.
+      
+     class0 (sector)

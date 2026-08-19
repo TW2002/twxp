@@ -1,0 +1,34 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: setvar
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: setvar
+
+! setvar
+
+setvar
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; setvar &gt;&gt;&gt;&gt;
+   
+     setvar
+       Sets bot variables
+         s - stardock
+         r - rylos
+         a - alpha centauri
+         b - backdoor
+         x - safe ship
+        tl - turn limit
+         h - home sector
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

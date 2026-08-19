@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: xenter
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-mode
+caption: xenter
+
+! xenter
+
+xenter - exit/enter to clear sector of enemy mines/fighters
+
+''Categories:'' General
+''Kinds:'' Mode
+''Source matches:'' Mode (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; xenter &gt;&gt;&gt;&gt;
+   
+     xenter - exit/enter to clear sector of enemy mines/fighters
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

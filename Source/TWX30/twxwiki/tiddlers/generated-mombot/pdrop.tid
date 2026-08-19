@@ -1,0 +1,59 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: pdrop
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: pdrop
+
+! pdrop
+
+pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill}
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; pdrop &gt;&gt;&gt;&gt;
+   
+     pdrop {delay:#} {d|a|s|da|de} {fm|f|m|uf} {return} {kill}     
+           {fastkill} {defender} {perfect} {density} {lock}        
+           {plockt:#} {figs:#} {offensive} {twohops} {retrigger}   
+           {densityx} {iglift}                                     
+             
+       {delay:#} - delay before dropping in milliseconds
+             {d} - direct drop
+             {a} - adjacent drop
+             {s} - surround drop
+            {da} - direct, then adjacent drop
+            {de} - dead end drop
+            {fm} - trigger on fighter and mine hits
+             {f} - trigger on fighter hits only
+             {m} - trigger on mines only
+            {uf} - trigger on mines with no fighters
+        {return} - will return planet home after 10 seconds
+          {kill} - checks for enemy, and kills if possible
+      {fastkill} - does kill mac without checking
+      {defender} - sets and lifts IG capable defender
+       {perfect} - Only drops adjacent when it is only option
+       {density} - Drops adjacent, runs density photon
+          {lock} - Locks on sector then halts
+      {plockt:#} - Plock delay before retrigger. Default is no retrigger.
+        {figs:#} - drop this many figs to sector on landing
+     {offensive} - make figs offensive, default defense.
+       {twohops} - deadend drop, make sure de 2 hops or more away
+     {retrigger} - Keep hunting for targets
+      {densityx} - Density &lt; 40 for xport in and deploy
+        {iglift} - sets and lifts IG self
+         
+        Examples:
+           &gt;pdrop delay:10000 d f return kill
+           &gt;pdrop 1000 da fm 
+           &gt;pdrop a f kill
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

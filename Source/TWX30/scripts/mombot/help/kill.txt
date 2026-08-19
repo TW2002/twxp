@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< kill >>>>
+   
+     kill   
+         Kills any enemy players.   

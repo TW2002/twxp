@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: limp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: limp
+
+! limp
+
+LIMP - Deploys Limpets into the sector.
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+LIMP - Deploys Limpets into the sector.
+
+   limp  {number to deploy}   - Personal Limp
+   plimp {number to deploy}   - Personal Limp
+   climp {number to deploy}   - Corp Limp
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

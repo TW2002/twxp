@@ -1,0 +1,23 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: stopall
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: stopall
+
+! stopall
+
+STOPALL - Stops all non-system scripts and resets
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+STOPALL - Stops all non-system scripts and resets 
+          Bot mode to General
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

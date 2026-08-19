@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: limpshovel
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: limpshovel
+
+! limpshovel
+
+LIMPSHOVEL - Limpet reorganizer. Dumps limpets to borders
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+LIMPSHOVEL - Limpet reorganizer. Dumps limpets to borders 
+             of grid or near base if no border available. 
+
+   limpshovel {bwarp}                                                     
+
+                                                            
+    [bwarp] - Will use planetary transporter to hit 
+              sectors. Default is twarp.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

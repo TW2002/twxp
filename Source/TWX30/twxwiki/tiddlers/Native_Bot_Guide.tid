@@ -1,0 +1,15 @@
+created: 20260421010500000
+modified: 20260421010500000
+title: Native Bot Guide
+type: text/vnd.tiddlywiki
+tags: guide mombot
+
+! Native Bot Guide
+
+Use this page for notes about the native bot.
+
+Suggested sections:
+* What the native bot is for
+* Command syntax and common workflows
+* Differences from Mombot
+* Proxy/runtime behavior that matters in TWX30

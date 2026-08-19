@@ -1,0 +1,51 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: passgrid
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: passgrid
+
+! passgrid
+
+LS Passive Gridder - Still the best
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; passgrid &gt;&gt;&gt;&gt;
+   
+            LS Passive Gridder - Still the best 
+            
+      lspassgrid [stopturns] {a1/a2/a3} {l1/l2/l3} {ports}
+                 {holo} {trade} {restock} {filter} {ignore:}
+      Options:
+         [stopturns]     Passive Grid Stops at here
+     	   {a1/a2/a3}      Drop 1/2/3 Armid Mines
+     	   {l1/l2/l3}      Drop 1/2/3 Limpet Mines
+         {ports}         Grabs port reports
+         {holo}         Holo Scans to ensure sectors safe
+         {trade}        Will trade ports looking for Equ MCIC
+                        Requires EP Haggle or equiv
+         {safe}         Twarps to Limpet sectors only
+         {paranoid}     Twarp to Limpet and Mines only
+         {nextreport}   Next sector requires an adj port report.
+         {restock}      Buys more Limpets and Mines.
+         {filter}       Filters mines/armids/planets to detect
+                        safe sectors. run &gt;limps &gt;armids 1st
+         {ignorea}      Uses holo scan to passive grid alien figs
+         {resume}       Roughly resumes last run
+         {ignore:}      Ignore corp or trader fighters
+         {skip:}        Skips sectors with this param !-0 !-
+         {lock:PARAM-n} Lock grid to this param - WHICHBUB-2
+         {twenty}       Drop 20 fighters in density 0 sectors
+         Doesnt require ZTM but works better
+         Works best with T-Warp to reroute
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

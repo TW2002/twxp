@@ -1,0 +1,7 @@
+                     
+   
+                  <<<< disp >>>>
+   
+     dep {cash to deposit} 
+       Deposits cash into citadel treasury.
+             default is max credits possible

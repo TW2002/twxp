@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< bust >>>>
+   
+     bust [Experience Desired]
+     Creates and busts planets until the desired experience is reached.

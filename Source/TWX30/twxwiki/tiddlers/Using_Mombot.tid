@@ -1,0 +1,16 @@
+created: 20260421010500000
+modified: 20260421010500000
+title: Using Mombot
+type: text/vnd.tiddlywiki
+tags: guide mombot
+
+! Using Mombot
+
+Use this page for the general Mombot walkthrough you want to keep alongside the imported help.
+
+Suggested sections:
+* Basic command syntax
+* Logging into your own bot vs someone else's bot
+* Common startup flow
+* Category-by-category quick picks
+* Proxy-specific notes or caveats

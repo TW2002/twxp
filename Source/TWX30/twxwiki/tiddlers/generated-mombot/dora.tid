@@ -1,0 +1,46 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: dora
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: dora
+
+! dora
+
+Dora the Explorer
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; dora &gt;&gt;&gt;&gt;
+   
+      Dora the Explorer
+      Expores universe, no ZTM required, optional trades.
+      
+      dora [turnsstop] {all/org/buys/none} {ports/warps} 
+                         {mcicsell/mcicbuy/mcicboth}
+      - [turnsstop] - Will stop exploring once we reach these turns.
+      - {all}       - All fuel&lt;&gt;equip org&lt;&gt;equip options
+      - {org}       - All org&lt;&gt;equip options
+      - {buys}      - BSB&lt;&gt;BSB combos
+      - {none}      - No trading
+                    When any trades applied, script will trade any port
+                    it passes where it can sell a full load.
+      
+      - {ports}     - Priortises gridding ports
+      - {warps}     - Priortises gridding high warp density
+      
+      - {mcicsell}  - Test XXS ports for MCIC 
+      - {mcicbuy}   - Test XXB ports for MCIC 
+      - {mcicboth}  - Test all ports for MCIC 
+      
+      - {deldata }  Deletes explored sectors
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

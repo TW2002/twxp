@@ -1,0 +1,10 @@
+                     
+   
+                 <<<< hagexp >>>>
+   
+     Mayhem Experience Haggler
+      
+     Usage: hagexp {target} {mincash}
+      
+     {target} - target experience
+     {mincash} - minimum cash to stop at

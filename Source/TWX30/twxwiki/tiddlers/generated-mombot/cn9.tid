@@ -1,0 +1,27 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: cn9
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: cn9
+
+! cn9
+
+cn9
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; cn9 &gt;&gt;&gt;&gt;
+   
+     cn9
+       - Resets the cn settings in the game to bot desirable settings.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

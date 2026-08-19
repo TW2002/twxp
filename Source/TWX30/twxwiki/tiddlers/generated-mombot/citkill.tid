@@ -1,0 +1,42 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: citkill
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: citkill
+
+! citkill
+
+citkill {"player name"|corp#} {sg} {dt}
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; citkill &gt;&gt;&gt;&gt;
+   
+     citkill {&quot;player name&quot;|corp#} {sg} {dt}
+             {empty} {smart} {override}
+     Citadel Killer destroys enemy ships from planet citadel.
+       
+     {&quot;player name&quot;}   - Player to target, name must be
+                         surrounded by double quotes
+     {corp#}           - Corporation number to target
+     {sg}              - Shotgun mode, fires waves at
+                         first three possible targets
+     {dt}              - Doubletap mode, fires two waves
+                         before refurbing
+     {empty}           - Will capture empty ships in sector
+     {smart}           - Notices changes in ship type/target
+     {override}        - Overrides safety on attacking defender bonus ships
+     {photon} (NA)     - Will fire photon to adjacent fig hits
+     {onetap}          - fire once only
+     {slowmo}          - Adds random pause between waves.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

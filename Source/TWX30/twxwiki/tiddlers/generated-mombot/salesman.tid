@@ -1,0 +1,41 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: salesman
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: salesman
+
+! salesman
+
+Visits all ports in grid and buys fuel
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; salesman &gt;&gt;&gt;&gt;
+   
+     Visits all ports in grid and buys fuel
+     and sells/buys organics and equipment.
+      
+     salesman [min port product] ({neg}otiate OR {hold}byhold)
+     {docim} {upgradefuel}
+              
+     Options: 
+        {neg/hold}    Determines planet negotiate or hold selling
+        {docim}       Does cim before starting route
+        {upgradefuel} Upgrades fuel ports selling fuel
+          {haggle}    Uses native haggle for trading
+        {nohaggle}    Doesnt haggle when buying product
+        {sellfuel}    Sells fuel during travels
+            {grid}    Surround grid as you go
+             {rob}    Rob ports after buying down
+         {upgrade}    Slowly upgrade each port as it goes
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

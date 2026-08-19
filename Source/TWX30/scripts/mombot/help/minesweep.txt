@@ -1,0 +1,16 @@
+                     
+   
+               <<<< minesweep >>>>
+   
+     Sweeps the fig grid by deploying/clearing mines.
+        
+     Usage:  minesweep {furb} {disr} {fast} {nonsafe} {border} {l:#} {a:#}
+        
+     Arguments:
+             {furb}   buy more mines/disruptors at dock when needed.
+             {disr}   use mine disruptors against enemy mines.
+             {fast}   use fast sector-clear macro.
+          {nonsafe}   use non-safe clear path unless fast is set.
+           {border}   target hostile border sectors.
+           {l:#} {a:#}   limpets and armids to deploy.
+        Run from Citadel with FIGSEC, MINESEC, and LIMPSEC data loaded.

@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: marco
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: marco
+
+! marco
+
+Marco Polo - Trade Route for PPTing
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; marco &gt;&gt;&gt;&gt;
+   
+            Marco Polo - Trade Route for PPTing
+            
+      macro [trade/report] {turns} {filename.txt} 
+                           
+      trade  - indicates bot will trade the route
+      report - indicates bot will write route to file
+      
+      {filename.txt} - can either be used as a source
+                       route or for writing to share.
+       
+      {turns}       - Compulsary when trade option used 
+                      stops trading when reaching turns
+       
+       Marco requires pairs to have one ore seller.
+       Please update CIM Ports/Warps and Figs.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

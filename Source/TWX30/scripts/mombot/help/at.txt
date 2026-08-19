@@ -1,0 +1,15 @@
+                     
+   
+                   <<<< at >>>>
+   
+     Does bot command at certain time 
+           
+       at [time] [bot command]
+              
+       Options: 
+                 {time} - time to do command each day
+          {bot command} - bot command to run, parameters and all
+                {clear} - clears all commands
+                    
+                          example: 5:30:00 PM
+          The time is on your machine, not the game server

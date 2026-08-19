@@ -1,0 +1,7 @@
+                     
+   
+                <<<< qreport >>>>
+   
+     Gives the first five sector quasar shots for entered planets.
+      
+     qreport [planet1] [planet2] ... [planet x]

@@ -1,0 +1,25 @@
+                     
+   
+               <<<< makeplanet >>>>
+   
+     makeplanet {ewarp} {create:} {"custom planet name"} 
+            
+          {ewarp}  - Will refurb torps and atomics by ewarp 
+                     This is NOT safe.
+            
+        {create:}  - List of planet types to make.  First word
+                     of planet types separated by commas and no spaces.
+                     Default will use keeper planets in preferences.
+                     
+     {custom name} - Name the planet will be.  Otherwise its a random   
+                     name from a database              
+                                   
+           {strip} - Strip the made planets of products. Must start
+                     on the planet to fill.               
+                                   
+           Examples:                   
+                 >makeplanet create:earth,volcanic,oceanic 
+                 >makeplanet ewarp strip create:earth         
+                 >makeplanet "death" create:volcanic 
+                                   
+                    - Originally written by Xide

@@ -1,0 +1,29 @@
+                     
+   
+                <<<< density >>>>
+   
+      density {kill} {escape:#} {photon} {pel} 
+              {call} {holo} {attack:#}
+        - Density scans until it sees ship or planet and 
+          then performs an action  
+                  
+               {kill} - will kill/holokill 
+             {escape} - will escape to home sector 
+           {escape:#} - will escape to sector provided
+           {attack:#} - will only photon sector provided
+             {photon} - photon sector
+               {holo} - holoscan sector and broadcast
+              {pgrid} - pgrid in to sector
+               {call} - calls saveme
+                {pel} - photon, enter, land
+              {pel:#} - pel with planet number
+      {density:value} - only react to density changes of this 
+                        value or higher. Default is 40.
+           {killport} - Blows port with macro
+                       
+           Examples:   
+                  >density kill call escape:1922
+                  >density pel density:500
+                  >density pel:10 
+                  >density photon holo
+                  >density pgrid killport kill escape:123

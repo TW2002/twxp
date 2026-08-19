@@ -1,0 +1,34 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: logoff
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: logoff
+
+! logoff
+
+logoff {minutes} {cloak}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; logoff &gt;&gt;&gt;&gt;
+   
+     logoff {minutes} {cloak}
+       - logs off now and optionally relogs after a timer
+     logout {minutes} {cloak}
+       - alias for logoff
+     Examples:
+       &gt;logoff        - log off until manually restarted
+       &gt;logoff 10     - log off and relog in 10 minutes
+       &gt;logout cloak  - cloak and log off until manually restarted
+       &gt;logoff 30 cloak - cloak out and relog in 30 minutes
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

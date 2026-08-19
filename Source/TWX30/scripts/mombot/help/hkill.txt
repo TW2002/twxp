@@ -1,0 +1,6 @@
+                     
+   
+                 <<<< hkill >>>>
+   
+     Holoscans and attacks adjacent enemy traders, then retreats.
+     Run from Command with a holo scanner.

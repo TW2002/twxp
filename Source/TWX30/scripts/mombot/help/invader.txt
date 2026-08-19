@@ -1,0 +1,25 @@
+                     
+   
+                <<<< invader >>>>
+   
+       invader is a wrapper for the following commands:
+       pe, ped, pel, pelk, pex, pxe, pxed, pxedx, pxel, pxelk, pxex
+          
+       usage:
+          
+       pe [Sector] - Launch photon into adjacent sector and immediately enter 
+       ped [Sector] - Launch photon, enter and launch genesis torpedo 
+       pel [Sector] [Planet#] - Photon, enter and land on planet 
+       pelk [Sector] [Planet#] - Photon, enter, land and send one wave of fighters 
+       pex [Sector] [Ship#] - Photon, enter and export to another ship 
+       pxe [Sector] [Ship#] - Photon, export to another ship and enter 
+       pxed [Sector] [Ship#] - Photon, export, enter and launch genesis torpedo 
+       pxel [Sector] [Ship#] [Planet#] - Photon, export, enter and land on planet 
+       pxelk [Sector] [Ship#] [Planet#] - Photon, export, enter, land and send wave 
+       pxex [Sector] [Ship#] - Photon, export, enter and export back 
+          
+       Examples:
+          
+       >pe 24902 
+       >pel 24902 15
+       >pxel 24902 3 15

@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ped
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-command
+caption: ped
+
+! ped
+
+PED - Photon, Enter, Defend
+
+''Categories:'' Offense
+''Kinds:'' Command
+''Source matches:'' Command (Offense)
+
+!! Help
+<pre>
+PED - Photon, Enter, Defend
+      Used to launch a Photon into an adjacent Sector, Enter 
+      Photon&#x27;d Sector and launches a Genesis Torpedo
+
+      ped [Sector]
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

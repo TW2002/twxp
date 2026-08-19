@@ -1,0 +1,7 @@
+                     
+   
+                 <<<< finder >>>>
+   
+     Reports nearest friendly fig after fighter hits.
+     Daemon-style mode that watches fighter hit reports and posts
+     the nearest FIGSEC route back to the hit sector.

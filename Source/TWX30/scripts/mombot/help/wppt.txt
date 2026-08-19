@@ -1,0 +1,20 @@
+                     
+   
+                  <<<< wppt >>>>
+   
+     - wppt {holoscan} {evade} {pay}
+       World PPT using the legacy worldtrade engine                     
+                                                                       
+          {holoscan}      0 - doesnt holoscan                         
+                          1 - holoscans on odd densities               
+                          2 - always holoscans (default)               
+                                                                       
+          {evade}         0 - normal (default)                         
+                          1 - paranoid                                 
+                          2 - avoids nothing                           
+                                                                       
+          {pay}             - pays tolls                               
+                                                                       
+          {fast}            - go fast, turn left :)                    
+                                                                       
+          Fig type/count come from your Mombot tab-~ preferences      

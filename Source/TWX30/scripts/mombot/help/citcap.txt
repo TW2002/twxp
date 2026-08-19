@@ -1,0 +1,20 @@
+                     
+   
+                 <<<< citcap >>>>
+   
+      citcap {"player name" | corp#}
+      Citadel Capper captures enemy ships from planet citadel
+       
+      {"player name"} - Player to target, name must be
+                        surrounded by double quotes
+              {corp#} - Corporation number to target
+           {override} - Override to cap defender ships
+              {empty} - Empty ships only
+             {onetap} - Fire once only
+             {slowmo} - Adds random pause between waves.
+           {unloader} - Waits for unloader to finish b4 next attack.
+              
+              Examples:
+                   >citcap 
+                   >citcap "player name" 
+                   >citcap 3

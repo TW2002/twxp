@@ -1,0 +1,10 @@
+                     
+   
+                <<<< sentinel >>>>
+   
+      sentinel {cim} {clv} {cycletime}
+      Sentinel - Originally written by Xide
+      Options:
+         - {cim}    - does cim hunting - Default off
+         - {clv}    - checks clv for changes - Default off
+         - {cycletime}    - How long between cycles; def 30secs

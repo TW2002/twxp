@@ -1,0 +1,10 @@
+                     
+   
+                 <<<< sector >>>>
+   
+     Displays sector data and saved sector parameters.
+        
+     Usage:  sector {sector}
+        
+        {sector} - sector to display. Defaults to current sector.
+        Shows map output plus all sector parameters stored for that sector.

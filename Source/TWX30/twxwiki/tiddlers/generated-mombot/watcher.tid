@@ -1,0 +1,30 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: watcher
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-startup kind-startup
+caption: watcher
+
+! watcher
+
+refresh - refresh cached bot state from the live game
+
+''Categories:'' Startups
+''Kinds:'' Startup
+''Source matches:'' Startup (Startups)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; watcher &gt;&gt;&gt;&gt;
+   
+     refresh - refresh cached bot state from the live game
+       
+       refresh
+         - re-reads player, game, ship, and planet data
+           from the current prompt
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

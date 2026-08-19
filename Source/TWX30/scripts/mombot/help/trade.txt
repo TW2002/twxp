@@ -1,0 +1,16 @@
+                     
+   
+                 <<<< trade >>>>
+   
+            Day 1 trader aimed at doing the best trade and testing MCIC 
+            Keep equipment/empty holds so you always have ability to test ports.
+            Script will attempt to haggle at any port for equip buy or sell.
+            Best used with EP Haggle to get MCIC for buy/sell in megarob games.
+             - Avoids trading small amounts of Fuel/Org to avoid experience.
+            
+            trade {q} {mcic}
+            
+      Options:
+         {q}       How much equipment to keep post trade. 
+                   - Default is 5
+            EP haggle will be used if it is running in the bot. 

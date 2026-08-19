@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "releases": {
+    "stable": {
+      "version": "1.0.0-beta5",
+      "displayVersion": "MTC 1.0 beta5",
+      "notesUrl": "https://sourceforge.net/projects/twx30/files/",
+      "assets": {
+        "osx-arm64": {
+          "name": "twx30-osx-arm64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-arm64.pkg/download",
+          "packageType": "pkg"
+        },
+        "osx-x64": {
+          "name": "twx30-osx-x64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-x64.pkg/download",
+          "packageType": "pkg"
+        },
+        "linux-x64": {
+          "name": "twx30-linux-x64.deb",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.deb/download",
+          "packageType": "deb"
+        },
+        "linux-rpm-x64": {
+          "name": "twx30-linux-x64.rpm",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.rpm/download",
+          "packageType": "rpm"
+        },
+        "win-x64": {
+          "name": "twx30-win-x64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
+          "packageType": "msi"
+        }
+      }
+    },
+    "beta": {
+      "version": "1.0.0-beta5",
+      "displayVersion": "MTC 1.0 beta5",
+      "notesUrl": "https://sourceforge.net/projects/twx30/files/",
+      "assets": {
+        "osx-arm64": {
+          "name": "twx30-osx-arm64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-arm64.pkg/download",
+          "packageType": "pkg"
+        },
+        "osx-x64": {
+          "name": "twx30-osx-x64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-x64.pkg/download",
+          "packageType": "pkg"
+        },
+        "linux-x64": {
+          "name": "twx30-linux-x64.deb",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.deb/download",
+          "packageType": "deb"
+        },
+        "linux-rpm-x64": {
+          "name": "twx30-linux-x64.rpm",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.rpm/download",
+          "packageType": "rpm"
+        },
+        "win-x64": {
+          "name": "twx30-win-x64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
+          "packageType": "msi"
+        }
+      }
+    },
+    "dev": {
+      "version": "1.0.0-beta5",
+      "displayVersion": "MTC 1.0 beta5",
+      "notesUrl": "https://sourceforge.net/projects/twx30/files/",
+      "assets": {
+        "osx-arm64": {
+          "name": "twx30-osx-arm64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-arm64.pkg/download",
+          "packageType": "pkg"
+        },
+        "osx-x64": {
+          "name": "twx30-osx-x64.pkg",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-osx-x64.pkg/download",
+          "packageType": "pkg"
+        },
+        "linux-x64": {
+          "name": "twx30-linux-x64.deb",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.deb/download",
+          "packageType": "deb"
+        },
+        "linux-rpm-x64": {
+          "name": "twx30-linux-x64.rpm",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-linux-x64.rpm/download",
+          "packageType": "rpm"
+        },
+        "win-x64": {
+          "name": "twx30-win-x64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
+          "packageType": "msi"
+        }
+      }
+    }
+  }
+}

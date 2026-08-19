@@ -1,0 +1,5 @@
+                     
+   
+                <<<< scruball >>>>
+   
+     Scrubs limpets from empty ships at Stardock and reports results.

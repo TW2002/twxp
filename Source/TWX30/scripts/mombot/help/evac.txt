@@ -1,0 +1,8 @@
+                     
+   
+                  <<<< evac >>>>
+   
+     EVAC - Evacuate Planet(s)
+            Moves all movable planets in Current-Sector to target sector.
+                       
+           evac [sector]

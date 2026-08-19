@@ -1,0 +1,6 @@
+                     
+   
+                <<<< corpinfo >>>>
+   
+     corpinfo   
+           Sends a report of all corporate assets on subspace.  

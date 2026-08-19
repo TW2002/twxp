@@ -1,0 +1,33 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: refurb
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-command
+caption: refurb
+
+! refurb
+
+refurb {holds} {fighters} {shields} {seek}
+
+''Categories:'' Resource
+''Kinds:'' Command
+''Source matches:'' Command (Resource)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; refurb &gt;&gt;&gt;&gt;
+   
+     refurb {holds} {fighters} {shields} {seek} 
+          
+        Auto buys fighters and shields
+          
+            {seek} - twarp to class 9 or 0 port and back
+           {holds} - buy holds
+        {fighters} - buy fighters
+         {shields} - buy shields
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

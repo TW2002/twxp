@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Cashing
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Cashing
+
+Steal, rob, trade, bust, and other money-making modes.
+
+!! Command List
+
+[[alienhunt]] [[bbb]] [[bust]] [[furb]] [[marco]] [[mega]] [[merch]] [[neg]] [[ppt]] [[psst]] [[quikpanel]]
+[[rob]] [[salesman]] [[sdt]] [[sst]] [[tbust]] [[trade]] [[tricon]] [[wppt]] [[wrob]] [[wsst]]
+
+Topics: 21
+
+!! Detailed List
+
+* [[alienhunt]] - alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}
+* [[bbb]] - Buys minimum Ore/Org/Equip and dumps to planet
+* [[bust]] - BUST - Pops Planets to Reach desired Experience
+* [[furb]] - FURB - Buys and delivers a Ship to a Corpy to attack
+* [[marco]] - Marco Polo - Trade Route for PPTing
+* [[mega]] - MEGA - Attempts A Mega Rob
+* [[merch]] - Visits all ports in grid and sells organics
+* [[neg]] - Planet Negotiate Trade Agrement
+* [[ppt]] - Scans and offers available PPT trades to adj sectors
+* [[psst]] - - psst [ship2] [planet1] [planet2] - Planet SST.
+* [[quikpanel]] - Topic without live help text.
+* [[rob]] - ROB - Attempts to Rob credits from port in Sector
+* [[salesman]] - Visits all ports in grid and buys fuel
+* [[sdt]] - sdt {resetlra} [ship1] [ship2] [planet1] [planet2]
+* [[sst]] - sst {resetlra} [ship1] [ship2] {jet} {resetlra}
+* [[tbust]] - - tbust [Experience] {safe} {2fer} {max} {override} {delay} {makered}
+* [[trade]] - Day 1 trader aimed at doing the best trade and testing MCIC
+* [[tricon]] - Plays tricon for you
+* [[wppt]] - - wppt {holoscan} {evade} {pay}
+* [[wrob]] - - wrob [minimum rob amount] {upgraded} {skipcim}
+* [[wsst]] - World Sell-Steal-Transport

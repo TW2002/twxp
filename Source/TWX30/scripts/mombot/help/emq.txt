@@ -1,0 +1,5 @@
+                     
+   
+                  <<<< emq >>>>
+   
+     Emergency macro to escape menus and reset command state.

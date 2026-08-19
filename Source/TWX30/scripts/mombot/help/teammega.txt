@@ -1,0 +1,14 @@
+                     
+   
+                <<<< teammega >>>>
+   
+      teammega {minproduct:#} {stopturns:#} {half}
+        
+      Buydown and mega with multiple bots
+        
+      {minproduct:#} - Port Min Prod Req (def:30,000)
+       {stopturns:#} - Turns to stop at (def: 100)
+              {half} - Sells only half to port.
+              
+          Bots: callin mega1, mega2, etc.
+                script will find potential robbers

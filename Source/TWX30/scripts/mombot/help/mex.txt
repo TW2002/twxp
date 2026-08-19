@@ -1,0 +1,12 @@
+                     
+   
+                  <<<< mex >>>>
+   
+     Move/attack/export using a safe ship.
+        
+     Usage:  mex [target sector] [safe ship] {tow ship}
+        
+        [target sector] - adjacent sector to attack.
+        [safe ship] - ship to xport into after attack.
+        {tow ship} - optional ship to tow.
+        Run from Command or Citadel.

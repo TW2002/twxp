@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: clearfig
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-command
+caption: clearfig
+
+! clearfig
+
+CLEARFIG - Clears adjacent fighters and calls saveme
+
+''Categories:'' Grid
+''Kinds:'' Command
+''Source matches:'' Command (Grid)
+
+!! Help
+<pre>
+CLEARFIG - Clears adjacent fighters and calls saveme              
+
+     clearfig [sector] {defend}                            
+                                                                
+     - [defend] for offensive fighters,just enters/retreats 
+                                                                       
+       From Citadel prompt grabs fighters from planet       
+       From Command prompt grabs fighters from the sector
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

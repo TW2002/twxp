@@ -1,0 +1,17 @@
+                     
+   
+                  <<<< psst >>>>
+   
+     Planet SST using two ships and two planets.
+        
+     Steals equipment from xxB ports, xports between ships, and refurbishes.
+     Run from Command.
+        
+     Usage:  psst [ship2#] [planet1#] [planet2#] {mcic} {buyfuel}
+             psst clear_busts
+        
+        [ship2#] - empty second ship in the starting sector.
+        [planet1#] [planet2#] - movable planets in the starting sector.
+        [clear_busts] - clears cached bust data.
+        [mcic] - select ports by MCIC value.
+        [buyfuel] - upgrade ports and buy fuel.

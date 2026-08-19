@@ -1,0 +1,54 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: deploy
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-command
+caption: deploy
+
+! deploy
+
+deploy/put/lay/place {number} {type} {pers | corp}
+
+''Categories:'' Grid
+''Kinds:'' Command
+''Source matches:'' Command (Grid)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; deploy &gt;&gt;&gt;&gt;
+   
+       deploy/put/lay/place {number} {type} {pers | corp} 
+          
+       Command to replace old climp/plimp/mines/cmine/pmine 
+       commands.  Old syntax still works but can also use new
+       options
+          
+        [topoff] - will fill ship up with fighters from sector 
+                   Example:
+                         &gt;topoff
+          
+        [plimp | climp | cmine | pmine] - drops mines (default 1)
+                   Examples: 
+                         &gt;plimp 
+                         &gt;place 100 limp
+                         &gt;put p limp
+                         &gt;lay 250 corp mine
+                         &gt;deploy l p 
+                         &gt;plimp 3 
+           
+         [mines] - drops both mine types (default 3) 
+                   Examples:   
+                         &gt;lay 250 mines
+                         &gt;mines
+        
+        [deploy] - puts fighter into sector (default)
+                   Examples: 
+                         &gt;deploy 10000 figs
+                         &gt;deploy 100000
+                         &gt;put 100 personal
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

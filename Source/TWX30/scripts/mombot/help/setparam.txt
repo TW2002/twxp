@@ -1,0 +1,14 @@
+                     
+   
+                <<<< setparam >>>>
+   
+     Set sector parameters
+           setparam [parameter] [value] {sector} 
+            
+     Usage: 
+            >setparam BUSTED 1 45
+            >setparam FIGSEC 1 
+             
+            Note: assumes current sector if sector isnt entered
+            
+            Original Author: Deign

@@ -1,0 +1,14 @@
+                     
+   
+                  <<<< bbb >>>>
+   
+            Buys minimum Ore/Org/Equip and dumps to planet 
+            of jets to gain experience from a SSS Port.  
+            
+      bbb [expstop] {upport}
+            
+      Options:
+         [expstop]     STOP when you get to this exp.
+     	   {upport}      When port empties upgrades the minimum 
+         Script uses internal Haggle. 
+         and it will jettison.

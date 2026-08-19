@@ -1,0 +1,36 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: minesweep
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: minesweep
+
+! minesweep
+
+MINESWEEP - Visits sectors in list and clears limps and armids.
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+MINESWEEP - Visits sectors in list and clears limps and armids.
+
+    minesweep {furb} {disr} {border} {nonsafe or fast} {A:1} {L:1}
+
+
+    [furb]    - Will Attempt to buy Mines and/or Disruptors
+    [disr]    - Will HoloScan and attempt to disrupt all mines
+    [border]  - Only will put mines on the edge of your grid,
+                otherwise it will only target &#x27;safe&#x27; sectors. 
+    [nonsafe] - Will do repeated Exit/Enters until all Enemy
+                mines are gone slow but safe
+    [fast]    - Will do a rapid fire of exit enters, this isn&#x27;t
+                safe as you&#x27;ll will ne sitting in sector.
+    [A:1]     - Specify Number of Armid Mines to Deploy
+    [L:1]     - Specify Number of Limpet Mines to Deploy
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,23 @@
+created: 20260421010500000
+modified: 20260421010500000
+title: Maintaining the Mombot Wiki
+type: text/vnd.tiddlywiki
+tags: guide mombot
+
+! Maintaining the Mombot Wiki
+
+The editable source for this wiki lives in the local TiddlyWiki workspace.
+
+Mombot help tiddlers are regenerated into the `generated-mombot` folder inside that workspace.
+
+To refresh the help content and rebuild the single-file HTML:
+
+{{{
+python3 twxwiki/scripts/build_mombot_wiki.py
+}}}
+
+To skip specific commands or modes, add them one per line to `twxwiki/skip-topics.txt`.
+
+Notes:
+* Edit the guide pages outside `generated-mombot` if you do not want reruns to overwrite them.
+* The built single-file HTML is written to the wiki output folder as `mombot-wiki.html`.

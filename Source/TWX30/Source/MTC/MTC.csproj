@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MTC</RootNamespace>
+    <AssemblyName>MTC</AssemblyName>
+    <Version>1.0.0-beta5</Version>
+    <Authors>Matt Mosley (reaper)</Authors>
+    <Company>TWXProxy</Company>
+    <Product>Mayhem Tradewars Client 1.0 beta5</Product>
+    <Description>Cross-platform terminal emulation client for Trade Wars 2002</Description>
+    <Copyright>Copyright (C) 2026 Matt Mosley - Licensed under GPL v2+</Copyright>
+    <!-- Avalonia requires this to suppress WinExe warning on non-Windows -->
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>osx-arm64;osx-x64;win-x64;win-arm64;linux-x64</RuntimeIdentifiers>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows')) or '$(RuntimeIdentifier)' == 'win-x64' or '$(RuntimeIdentifier)' == 'win-arm64'">
+    <ApplicationIcon>..\Installer\Windows\Assets\mtc2.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="mtc.png" />
+    <AvaloniaResource Include="mtc2.png" />
+    <AvaloniaResource Include="mombot/mombot.png" />
+    <EmbeddedResource Include="Python/mtc.py" LogicalName="MTC.Python.mtc.py" />
+    <EmbeddedResource Include="Data/tw2002-edits.json" LogicalName="MTC.Data.tw2002-edits.json" />
+    <None Include="Data/tw2002-edits.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Installer\Windows\Assets\mtc2.ico" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.*" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.*" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.*" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.*" />
+    <PackageReference Include="SkiaSharp" Version="2.88.*" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../TWXProxy.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+{
+  "programDir": "",
+  "scriptsDirectory": "",
+  "managementBindAddress": "127.0.0.1",
+  "managementPort": 2099,
+  "allowedIpAddresses": [ "127.0.0.1", "::1" ],
+  "securityTokens": [ "change-me" ],
+  "autoStartGames": false,
+  "firstGameListenPort": 2023,
+  "games": [
+    {
+      "id": "sample-game",
+      "name": "sample_game",
+      "host": "localhost",
+      "port": 23,
+      "listenPort": 2023,
+      "commandChar": "$",
+      "sectors": 1000,
+      "autoConnect": false,
+      "autoReconnect": false
+    }
+  ]
+}

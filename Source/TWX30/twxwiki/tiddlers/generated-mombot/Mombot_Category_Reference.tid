@@ -1,0 +1,38 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Reference
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Reference
+
+Imported help topics that do not map cleanly to a live command or mode file.
+
+!! Command List
+
+[[about]] [[bustcount]] [[chaser]] [[chat]] [[cn]] [[emx]] [[figmove]] [[kazi]] [[ldrop]] [[limp]] [[maxport]]
+[[mine]] [[qss]] [[safemow]] [[shipmove]] [[smow]] [[stats]] [[stopall]] [[viewscreen]]
+
+Topics: 19
+
+!! Detailed List
+
+* [[about]] - ABOUT - ReDisplays Splash Screen
+* [[bustcount]] - BUSTCOUNT - Scan the TWX-DBase SectorParams for BUSTED Sectors
+* [[chaser]] - - farm {set} {clear} {list} | {fuel} {org} {equ} {figs}
+* [[chat]] - Chat helper to send chat as a macro to avoid problems with scripts.
+* [[cn]] - CN - Resets your cn settings to bot defaults.
+* [[emx]] - EMX - Attempts disconnect in attempt to reset bot
+* [[figmove]] - FIGMOVE - Fighter Move
+* [[kazi]] - KAZI - Automates planet invasion.
+* [[ldrop]] - LDROP - Active Limpet Mine, Planet Drop MODE
+* [[limp]] - LIMP - Deploys Limpets into the sector.
+* [[maxport]] - MAX - Upgrades a Port in sector to its maximum
+* [[mine]] - MINES - Deploys Armid Mines into the sector.
+* [[qss]] - QSS - Displays quick view of player stats.
+* [[safemow]] - SAFEMOW - Travels passively to target sector. Will
+* [[shipmove]] - - moveship/shipmove [sector] - Moves all empty ships to target sector.
+* [[smow]] - - safemow [sector] [fighters to drop] - Travels passively to target sector. Will stop if blocked by non-passive sector.
+* [[stats]] - STATS - Opens up a stat window.
+* [[stopall]] - STOPALL - Stops all non-system scripts and resets
+* [[viewscreen]] - Information screen for self use only.

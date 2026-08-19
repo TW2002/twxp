@@ -1,0 +1,12 @@
+                     
+   
+                 <<<< refurb >>>>
+   
+     refurb {holds} {fighters} {shields} {seek} 
+          
+        Auto buys fighters and shields
+          
+            {seek} - twarp to class 9 or 0 port and back
+           {holds} - buy holds
+        {fighters} - buy fighters
+         {shields} - buy shields

@@ -1,0 +1,22 @@
+                     
+   
+                 <<<< probe >>>>
+   
+     probe - based on Rammars Ether Prober, adapted for MomBot by Shadow
+            
+          {ewarp}  - Will refurb torps and atomics by ewarp 
+                     This is NOT safe.
+            
+        {create:}  - List of planet types to make.  First word
+                     of planet types separated by commas and no spaces.
+                     Default will use keeper planets in preferences.
+                     
+     {custom name} - Name the planet will be.  Otherwise its a random   
+                     name from a database              
+                                   
+           Examples:                   
+                 >makeplanet create:earth,volcanic,oceanic 
+                 >makeplanet ewarp create:earth         
+                 >makeplanet "death" create:volcanic 
+                                   
+                    - Originally written by Xide

@@ -1,0 +1,16 @@
+                     
+   
+                <<<< upgrade >>>>
+   
+     Upgrades planets using products and colonists in sector.
+     Products and Colos must on a port or planet in sector
+      
+        Usage:   
+      
+        >upgrade   
+        >upgrade 4 6 10
+        >upgrade ignore 3 7 11
+      
+        Upgrades all planets in sector by default. 
+        {planets} will only upgrade the specified planets
+        {ignore [planets]} will skip the specified planets

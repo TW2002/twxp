@@ -1,0 +1,31 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: figmove
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: figmove
+
+! figmove
+
+FIGMOVE - Fighter Move
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+FIGMOVE - Fighter Move
+          Move fighters onto or off of a planet
+
+          figmove [p/s] {fighter amount}
+
+          [p/s]   - P indicates to planet from sector
+                    S indicates to sector from planet
+
+          {amount}  Number of fighters to move. Default
+                    is All available Fighters.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

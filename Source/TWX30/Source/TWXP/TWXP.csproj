@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>TWXP</RootNamespace>
+    <AssemblyName>twxp</AssemblyName>
+    <Version>3.0.0-beta5</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <Authors>Matt Mosley (reaper)</Authors>
+    <Company>twxproxy</Company>
+    <Product>twxproxy 3.0 beta5</Product>
+    <Description>Cross-platform Trade Wars 2002 proxy client</Description>
+    <ApplicationTitle>twxp</ApplicationTitle>
+    <RuntimeIdentifiers>osx-arm64;osx-x64;win-x64;win-arm64;linux-x64</RuntimeIdentifiers>
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows')) or '$(RuntimeIdentifier)' == 'win-x64' or '$(RuntimeIdentifier)' == 'win-arm64'">
+    <ApplicationIcon>..\Installer\Windows\Assets\TWXProxy_Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="TWXProxy_Icon.ico" Visible="false" />
+    <None Include="..\Installer\Windows\Assets\TWXProxy_Icon.ico" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.*" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.*" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.*" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.*" />
+    <PackageReference Include="SkiaSharp" Version="2.88.*" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TWXProxy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.Text.Encoding.CodePages" />
+  </ItemGroup>
+
+</Project>

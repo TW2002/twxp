@@ -1,0 +1,13 @@
+                     
+   
+                 <<<< switch >>>>
+   
+     switch {"trader_name"} 
+          
+        Switch ships with trader in citadel
+          
+        {"trader_name"} - traders name to trade ships with
+          
+          Examples:
+              >switch "mind dagger"  
+              >switch mind

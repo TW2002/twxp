@@ -1,0 +1,7 @@
+                     
+   
+                <<<< sendfile >>>>
+   
+     sendfile - Output contents of file to screen, subspace, or fedcom
+       
+        sendfile {s[u]bspace|[f]edcom} [file]

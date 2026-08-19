@@ -1,0 +1,11 @@
+                     
+   
+                <<<< overload >>>>
+   
+     overload  {under} {bubble}
+             
+       Tells you when you have sectors overloaded 
+       with planets        
+         
+          under - tells you which sectors 
+                  have less than max planets

@@ -1,0 +1,14 @@
+                     
+   
+                <<<< dockkill >>>>
+   
+     Scans for targets and autokills in sector.
+              
+       Options: 
+           {off} - Turns off script 
+           {pod} - Only shoots pods
+          {meat} - meatgrinder mode
+           {cap} - capture instead of kill
+            {dt} - doubletap mode
+            {sg} - shotgun mode
+      {defender} - pops a planet before attacking

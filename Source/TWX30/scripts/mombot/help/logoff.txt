@@ -1,0 +1,13 @@
+                     
+   
+                 <<<< logoff >>>>
+   
+     logoff {minutes} {cloak}
+       - logs off now and optionally relogs after a timer
+     logout {minutes} {cloak}
+       - alias for logoff
+     Examples:
+       >logoff        - log off until manually restarted
+       >logoff 10     - log off and relog in 10 minutes
+       >logout cloak  - cloak and log off until manually restarted
+       >logoff 30 cloak - cloak out and relog in 30 minutes

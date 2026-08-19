@@ -1,0 +1,12 @@
+                     
+   
+                 <<<< getvar >>>>
+   
+     getvar
+       Displays bot variables
+         s - stardock
+         r - rylos
+         a - alpha centauri
+         b - backdoor
+         x - safe ship
+        tl - turn limit

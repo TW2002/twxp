@@ -1,0 +1,34 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: switch
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: switch
+
+! switch
+
+switch {"trader_name"}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; switch &gt;&gt;&gt;&gt;
+   
+     switch {&quot;trader_name&quot;} 
+          
+        Switch ships with trader in citadel
+          
+        {&quot;trader_name&quot;} - traders name to trade ships with
+          
+          Examples:
+              &gt;switch &quot;mind dagger&quot;  
+              &gt;switch mind
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

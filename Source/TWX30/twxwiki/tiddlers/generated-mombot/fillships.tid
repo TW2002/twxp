@@ -1,0 +1,22 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: fillships
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: fillships
+
+! fillships
+
+FILLSHIPS - Fills all empty ships with fighters from sector.
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+FILLSHIPS - Fills all empty ships with fighters from sector.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

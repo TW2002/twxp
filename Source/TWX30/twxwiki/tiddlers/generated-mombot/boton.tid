@@ -1,0 +1,41 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: boton
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: boton
+
+! boton
+
+Bwarp Photon
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; boton &gt;&gt;&gt;&gt;
+   
+     Bwarp Photon
+     Uses planet teleport-pad to arrive adjacent a fighter
+     hit; Launches a photon, returns, and lands
+              
+     Options: 
+         {scrub sector} - use this if you want to scrub somewhere other
+                          than your starting sector
+                 {holo) - holoscan after photon     
+              {dens)ity - density scan after photon     
+                {mine)s - trigger on mine hits too
+                
+       Usage:     
+          &gt;boton holo
+          &gt;boton 1234 dens
+          &gt;boton h mine 
+          &gt;boton
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

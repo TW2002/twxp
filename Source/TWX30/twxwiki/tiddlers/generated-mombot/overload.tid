@@ -1,0 +1,32 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: overload
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: overload
+
+! overload
+
+overload {under} {bubble}
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; overload &gt;&gt;&gt;&gt;
+   
+     overload  {under} {bubble}
+             
+       Tells you when you have sectors overloaded 
+       with planets        
+         
+          under - tells you which sectors 
+                  have less than max planets
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,31 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: status
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: status
+
+! status
+
+Reports information about bot on subspace
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; status &gt;&gt;&gt;&gt;
+   
+     Reports information about bot on subspace  
+             
+     Special stats that are bot specific:        
+       - Planet #: Last planet landed on
+       - Team Name: What team name your bot respondeds to, if any
+       - Bot mode:  What mode your bot is currently running
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

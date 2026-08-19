@@ -1,0 +1,11 @@
+                     
+   
+                  <<<< msgs >>>>
+   
+     Reads or deletes in-game messages.
+        
+     Usage:  msgs {d}
+        
+        {d} - delete all messages and report how many were deleted.
+        Without arguments, opens and pages through the message reader.
+        Run from Command or Citadel.

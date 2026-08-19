@@ -1,0 +1,10 @@
+                     
+   
+                <<<< tsaveme >>>>
+   
+     Responds to -saveme calls by twarping/bwarping to help.
+        
+     Usage:  tsaveme {scrub sector}
+        
+        {scrub sector} - optional sector to return/scrub after the save.
+        Run from Command for TWarp saves or Citadel for BWarp saves.

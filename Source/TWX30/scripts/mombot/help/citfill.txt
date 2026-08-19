@@ -1,0 +1,16 @@
+                     
+   
+                <<<< citfill >>>>
+   
+     citfill {number of fighters to refill} {auto}
+                   
+           Refills any corpie above a planet who 
+           attacks/is attacked or deploys fighters.
+              
+            Options:
+                {auto} - auto refill every five minutes
+              
+            Examples: 
+                >citfill 25000 auto
+                >citfill
+                >citfill auto 

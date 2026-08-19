@@ -1,0 +1,19 @@
+                     
+   
+                  <<<< ztm >>>>
+   
+        Zero Turn Mapping
+       
+        ztm {p:n} {s:n} {one} {noreport}
+              
+        Will resume from PASS and FROMSECTOR if cancelled 
+              
+        {p:n} - Start Pass - n from 0 to 6
+        {s:n} - Start Sector - n from 2 to MAXSECTORS
+        {one} - Plot to Terra instead of random
+        {noreport} - Will not report potenial Class 0s
+        
+        Examples:
+        >ztm p:2 s:400   - Pass 2, sector 400
+        >ztm one         - Plot to one
+        >ztm p:0 s:2 one - Start Again, Plot to one

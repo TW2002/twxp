@@ -1,0 +1,34 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: movefig
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: movefig
+
+! movefig
+
+MOVEFIG - Fighter Move
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+MOVEFIG - Fighter Move
+          Move fighters onto or off of a planet
+
+          figmove [p/s] {fighter amount} {all}
+
+          [p/s]   - P indicates to planet from sector
+                    S indicates to sector from planet
+
+          {amount}  Number of fighters to move. Default
+                    is All available Fighters.
+
+          {all}  Will move fighters off of all your planets in sector.  
+                 Only works with figmove s.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

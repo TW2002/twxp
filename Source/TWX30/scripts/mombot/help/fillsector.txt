@@ -1,0 +1,10 @@
+                     
+   
+               <<<< fillsector >>>>
+   
+     fillsector {fighters}
+     
+     Buys fighters and adds them to the current sector.
+     Must be started from Citadel with a known planet number.
+     {fighters} - optional total fighters to buy
+     If omitted, keeps buying until credits run low.

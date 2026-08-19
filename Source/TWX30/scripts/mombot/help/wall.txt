@@ -1,0 +1,13 @@
+                     
+   
+                  <<<< wall >>>>
+   
+        The Wall
+       
+        wall [Origin] [Distance] {holo} {limit:n}
+              
+        Plots courses to find all sectors Distance from Origin
+              
+        holo - Will holo all unexplored sectors.
+        limit:n - will only mow N plots
+       designed for day 1 use with no ZTM.

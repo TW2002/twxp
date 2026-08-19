@@ -1,0 +1,36 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: at
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-daemon kind-daemon
+caption: at
+
+! at
+
+Does bot command at certain time
+
+''Categories:'' Daemons
+''Kinds:'' Daemon
+''Source matches:'' Daemon (Daemons)
+
+!! Help
+<pre>
+                     
+   
+                   &lt;&lt;&lt;&lt; at &gt;&gt;&gt;&gt;
+   
+     Does bot command at certain time 
+           
+       at [time] [bot command]
+              
+       Options: 
+                 {time} - time to do command each day
+          {bot command} - bot command to run, parameters and all
+                {clear} - clears all commands
+                    
+                          example: 5:30:00 PM
+          The time is on your machine, not the game server
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

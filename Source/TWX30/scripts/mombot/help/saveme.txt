@@ -1,0 +1,19 @@
+                     
+   
+                 <<<< saveme >>>>
+   
+     saveme [on/off] {delay} {"target name"} 
+            
+           {delay} - number of seconds to wait before 
+                     moving planet back to starting sector
+     {target name} - saveme for only one player 
+        {defender} - Lets corp mates ride shields
+                     and lift. 
+            {kill} - Kill option to attack.
+                                   
+         While running saveme, you can say: 
+              bot_name personal limp - drop personal limp 
+              bot_name deploy mines - drop corporate mines
+              abort saveme - cancel saveme call
+              
+                    - Originally written by Cherokee

@@ -1,0 +1,1249 @@
+created: 20260406033653669
+modified: 20260406033723055
+tags: 
+title: Mombot Commands
+type: text/vnd.tiddlywiki
+
+Mombot Command List
+
+To send commands to your bot, use >command
+To send commands to someone else's bot, do 'botname [command]
+
+Command Options in brackets - [option] - generally required, {option} generally optional
+
+Tab - ~  - Mombot Settings and Preferences
+
+>HELP - Show preset hotkeys, custom hotkeys (set in Tab - ~ menu), and Help categories.
+
+TAB + TAB   (tab twice) - Stop Mombot scripts / modes
+
+$SL - Kill all TWX scripts
+
+-------------------------------------------------------------------
+            General
+-------------------------------------------------------------------
+
+BOT - Turn M()M Bot On or Off Kills all functions
+      of bot when inactive/off
+
+      bot on/off
+
+CALL - Call SaveMe Command
+       Used to trigger a SaveMe Script to bring planet for you to escape on
+
+       - Originally written by Cherokee
+
+CORP [join/drop] [corp number] [password]
+      join        - Will join Corporation
+      drop        - Will Drop current corporation
+      corp number - The corp number to join
+      password    - The corp password
+
+CN - Resets your cn settings to bot defaults.
+
+NOTE: If corp and password were previously used via bot
+       the corp number and password will be saved
+
+COMMS - Traitor's Public Comm Monitor
+   - Loads Comms/Fig Hit Watch Window
+        - Can type _ to review log, saved as text file in \TWXProxy\data
+
+DEP - Deposits cash into citadel treasury.
+
+      dep {cash to deposit}
+
+      {cash to deposit} - Default is all cash on hand
+
+DISP Displays current sector over ss
+
+     disp {fed}
+
+     {fed}  - Optionally redirect output over FedComm
+
+EMQ - Attempts to return someone's bot to the command prompt
+
+IGNORE - Turns all comms off
+
+LISTALL - List All Active Scripts on Sub Space
+
+LOGIN - Login to a Bot
+
+   login                          - default logs into all
+                                    active M()M Bots
+
+   login [trader name] [bot name] - Logs into st-bot
+
+   (ex. login "bounty hunter" hunt ..or..  login bounty hunt)
+
+LOGOFF - Will logoff in citadel if used while in
+         citadel w/o cloak option, waits x # of minutes to relog
+
+    logoff [min time until relog] {cloak} - logs off and disconnects
+
+MAC - Runs a macro
+
+    mac [macro string to send]
+      (use * for Enter)
+
+NMAC - Sends a Macro for multiple # Cycles
+
+     nmac [cycles] [macro string to send]
+             (use * for Enter)
+
+NOFED - While running, disables outgoing msgs on Fed Comm, changes to subspace msg.
+
+OVERLOAD - Checks Corporate/Personal Planet Lists
+           Will attempt to indicate which sectors have planet
+           densities higher than the allowable Maximum
+      (and may collide at extern)
+
+           overload {under}
+
+           {under} Shows sectors with more than 1 planet that are not full
+
+
+           - Originally written by Cherokee
+
+PAGE - Pages bot owner
+    page [player's bot name]
+
+QSS - Gives detailed status information over subspace.
+
+RESET - Disconnects From Server and Relogs
+
+SAVEME - Activates Planet Based SaveMe Mode
+         Attempts to move planet to Corpies location when called.
+         Return option brings it back to starting sector.
+
+         saveme [on/off] {return delay}
+
+         - (return dely}    Number of Seconds to wait beofore
+                            moving planet back to starting sector
+
+         - Originally written by Cherokee
+
+STATS - Opens a status window - type I after starting script, updates itself after.
+
+STATUS - SHOWS basic status info on subspace, some info not in QSS.
+
+TAB-Q   - Quick Script Loading Menu
+
+If you are going to use script hot keys, in your \TWX directory you will need the following file: _MOM_HOTKEYSCRIPTS.TXT This file allows you to set paths for quick script loading. The file should be formatted something like this on each line:
+
+[path] [script name]
+
+Example:
+scripts/MOM/MOM_PDrop1_88.ts    ""PDROP""
+scripts/MOM/MOM_UnlimitedGridder2_07.ts    ""UNLIM GRIDDER""
+scripts/MOM/MOM_LoginKiller.ts    ""LOGIN KILLER""
+scripts/MOM/MOM_PlanetGridder1_25.ts    ""PLANET GRIDDER""
+scripts/MOM/MD_PlanetStripper.ts    ""STRIPPER""
+scripts/MOM/World_Planet_Stripper.ts    ""WORLD PLANET STRIPPER""
+scripts/2_WorldTrade.ts    ""WORLD TRADE""
+scripts/MOM/phx_SectorList.ts    ""PHX SECTOR LIST""
+scripts/MOM/MOM_GridClearing1_5.ts    ""LIMP GRID""
+
+You can list a total of 10 scripts in this way. This is NOT the same as adding a command to the bot. This is simply adding access to external scripts. This will number them accordingly 1, 2, 3 ect... Tab-Q will show a list menu of the scripts, but you can fire it off each directly by TAB-1, TAB-2, TAB-3, etc... #10 is Tab-0.
+
+TSAVEME - TWarp SaveMe MODE
+          Will Twarp to Corpies Location and attempt to Tow
+          him/her back to starting sector.
+
+          tsaveme [on/off]
+
+WITH - Withdrawls cash from citadel treasury.
+
+       with {cash to withdrawl}
+
+-------------------------------------------------------------------
+              Ship Commands
+-------------------------------------------------------------------
+
+BWARP - Teleport From Palnet to a Sector
+(or b)
+      bwarp [sector]
+
+TAB-D                -=( Dnyarri's Dock Survival Toolkit )=-
+-----------------------------------------------------------------------------
+<1>  display stardock sector, re-dock <6>  check twarp lock, re-dock
+<2>  holoscan, re-dock                <7>  twarp out
+<3>  density scan, re-dock            <8>  lock tow, twarp out
+<4>  get xport list, re-dock          <9>  xport, re-dock
+<5>  get planet list, re-dock
+
+<A>  launch mine disruptor, re-dock   <E>  make a planet, re-dock
+<B>  set avoid,re-dock                <F>  land on planet and drop ore, re-dock
+<C>  clear avoided sector, re-dock    <G>  land on planet and take all, re-dock
+<D>  plot course, re-dock             <H>  land on and destroy planet, re-dock
+
+<Z>  cloak out
+<L>  get corpie locations, re-dock
+<W>  C U Y (enable t-warp) ,re-dock
+<T>  toggle cn9, re-dock
+<O>  Ore Swapper X-port
+-----------------------------------------------------------------------------
+
+DSCAN - Displays Density scan on subspace
+
+        dscan {fed}
+
+        {fed}   Redirect To Fed comm-link
+
+FUEL - Buys fuel from port in sector (if selling)
+
+FILLSHIPS - Fills all empty ships in sector with deployed fighters.
+
+HOLO - Displays Long Range scan on subspace
+
+       Holo {fed}
+
+       {fed}  will redirect output to Fed comm-link
+
+LAND - Lands on planet in the sector.
+
+       land [planet number]
+
+LIFT - Lifts bot off of planet
+
+LSD - LoneStars Dock Shopper (Other Corp Member buys)
+(TAB-B) - Buy yourself
+
+      LSD is not a Command to be used directly from the
+      MOMBot command-line. To access LSD, use the TAB-B
+      shortcout to start the LSD Front-End. LSD allows
+      you to bot another corp member to do the shopping
+      for you.
+
+      Note:  Menu option V in the Front-end Menu allows you
+             to indicate which bot you want to control. It
+             is important that if you want to bot yourself
+             that you reset Menu option V       
+
+MOVESHIP - Moves empty ships from one sector to another.
+
+    moveship [sector] {back}
+
+    [sector] - target sector
+    [back]   - will grab ships from target sector and bring
+               them back to current sector
+
+               Can use either planet (Start at cit) or SXX port in
+               starting sector for fuel.         
+
+PWARP - Planetary Warp to a Target Sector
+(or p)
+        pwarp [sector]
+
+REFURB - Refills figs and shields from current Class0 port / Dock.
+(TAB-R)
+
+SELLSHIP - Sell All Ships, At Stardock.
+
+STRIPSHIPS - Strips fighters from all empty ships
+            and deploys them into the sector.
+
+SCRUB    - Scrubs limpets off current ship - start at class0.
+
+SCRUBALL - Scrubs limpet mines off ships you've moved to Dock. Start from Stardock prompt.
+
+SURROUND - Surrounds sector with fighters, armids, or limpets.
+(TAB-s)
+           - Options for surround can be found in the
+             preferences menu in bot - TAB + ~
+
+TAB-T                -=( M()M Terra Survival Toolkit )=-
+-----------------------------------------------------------------------------
+<1>  display Terra sector, land       <5>  check twarp lock, land
+<2>  holoscan, land                   <6>  lift, twarp out
+<3>  density scan, land               <7>  lift, lock tow, twarp out
+<4>  get xport list, land             <8>  xport, land
+
+<A>  set avoid,land                   <E>  lift, cloak out
+<B>  clear avoided sector, land       <F>  C U Y (enable t-warp) ,land
+<C>  plot course, land                <G>  toggle cn9, land
+<D>  get corpie locations, land
+-----------------------------------------------------------------------------
+
+TOPOFF - Fills a ship with fighters using the sector figs.
+
+TOW - Locks a Tow onto target empty ship.
+
+      tow [ship number]
+
+TWARP - Transwarps to target sector, will land on planet # if possible
+(or t)
+        Twarp [sector] {p} {planet #}
+
+        {p}       - attempts to port at arriving sector
+        {planet#} - attempts to land on planet number entered
+                    when arriving
+
+UNLOCK - Unlocks ship so that corp members can trade ships
+         with bot.
+
+         - Originally written by Lonestar
+
+XPORT - Transports bot into another ship. Will attempt
+        to reland on planet if started there and possible.
+
+        xport [ship number] {Password}
+
+        {Password}   - Include if target ship requires a
+                       Password
+
+-------------------------------------------------------------------
+            Building
+-------------------------------------------------------------------
+
+BUY - Buy Product from port in Sector or Fighters and/or
+      shields from Rylos or Alpha
+
+  - buy [product] {mode} {cycles}
+  - [product] - [f]uel or [o]rg or [e]quip
+  - [mode]    - [b]est or [s]peed or [w]orst - default is speed
+  - [cycles]  - number of cycles             - default is max
+  - [override] - allows product buydowns with less than 200 holds
+
+  - buy [hardware] {amount}
+  - [hardware]- [fig]hters or [sh]ields or [m]ines
+  - [amount]  - number to purchase, default is maximum"
+
+  - Originally written by Cherokee. 
+
+BWARP - Teleport From Palnet to a Sector
+
+      bwarp [sector]
+
+COLO - Gets colos from Terra
+
+    colo [s/m/t] {misc} {t/b} {c:x}
+
+     - [s/m/t] - [s]peed/[m]ilk/[t]imed
+       speed - cycles - cycles to grab colos (default max)
+       milk  - min colos - min colos before grab (default 0)
+       timed - delay  - time to wait each cycle (default 15 seconds)
+     - [misc]  - cycles/min colos/delay
+     - [t/b]   - [t]warp/[b]warp  (default is twarp)
+     - [c:x]   - [c]amo holds (example: c:3 adds 3 holds extra fuel)
+
+FILLSECTOR - Warps planet to Class0, buys figs, returns and deploys in sector
+
+HAZKILL - Remove NavHaz Command
+          Scans Current-Sector and launches Genesis Torpedos
+          to removes any NavHaz
+
+FARM - Visits sectors in list and strips planets of all product and figs.
+       The default will visit all planets on the TL list
+
+     farm {set} {clear} {list}
+
+     [set] {sector1} {...} {sectorx}  - set puts sectors
+                      in the order you enter into a file
+
+     [clear] - clear deletes the farm file
+     [list]  - show lists of all sectors in the farm file
+              in order
+
+FARMFF - Visits sectors in list and farms fuel, figs from planets there.
+       - default will visit all planets on the tl list
+
+    farmff {set} {clear} {list}
+
+    [set] {sector1} {sector2} {...} {sectorx}
+       - set puts sectors in the order you enter into a file
+    [clear]
+       - clear deletes the farm file
+    [list]
+       - show lists of all sectors in the farm file in order
+
+FARMFIGS  - Visits sectors in list and farms figs from the planets there.
+          - default will visit all planets on the tl list
+          - if planet full of figs, drops figs to starting sector
+    farmfigs {set} {clear} {list}
+
+    [set] {sector1} {sector2} {...} {sectorx}
+       - set puts sectors in the order you enter into a file
+    [clear]
+       - clear deletes the farm file
+    [list]
+       - show lists of all sectors in the farm file in order
+
+LSPCREATE - Generate planet(s) in current sector of desired type, harvests product.
+
+MAX - Upgrades a Port in sector to its maximum
+
+      max/maxport [f/o/e] {noexp}
+
+     {noexp}  - Performs upgrade without increasing
+                Experience.
+
+MILKA - better milk mode - twarps from base to milk colos regenerating on Terra
+
+milka [m] {misc} {t/b} {c:x}
+
+     - [m] - [m]ilk
+       speed - cycles - cycles to grab colos (default max)
+       milk  - min colos - min colos before grab (default 0)
+       timed - delay  - time to wait each cycle (default 15 seconds)
+     - [misc]  - cycles/min colos/delay
+     - [t/b]   - [t]warp/[b]warp  (default is twarp)
+     - [c:x]   - [c]amo holds (example: c:3 adds 3 holds extra fuel)
+
+MOVE - Product Mover
+
+    move [type] [planet] [rounds]
+
+    [type] - use [f]uel, [o]rg, [e]quip
+    [type] - use [fc] fuel colo, [oc] org colo, [ec] equip colo
+    [planet] planet to move to
+    [rounds] number of rounds to move product / colonists   
+
+MOVEFIG - Fighter Move
+          Move fighters onto or off of a planet
+
+          figmove [p/s] {fighter amount}
+
+          [p/s]   - P indicates to planet from sector
+                    S indicates to sector from planet
+
+          {amount}  Number of fighters to move. Default
+                    is All available Fighters. 
+
+MOW  - Lawn Mow - Speed ewarp to destination, kills figs along the way.
+
+   mow [destination] {figs to drop} {kill} {cap} {saveme} {p}
+        (Can be adj)   (0 default)   
+   {p}      will port ship immediately upon arrival.
+   {kill}   will attempt to kill immediately upon arrival.
+   {cap}    will attempt to capture immediately upon arrival.
+   {saveme} will call saveme to be picked up at destination.
+
+   SAFEMOW - Travels passively to target sector. Will
+           stop if blocked by non-passive sector.
+   
+            safemow [sector] [fighters to drop]
+
+PATP - Pay At The Pump - Fills planet with ore from grid ports.
+
+   patp [min port fuel] {turbo} {upgrade} {buyhalf}
+        {skipcim} {avoidbusts} {reverse} {destroyports}
+
+   [min port fuel]   minimum fuel a port must have to visit it
+   [turbo]          puts all buydowns in a burst
+   [upgrade]        upgrades each port
+   [buyhalf]        empties ports halfway
+   [skipcim]        skips cim check before patp
+   [avoidbusts]     avoids all xxB ports
+   [reverse]        visits ports in descending order
+   [destroyports]   destroys every port it drains if you
+                    have enough fighters
+
+PIMP - Makes planets and strips them of product
+
+   pimp {"planet name"} {f} {o} {e}
+
+   [planet name] - creates planet with this name (default
+                   is random name)
+   [f] - fuel
+   [o] - organics
+   [e] - equipment
+
+PSCAN - Sends Planet Data for current sector Over SubSpace.
+
+   pscan {Planet #}
+
+   [Planet #] - Is optional. However if left out you must
+                start it from Citadel,  or Planet command
+                and current planet will be displayed.  If
+                a Planet Number is specified, that planet
+                will be  displayed assuming  its in the
+                current sector.
+
+              - Written by Lonestar
+
+QSET - Quasar Cannon Setter
+       Automatically calculates what percentage a Cannon
+       needs to be set at to cause desired damage, and sets
+       the Cannon accordingly
+
+       qset [damage] {a|s}
+
+       - [damage]   Amount of damage, or stength of Cannon
+       - {a|s}      Indicates Atmosphere or Sector Cannon
+
+STRIP - Strips planets of resources and places them on
+        starting planet.
+
+     strip [planet# | all] {f} {o} {e} {fc} {oc} {ec}
+
+     - {f}  Fuel Ore
+     - {o}  Organics
+     - {e}  Equipment
+     - {fc} Fuel Ore Colonists
+     - {oc} Organic Colonists
+     - {ec} Equipment Colonists
+
+TL - Hotblack Desiato's Corporate Planet Lister (TL)
+   - Displays list of corp planets, sends results on subspace,
+   and saves to a tex file.
+
+   TL {ss_pause_per_sector} {cit_filter} {logic} {output}
+          ss_pause_per_sector
+                         -  number of milliseconds to delay after outputting each sector
+
+                                (default: 100; none or 1 for no delay - 0 wont work)
+          cit_filter     -  NoFilter|L1|L2|L3|L4|L5|L6|NoCit|CitOnly
+                                 (default:  NoFilter)
+          logic          -  e|le|ge
+                                 (equal, less-than-or-equal, greater-than-or-equal)
+                                 (default:  equal)
+          output         -  ss|echo|both
+                                  (default: echo)
+Results are written to file \TWXProxy\TL_&logic&cit_filter&_&GAMENAME&.txt
+
+-------------------------------------------------------------------
+            Cashing
+-------------------------------------------------------------------
+
+BUST - Pops Planets to Reach desired Experience
+
+       bust [Experience Desired]
+
+BUSTS - shows list of sectors where you got busted.
+
+CLEARBUSTS - Clears list of ports you've busted at - run after server clears busts.
+
+FURB - Buys and delivers a Ship to a Corpy to attack for holds
+
+    - furb [ship number] {extra holds} {ship letter}
+    - [ship number]   - ship number that needs the furb
+    - [extra holds]   - extra holds to buy      - default is 33
+    - [ship letter]   - ship letter to purchase - default is H
+
+   CK Furb Mode (Mimicks CK Furb)
+    - furb ck {[norm hold] [fake hold] [norm letter] [fake letter]}
+    - [normal holds]  - extra holds to buy - Normal    - default is 33
+    - [fake holds]    - extra holds to buy - Fake      - default is 97
+    - [normal letter] - ship letter to buy - Normal    - default is H
+    - [fake letter]   - ship letter to buy - Fake      - default is O
+
+NEG - Planet Negotiate Trade Agrement - sells planet product to single port
+
+      neg [item]
+
+      [item]   - [f]uel or [o]rg or [e]quip - default sells both org and equ
+
+      - Originally written by Cherokee
+
+MEGA - Attempts A Mega Rob
+
+MERCH - Visits all ports in grid and sells organics
+              and/or equipment from planet.
+
+        merch [min port product] [o | e] ({neg}otiate OR {hold}byhold)
+              {buyfuel} {skipcim}
+
+        {neg/hold}   Determines planet negotiate or hold
+                     selling approach
+        {skipcim}    Does not run cim before starting route
+        {buyfuel}    Buys all the fuel in fuel selling ports
+                     on route   
+PSST [ship2] [planet1] [planet2] - Planet SST.
+
+  - psst CLEAR_BUSTS - Clears bots bust file.
+  - psst off - Stops Planet SST   
+
+ROB - Attempts to Rob credits from port in Sector, includes +11%
+    not reported by port owner for tax purposes : )
+
+SALESMAN - Planet PPT - Visits all ports in grid and buys fuel
+           and sells/buys organics and equipment.
+
+   salesman [min port product] ({neg}otiate OR {hold}byhold) {skipcim}
+
+   {neg/hold}   Determines planet negotiate or hold selling approach
+   {skipcim}    Does not run cim before starting route
+
+SDT - Steal Dump Transport - steals, dumps product on planet, xports
+
+   sdt [ship1] [ship2] [planet1] [planet2]
+
+   - Do NOT need to start in Ship 1 or Ship 2.
+   - First Steal will be from Ship 1.
+
+      - Created by Cherokee   
+
+SST - Sell, Steal, Transport
+
+      sst [ship1] [ship2] {jet}
+
+      - Do NOT need to start in Ship 1 or Ship 2.
+      - First Steal will be from Ship 1.
+      - {jet} will mega jet fuel or org for extra experience
+
+      - Created by Cherokee
+
+TRICON - Will Play Tricon in Tavern until jackpot Won or Rounds Hit
+       - Start at Tavern prompt with lots of credits.
+
+      tricon {rounds}
+
+      [rounds] - Number of rounds to play.
+
+WROB - World Rob. Travels universe on planet, robbing ports
+
+wrob [minimum rob amount] {upgraded} {skipcim}
+
+[minimum rob amount]  - Amount that must be on port
+                         before attempting rob
+[upgraded]            - Will only visit upgraded ports
+[skipcim]             - Will skip running CIM port report
+                         before running
+[CLEAR_EMPTY]         - Will delete the empty port file
+
+WSST - World Sell-Steal-Transport
+- wsst [ship2] {cash dropoff} {f} {s} {safe|passive} {furbpoint}
+    - {cash dropoff} - if started from planet citadel
+    - {f}            - buy fighters
+    - {s}            - buy shields
+    - {safe}         - Will not mow to locations, scans and moves
+    - {passive}      - Will be safe, as well as avoid any enemy fighters
+    - {furbpoint}    - Terra, Dock (default), Alpha, Rylos
+    - {limp}         - Will lay 3 limps/sector if Furbing at Dock.
+    - {armid}        - Will lay 3 armids/sector if Furbing at Dock.
+    - {quiet}        - Will not braodcast BUSTED msgs on SubSpace
+    - {x100}         - Will Drop 100 Fighters per sector
+
+  - wsst CLEAR_BUSTS - Clears bots bust file.
+
+-------------------------------------------------------------------
+            Defense
+-------------------------------------------------------------------
+
+CITFILL - Citadel Base Refill Mode
+          Refills any corpie above a planet who attacks/is
+          attacked or deploys fighters.
+
+          citfill [on/off] {number figs to attempt per try}
+
+CITCAP - Citadel Based Ship Capture Command
+
+         citcap [on/off] {""player name""|corp#}
+
+         - {""player name""} - Player to target, name must be
+                               surrounded by double quotes
+         - {corp#}           - Corporation number to target
+
+CITKILL - Citadel Based Kill Mode
+
+citkill [on/off] {"player name"|corp#} {sg} {dt} {empty} {smart} {override}
+
+      - {"player name"}   - Player to target, name must be
+                            surrounded by double quotes
+      - {corp#}           - Corporation number to target
+      - {sg}              - Shotgun mode, fires waves at
+                            first three possible targets
+      - {dt}              - Doubletap mode, fires two waves
+                            before refurbing
+      - {empty}           - Will capture empty ships in sector.
+      - {smart}           - Notices changes in ship type/target
+      - {override}        - Overrides safety on attacking defender
+                            bonus ships
+
+DISR - Disrupt Armid Mines in Adjacent Sectors
+
+      disr {Sector} {NScan} {Burst}
+
+      {Sector}  Disrupt Mines in adjacent sector
+      {Burst}   Sends only 1 disruptor into each sector
+      {NScan}   Do not perform Holo Scan --otherwise it
+                auto detects enemy Armids
+
+      Start Prompts:
+                      Command Prompt
+                      Planet/Citadel Prompt(s)
+                      Computer Prompt
+                      StarDock Prompt
+                      Port Prompt
+
+      Default: Disrupt all adjacents, with Holo Scan.
+
+EVAC - Evacuate Planet(s)
+       Moves all movable planets in Current-Sector to target sector.
+
+      evac [sector]
+
+HAZ - Create 100% NavHaz in Current-Sector
+   - Requires 10 genesis torps and 10 atomic detonators.
+
+IG - Interdictor Control Resetter
+     Turns ship IG on, if its off, or when hit by
+     a Photon
+
+     IG [on/off]
+
+RELOADER - Sector Reloader Mode
+           Sits above planet and lands/reloads fighters when hit.
+
+           reloader [on/off] [fig minimum]
+
+           [on/off]        Turns Reloader On or Off
+           [fig minimum]   Number of Ship Fighters to Loose before
+                           landing and refilling
+
+RUNAWAY - Automatic Flee Mode
+
+       runaway [on/off] {preset flee sector} {evac}
+
+       - [preset flee sector]   - Sector to attempt to flee to first
+       - [evac]                 - attempts to move all level 4 and
+                                  above planets in the sector
+
+TAB-P -                       -=( Psi Planet Macros )=-
+-----------------------------------------------------------------------------
+<1> Lay 1 personal limpet, land         <5> Holoscan, land
+<2> Lay 3 corporate <L>impet(s), land   <6> Lift attack
+
+{General} not>
+{General} not>P
+{General} not>
+<3> Lay 1 corporate <A>rmid(s), land    <7> Drop 1 corporate <F>ighter(s)
+<4> Density scan, land                  <8> Launch a mine disrupter, land
+
+<B> Get Xport List, land                <E> Toggle IG, land
+<C> Xport into ship, land               <G> Swap Planets
+<D> Get sector planet list, land
+----------------------------------------------------------------------------- 
+
+-------------------------------------------------------------------
+            Offense
+-------------------------------------------------------------------
+
+BOTON - Bwarp Photon
+        Uses Planet TelePort-Pad to arrive adjacent a Fighter
+        hit; Launches a Photon, returns and lands
+
+        boton {Scrub sector} {h} {d} {m}
+
+        - [scrub sector] - use this if you want to scrub somewhere other
+                           than your starting sector
+        - [h]olo         - holoscan after photon
+        - [d]ensity      - density scan after photon
+        - [m]ines        - trigger on mine hits too
+
+CAP -    Ship Capture Command
+(TAB-c)  Scans Current-Sector for any Enemy Ships. Attempts
+         to Capture Enemy-occupied ships first, captures any
+         empty enemy ships that are Empty
+
+DOCKKILL - StarDock Kill Mode
+           Continually scans the Current Sector for an enemy
+           and send an attack wave on sight - will buy figs and shields at class0 / dock.
+
+          dockkill [on/off]
+
+DUMP - Jettisons colos off of planet
+
+       dump [type]
+
+       [type] - use [f]uel,
+                    [o]rg,
+                    [e]quip,
+                    [a]ll
+
+FOTON - Multipurpose Photon Mode
+(TAB-F)
+    - foton [on/off] {a/d/p/s} {return}
+        - {a}djacent - photons adjacent sector when fig/limp/armid hit
+        - {d}ensity  - constant density scan, photons on density change
+        - {p}lanet   - standard planet warp photon script
+        - {s}urround - attempts to foton retreat sector
+
+        - {return}   - Returns Planet Home after Pwarp
+
+          Authors: Mind Dagger and The Bounty Hunter
+
+HKILL -   Holo Kill
+(TAB-L)   Performs a Holo-Scan and moves into an adjacent
+          sector if an enemy Trader is present, launches
+          an attack.
+
+HTORP  - Holo Photon
+(TAB-H)    Performs a Holo-Scan and launches a Photon into any
+           adjacent sector that contains another Trader.
+
+KAZI - Automates planet invasion - uses deployed sector figs
+         If successful, claims planet and evicts traders in citadel
+
+   - kazi [planet] {shields} {defender} {zdy}
+
+    [planet]   - Planet number to attack
+    [shields]  - Will kill planetary shields. Stops when below 50.
+    [defender] - Will land defensively to take out military reaction.
+    [zdy]      - Option to blow planet as soon as you land.
+
+KILL -  Current Sector Kill Command
+(TAB-K) Scans Current-Sector for any enemy Traders and
+        sends multiple attack waves.
+
+LDROP - Active Limpet Mine Scan, Planet Drop
+
+     ldrop {delay} {direct}
+
+     [delay]  - Delay before drop in milliseconds
+     [direct] - Use this option to try to drop directly onto an
+                active limpet instead of targeting adjacent
+
+MEX - Mass Exter Xport
+   
+     Script Triggers off a foton being fired from current
+     sector. Start from citadel or command prompt. This
+     script will move you into the Attack Sector, then
+     attempt to xport you to the set Safe Ship.
+
+     MEX <Attacking Sector> <Safe Ship Number> {Tow Ship}
+
+
+     <Attacking Sector>   Must be adjacent form current TA
+
+     <Safe Ship Number>   Must in in current Sector
+
+     {Tow Ship}           Ship Number you want to tow
+                          this is optional.
+
+     Once set, script wil timeout after 5mins. for safety.
+
+MXEX - Mass Xport Exter Xport
+   
+     Script Triggers off a foton being fired from current
+     sector. Start from citadel or command prompt
+
+     MXEX <Attacking Sector> <Moth Ship Number> {Tow Ship}
+
+
+     <Attacking Sector>   Must be adjacent form current TA
+
+     <Moth Ship Number>   Must in in current Sector
+
+     {Tow Ship}           Ship Number you want to tow
+                          this is optional.
+
+     Once set, script wil timeout after 5mins. for safety.
+
+PE - Photon, Enter
+     Launch a Photon into an Adjacent Sector and immedately Enters.
+
+     pe [Sector]
+
+PEL - Photon, Enter, Land
+      Used to launch a Photon into an adjacent Sector, Enter
+      Photond Sector and land on a Planet.
+
+      pel [Sector] [PlanetNumber]
+
+PELK - Photon, Enter, Land, Kill
+       Used to launch a Photon into an adjacent Sector, Enter
+       Photond Sector and land on a Planet then sends one
+       wave of Fighters.
+
+       pelk [Sector] [PlanetNumber]
+
+PEX - Photon, Enter, Export
+      Used to launch a Photon into an adjacent Sector, Enter
+      Photond Sector and Export back into another Ship.
+
+      pex [Sector] [ShipNumber]
+
+PED - Photon, Enter, Defend
+      Used to launch a Photon into an adjacent Sector, Enter
+      Photond Sector and launches a Genesis Torpedo
+
+      ped [Sector]
+
+PXE - Photon, Export, Enter
+      Used to Launch a Photon into an adjacent Sector then immediately
+      Export into another ship and then enter Photond Sector.
+
+      pxe [Sector] [ShipNumber]
+
+PXED - Photon, Export, Enter, Defend
+       Used to launch a Photon into an adjacent Sector then immediately
+       Export into another Ship and Enter Photond Sector; then launches
+       a Genesis Torpedo.
+
+       pxed [Sector] [ShipNumber]
+
+PXEL - Photon, Export, Enter, Land
+       Used to launch a Photon into an adjacent Sector then immediately
+       Export into another Ship and Enter Photond Sector; then Lands
+       on a planet.
+
+       pxel [Sector] [ShipNumber] [PlanetNumber]
+
+PXELK - Photon, Export, Enter, Land, Kill
+       Used to launch a Photon into an adjacent Sector, Export
+       into another ship, Enter Photond Sector and land on a
+       Planet then sends one wave of Fighters.
+
+       pxelk [Sector] [ShipNumber] [PlanetNumber]
+
+PXEX - Photon, Export, Enter, Export
+       Used to launch a Photon into an adjacent Sector then immediately
+       Export into another Ship and Enter Photond Sector; then, Export
+       back into Photon-ship.
+
+       pxex [Sector] [ShipNumber]
+
+PDROP - Planet Based Drop Mode
+        Attempts to place planet in the path or ontop
+        of Enemies.
+
+        pdrop [on/off] {delay} {drop type} {trigger} {return} {kill}
+
+        [delay]     - delay before dropping in milliseconds
+        [drop type] - [d]irect, [a]djacent, [da] direct,
+                      then adjacent, or [s]urround
+        [delay]     - delay before dropping in milliseconds
+        [trigger]   - [f]igs, [fm] figs/mines, [m]ines, [uf] No-Fig Mines
+        [return]    - will return planet home after 10 seconds
+        [kill]      - checks sector for enemy, and kills if possible
+
+PLOCK - Pre-Lock, Planet Drop Mode
+        Locks onto a Figged Sector and engages the Planetary-
+        Warp when the Fighter(s) are removed, or a Mine is
+        tripped.
+
+        plock [sector (0 for plock stop) ] {kill} {Delay}.
+
+         -  [kill]  - Citkill right after successful firing
+         -  [Delay] - Delay to launch Plock
+
+------------------------------------------------------------------- 
+            Gridding
+-------------------------------------------------------------------
+
+CLEAR -    Quickly cleans sector of enemy armid and
+(TAB-Z)      limpet mines, drops 3 each of yours.
+
+CLEARFIG - Clears adjacent fighters and calls saveme
+
+     clearfig [sector] {defend}
+
+     - [defend] for offensive fighters,just enters/retreats
+
+       From Citadel prompt grabs fighters from planet
+       From Command prompt grabs fighters from the sector
+
+CLIMP - Deploy Corp Limpet Mines
+
+     climp {number to deploy}
+
+     - {number to deploy} Number Of Limps To Deploy
+
+EXIT -   Quickly exits, then enters game. Clears mail
+(TAB-X)     and cleans mines in sector.
+
+       exit {number} {refill}
+
+      [number] - Allows multiple exit enters
+
+      [refill] - If started from command prompt, attempts to
+                 refill on fighters in sector.
+
+GRIDCHECK - Grid Explore/Patrol
+            Twarps around grid holo scanning looking for enemies, planets, etc
+
+LIMPSHOVEL - Limpet reorganizer. Dumps limpets to borders
+             of grid or near base if no border available.
+
+   limpshovel {bwarp}
+
+
+    [bwarp] - Will use planetary transporter to hit
+              sectors. Default is twarp.
+
+MINES - Deploys Armid Mines into current sector.
+
+        mine [number to deploy]
+
+MINESWEEP - Visits sectors in list and clears limps and armids.
+
+    minesweep {furb} {disr} {border} {nonsafe or fast} {A:1} {L:1}
+
+
+    [furb]    - Will Attempt to buy Mines and/or Disruptors
+    [disr]    - Will HoloScan and attempt to disrupt all mines
+    [border]  - Only will put mines on the edge of your grid,
+                otherwise it will only target safe sectors.
+    [nonsafe] - Will do repeated Exit/Enters until all Enemy
+                mines are gone slow but safe
+    [fast]    - Will do a rapid fire of exit enters, this isnt
+                safe as youll will ne sitting in sector.
+    [A:1]     - Specify Number of Armid Mines to Deploy
+    [L:1]     - Specify Number of Limpet Mines to Deploy
+
+MOWFUEL - Mows to unfigged upgraded fuel ports in grid to reclaim them.
+          Does not do so safely.
+
+PASSGRID - Passive Gridder
+
+           Moves around actively scanning, avoiding enemy
+           Sectors, while dropping Fighters and Mines   
+
+PLIMP - Drops personal limps into sector 1 time.
+
+PLIMPER - Trader Vics Limpet Tracker Avoidance Script V1.2
+
+         Keeps sector loaded with personal limps for corp mate gridding,
+    uses citadel cash, furbs at Dock
+
+UGRID - Ultimate-Turn Gridder. Visits all targeted sectors.
+Requires current update of >figs , >armids , and >limps
+
+ugrid [targeting] {figs} {armids} {limpets} {safety} {planets}
+                  {warp} {refurb} {scrub} {avoid) {aggressive} {clear}
+
+
+  [targeting]   - How target list is generated.  Must be either
+                  a filename to pull list from or auto which
+                  will autogenerate list of targets.
+
+  [figs]        - Number of fighters to drop
+                      - Default: 1
+  [armids]      - Number of armid mines to drop
+                      - Default: 3
+  [limps]       - Number of limpet mines to drop
+                      - Default: 3
+  [safety]      - ultra, safe, and none
+           none - Will land adjacent to all non-figged sectors
+           safe - Only will land to sectors with friendly limps
+          ultra - Like safe, but needs friendly armids too
+                      - Default: ultra
+  [planets]     - all, shielded, none
+            all - Avoid all planets in target sectors
+       shielded - Avoid only shielded planets in target sectors
+                      - Default: all
+  [warp]        - twarp or bwarp
+                      - Default: twarp
+  [norefurb]    - Turns off auto refurbing of mines at Stardock
+  [scrub]       - Will scrub at dock when catching a limpet
+  [avoid]       - Avoid sectors with enemy limpets
+  [aggressive]  - Wont avoid big fighter groups
+  [passive]     - Avoids hitting player fighters or mines.
+  [clear]       - Clears internal list of avoided sectors. 
+
+PGRID - Planet-Grid single Adjacent Sector. Warps into sector,
+        Kills Figs and Calls Saveme
+
+       pgrid [sector] {# of waves}
+
+       {# of waves}  - number of waves of figs to attack
+                       in sector before attempting to land
+
+UGRIDNOSD - Ultimate-Turn Gridder - modified to run when Stardock is blown up (or not safe to             warp there). Must start at Rylos or Alpha Centauri with a fig down and a planet.
+      - Requires current update of >figs , >armids , and >limps
+
+ugridnosd [targeting] {figs} 0 0 {safety} {planets}
+                  {warp} {avoid) {aggressive} {clear}
+e.g. >bot ugridnosd auto 1 0 0 none all twarp avoid passive clear
+
+
+  [targeting]   - How target list is generated.  Must be either
+                  a filename to pull list from or auto which
+                  will autogenerate list of targets.
+
+  [figs]        - Number of fighters to drop
+                      - Default: 1
+  [safety]      - ultra, safe, and none
+           none - Will land adjacent to all non-figged sectors
+           safe - Only will land to sectors with friendly limps
+          ultra - Like safe, but needs friendly armids too
+                      - Default: ultra
+  [planets]     - all, shielded, none
+            all - Avoid all planets in target sectors
+       shielded - Avoid only shielded planets in target sectors
+                      - Default: all
+  [warp]        - twarp or bwarp
+                      - Default: twarp
+  [avoid]       - Avoid sectors with enemy limpets
+  [aggressive]  - Wont avoid big fighter groups
+  [passive]     - Avoids hitting player fighters or mines.
+  [clear]       - Clears internal list of avoided sectors. 
+
+-------------------------------------------------------------------
+             Data, Mapping
+-------------------------------------------------------------------
+
+BUSTCOUNT - Scan the TWX-DBase SectorParams, gives # of BUSTED Sectors
+
+CORPINFO - Scans Corporate Assets and displays results over
+           Sub-Space.
+
+           Written by Promethius
+
+FIGS - Refreshes deployed Fighter List and gives summary
+
+ARMIDS - Refreshes Deployed Armid List and gives summary
+
+AVOIDS - Set, Clear, or Display Avoids
+       Using the Avoids command without a Parameter will display
+       current avoids over SubSpace.
+
+       avoids {{set|clear} {sector number}}
+
+       {set}     -  Will set an avoid
+       {clear}   -  Will Clear an avoid if a sector number
+                    is provided, otherwise clear by itself
+                    will clear all avoids. 
+
+CIM - Computer Interrogation Mode: Port Report
+
+    cim {upgrade level} {warps}
+
+    - {upgrade level} - Amount on port to be considered
+                        upgraded
+    - {warps}         - Perform warp data instead of
+                        port CIM
+
+CLASS0 - Sends over Sub-Space known Class 0 Port Locations   
+
+GETNEAR - Locates Nearest Cashing Ports.
+
+   - getnear {product amount}
+
+      {product amount} - Script defaults to value stored in game
+                       CFG file as $PORT_MAX, however you can
+                       specify a different amount. Only need to
+                       update CIM upon 1st use, then simply get
+                       port-reports manually to remove recently
+                       bought down Ports.
+
+      Reads MOMBOT NEGO File and includes last known MCIC value
+      for specific port.
+
+FEDMON - OZ Fed Monitor - Watches activity in current Fedspace Sector,
+            reports movement on subspace
+
+FIND - Search TWX-DBase for Fighter/Port data
+
+     find [f/nf/fp/p/de/ufde] [type] {sector} [port type]
+
+     - [type]   -  [de]ad-end or
+                   [f]igged or
+                   [nf] no-fig or
+                   [fp] figged port or
+                   [p]ort or
+                   [ufde] un-figged dead end
+     - {sector}    sector number that you need finder data on,
+                   default is current sector
+     - [port type] port type (s)ell , (b)uy, or (x) either
+
+GETNEAR - Locates Nearest Cashing Ports.
+
+   - getnear {product amount}
+
+      {product amount} - Script defaults to value stored in game
+                       CFG file as $PORT_MAX, however you can
+                       specify a different amount. Only need to
+                       update CIM upon 1st use, then simply get
+                       port-reports manually to remove recently
+                       bought down Ports.
+
+      Reads MOMBOT NEGO File and includes last known MCIC value
+      for specific port.       
+
+LIMPS - Refreshes Deployed Limpet List and gives summary
+
+MSGS - Displays or Deletes Mesages, eliminates pauses
+
+        msgs {d}
+
+        {d}   MailBox CleanUp - without display
+
+MSL -  Zarkahn's MSL Check, generates MSL list so Mombot will display if current sector
+   is MSL if MSL/Busted option is selected on Tab - ~ menu
+
+NEARF - find nearest figged sector to destination
+
+   nearf [destination]
+
+NEWS - Runs through all news log entries, summarizes on subspace
+
+   news [type] {refresh}
+
+        types allowed:
+           rep       - overall reporting of events in the Log
+           foton     - lists fotons fired
+           tow       - who was towed
+           ports     - port activity (construction, demolition)
+           planets   - who popped planet and how many
+           obits     - CBYs, Fuses, Captures, etc..
+           corp      - Corporate news, formations, hirings, firings..
+           fed       - Awarded Commish, Bounties
+           pods      - Possible poddings
+           invasions - Planet invasions
+           overloads - list of sectors with overloaded planets
+           announce  - reporting of any announcements made
+
+      Refresh command line params:
+           r         - does a refresh using current game date
+           yest      - does a refresh of previous game date data
+
+           - Written by Lonestar 
+
+PING - Determine current server ping times.
+
+
+     - Originally written by Cherokee 
+
+PLANETS - Displays a list of all planets visited or seen on holo.
+
+PLIST - Displays Sector planet scan on subspace
+
+QREPORT - Quasar Cannon Report
+          gives first 5 shots of sector quasar of
+          all planets entered
+
+          qreport [planet1] [planet2] ... [planet x]
+
+QUIKPANEL - When running, attempts to override settings for other scripts.
+
+REMALIENS - sends list of alien space sectors seen over subspace.
+
+REFRESH - Reloads bot data files to make it up to date
+
+SECTOR [sector number]
+    - displays a sector as seen from database information
+
+SLIST - Scans Active-Ships and sends output over Sub-Space
+
+SETVAR - Set Bots Local Vairables
+
+         setvar {a|r|s|h|b|x}
+
+         a  - Alpha Centauri
+         r  - Rylos
+         s  - StarDock
+         b  - BackDoor to Stardock
+         x  - Safe Xport Ship
+
+GETVAR - Displays Bots Local Vairables Over Sub-Space
+
+         setvar {a|r|s|h|b|x}
+
+         a  - Alpha Centauri
+         r  - Rylos
+         s  - StarDock
+         b  - BackDoor to Stardock
+         x  - Safe Xport Ship
+
+STORESHIP - Adds current ship into ship data file.
+            Note: For ships that are not on CC list
+        Close and restart bot for new ship
+                  types to take effect.
+
+ZTM - Zero Turn Mapping
+
+      Begins Mapping using the same 6-Pass.
+
+      Originally written by Cherokee

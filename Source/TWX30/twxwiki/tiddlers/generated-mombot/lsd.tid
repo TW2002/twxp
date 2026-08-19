@@ -1,0 +1,33 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: lsd
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: lsd
+
+! lsd
+
+LSD - LoneStar's Dock Shopper (BAck End) - MOMBot Version
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+LSD - LoneStar&#x27;s Dock Shopper (BAck End) - MOMBot Version
+
+      LSD is not a Command to be used directly from the 
+      MOMBot command-line. To access LSD, use the TAB B 
+      shortcout to start the LSD Front-End. This will allow
+      you to &#x27;bot&#x27; another corp member to do the shopping
+      for you.
+
+      Note:  Menu option V in the Front-end Menu allows you
+             to indicate which bot you want to control. It 
+             is important that if you want to &#x27;bot&#x27; yourself
+             that you reset Menu option V
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

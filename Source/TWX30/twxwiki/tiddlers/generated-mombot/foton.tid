@@ -1,0 +1,32 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: foton
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-command kind-mode
+caption: foton
+
+! foton
+
+FOTON - Multipurpose Photon Mode
+
+''Categories:'' Offense
+''Kinds:'' Command, Mode
+''Source matches:'' Command (Offense), Mode (Offense)
+
+!! Help
+<pre>
+FOTON - Multipurpose Photon Mode
+        
+    - foton [on/off] {a/d/p/s} {return}    
+        - {a}djacent - photons adjacent sector when fig/limp/armid hit 
+        - {d}ensity  - constant density scan, photons on density change
+        - {p}lanet   - standard planet warp photon script
+        - {s}urround - attempts to foton retreat sector
+                                                
+        - {return}   - Returns Planet Home after Pwarp
+                                                
+          Authors: Mind Dagger and The Bounty Hunter
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

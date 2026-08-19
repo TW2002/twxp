@@ -1,0 +1,24 @@
+                     
+   
+                  <<<< drop >>>>
+   
+     drop [on | off]{delay}{drop type}{trigger}{return}{kill} 
+            
+          If started from command prompt, will be a ship dropper. 
+            
+          - [delay]     - delay before dropping in milliseconds   
+          - [drop type] - [d]irect, [a]djacent, [s]urround, 
+                          or [da] direct, then adjacent
+          - [delay]     - delay before dropping in milliseconds 
+          - [trigger]   - [f]igs, [fm] figs or mines,  
+                          [m]ines, [uf] No-Fig Mines
+          - [return]    - return planet/ship home after 10 seconds
+          - [kill]      - checks for enemy, and kills if possible
+          - [fastkill]  - does kill mac without checking
+          - [holotorp]  - does holotorp command after drop
+          - [holokill]  - does holokill after drop
+              
+          All of these options can be run at the same time.
+          - Order of operations are:
+                  delay, drop, fastkill, kill,
+                  holotorp, holokill, return

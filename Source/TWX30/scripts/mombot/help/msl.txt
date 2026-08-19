@@ -1,0 +1,12 @@
+                     
+   
+                  <<<< msl >>>>
+   
+     Checks whether a sector is an MSL or lists all MSL sectors.
+      
+     msl [sector|all]
+      
+     Options:
+        {sector}    Checks one sector
+           {all}    Outputs all MSL sectors to subspace
+     Rylos and Alpha Centauri must be known.

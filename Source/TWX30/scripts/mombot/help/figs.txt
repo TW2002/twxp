@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< figs >>>>
+   
+     Refreshes Deployed Fighter List
+       - Will show difference since last command was run.

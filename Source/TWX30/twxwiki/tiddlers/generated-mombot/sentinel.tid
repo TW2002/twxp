@@ -1,0 +1,31 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: sentinel
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-mode
+caption: sentinel
+
+! sentinel
+
+sentinel {cim} {clv} {cycletime}
+
+''Categories:'' Data
+''Kinds:'' Mode
+''Source matches:'' Mode (Data)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; sentinel &gt;&gt;&gt;&gt;
+   
+      sentinel {cim} {clv} {cycletime}
+      Sentinel - Originally written by Xide
+      Options:
+         - {cim}    - does cim hunting - Default off
+         - {clv}    - checks clv for changes - Default off
+         - {cycletime}    - How long between cycles; def 30secs
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

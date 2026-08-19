@@ -1,0 +1,10 @@
+                     
+   
+                 <<<< xenter >>>>
+   
+     Exit/enter cycles to clear mines or fighters.
+        
+     Usage:  xenter {count} {fill}
+        
+        {count} - number of exit/enter cycles. Defaults to 1.
+        {fill} - top off fighters after each cycle.

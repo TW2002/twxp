@@ -1,0 +1,59 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: select
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: select
+
+! select
+
+select {planet|trader|ship|anomoly|unexplored|sector|port}
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; select &gt;&gt;&gt;&gt;
+   
+     select {planet|trader|ship|anomoly|unexplored|sector|port}
+            {port:type} {count:#} {mark:PARAM} {none|dist|route}
+            {warps:#} {beam:botname} {limit:#} {from:#} {to:#}
+            {secure | paranoid}
+            
+          Searches TWX database for known info.
+          You can use selectors - &gt; &lt; like !
+           
+          {mark:PARAM}  marks sectors PARAM-1 default QUERY-1 
+          {port:type}   match ports to pattern (xbx, sbb, xxx)
+                       
+         Examples:  
+                   &gt;select traders bubble-false equ-mcic&lt;-60
+                   &gt;select planet like &quot;&lt;&lt;&lt;&lt; (a)&quot;
+                   &gt;select port port.f&gt;10000 figsec-true
+                   &gt;select port port.o&gt;10000 figsec-false
+                   &gt;select port port.e&gt;10000 warps:1
+                   &gt;select sector fig.owner-1 armid.owner-kane
+                   &gt;select sector limp.owner-3 limp.count&gt;10
+                   &gt;select sector armid.count&gt;100
+                   &gt;select sector limp.owner!3 
+              
+              {dist} - All results include distance from current. 
+             {route} - Plots a basic shortest path (slow). 
+               {ppt} - Finds port pair trading ports  
+           {warps:#} - Restrict matches to nwarps  
+           {count:#} - limit results to sectors with a  
+                       minimum count of planets/traders/ships
+           {limit:#} - limit query results to first n found 
+      {beam:botname} - Beam to bot name  
+        {origin:sec} - Specify which sector to use for DIST 
+          {backdoor} - Result must include a backdoor 
+            {from:#} - Lowest sector number to include 
+              {to:#} - Highest sector number to include
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

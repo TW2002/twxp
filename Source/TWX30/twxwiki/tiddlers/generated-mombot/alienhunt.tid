@@ -1,0 +1,49 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: alienhunt
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: alienhunt
+
+! alienhunt
+
+alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+               &lt;&lt;&lt;&lt; alienhunt &gt;&gt;&gt;&gt;
+   
+     alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}
+               {passive} {buyfig} {buyshield} {patp} {home} 
+               {&quot;ship_filter&quot;} {&quot;alien_filter&quot;} 
+                
+     Hunts down aliens and captures their ships.  
+     Will automatically turn ships and planet personal.
+     Will use shields on planet as well.
+     Best to use with a defender ship.
+              
+     Options: 
+               {off} - Turns off script and sets planet and ship corporate.
+              {corp} - Doesnt turn everything personal.
+              {sell} - Sell everyship you capture at dock and deposit the cash.
+            {refuel} - Refuel planet if possible.
+           {upgrade} - Upgrade fuel port if possible.
+            {cannon} - Will reset cannon levels after hunting alien.
+            {return} - Return to starting sector after each hunt.
+           {passive} - Surround passively when hunting.
+            {buyfig} - Auto buy figs when low.  Withdraws from citadel.
+         {buyshield} - Auto buy shields when low.  Withdraws from citadel.
+              {patp} - When planet is less than 10% of fuel, run patp.
+              {home} - Move ships to starting sector instead of stardock.
+     {&quot;ship_filter&quot;} - move ships matching this home, stardock for the others
+     {&quot;alien_filter&quot;} - ignore aliens matching this text
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

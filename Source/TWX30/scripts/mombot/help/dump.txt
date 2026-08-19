@@ -1,0 +1,15 @@
+                     
+   
+                  <<<< dump >>>>
+   
+     Dump resources from planet quickly and jettisons them  
+      
+     Options:
+     [planet# | all]   - Planet number or all to strip all planets in sector.
+                 {f}   - Dump fuel ore
+                 {o}   - Dump organics
+                 {e}   - Dump equipment
+                {fc}   - Dump fuel ore colonists
+                {oc}   - Dump organic colonists
+                {ec}   - Dump equipment colonists
+               {fig}   - Dump fighters

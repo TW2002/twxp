@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< haz >>>>
+   
+     Creates navhaz by making and destroying planets.
+     Run from Command; requires at least 10 torps and 10 atomics.

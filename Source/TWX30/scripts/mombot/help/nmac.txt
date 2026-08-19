@@ -1,0 +1,8 @@
+                     
+   
+                  <<<< nmac >>>>
+   
+        nmac - multiple macro          
+                    
+         nmac {number of times} {macro to send}  
+             

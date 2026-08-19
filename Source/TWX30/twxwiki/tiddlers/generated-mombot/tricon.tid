@@ -1,0 +1,27 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: tricon
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-command
+caption: tricon
+
+! tricon
+
+Plays tricon for you
+
+''Categories:'' Cashing
+''Kinds:'' Command
+''Source matches:'' Command (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; tricon &gt;&gt;&gt;&gt;
+   
+     Plays tricon for you
+       - Must be started at stardock
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

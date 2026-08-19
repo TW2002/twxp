@@ -1,0 +1,24 @@
+                     
+   
+                 <<<< merch >>>>
+   
+                Visits all ports in grid and sells organics          
+                and/or equipment.       
+            
+      merch [min product] [o | e] {args}  
+            
+     Arguments:
+         {neg/hold}   Determines planet negotiate or hold 
+                      selling approach
+          {skipcim}   Uses current cim data and skips searching
+            {docim}   Does cim check before starting and skips searching
+          {buyfuel}   Buys all the fuel in fuel selling ports on route
+           {upfuel}   upgrade fuel ore ports (usually with buyfuel)
+             {half}   sell half of port (neg only for now) 
+            {upequ}   upgrade good equipment ports
+            {uporg}   upgrade good organics ports
+        {checkmcic}   make small trades at non-upgraded ports missing mcic
+         {upmcic #}   maximum mcic to upgrade (default: -60)
+       {sellmcic #}   minimum mcic to sell product (default: none)
+         {minpct #}   minimum percent to sell to a port (default: 50)
+      {file [file]}   only go to sectors in [file], one sector per line

@@ -1,0 +1,59 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: General
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! General
+
+Login, bot control, transport, setup, and everyday utility commands.
+
+!! Command List
+
+[[bot]] [[bwarp]] [[callout]] [[cn9]] [[corp]] [[dep]] [[emq]] [[fed]] [[help]] [[keep]] [[land]] [[lift]]
+[[listall]] [[login]] [[logoff]] [[mac]] [[nmac]] [[page]] [[port]] [[pwarp]] [[qset]] [[reboot]] [[refresh]]
+[[relog]] [[reset]] [[run]] [[scrub]] [[ss]] [[subspace]] [[switch]] [[topoff]] [[tow]] [[twarp]] [[unlock]]
+[[wait]] [[with]] [[xenter]] [[xport]]
+
+Topics: 38
+
+!! Detailed List
+
+* [[bot]] - BOT - Turn M()M Bot On or Off Kills all functions
+* [[bwarp]] - bwarp {sector:#} {"trader_name"} {p}
+* [[callout]] - Reports team name and current sector.
+* [[cn9]] - cn9
+* [[corp]] - - corp [join/drop] [corp number] [password]
+* [[dep]] - dep {cash to deposit}
+* [[emq]] - EMQ - Attempts to return to the command prompt
+* [[fed]] - fed - send subspace messages
+* [[help]] - help - displays help files for commands
+* [[keep]] - keep {amount}
+* [[land]] - Lands on a planet.
+* [[lift]] - LIFT - Lifts bot off of planet
+* [[listall]] - LISTALL - List All Active Scripts on Sub Space
+* [[login]] - LOGIN - Login to a Bot
+* [[logoff]] - logoff {minutes} {cloak}
+* [[mac]] - Macro
+* [[nmac]] - NMAC - Sends a Macro n-Cycles
+* [[page]] - PAGE - Pages bot owner
+* [[port]] - port {build/create} {destroy/kill} {upgrade/max}
+* [[pwarp]] - pwarp {sector:#} {"trader_name"}
+* [[qset]] - QSET - Quasar Cannon Setter
+* [[reboot]] - Reboot
+* [[refresh]] - refresh - refresh cached bot state from the live game
+* [[relog]] - relog
+* [[reset]] - RESET - Disconnect From Server and Relogs
+* [[run]] - Topic without live help text.
+* [[scrub]] - scrub {seek}
+* [[ss]] - ss - send subspace messages
+* [[subspace]] - subspace [channel]
+* [[switch]] - switch {"trader_name"}
+* [[topoff]] - TOPOFF - Fills a ship with fighters using the sector figs.
+* [[tow]] - TOW - Locks a Tow onto target empty ship.
+* [[twarp]] - twarp {sector:#} {"trader_name"} {p}
+* [[unlock]] - UNLOCK - Unlocks ship so that corp members can trade ships
+* [[wait]] - wait {ms:#}
+* [[with]] - with {cash to withdrawl}
+* [[xenter]] - xenter - exit/enter to clear sector of enemy mines/fighters
+* [[xport]] - xport [ship number | list] [password]

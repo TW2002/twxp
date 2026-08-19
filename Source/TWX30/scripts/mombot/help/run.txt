@@ -1,0 +1,10 @@
+                     
+   
+                  <<<< run >>>>
+   
+     Dispatches a raw Mombot command line.
+        
+     Usage:  run [command line]
+        
+        [command line] - command text to run through the bot resolver.
+        Mainly used internally by Mombot/native command dispatch.

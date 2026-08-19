@@ -1,0 +1,18 @@
+                     
+   
+                 <<<< wander >>>>
+   
+     wander {file | sector param | auto} {share}
+          Warps around the universe, attempting to be turn efficient.
+          Turn efficiency goes away when its an unlimited turn game.
+          Requires twarp.                
+                          
+                  file - path to target file
+          sector param - Will target sector marked with sector param.
+                          
+                         Using UNFIGGED as param will target all
+                         sectors where FIGSEC is not true. 
+               {share} - reports figged sectors over subspace
+             {nearest} - does nearest fig calc when possible
+               
+               Planet avoid options can be set in the bot menu

@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: neg
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-command
+caption: neg
+
+! neg
+
+Planet Negotiate Trade Agrement
+
+''Categories:'' Cashing
+''Kinds:'' Command
+''Source matches:'' Command (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; neg &gt;&gt;&gt;&gt;
+   
+                Planet Negotiate Trade Agrement          
+                
+         neg {f | o | e} {half}    
+                                  
+     Options:
+              {f}   sells as much fuel as possible
+              {o}   sells as much organics as possible
+              {e}   sells as much equipment as possible
+                                                         
+           {half}   sell only half of port amount      
+                                                         
+               default is to sell all org and equip
+               
+                - Originally written by Cherokee
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,7 @@
+                     
+   
+                 <<<< course >>>>
+   
+     Shows course path to sectors
+        course {start sector} {end sector}
+        course {end sector}

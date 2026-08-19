@@ -1,0 +1,38 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: disr
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: disr
+
+! disr
+
+DISR - Disrupt Armid Mines in Adjacent Sectors
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+DISR - Disrupt Armid Mines in Adjacent Sectors
+
+      disr {Sector} {NScan} {Burst}
+
+      {Sector}  Disrupt Mines in adjacent sector
+      {Burst}   Sends only 1 disruptor into each sector
+      {NScan}   Do not perform Holo Scan --otherwise it
+                auto detects enemy Armids
+
+      Start Prompts:
+                      Command Prompt
+                      Planet/Citadel Prompt(s)
+                      Computer Prompt
+                      StarDock Prompt
+                      Port Prompt
+
+      Default: Disrupt all adjacents, with Holo Scan.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

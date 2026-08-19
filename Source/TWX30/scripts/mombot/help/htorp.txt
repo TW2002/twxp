@@ -1,0 +1,6 @@
+                     
+   
+                 <<<< htorp >>>>
+   
+     htorp 
+       - Holoscans and then photons if enemy in adjacent sector.

@@ -1,0 +1,41 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ppt
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-command
+caption: ppt
+
+! ppt
+
+Scans and offers available PPT trades to adj sectors
+
+''Categories:'' Cashing
+''Kinds:'' Command
+''Source matches:'' Command (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; ppt &gt;&gt;&gt;&gt;
+   
+            Scans and offers available PPT trades to adj sectors 
+            Aimed at Day 1 use - the only time to use PPT!
+             
+            ppt [sector/?] {h/t/n) {p:x} {k:x} {ore:x}
+                {twarp}
+      Options:
+         [sector/?]     Sector to trade or ? to scan and choose.
+         {h/t/n}        h  - internal haggle; 
+                        n  - no haggle, just accepts the price
+                        t  - 3rd party haggle like EP - DEFAULT.
+         {p:x}         When either product hits this % it will stop 
+                        - Defaults to 30% (p:30)
+         {k:x}         k:5 - Keep this many holds of equipment at end of run. 
+                        Used so we can test port MCICs as we travel.
+         ore:x          Keep this amount of ore to keep post trade.
+         twarp          Indicate we are PPTing between isolated ports.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

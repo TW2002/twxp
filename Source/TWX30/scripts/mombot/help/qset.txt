@@ -1,0 +1,12 @@
+                     
+   
+                  <<<< qset >>>>
+   
+     Sets a planet quasar cannon damage target.
+        
+     Usage:  qset [a | s]  [damage]
+        
+        [a] - atmosphere cannon.
+        [s] - sector cannon.
+        [damage] - desired cannon damage.
+        Run from Planet or Citadel; calculates the needed fuel percent.

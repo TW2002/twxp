@@ -1,0 +1,12 @@
+                     
+   
+                  <<<< mxex >>>>
+   
+     Move/xport/attack using a moth ship.
+        
+     Usage:  mxex [target sector] [moth ship] {tow ship}
+        
+        [target sector] - adjacent sector to attack.
+        [moth ship] - ship to xport from/through.
+        {tow ship} - optional ship to tow.
+        Run from Command or Citadel.

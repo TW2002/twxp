@@ -1,0 +1,11 @@
+                     
+   
+                <<<< getnear >>>>
+   
+     Finds nearby cashing ports with equipment volume.
+        
+     Usage:  getnear {minimum equipment}
+        
+        {minimum equipment} - minimum equipment units to list.
+                              Defaults to the games port max.
+        Lists figged buying and selling ports nearest your current sector.

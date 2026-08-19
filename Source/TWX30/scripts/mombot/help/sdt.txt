@@ -1,0 +1,16 @@
+                     
+   
+                  <<<< sdt >>>>
+   
+      sdt {resetlra} [ship1] [ship2] [planet1] [planet2]*
+          {swap}*
+         
+         Do NOT need to start in Ship 1 or Ship 2.
+         First Steal will be from Ship 1.
+         Checks last rob and busts from Sec Params
+          
+         Options: 
+          {resetlra} will reset last rob sector and exit
+          
+         Will use EP Haggle if running in bot
+         Created by Cherokee

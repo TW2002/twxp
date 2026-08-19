@@ -1,0 +1,9 @@
+                     
+   
+                 <<<< proztm >>>>
+   
+     ProZTM by Promethius 
+      - proztm {reset} {nowindow} 
+        Options: 
+          {reset}        - reset ztmStart/ztmMin/ztmMax for clean start  
+          {nowindow}     - dont pop up a status window

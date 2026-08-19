@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< cap >>>>
+   
+     cap   
+         Captures enemy ships and attempts to not destroy them.   

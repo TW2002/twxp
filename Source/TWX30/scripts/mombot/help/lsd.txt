@@ -1,0 +1,13 @@
+                     
+   
+                  <<<< lsd >>>>
+   
+     LoneStar Dock Shopper order runner.
+        
+     Usage:  lsd [encoded order]
+        
+        [encoded order] - dock shopping order to execute.
+        Runs a Stardock shopping order for hardware, holds, figs,
+        shields, ship purchase, towing, and upgrades.
+        Usually launched by the dock shopper menu.
+        Use m for max and 0/blank for no purchase in order fields.

@@ -1,0 +1,43 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: makeplanet
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: makeplanet
+
+! makeplanet
+
+makeplanet {ewarp} {create:} {"custom planet name"}
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+                     
+   
+               &lt;&lt;&lt;&lt; makeplanet &gt;&gt;&gt;&gt;
+   
+     makeplanet {ewarp} {create:} {&quot;custom planet name&quot;} 
+            
+          {ewarp}  - Will refurb torps and atomics by ewarp 
+                     This is NOT safe.
+            
+        {create:}  - List of planet types to make.  First word
+                     of planet types separated by commas and no spaces.
+                     Default will use keeper planets in preferences.
+                     
+     {custom name} - Name the planet will be.  Otherwise its a random   
+                     name from a database              
+                                   
+           Examples:                   
+                 &gt;makeplanet create:earth,volcanic,oceanic 
+                 &gt;makeplanet ewarp create:earth         
+                 &gt;makeplanet &quot;death&quot; create:volcanic 
+                                   
+                    - Originally written by Xide
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,8 @@
+                     
+   
+                  <<<< land >>>>
+   
+        Lands on a planet.          
+                    
+         land {planet#}  
+             

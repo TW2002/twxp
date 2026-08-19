@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: mex
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-command
+caption: mex
+
+! mex
+
+MEX - Mass Exter Xport
+
+''Categories:'' Offense
+''Kinds:'' Command
+''Source matches:'' Command (Offense)
+
+!! Help
+<pre>
+MEX - Mass Exter Xport
+    
+     Script Triggers off a foton being fired from current
+     sector. Start from citadel or command prompt. This
+     script will move you into the Attack Sector, then 
+     attempt to xport you to the set Safe Ship.
+
+     MEX &lt;Attacking Sector&gt; &lt;Safe Ship Number&gt; {Tow Ship}
+
+
+     &lt;Attacking Sector&gt;   Must be adjacent form current TA
+
+     &lt;Safe Ship Number&gt;   Must in in current Sector
+
+     {Tow Ship}           Ship Number you want to tow 
+                          this is optional.
+
+     Once set, script wil timeout after 5mins. for safety.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,23 @@
+                     
+   
+                  <<<< news >>>>
+   
+     Reads and reports daily game news.
+      
+     news [category] {r|yest}
+      
+     Categories:
+             {rep}    Overall reporting of events in the Log
+           {foton}    Lists fotons fired
+             {tow}    Who was towed
+           {ports}    Port activity
+         {planets}    Who popped planet(s) and how many
+            {corp}    Corporate news
+             {fed}    Commish awards and bounties
+            {pods}    Itemized list of who podded
+       {overloads}    Sectors with overloaded planets
+        {announce}    Announcements made
+      
+     Refresh:
+               {r}    Refreshes using current game date
+            {yest}    Refreshes previous day game date data

@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: dockkill
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: dockkill
+
+! dockkill
+
+DOCKKILL - StarDock Kill Mode
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+DOCKKILL - StarDock Kill Mode
+           Continually scans the Current Sector for an enemy
+           and send an attack wave on sight.
+
+          dockkill [on/off]
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

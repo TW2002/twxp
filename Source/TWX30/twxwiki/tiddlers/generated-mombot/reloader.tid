@@ -1,0 +1,29 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: reloader
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: reloader
+
+! reloader
+
+RELOADER - Sector Reloader Mode
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+RELOADER - Sector Reloader Mode
+           Sits above planet and lands/reloads fighters when hit.
+
+           reloader [on/off] [fig minimum]
+
+           [on/off]        Turns Reloader On or Off
+           [fig minimum]   Number of Ship Fighters to Loose before
+                           landing and refilling
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

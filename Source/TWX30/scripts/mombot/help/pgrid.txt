@@ -1,0 +1,17 @@
+                     
+   
+                 <<<< pgrid >>>>
+   
+     pgrid - planet grid into sector 
+        
+       Usage: pgrid <sector> [wave count] [options]
+        
+            Options: 
+        
+              {scan} - Do a density scan of the sector before gridding
+            {unsafe} - Send fast macro, dont wait for planet
+               {f:x} - Drop x fighters after gridding into sector
+               {x:y} - xport to ship y after gridding
+               {d:x} - Maximum density to grid into
+                 {r} - Move and immediately retreat from sector
+             {nosur} - Dont surrender on retreat

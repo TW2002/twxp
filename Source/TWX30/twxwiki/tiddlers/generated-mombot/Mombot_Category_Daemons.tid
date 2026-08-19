@@ -1,0 +1,24 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Daemons
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Daemons
+
+Background helpers and long-running service scripts.
+
+!! Command List
+
+[[at]] [[fillsector]] [[nofed]] [[online]] [[repeat]] [[teammega]]
+
+Topics: 6
+
+!! Detailed List
+
+* [[at]] - Does bot command at certain time
+* [[fillsector]] - fillsector {fighters}
+* [[nofed]] - Topic without live help text.
+* [[online]] - Topic without live help text.
+* [[repeat]] - Repeats bot commands
+* [[teammega]] - Topic without live help text.

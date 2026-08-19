@@ -1,0 +1,50 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: density
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: density
+
+! density
+
+density {kill} {escape:#} {photon} {pel}
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; density &gt;&gt;&gt;&gt;
+   
+      density {kill} {escape:#} {photon} {pel} 
+              {call} {holo} {attack:#}
+        - Density scans until it sees ship or planet and 
+          then performs an action  
+                  
+               {kill} - will kill/holokill 
+             {escape} - will escape to home sector 
+           {escape:#} - will escape to sector provided
+           {attack:#} - will only photon sector provided
+             {photon} - photon sector
+               {holo} - holoscan sector and broadcast
+              {pgrid} - pgrid in to sector
+               {call} - calls saveme
+                {pel} - photon, enter, land
+              {pel:#} - pel with planet number
+      {density:value} - only react to density changes of this 
+                        value or higher. Default is 40.
+           {killport} - Blows port with macro
+                       
+           Examples:   
+                  &gt;density kill call escape:1922
+                  &gt;density pel density:500
+                  &gt;density pel:10 
+                  &gt;density photon holo
+                  &gt;density pgrid killport kill escape:123
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,19 @@
+                     
+   
+                 <<<< marco >>>>
+   
+            Marco Polo - Trade Route for PPTing
+            
+      macro [trade/report] {turns} {filename.txt} 
+                           
+      trade  - indicates bot will trade the route
+      report - indicates bot will write route to file
+      
+      {filename.txt} - can either be used as a source
+                       route or for writing to share.
+       
+      {turns}       - Compulsary when trade option used 
+                      stops trading when reaching turns
+       
+       Marco requires pairs to have one ore seller.
+       Please update CIM Ports/Warps and Figs.

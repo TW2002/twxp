@@ -1,0 +1,23 @@
+                     
+   
+                  <<<< port >>>>
+   
+       port {build/create} {destroy/kill} {upgrade/max}                
+       Options:
+          port build {port name} 
+            - create sbb port in sector if possible
+              {port name} - Name of port to create 
+                        default: Mind ()ver Matter 
+           
+          port destroy 
+            - blow up port in sector if possible
+           
+          port upgrade {f} {o} {e} {a} {b} {noexp}
+            - upgrade port if possible, using treasury if available
+                  {f} - upgrade fuel
+                  {o} - upgrade organics
+                  {e} - upgrade equipment
+                  {a} - upgrade all products
+                  {b} - upgrade products that port buys
+              {noexp} - upgrade without experience increase
+                        default: s/b/b upgraded

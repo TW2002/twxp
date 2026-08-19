@@ -1,0 +1,28 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Defense
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Defense
+
+SaveMe, evac, hazard, and defensive behavior topics.
+
+!! Command List
+
+[[call]] [[citfill]] [[evac]] [[hazkill]] [[ig]] [[reloader]] [[runaway]] [[saveme]] [[tsaveme]] [[unstack]]
+
+Topics: 10
+
+!! Detailed List
+
+* [[call]] - CALL - Call SaveMe Command
+* [[citfill]] - citfill {number of fighters to refill} {auto}
+* [[evac]] - EVAC - Evacuate Planet(s)
+* [[hazkill]] - HAZKILL - Remove NavHaz Command
+* [[ig]] - IG - Interdictor Control Resetter
+* [[reloader]] - RELOADER - Sector Reloader Mode
+* [[runaway]] - RUNAWAY - Automatic Flee Mode
+* [[saveme]] - saveme [on/off] {delay} {"target name"}
+* [[tsaveme]] - TSAVEME - TWarp SaveMe MODE
+* [[unstack]] - Topic without live help text.

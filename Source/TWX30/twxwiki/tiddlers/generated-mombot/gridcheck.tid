@@ -1,0 +1,24 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: gridcheck
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: gridcheck
+
+! gridcheck
+
+GRIDCHECK - Grid Explore/Patrol
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+GRIDCHECK - Grid Explore/Patrol
+            Twarps around holo scanning looking for kurking
+            enemies.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

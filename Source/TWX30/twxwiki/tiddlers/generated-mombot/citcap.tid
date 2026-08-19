@@ -1,0 +1,41 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: citcap
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-offense kind-mode
+caption: citcap
+
+! citcap
+
+citcap {"player name" | corp#}
+
+''Categories:'' Offense
+''Kinds:'' Mode
+''Source matches:'' Mode (Offense)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; citcap &gt;&gt;&gt;&gt;
+   
+      citcap {&quot;player name&quot; | corp#}
+      Citadel Capper captures enemy ships from planet citadel
+       
+      {&quot;player name&quot;} - Player to target, name must be
+                        surrounded by double quotes
+              {corp#} - Corporation number to target
+           {override} - Override to cap defender ships
+              {empty} - Empty ships only
+             {onetap} - Fire once only
+             {slowmo} - Adds random pause between waves.
+           {unloader} - Waits for unloader to finish b4 next attack.
+              
+              Examples:
+                   &gt;citcap 
+                   &gt;citcap &quot;player name&quot; 
+                   &gt;citcap 3
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

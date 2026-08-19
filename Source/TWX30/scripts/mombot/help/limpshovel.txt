@@ -1,0 +1,12 @@
+                     
+   
+               <<<< limpshovel >>>>
+   
+     Limpet reorganizer.
+     Dumps limpets to borders of grid or near base if no border is available.
+            
+       Usage: limpshovel {bwarp}
+            
+     Options:
+        {bwarp}  Use planetary transporter to hit sectors.
+                 Default is twarp.

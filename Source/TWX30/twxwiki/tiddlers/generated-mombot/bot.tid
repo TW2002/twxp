@@ -1,0 +1,25 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: bot
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general
+caption: bot
+
+! bot
+
+BOT - Turn M()M Bot On or Off Kills all functions
+
+''Categories:'' General
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+BOT - Turn M()M Bot On or Off Kills all functions 
+      of bot when inactive/off
+
+      bot on/off
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,22 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: shipmove
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: shipmove
+
+! shipmove
+
+- moveship/shipmove [sector] - Moves all empty ships to target sector.
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+ - moveship/shipmove [sector] - Moves all empty ships to target sector.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

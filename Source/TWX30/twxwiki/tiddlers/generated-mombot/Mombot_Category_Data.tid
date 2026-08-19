@@ -1,0 +1,66 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Data
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Data
+
+Scans, reports, lists, history, and data-query tools.
+
+!! Command List
+
+[[0]] [[armids]] [[avoids]] [[beam]] [[busts]] [[cim]] [[class0]] [[clearbusts]] [[corpinfo]] [[course]]
+[[disp]] [[dscan]] [[fedmon]] [[figs]] [[find]] [[finder]] [[getnear]] [[getvar]] [[history]] [[holo]]
+[[limps]] [[list]] [[msgs]] [[msl]] [[news]] [[overload]] [[param]] [[ping]] [[plist]] [[proztm]] [[pscan]]
+[[qreport]] [[remaliens]] [[sector]] [[select]] [[sentinel]] [[setparam]] [[setvar]] [[slist]] [[status]]
+[[storeship]] [[time]] [[update]] [[ztm]]
+
+Topics: 44
+
+!! Detailed List
+
+* [[0]] - Refreshes Deployed Fighter List
+* [[armids]] - Refreshes Deployed Armid List
+* [[avoids]] - Set, clear, or display avoids
+* [[beam]] - Beam Data to Corp Mate
+* [[busts]] - busts -
+* [[cim]] - Computer Interrogation Mode: Port Report
+* [[class0]] - CLASS0 - Sends over Sub-Space known Class 0 Port
+* [[clearbusts]] - clearbusts
+* [[corpinfo]] - CORPINFO - Scans Corporate Assets and displays results over
+* [[course]] - Shows course path to sectors
+* [[disp]] - dep {cash to deposit}
+* [[dscan]] - dscan
+* [[fedmon]] - Topic without live help text.
+* [[figs]] - Refreshes Deployed Fighter List
+* [[find]] - find - Search TWX-DBase for Fighter/Port data
+* [[finder]] - FINDER - Search TWX-DBase for Fighter/Port data
+* [[getnear]] - Topic without live help text.
+* [[getvar]] - getvar
+* [[history]] - history {limit:#} {filter:x}
+* [[holo]] - holo
+* [[limps]] - Refreshes Deployed Limpet List
+* [[list]] - LIST - List sectors that match port and topology filters
+* [[msgs]] - UGRID - Displays or Deletes Mesages
+* [[msl]] - Topic without live help text.
+* [[news]] - news [type] {refresh}
+* [[overload]] - overload {under} {bubble}
+* [[param]] - PARAM - Displays sector parameters saved in game.
+* [[ping]] - PING - Determine current server ping times.
+* [[plist]] - PLIST - Displays Sector planet scan on subspace
+* [[proztm]] - Topic without live help text.
+* [[pscan]] - PSCAN - Sends Planet Data Over SubSpace.
+* [[qreport]] - QREPORT - Quasar Cannon Report
+* [[remaliens]] - Topic without live help text.
+* [[sector]] - - sector [sector number]
+* [[select]] - select {planet|trader|ship|anomoly|unexplored|sector|port}
+* [[sentinel]] - sentinel {cim} {clv} {cycletime}
+* [[setparam]] - Set sector parameters
+* [[setvar]] - setvar
+* [[slist]] - Ship list
+* [[status]] - Reports information about bot on subspace
+* [[storeship]] - Storeship - Adds ship bot is in into ship data file.
+* [[time]] - Displays systems local time
+* [[update]] - update {figs} {limps} {armids} {cim}
+* [[ztm]] - Zero Turn Mapping

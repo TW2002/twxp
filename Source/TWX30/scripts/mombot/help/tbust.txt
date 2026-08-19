@@ -1,0 +1,18 @@
+                     
+   
+                 <<<< tbust >>>>
+   
+     Traitors Planet Buster modified for M()M Bot use.
+            
+       Usage: tbust [experience] {safe} {2fer} {max} {override}
+                    {delay} {bank} {red}
+            
+     Options:
+        [experience]  Desired experience.
+        {safe}        Create and destroy one at a time.
+        {2fer}        Create and destroy two at a time.
+        {max}         Create and destroy the max amount.
+        {override}    Override turns low limit.
+        {delay}       Random delay for each bust.
+        {bank}        Corpie will pass credits through bank.
+        {red}         Attempt negative alignment.

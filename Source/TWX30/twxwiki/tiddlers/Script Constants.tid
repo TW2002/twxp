@@ -1,0 +1,73 @@
+created: 20260415185634700
+modified: 20260415201718426
+tags: database scripts
+title: Script Constants
+type: text/vnd.tiddlywiki
+
+Ports
+
+PORT.EXISTS[sector]: 1 if a port is known in that sector, else 0.
+PORT.NAME[sector]: Port name.
+PORT.CLASS[sector]: Port class number.
+PORT.BUYFUEL[sector]: 1 if the port buys fuel ore, else 0.
+PORT.BUYORG[sector]: 1 if the port buys organics, else 0.
+PORT.BUYEQUIP[sector]: 1 if the port buys equipment, else 0.
+PORT.FUEL[sector]: Known on-hand fuel.
+PORT.ORG[sector]: Known on-hand organics.
+PORT.EQUIP[sector]: Known on-hand equipment.
+PORT.PERCENTFUEL[sector]: Fuel percent of max.
+PORT.PERCENTORG[sector]: Organics percent of max.
+PORT.PERCENTEQUIP[sector]: Equipment percent of max.
+PORT.BUILDTIME[sector]: Days remaining until completion for under-construction ports.
+PORT.UPDATED[sector]: Last DB update timestamp for that port.
+Sectors
+
+SECTOR.EXPLORED[sector]: Exploration state.
+NO: nothing known
+CALC: warp-calculated only
+DENSITY: density-scan only
+YES: fully seen in person, holo, probe, or completed display
+SECTOR.DENSITY[sector]: Stored density reading.
+SECTOR.NAVHAZ[sector]: Stored navhaz percent.
+SECTOR.ANOMOLY[sector]: Legacy typo spelling, returns 1 or 0.
+SECTOR.ANOMALY[sector]: Correct spelling, same meaning.
+SECTOR.CONSTELLATION[sector]: Stored constellation/region name.
+SECTOR.BEACON[sector]: Stored beacon text/name.
+Sector Warps
+
+SECTOR.WARPCOUNT[sector]: Outgoing warp count as the DB currently trusts it.
+SECTOR.WARPS[sector][index]: Nth known outgoing warp.
+SECTOR.WARPINCOUNT[sector]: Count of incoming warps.
+SECTOR.WARPSIN[sector][index]: Nth incoming warp.
+SECTOR.BACKDOORCOUNT[sector]: Number of one-way incoming backdoors.
+SECTOR.BACKDOORS[sector][index]: Nth backdoor source sector.
+SECTOR.DEADEND[sector]: Convenience computed constant, 1 if the sector is currently considered a one-warp dead end, else 0.
+Sector Occupants / Objects
+
+SECTOR.FIGS.OWNER[sector]: Fighter owner string.
+SECTOR.FIGS.QUANTITY[sector]: Fighter count.
+SECTOR.FIGS.TYPE[sector]: Offensive, Defensive, Toll, or empty if none.
+SECTOR.MINES.OWNER[sector]: Armid owner.
+SECTOR.MINES.QUANTITY[sector]: Armid count.
+SECTOR.LIMPETS.OWNER[sector]: Limpet owner.
+SECTOR.LIMPETS.QUANTITY[sector]: Limpet count.
+Sector Contents
+
+SECTOR.PLANETCOUNT[sector]: Number of known planets.
+SECTOR.PLANETS[sector][index]: Nth planet name.
+SECTOR.SHIPCOUNT[sector]: Number of known ships.
+SECTOR.SHIPS[sector][index]: Nth ship name.
+SECTOR.TRADERCOUNT[sector]: Number of known traders.
+SECTOR.TRADERS[sector][index]: Nth trader name.
+SECTOR.UPDATED[sector]: Last sector DB update timestamp.
+Universe / Special Sectors
+
+SECTORS: Total sector count in the current DB.
+STARDOCK: Last known Stardock sector.
+RYLOS: Last known Rylos sector.
+ALPHACENTAURI: Last known Alpha Centauri sector.
+A couple of practical notes:
+
+PORT.* and occupant constants are only as current as the last time that sector was seen/imported.
+SECTOR.WARPS[...] can be incomplete on partially mapped sectors even when SECTOR.WARPCOUNT is nonzero.
+SECTOR.DEADEND is computed from warp data, not separately stored.

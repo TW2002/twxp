@@ -1,0 +1,33 @@
+                     
+   
+                 <<<< foton >>>>
+   
+     - foton [on|off|sec] {a|d|p|s|d|t} {towship} {sector} 
+                          {return} {den40}
+       Multiple use photon script.  
+       
+       Options: 
+         {a}djacent - photons adjacent sector when
+                      fig/limp/armid hit
+         {d}ensity  - constant density scan, photons
+                      on density change
+         {p}lanet   - standard planet warp photon script
+         {s}urround - attempts to foton retreat sector
+         d{o}ck     - sits on dock and attempts to foton
+                      on adjacent fig hit
+         {t}ow      - twarp tow a photon in a second ship
+            
+         {towship}  - Ship in sector with photon you will tow
+         {sector}   - Apply the mode from/to that sector
+         {return}   - Returns Planet Home after Pwarp
+          {den40}   - Only shoots on 40 to 499 Density Change
+           {holo}   - does holo command after firing
+        {dockexp}   - Will pop planet to get to 1k
+                      for dock photon
+           {self}   - Will pwarp out, photon your current 
+                      sector, and pwarp back in. 
+           {cont}   - Will continue shooting if in density mode.
+      {delwalk:n}   - Delay walk will delay the shot for this many MS.
+                      Then add another 100ms to subsequent hit.
+           
+            Authors: Mind Dagger and The Bounty Hunter 

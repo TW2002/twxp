@@ -1,0 +1,34 @@
+created: 20260421010500000
+modified: 20260511173000000
+title: Mombot Wiki Home
+type: text/vnd.tiddlywiki
+tags: guide mombot
+
+! Mombot Wiki Home
+
+Replace this opening section with your own overview for the people who will use this wiki.
+
+This wiki is built from the live Mombot help folder and then mixed with editable guide pages. Use the search box in the wiki chrome to search for any command name, phrase, or string across the command entries and your own notes.
+
+!! Browse by Category
+* [[Mombot Category: General]]
+* [[Mombot Category: Offense]]
+* [[Mombot Category: Defense]]
+* [[Mombot Category: Resource]]
+* [[Mombot Category: Data]]
+* [[Mombot Category: Cashing]]
+* [[Mombot Category: Grid]]
+* [[Mombot Category: Daemons]]
+* [[Mombot Category: Startups]]
+* [[Mombot Category: Reference]]
+
+!! Guides You Can Edit
+* [[Using Mombot]]
+* [[Native Bot Guide]]
+* [[Other Bot Notes]]
+* [[TWX Script Commands]]
+* [[Maintaining the Mombot Wiki]]
+* [[Mombot Commands]]
+
+!! Full Index
+* [[Mombot Directory]]

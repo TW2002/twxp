@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mombot Scripting Include Routine Wiki</title>
+  <style>
+    :root {
+      --bg: #0f1417;
+      --panel: #172126;
+      --panel2: #203039;
+      --text: #e7f1ee;
+      --muted: #9eb1ac;
+      --accent: #58d4b3;
+      --accent2: #f5c766;
+      --line: #31444d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #243a40, var(--bg) 38rem);
+      color: var(--text);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      line-height: 1.45;
+    }
+    header {
+      padding: 2rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(88, 212, 179, 0.14), rgba(245, 199, 102, 0.08));
+    }
+    h1 { margin: 0 0 .75rem; font-size: clamp(1.7rem, 3vw, 2.7rem); }
+    h2 { margin: 2rem 0 .8rem; color: var(--accent2); }
+    h3 { margin: 1.25rem 0 .4rem; color: var(--accent); }
+    main { display: grid; grid-template-columns: minmax(16rem, 22rem) 1fr; gap: 1.25rem; padding: 1.25rem; }
+    aside {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow: auto;
+      padding: 1rem;
+      background: rgba(23, 33, 38, .92);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    section.content {
+      min-width: 0;
+      padding: 1rem;
+      background: rgba(23, 33, 38, .72);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    input {
+      width: 100%;
+      padding: .75rem .85rem;
+      margin: .75rem 0 1rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text);
+      background: #0b1114;
+      font: inherit;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .small { color: var(--muted); font-size: .9rem; }
+    .pill {
+      display: inline-block;
+      padding: .12rem .45rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel2);
+      color: var(--accent2);
+      font-size: .82rem;
+    }
+    .card {
+      margin: .65rem 0;
+      padding: .85rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(32, 48, 57, .86), rgba(18, 27, 31, .86));
+    }
+    .routine { color: var(--accent); font-weight: 700; }
+    .state { color: var(--accent2); }
+    ul.index { margin: .4rem 0 1rem; padding-left: 1.2rem; }
+    ul.index li { margin: .18rem 0; }
+    #routineSource { display: none; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      aside { position: static; max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mombot Scripting Include Routine Wiki</h1>
+    <p>This single-file wiki documents shared Mombot include routines that are called from outside their own include namespace, plus public aliases. Labels and variables are case-insensitive in TWX scripts.</p>
+    <p class="small">Generated from <code>mombot-include-routines.md</code> on 2026-07-23. Source tree: <code>/Users/mosleym/tw2002/mombot/mombot5.0/source</code>. Routines documented: 149.</p>
+  </header>
+  <main>
+    <aside>
+      <label for="filter">Filter routines, includes, variables, or descriptions</label>
+      <input id="filter" type="search" placeholder="try planet~getplanetinfo">
+      <h3>Include Index</h3>
+      <ul id="includeIndex" class="index"></ul>
+      <h3>Routine Index</h3>
+      <ul id="routineIndex" class="index"></ul>
+    </aside>
+    <section class="content">
+      <div id="summary" class="small"></div>
+      <div id="routineList"></div>
+    </section>
+  </main>
+
+  <script id="routineSource" type="text/plain">
+## Bot And Bot Runtime
+
+- `:bot~backwards_compatible` (`bot.ts`) - Caller state: saved `$BOT~...`, `$MAP~...`, `$PLAYER~...`, `$SWITCHBOARD~...` legacy vars. Copies newer namespaced state into old bare/legacy variables for old modules.
+- `:bot~bigdelay_killthetriggers` (`bot.ts`) - Caller state: none. Kills the delayed command triggers used while waiting for bot command text.
+- `:bot~dosplashscreen` (`bot.ts`) - Caller state: `$BOT~MAJOR_VERSION`, `$BOT~MINOR_VERSION`. Displays the Mombot startup splash/banner.
+- `:bot~enter_menu_deaf` (`bot.ts`) - Caller state: `$BOT~MENU_DEAF_DEPTH`, `$BOT~MENU_DEAF_RESTORE`. Temporarily deafens clients while menus are being drawn.
+- `:bot~exit_menu_deaf` (`bot.ts`) - Caller state: `$BOT~MENU_DEAF_DEPTH`, `$BOT~MENU_DEAF_RESTORE`. Restores client deaf state after menu output.
+- `:bot~getinitial_settings` (`bot.ts`) - Caller state: bot config paths and saved bot identity values. Loads bot/game configuration, map locations, command files, and startup/hotkey state.
+- `:bot~killthetriggers` (`bot.ts`) - Caller state: none. Clears the common command/menu triggers.
+- `:bot~load_hotkey_config` (`bot.ts`) - Caller state: `$BOT~MOMBOT_DIRECTORY`, `$BOT~MOMBOT_CONFIG_FILE`, optional legacy hotkey vars. Loads configured hotkeys/custom command bindings.
+- `:bot~load_the_variables` (`bot.ts`) - Caller state: saved bot/game vars. Loads primary Mombot saved variables into runtime vars.
+- `:bot~load_watcher_variables` (`bot.ts`) - Caller state: saved watcher/bot vars. Loads watcher-facing state used by the script bot.
+- `:bot~migrate_game_folder` (`bot.ts`) - Caller state: `$BOT~FOLDER` and legacy folder paths. Moves or mirrors legacy game data into the current game folder layout.
+- `:bot~run_bot` (`bot.ts`) - Caller state: bot identity, version, team/user files, current player info. Starts the main script bot loop after initialization.
+- `:bot~save_the_variables` (`bot.ts`) - Caller state: current `$BOT~...`, `$MAP~...`, `$GAME~...`, and player preference vars. Persists Mombot configuration and game state.
+- `:bot~wait_for_command` (`bot.ts`) - Caller state: `$BOT~BOT_NAME`, team/autoattack state. Arms command triggers and waits for the next bot command.
+- `:bot~write_hotkey_config` (`bot.ts`) - Caller state: `$BOT~CUSTOM_KEYS`, `$BOT~CUSTOM_COMMANDS`, config path. Writes hotkey/custom command config.
+- `:internal_commands~loginmemo` (`internal_commands.ts`) - Caller state: current memo line plus `$BOT~CORPY[]`/`$BOT~CORPYCOUNT`. Handles corporate memo command triggers and rejects non-corp senders.
+- `:internal_commands~relog_attempt` (`internal_commands.ts`) - Caller state: `$BOT~PARM1..8` and relog saved state. Performs the relog/autorelog command path.
+- `:internal_commands~shutdown` (`internal_commands.ts`) - Caller state: current bot mode/state. Handles module stop events by resetting bot mode and returning to the main wait loop.
+- `:internal_commands~autokill` (`internal_commands.ts`) - Caller state: autoattack trigger text, current prompt/player combat state, `$BOT~PARM*`. Enters the automated kill/furb combat path from bot movement/entry triggers.
+- `:user_interface~check_routing` (`user_interface.ts`) - Caller state: `CURRENTLINE`, `CURRENTANSILINE`, `$SWITCHBOARD~BOT_NAME`. Routes self-addressed radio/page command lines into command dispatch.
+- `:user_interface~check_routing_team` (`user_interface.ts`) - Caller state: `CURRENTLINE`, `CURRENTANSILINE`, `$BOT~BOT_TEAM_NAME`. Routes team-addressed command lines into command dispatch.
+- `:user_interface~check_routing_all` (`user_interface.ts`) - Caller state: `CURRENTLINE`, `CURRENTANSILINE`. Routes `all` addressed command lines into command dispatch.
+- `:user_interface~runusercommandline` (`user_interface.ts`) - Caller state: `$BOT~COMMAND*`, `$BOT~USER_COMMAND_LINE`, category/command arrays, hotkeys. Dispatches typed command lines through script-bot command resolution.
+
+## Menus And Connectivity
+
+- `:menus~add_game` (`menus.ts`) - Caller state: `$BOT~GCONFIG_FILE`. Adds a game entry to the bot's game config.
+- `:menus~doneprefer` (`menus.ts`) - Caller state: menu preference vars plus `$GAME~...`, `$BOT~...` config vars. Saves preferences and exits the preference menu.
+- `:menus~echohotkeys` (`menus.ts`) - Caller state: `$BOT~CUSTOM_KEYS`, `$BOT~CUSTOM_COMMANDS`, `$BOT~HOTKEYS`. Prints available hotkeys.
+- `:menus~pregamemenuload` (`menus.ts`) - Caller state: bot folder/config, map locations, startup menu choices. Loads and renders the pre-game menu.
+- `:connectivity~keepalive` (`connectivity.ts`) - Caller state: `$BOT~ECHOINTERVAL`, `$BOT~DORELOG`, `$CONNECTIVITY~...` relog counters/state. Sends periodic keepalive escape, reports status, and starts relog/stuck-prompt recovery.
+- `:connectivity~online_watch` (`connectivity.ts`) - Caller state: `$BOT~DORELOG`, `$CONNECTIVITY~RELOGGING`. Handles inactivity warning text by rearming keepalive/watch triggers and sending escape.
+- `:connectivity~enter_new_game` (`connectivity.ts`) - Caller state: bot login/corp/team/new-game vars. Handles entering a game, corp setup, and first-run positioning.
+- `:connectivity~moving` (`connectivity.ts`) - Caller state: pre-game menu movement choices and map locations. Executes configured movement after login.
+
+## Messaging And Help
+
+- `:switchboard~switchboard` (`switchboard.ts`) - Caller state: `$SWITCHBOARD~MESSAGE`; optional `$SWITCHBOARD~SELF_COMMAND`, `$SWITCHBOARD~NODISCORD`, `$SWITCHBOARD~FEDSPACE_OUTPUT`, bot silent/deaf state. Sends or echoes a formatted bot message.
+- `:switchboard~format_raw_message` (`switchboard.ts`) - Caller state: `$SWITCHBOARD~MESSAGE` plus optional silent/self/nodiscord state. Wraps raw message text without sending it.
+- `:switchboard~stripansi` (`switchboard.ts`) - Caller state: `$SWITCHBOARD~MESSAGE`. Removes Mombot ANSI constants from a message string.
+- `:switchboard~banner` (`switchboard.ts`) - Caller state: `$SWITCHBOARD~SCRIPT_TITLE`. Sends the standard "`<title> starting up!`" switchboard banner.
+- `:help~initialize` (`help.ts`) - Caller state: none. Initializes `$HELP~HELP[]` and `$HELP~TAB` before a script fills help lines.
+- `:help~helpfile` (`help.ts`) - Caller state: caller filled `$HELP~HELP[]`; saved `$BOT~COMMAND`, `$BOT~PARM1`, `$BOT~MOMBOT_DIRECTORY`. Writes/refreshes command help text and displays it for `help`/`?`.
+- `:help~displayhelp` (`help.ts`) - Caller state: `$HELP~HELP[]`, `$SWITCHBOARD~SELF_COMMAND`, `$BOT~SILENT_RUNNING`. Displays prepared help text through switchboard/self-menu rules.
+- `:loadvars~loadvars` (`loadvars.ts`) - Caller state: saved bot/game/player variables. Loads common bot, map, player, game, and switchboard vars for standalone commands.
+- `:loadvars~normalize_deploy_preferences` (`loadvars.ts`) - Caller state: `$PLAYER~DROPOFFENSIVE`, `$PLAYER~DROPTOLL`, `$PLAYER~FIGHTER_DEPLOY_TYPE`. Normalizes and saves fighter deploy preference flags.
+
+## Player And Movement
+
+- `:player~quikstats` (`player.ts`) - Caller state: optional `$PLAYER~SAVE`; saved `$PLAYER~UNLIMITEDGAME`. Sends quickstats and fills current prompt, sector, turns, credits, holds, hardware, corp, ship, and combat stats.
+- `:player~currentprompt` (`player.ts`) - Caller state: none. Sends prompt probe and stores `$PLAYER~CURRENT_PROMPT` and `$PLAYER~FULL_CURRENT_PROMPT`.
+- `:player~checkstartingprompt` (`player.ts`) - Caller state: `$BOT~VALIDPROMPTS`, optional existing `$PLAYER~CURRENT_PROMPT`. Halts with switchboard error if current prompt is not allowed.
+- `:player~getinfo` (`player.ts`) - Caller state: must be at Command or Citadel prompt. Parses the `I` screen into detailed player, ship, scanner, holds, and corp vars.
+- `:player~bwarp` (`player.ts`) - Caller state: `$PLAYER~WARPTO`. Attempts planetary b-warp and updates fig data/messages based on lock/fuel/range.
+- `:player~checkfortravelname` (`player.ts`) - Caller state: `$parm1`, `$user_command_line`, `$command_caller`. Resolves `me`, quoted trader names, or corp member names into a travel sector.
+- `:player~clearadjacent` (`player.ts`) - Caller state: `$PLAYER~CURRENT_SECTOR`. Clears voids on all adjacent sectors.
+- `:player~commasize` (`player.ts`) - Caller state: `$PLAYER~VALUE`. Formats `$PLAYER~VALUE` as a number.
+- `:player~echo` (`player.ts`) - Caller state: `$SWITCHBOARD~MESSAGE`. Echoes locally or routes to switchboard when deaf/silent state requires it.
+- `:player~enter_menu_deaf` (`player.ts`) - Caller state: `$BOT~MENU_DEAF_DEPTH`, `$BOT~MENU_DEAF_RESTORE`. Player include copy of menu deafening helper.
+- `:player~exit_menu_deaf` (`player.ts`) - Caller state: `$BOT~MENU_DEAF_DEPTH`, `$BOT~MENU_DEAF_RESTORE`. Restores deaf state from player include menu helper.
+- `:player~formatnumberforspaces` (`player.ts`) - Caller state: `$PLAYER~INPUTVARIABLE`. Produces padded `$PLAYER~OUTPUTVARIABLE` for grid/status tables.
+- `:player~formatpercentagesforspaces` (`player.ts`) - Caller state: `$PLAYER~INPUTVARIABLE`. Produces padded percent `$PLAYER~OUTPUTVARIABLE`.
+- `:player~getcourse` (`player.ts`) - Caller state: `$PLAYER~DESTINATION`, optional `$PLAYER~STARTING_POINT`. Populates `$PLAYER~COURSE[]` and `$PLAYER~COURSELENGTH`.
+- `:player~init` (`player.ts`) - Caller state: none. Allocates trader/fake-trader/empty-ship arrays.
+- `:player~initranks` (`player.ts`) - Caller state: none. Initializes rank-name table used by sector/combat parsing.
+- `:player~addfigtodata` (`player.ts`) - Caller state: `$PLAYER~TARGET`. Sets sector parameter `FIGSEC` true.
+- `:player~removefigfromdata` (`player.ts`) - Caller state: `$PLAYER~TARGET`. Clears `FIGSEC` and decrements global fig count if applicable.
+- `:player~startcnsettings` (`player.ts`) - Caller state: saved `$subspace` optional. Walks CN settings and normalizes bot-required game display options.
+- `:player~swathoff` (`player.ts`) - Caller state: current prompt/trade flow. Detects whether SWATH autohaggle appears active.
+- `:player~topoff` (`player.ts`) - Caller state: current fighter prompt context. Tops off ship fighters from the sector/fleet prompt.
+- `:player~turnoffansi` (`player.ts`) - Caller state: Computer prompt access. Turns ANSI and animation off, returning to command.
+- `:player~turnonansi` (`player.ts`) - Caller state: Computer prompt access. Turns ANSI on, returning to command.
+- `:move~move` (`move.ts`) - Caller state: `$MOVE~CHECKSUB`, `$MOVE~SCANHOLO`, `$MOVE~EVASION`, `$MOVE~ATTACK`, `$MOVE~EXTRASEND*`, priority flags. Performs automated adjacent movement until caller check sub marks found.
+- `:move~moveintosector` (`move.ts`) - Caller state: `$MOVE~MOVEINTOSECTOR`, player fighter/mine preferences, `$SHIP~SHIP_MAX_ATTACK`, `$MAP~STARDOCK`. Builds and sends direct move/deploy macro.
+- `:move~mow` (`move.ts`) - Caller state: `$MOVE~TARGET`, player deploy prefs, `$MOVE~SAVEME`, current player/ship/map state. Mows a course to a destination with fig/mines as configured.
+- `:move~twarp` (`move.ts`) - Caller state: `$PLAYER~WARPTO`, current sector, twarp type, alignment, photons/override, starting location, `$MAP~STARDOCK`, `$SHIP~SHIP_MAX_ATTACK`. Attempts t-warp and sets `$PLAYER~TWARPSUCCESS`/`$PLAYER~MSG`.
+- `:move~findjumpsector` (`move.ts`) - Caller state: `$PLAYER~TARGET`, `$PLAYER~STARTINGLOCATION`, backdoor/warps-in data. Finds red-safe adjacent jump sector in `$PLAYER~RED_ADJ`.
+- `:move~test_red_sector` (`move.ts`) - Caller state: `$PLAYER~RED_ADJ`. Tests whether a candidate red-adj sector can be locked.
+- `:move~killtwarptriggers` (`move.ts`) - Caller state: active move/twarp triggers. Clears twarp-related triggers.
+
+## Map, Sector, Search, And Game Data
+
+- `:map~getstardock` (`map.ts`) - Caller state: current prompt. Locates Stardock and saves `$MAP~STARDOCK`.
+- `:map~commas` (`map.ts`) - Caller state: `$MAP~VALUE`. Formats `$MAP~VALUE` with comma separators.
+- `:map~displayadjacentgridansi` (`map.ts`) - Caller state: `$MAP~SECTOR`/adjacent sector context and map sector parameters. Builds ANSI adjacent grid display.
+- `:map~displaynavigation` (`map.ts`) - Caller state: `$MAP~SECTORS_ARRAY`, map locations, sector parameters. Displays navigation/adjacent-sector view.
+- `:map~displaysector` (`map.ts`) - Caller state: `$MAP~DISPLAYSECTOR`. Formats one sector for map/navigation display.
+- `:map~formatsectorowner` (`map.ts`) - Caller state: `$MAP~ADJ_SEC` and sector owner/mines/limps data. Formats owner marker for sector displays.
+- `:map~format_sector_owner` (`map.ts`) - Caller state: `$MAP~ADJ_SEC` and sector owner/mines/limps data. Alternate owner-format entry point.
+- `:sector~getavoids` (`sector.ts`) - Caller state: current prompt. Reads active avoids into `$SECTOR~AVOIDS[]`.
+- `:sector~voidadjacent` (`sector.ts`) - Caller state: `$PLAYER~CURRENT_SECTOR`. Voids all adjacent sectors.
+- `:sector~clearvoidadjacent` (`sector.ts`) - Caller state: `$PLAYER~CURRENT_SECTOR`, current prompt. Clears voids on adjacent sectors.
+- `:sector~getbackdoor` (`sector.ts`) - Caller state: `$SECTOR~DESTINATION`, avoid list. Finds/saves a backdoor route candidate.
+- `:sector~getsectordata` (`sector.ts`) - Caller state: `$SECTOR~TEMPSECTOR`, optional `$SECTOR~PASSIVE`, `$PLAYER~STARTINGLOCATION`. Parses scanner/sector display into rich sector state.
+- `:sector~getautosectordata` (`sector.ts`) - Caller state: sector display stream, player ranks/corp, optional targeting flags. Auto-parses sector data from live display.
+- `:search~find` (`search.ts`) - Caller state: `$BOT~PARM1`, `$BOT~PARM2`, optional `$SEARCH~TARGET_CORP`; map/port/fig/deadend data. Finds nearest matching sector and reports directions.
+- `:search~near` (`search.ts`) - Caller state: same as `:search~find`. Alias entry point for nearest-sector searches.
+- `:game~gamestats` (`game.ts`) - Caller state: `$BOT~MOMBOT_DIRECTORY`. Reads game settings and saves costs, limits, photon/debris/trade settings, and TWGS options.
+- `:gameprefs~setgameprefs` (`gameprefs.ts`) - Caller state: `$GAMEPREFS~BANK` and desired `$GAMEPREFS~...[$BANK]` values. Adjusts CN preferences and stores previous values.
+
+## Planet And Port
+
+- `:planet~countplanets` (`planet.ts`) - Caller state: at sector command/land context. Counts landable planets into `$PLANET~PLANETCOUNT`/`$PLANET~PLANETS[]`.
+- `:planet~planetcheck` (`planet.ts`) - Caller state: `$PLANET~PLANETCHECKSUB`, optional `$PLANET~PLANETCHECK_IGNORELIST`. Lands/checks planets until caller sub marks `$PLANET~PLANETCHECK_FOUND`.
+- `:planet~getplanetinfo` (`planet.ts`) - Caller state: at Planet/Citadel planet display, or able to send `*` to show it. Parses full planet info into `$PLANET~...` state and saves current planet/sector.
+- `:planet~planetinfo` (`planet.ts`) - Caller state: `$PLANET~NOHEADER` optional. Lower-level planet-info parser entry that can skip waiting for the header.
+- `:planet~getplanetprods` (`planet.ts`) - Caller state: Command or Citadel prompt. Reads port CR percentages/trading amounts for current sector into `$PLAYER~CURRENT_SECTOR.*`.
+- `:planet~getplanetstats` (`planet.ts`) - Caller state: `$PLANET~PLANET_FILE`. Reads planet class stats from computer and writes planet type file.
+- `:planet~landingsub` (`planet.ts`) - Caller state: `$PLANET~PLANET`, optional `$PLANET~LAND_AND_LIFT`. Lands on planet, optionally enters citadel, and sets success/start location flags.
+- `:planet~pwarp` (`planet.ts`) - Caller state: `$PLANET~WARPTO`, optional `$PLANET~PWARP_SCAN`, current Citadel/Planet context. Planet-warps and sets `$PLANET~PWARPSUCCESS`/`$PLANET~MSG`.
+- `:planet~landonplanetentercitadel` (`planet.ts`) - Caller state: `$PLANET~PLANET`. Lands, enters citadel, grabs fuel and current credits.
+- `:planet~loadplanetinfo` (`planet.ts`) - Caller state: saved `$PLANET~PLANET_FILE`. Loads planet class file into `$PLANET~PLANETLIST`.
+- `:planet~loadplanetprods` (`planet.ts`) - Caller state: saved `$PLANET~PLANET_PRODS_FILE`. Loads planet starting product file into `$PLANET~PLANETPRODS`.
+- `:planetnames~make_planet_array` (`planetnames.ts`) - Caller state: optional `$PLANETNAMES~PLANET_NAMES`. Builds planet-name lookup array.
+- `:port~getportinfo` (`port.ts`) - Caller state: `$PORT~STARTINGLOCATION`, optional `$PORT~REMOTEPORT`. Reads port selling amounts into `$PORT~FUELSELLING`, `$PORT~ORGSELLING`, `$PORT~EQUIPSELLING`, `$PORT~NOPORT`.
+- `:port~portkillingtriggers` (`port.ts`) - Caller state: active port info triggers. Clears port-info triggers.
+- `:port~buildport` (`port.ts`) - Caller state: current player prompt/sector/credits, `$BOT~USER_COMMAND_LINE` for optional port name. Builds a port and restores starting context.
+- `:port~destroyport` (`port.ts`) - Caller state: current prompt/sector, `$PLANET~PLANET`, player fighters, `$SHIP~SHIP_MAX_ATTACK`. Destroys current sector port.
+- `:port~upgradeport` (`port.ts`) - Caller state: `$BOT~USER_COMMAND_LINE`, current prompt/sector/credits, planet treasury info, `$PORT~PORT_MAX`. Upgrades/maxes selected port products.
+- `:port~max` (`port.ts`) - Caller state: same as `:port~upgradeport`. Alias label for port max/upgrade behavior.
+- `:port~domaxport` (`port.ts`) - Caller state: `$PORT~PRODUCT`, `$PORT~NO_EXP`, `$PORT~NOEXPAMOUNT`. Performs the product-specific maxing macro.
+- `:port~shipsell` (`port.ts`) - Caller state: Stardock/Shipyards/Command prompt and `$PLAYER~CREDITS`. Sells available ships and reports credits gained.
+
+## Trading And Haggle
+
+- `:haggle~haggle` (`haggle.ts`) - Caller state: `$HAGGLE~BUYPROD`/sell context and current port offer prompt. Handles standard port haggling.
+- `:haggle~starthaggle` (`haggle.ts`) - Caller state: same as `:haggle~haggle`; typically called after selecting product/quantity. Entry label for port haggle negotiation.
+- `:planethaggle~planetneg` (`planethaggle.ts`) - Caller state: `$PLAYER~CURRENT_PROMPT`, current planet/port data, `$GAME~PTRADESETTING`, `$PLANETHAGGLE~_CK_PNEGO_*`, optional `$PLANETHAGGLE~HASPRODS`. Sells planet products to port with haggle/native handoff behavior and reports profit.
+- `:planethaggle~getpercts` (`planethaggle.ts`) - Caller state: active planet sell/port percent stream. Reads port buy percentages and trading amounts during planet negotiation.
+- `:planethaggle~buy` (`planethaggle.ts`) - Caller state: `$PLAYER~BUYTYPE`, `$PLAYER~BUYOBJECT`, `$PLAYER~BUYDOWNROUNDSFROMPARAM`, current planet/port/player stats. Buys down a port into the planet with speed/best/worst/native modes.
+- `:planethaggle~buyhaggle` (`planethaggle.ts`) - Caller state: active port buy prompt, `$PLAYER~BUYDOWN_MODE`, `$PLANET~PLANET`. Scripted haggle loop for one buy transaction.
+- `:planethaggle~buynohaggle` (`planethaggle.ts`) - Caller state: active port buy prompt, `$PLAYER~SWATHOFF`. Accepts/defaults buy quantity/offer without haggling.
+
+## Combat, Grid, Mines, And Fighters
+
+- `:combat~init` (`combat.ts`) - Caller state: player/ship/map state plus target/surround preferences. Initializes combat arrays, ranks, and targeting defaults.
+- `:combat~fastattack` (`combat.ts`) - Caller state: sector target data, `$PLAYER~FIGHTERS`, `$SHIP~SHIP_MAX_ATTACK`, targeting flags. Performs fast ship/trader attack.
+- `:combat~fastcapture` (`combat.ts`) - Caller state: capture target filters, player fighters/shields, ship odds, planet/refurb options. Attempts fast capture flow.
+- `:combat~fastcitadelattack` (`combat.ts`) - Caller state: citadel combat targets, player/ship odds, planet and sector target data. Performs citadel attack flow.
+- `:combat~holokill` (`combat.ts`) - Caller state: holo/target sector data, player photons/genesis, ship odds, surround preferences. Attacks target found by holo/sector scan.
+- `:combat~callsaveme` (`combat.ts`) - Caller state: current sector and twarp result/message state. Broadcasts/starts saveme when combat movement fails or danger is detected.
+- `:grid~surround` (`grid.ts`) - Caller state: player fighter/mine deploy prefs, current sector, ship attack/odds, surround avoid flags. Surrounds current sector with figs/mines according to preferences.
+- `:fighters~deploy` (`fighters.ts`) - Caller state: `$amount`, `$personal`, `$FIGHTERS~...` flags, player fighters/current prompt. Deploys fighters in current sector.
+- `:mines~deploy` (`mines.ts`) - Caller state: `$amount`, `$personal`, current player prompt/sector, player armids/limpets, `$PLANET~PLANET` if citadel. Deploys both armids and limpets.
+- `:mines~deployarmid` (`mines.ts`) - Caller state: `$amount`, `$personal`, player armids/current prompt/sector. Deploys armid mines only.
+- `:mines~deploylimp` (`mines.ts`) - Caller state: `$amount`, `$personal`, player limpets/current prompt/sector. Deploys limpet mines only.
+- `:mines~clear` (`mines.ts`) - Caller state: current Command/Citadel prompt, player mines/limpets, `$BOT~USER_COMMAND_LINE` options, `$PLANET~PLANET` for citadel. Clears hostile mines in current sector.
+- `:mines~refresh_clear_sector_state` (`mines.ts`) - Caller state: `$PLAYER~CURRENT_SECTOR`. Refreshes `$MINES~...OWNER/COUNT` and `$MINES~SECTORCLEAR`.
+- `:mines~disrupt` (`mines.ts`) - Caller state: `$TARGET`, `$SCANIT`, `$BURSTING`, current prompt and disruptor count. Uses mine disruptors on target/adjacent sectors and sets `$MINES~RESULT`.
+- `:mines~disr` (`mines.ts`) - Caller state: same as `:mines~disrupt`. Alias label for disruptor routine.
+- `:mines~star_burst` (`mines.ts`) - Caller state: `$ADJ2HIT[]`, `$BURSTING`, `$PLAYER~MINE_DISRUPTORS`. Fires disruptors across selected adjacents.
+- `:mines~updatearmids` (`mines.ts`) - Caller state: `$BOT~ARMID_COUNT_FILE`, `$BOT~ARMID_FILE`. Refreshes armid locations from the game and stores sector parameters/files.
+- `:mines~readarmidlist` (`mines.ts`) - Caller state: same files and mine-list prompt. Reads current armid list into files/sector parameters.
+- `:mines~reportarmids` (`mines.ts`) - Caller state: `$count`, `$personalCount`, `$previousCount`, `$SWITCHBOARD~MESSAGE`. Appends armid grid report text.
+- `:mines~updatelimps` (`mines.ts`) - Caller state: `$BOT~LIMP_COUNT_FILE`, `$BOT~LIMP_FILE`. Refreshes limpet locations from the game.
+- `:mines~readlimplist` (`mines.ts`) - Caller state: same files and limpet-list prompt. Reads current limpet list into files/sector parameters.
+- `:mines~reportlimps` (`mines.ts`) - Caller state: `$count`, `$personalCount`, `$previousCount`, `$limpetOutput`, `$SWITCHBOARD~MESSAGE`. Appends limpet grid report text.
+
+## Ship, Update, And Utility Includes
+
+- `:ship~getshipcapstats` (`ship.ts`) - Caller state: `$SHIP~CAP_FILE`. Reads ship catalog/capture stats and writes cap stats file.
+- `:ship~getshipstats` (`ship.ts`) - Caller state: current ship info prompt output. Parses current ship max attack, holds, shields, fighters, odds, mines, genesis, and xport range.
+- `:ship~loadshipinfo` (`ship.ts`) - Caller state: `$SHIP~CAP_FILE`. Loads ship cap file into `$SHIP~SHIPLIST`.
+- `:ship~savetheship` (`ship.ts`) - Caller state: parsed ship fields such as name, cost, holds, figs, shields, odds, TPW. Writes one ship entry to cap file/list.
+- `:update~fighters` (`update.ts`) - Caller state: current Computer prompt/map data. Updates fighter sector parameter data.
+- `:update~readfighterlist` (`update.ts`) - Caller state: fighter-list prompt stream. Reads deployed fighter list into files/sector parameters.
+- `:update~report` (`update.ts`) - Caller state: `$count`, `$personalCount`, `$previousCount`, `$SWITCHBOARD~MESSAGE`. Appends fighter grid report text.
+- `:update~cim` (`update.ts`) - Caller state: `$BOT~PARM1`, current prompt. Runs CIM update path.
+- `:update~mcic_looper` (`update.ts`) - Caller state: `$BOT~MCIC_FILE`, `$BOT~BOT_NAME`. Processes MCIC update loop/file.
+- `:findproduct~findproduct` (`findproduct.ts`) - Caller state: `$FINDPRODUCT~PRODUCT`, `$FINDPRODUCT~PRODAMOUNT`, `$FINDPRODUCT~IGNORELIST`, optional stay-on-planet flag. Finds a planet/sector with requested product.
+- `:findproduct~checkproduct` (`findproduct.ts`) - Caller state: current planet check state, product/quantity desired. Tests one planet for enough product/colonists.
+- `:xenter~run` (`xenter.ts`) - Caller state: `$PLAYER~CURRENT_PROMPT`, `$BOT~PASSWORD`, `$BOT~LETTER`, `$PLANET~PLANET`, `$GAME~GAME_MENU_PROMPT`. Runs full exit/re-enter flow.
+- `:xenter~xenter` (`xenter.ts`) - Caller state: same as `:xenter~run`. Lower-level xenter flow used by mine clearing and xenter mode.
+  </script>
+
+  <script>
+    const raw = document.getElementById("routineSource").textContent;
+    const rows = [];
+    let section = "Uncategorized";
+    for (const line of raw.split(/\n/)) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("## ")) {
+        section = trimmed.slice(3);
+        continue;
+      }
+      if (!trimmed.startsWith("- `:")) continue;
+      const match = trimmed.match(/^- `:([^`]+)` \(`([^`]+)`\) - Caller state: ([\s\S]*?)\. ([\s\S]*)$/);
+      if (!match) continue;
+      rows.push({
+        routine: ":" + match[1],
+        include: match[2],
+        state: match[3],
+        description: match[4],
+        section
+      });
+    }
+
+    const slug = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const escapeHtml = (text) => text.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    const routineList = document.getElementById("routineList");
+    const includeIndex = document.getElementById("includeIndex");
+    const routineIndex = document.getElementById("routineIndex");
+    const summary = document.getElementById("summary");
+    const filter = document.getElementById("filter");
+
+    function render() {
+      const needle = filter.value.trim().toLowerCase();
+      const visible = rows.filter(row => !needle || [row.routine, row.include, row.state, row.description, row.section].join(" ").toLowerCase().includes(needle));
+      summary.textContent = `${visible.length} of ${rows.length} routines shown.`;
+
+      const includes = [...new Set(rows.map(r => r.include))].sort();
+      includeIndex.innerHTML = includes.map(inc => `<li><a href="#include-${slug(inc)}">${escapeHtml(inc)}</a></li>`).join("");
+      routineIndex.innerHTML = rows
+        .slice()
+        .sort((a, b) => a.routine.localeCompare(b.routine))
+        .map(row => `<li><a href="#routine-${slug(row.routine)}">${escapeHtml(row.routine)}</a></li>`)
+        .join("");
+
+      const grouped = new Map();
+      for (const row of visible) {
+        if (!grouped.has(row.include)) grouped.set(row.include, []);
+        grouped.get(row.include).push(row);
+      }
+      routineList.innerHTML = [...grouped.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([inc, incRows]) => {
+        const cards = incRows
+          .sort((a, b) => a.routine.localeCompare(b.routine))
+          .map(row => `
+            <div class="card" id="routine-${slug(row.routine)}">
+              <div><span class="routine">${escapeHtml(row.routine)}</span> <span class="pill">${escapeHtml(row.include)}</span></div>
+              <div><span class="state">Caller state:</span> ${escapeHtml(row.state)}</div>
+              <div>${escapeHtml(row.description)}</div>
+            </div>`)
+          .join("");
+        return `<h2 id="include-${slug(inc)}">${escapeHtml(inc)}</h2>${cards}`;
+      }).join("");
+    }
+
+    filter.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>

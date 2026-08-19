@@ -1,0 +1,18 @@
+                     
+   
+                <<<< moveship >>>>
+   
+     Moves empty ships from one sector to another.
+                     
+       moveship [sector] {back} {sell} {dep} {"ship filter"}
+                       
+        Options:            
+             [sector] - target sector
+               [back] - will grab ships from target sector and bring
+                        them back to current sector   
+               [sell] - if moving to stardock, attempt to sell ships
+      ["ship filter"] - move ships only matching this filter
+                        
+                  -  Ship filter list can be comma delimited.    
+                  -  Can use either planet or SXX port in        
+                     starting sector for fuel.

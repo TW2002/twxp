@@ -1,0 +1,21 @@
+                     
+   
+                 <<<< bwarp >>>>
+   
+     bwarp {sector:#} {"trader_name"} {p}
+           
+             planet transports to sector
+            
+         Options: 
+                {sector:#} - sector to bwarp to 
+           {"trader_name"} - trader to bwarp to
+                       {p} - port after bwarping in 
+              
+         Examples:
+                    >b 233 - normal bwarp
+                  >b 233 p - bwarp to sector, and port 
+              >b planet 12 - bwarp to last known 
+                             location of planet 12 
+                   >b mind - bwarp to a corp member with mind
+                             in their name
+          >b "mind dagger" - bwarp to corp member

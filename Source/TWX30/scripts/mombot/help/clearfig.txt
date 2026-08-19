@@ -1,0 +1,13 @@
+                     
+   
+                <<<< clearfig >>>>
+   
+     Clears adjacent fighters and calls saveme.
+            
+       Usage: clearfig [sector] {defend}
+            
+     Options:
+        {defend}  For offensive fighters, just enters and retreats.
+            
+     From Citadel prompt grabs fighters from planet.
+     From Command prompt grabs fighters from the sector.

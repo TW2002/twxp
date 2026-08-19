@@ -1,0 +1,7 @@
+                     
+   
+                 <<<< slist >>>>
+   
+     Ship list
+       Displays ship list on subspace
+         {fed} - display on fed space

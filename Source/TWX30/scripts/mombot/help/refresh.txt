@@ -1,0 +1,9 @@
+                     
+   
+                <<<< refresh >>>>
+   
+     refresh - refresh cached bot state from the live game
+       
+       refresh
+         - re-reads player, game, ship, and planet data
+           from the current prompt

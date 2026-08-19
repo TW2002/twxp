@@ -1,0 +1,6 @@
+                     
+   
+               <<<< storeship >>>>
+   
+     storeship   
+           Records information about the current ship.  

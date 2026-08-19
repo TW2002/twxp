@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: tsaveme
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: tsaveme
+
+! tsaveme
+
+TSAVEME - TWarp SaveMe MODE
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+TSAVEME - TWarp SaveMe MODE
+          Will Twarp to Corpie&#x27;s Location and attempt to Tow
+          him/her back to starting sector. 
+
+          tsaveme [on/off]
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

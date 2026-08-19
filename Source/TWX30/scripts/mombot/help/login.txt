@@ -1,0 +1,5 @@
+                     
+   
+                 <<<< login >>>>
+   
+     Sets the ship or citadel overnight message to Login.

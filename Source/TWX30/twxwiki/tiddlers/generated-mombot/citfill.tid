@@ -1,0 +1,37 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: citfill
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: citfill
+
+! citfill
+
+citfill {number of fighters to refill} {auto}
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+                     
+   
+                &lt;&lt;&lt;&lt; citfill &gt;&gt;&gt;&gt;
+   
+     citfill {number of fighters to refill} {auto}
+                   
+           Refills any corpie above a planet who 
+           attacks/is attacked or deploys fighters.
+              
+            Options:
+                {auto} - auto refill every five minutes
+              
+            Examples: 
+                &gt;citfill 25000 auto
+                &gt;citfill
+                &gt;citfill auto
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

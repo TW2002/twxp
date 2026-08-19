@@ -1,0 +1,47 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Grid
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Grid
+
+Grid, mine, limp, wall, and deployment workflows.
+
+!! Command List
+
+[[clear]] [[clearfig]] [[climp]] [[cmine]] [[deploy]] [[disr]] [[dora]] [[exit]] [[gridcheck]] [[haz]]
+[[limpshovel]] [[mines]] [[minesweep]] [[mow]] [[mowfuel]] [[passgrid]] [[pgrid]] [[pgridder]] [[plimp]]
+[[plimper]] [[pmine]] [[port]] [[ramgrid]] [[surround]] [[ugrid]] [[wall]] [[wander]]
+
+Topics: 27
+
+!! Detailed List
+
+* [[clear]] - CLEAR - Quickly cleans sector of enemy armid and
+* [[clearfig]] - CLEARFIG - Clears adjacent fighters and calls saveme
+* [[climp]] - climp - place corporate limpets in sector
+* [[cmine]] - CMINES - Deploys Corporate Armid Mines into the sector.
+* [[deploy]] - deploy/put/lay/place {number} {type} {pers | corp}
+* [[disr]] - DISR - Disrupt Armid Mines in Adjacent Sectors
+* [[dora]] - Dora the Explorer
+* [[exit]] - EXIT - Quickly exits, then enters game. Clears mail
+* [[gridcheck]] - GRIDCHECK - Grid Explore/Patrol
+* [[haz]] - HAZ - Create 100% NavHaz in Current-Sector
+* [[limpshovel]] - LIMPSHOVEL - Limpet reorganizer. Dumps limpets to borders
+* [[mines]] - MINES - Deploys Armid Mines into the sector.
+* [[minesweep]] - MINESWEEP - Visits sectors in list and clears limps and armids.
+* [[mow]] - mow [destination] {figs} {kill} {cap} {saveme} {p} {back}
+* [[mowfuel]] - MOWFUEL - Mows to unfigged upgraded fuel ports in grid.
+* [[passgrid]] - LS Passive Gridder - Still the best
+* [[pgrid]] - pgrid - planet grid into sector
+* [[pgridder]] - Pgrids automatically until stopped. pgrid {fighterToDrop}
+* [[plimp]] - PLIMP - Deploys Personal limpets into the sector.
+* [[plimper]] - Topic without live help text.
+* [[pmine]] - PMINE - Deploy Personal Mines
+* [[port]] - port {build/create} {destroy/kill} {upgrade/max}
+* [[ramgrid]] - Rammars Legendary gridder converted to mombot
+* [[surround]] - surround
+* [[ugrid]] - UGRID - Ultimate-Turn Gridder. Visits all targeted sectors.
+* [[wall]] - The Wall
+* [[wander]] - wander {file | sector param | auto} {share}

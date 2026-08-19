@@ -1,0 +1,15 @@
+                     
+   
+                  <<<< wait >>>>
+   
+       wait {ms:#}    
+                                                                 
+         Waits for time specified.  This is a utility script  
+         created mostly for the multicommand functionality.     
+                                                                  
+              {ms:#} - How many milliseconds to wait            
+                                                                  
+             Examples:                                           
+                   >wait 10000                             
+                   >mow 1|wait 5000|mow 25                   
+                   >wait     (waits default of 1 second)        

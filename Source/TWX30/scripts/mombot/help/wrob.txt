@@ -1,0 +1,13 @@
+                     
+   
+                  <<<< wrob >>>>
+   
+     Travels universe robbing ports.
+            
+       Usage: wrob [minimum rob amount] {upgraded} {skipcim} {clear_empty}
+            
+     Options:
+        [minimum rob amount]  Amount that must be on port before robbing.
+        {upgraded}            Only visit upgraded ports.
+        {skipcim}             Skip CIM port report before running.
+        {clear_empty}         Delete the empty port file.

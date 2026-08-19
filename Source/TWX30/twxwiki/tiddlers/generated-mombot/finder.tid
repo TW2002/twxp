@@ -1,0 +1,34 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: finder
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-mode
+caption: finder
+
+! finder
+
+FINDER - Search TWX-DBase for Fighter/Port data
+
+''Categories:'' Data
+''Kinds:'' Mode
+''Source matches:'' Mode (Data)
+
+!! Help
+<pre>
+FINDER - Search TWX-DBase for Fighter/Port data
+
+     find [f/nf/fp/p/de/ufde] [type] {sector} [port type]
+
+     - [type]   =  [de]ad-end or 
+                   [f]igged or 
+                   [nf] no-fig or 
+                   [fp] figged port or 
+                   [p]ort or 
+                   [ufde] un-figged dead end
+     - {sector}    sector number that you need finder data on, 
+                   default is current sector
+     - [port type] port type (s)ell , (b)uy, or (x) either
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

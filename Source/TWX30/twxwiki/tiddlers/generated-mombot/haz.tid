@@ -1,0 +1,24 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: haz
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-command
+caption: haz
+
+! haz
+
+HAZ - Create 100% NavHaz in Current-Sector
+
+''Categories:'' Grid
+''Kinds:'' Command
+''Source matches:'' Command (Grid)
+
+!! Help
+<pre>
+HAZ - Create 100% NavHaz in Current-Sector
+      Scans the Game-Status (aka V Screen), once, to obtain
+      Maximum Planets per Sector.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

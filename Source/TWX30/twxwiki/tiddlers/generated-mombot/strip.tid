@@ -1,0 +1,37 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: strip
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: strip
+
+! strip
+
+Strips planets of resources and places them on starting planet.
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; strip &gt;&gt;&gt;&gt;
+   
+     Strips planets of resources and places them on starting planet.  
+      
+     Options:
+     [planet# | all]   - Planet number or all to strip all planets in sector.
+                 {f}   - Strip fuel ore
+                 {o}   - Strip organics
+                 {e}   - Strip equipment
+                {fc}   - Strip fuel ore colonists
+                {oc}   - Strip organic colonists
+                {ec}   - Strip equipment colonists
+               {fig}   - Strip fighters
+               {turbo} - Does in a macro burst
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

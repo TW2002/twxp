@@ -1,0 +1,33 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: chaser
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: chaser
+
+! chaser
+
+- farm {set} {clear} {list} | {fuel} {org} {equ} {figs}
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+- farm {set} {clear} {list} | {fuel} {org} {equ} {figs}     
+    Visits sectors in list and farms the planets there.     
+       - default will visit all planets on the tl list      
+                                                            
+    [set] {sector1} {sector2} {...} {sectorx}               
+       - set puts sectors in the order you enter into a file
+    [clear]                                                 
+       - clear deletes the farm file                        
+    [list]                                                  
+       - show lists of all sectors in the farm file in order
+    [fuel] [org] [equ] [figs]                               
+       - grabs the designated product(s) from planets
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

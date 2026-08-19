@@ -1,0 +1,60 @@
+/bin/
+Source/bin/
+obj/
+*/bin/
+**/bin/
+*/obj/
+**/obj/
+*.user
+*.suo
+.vs/
+.vscode/
+.DS_Store
+
+# Build outputs in root
+*.dll
+*.pdb
+*.dylib
+/twxd
+/twxd.deps.json
+/twxd.runtimeconfig.json
+/twxd_mm/
+/runtimes/
+
+# MTC publish output
+Source/MTC/publish/
+Source/TWXC/publish/
+Source/TWXD/publish/
+Source/TWXP/publish/
+Source/Installer/Windows/artifacts/
+Source/Installer/Windows/bin/
+Source/Installer/Windows/obj/
+/Source/Installer/Windows/artifacts/
+/Source/Installer/Windows/bin/
+/Source/Installer/Windows/obj/
+Source/**/__pycache__/
+
+# Local-only notes
+RELOG_LOOP_FIX.md
+CREDENTIAL_CHECK_FIX.md
+
+# Local-only Source items
+Source/ARRAY_TRIGGER_IMPLEMENTATION.md
+Source/CONVERSION_SUMMARY.md
+Source/NETWORK_INTEGRATION.md
+Source/MockServer/
+Source/TestBytecodeAnalyzer/
+Source/TestCompiler/
+Source/TestDatabase/
+Source/TestNetwork/
+Source/TestNetworkDB/
+Source/TestScriptLoader/
+Source/demo_connect.sh
+Source/diag_test.sh
+Source/mom.cts
+Source/mom.ts
+Source/wcc_i.xdb.twx
+Source/test/
+
+# Local AI/copilot experiments and generated training data
+tradewars-copilot/

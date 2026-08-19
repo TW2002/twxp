@@ -1,0 +1,6 @@
+                     
+   
+                  <<<< ping >>>>
+   
+     ping   
+           Measures and reports on your round-trip ping times to the server.  

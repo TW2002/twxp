@@ -1,0 +1,19 @@
+                     
+   
+                  <<<< tram >>>>
+   
+         Ram gridder for mombot based on LoneStars chains algorithm
+         Uses chain selection first, then falls back to single sectors.
+         Best when there are clusters of adjacent unfigged sectors.
+         REFRESH FIG LIST!
+         
+         tram [stop_turns] [stop_fighters] {saveme} {quiet} {burst:n}
+            
+      Options:
+         
+        [stop_turns]     stop when you get to these turns 
+        [stop_fighters]  stop when you get to these fighters
+        {saveme}  when gridder is stuck it will call saveme to be safe
+        {quiet}   suppress running Total Gridded / Efficiency messages
+        {burst:n} number of macros to burst at once, default 4
+                        

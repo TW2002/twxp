@@ -1,0 +1,10 @@
+                     
+   
+                <<<< pgridder >>>>
+   
+     Pgrids automatically until stopped. pgrid {fighterToDrop} 
+               
+     Requires corpie running saveme
+      
+        Options:
+                         {near} - moves using near fighter

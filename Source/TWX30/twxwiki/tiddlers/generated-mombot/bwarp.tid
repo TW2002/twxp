@@ -1,0 +1,42 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: bwarp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: bwarp
+
+! bwarp
+
+bwarp {sector:#} {"trader_name"} {p}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; bwarp &gt;&gt;&gt;&gt;
+   
+     bwarp {sector:#} {&quot;trader_name&quot;} {p}
+           
+             planet transports to sector
+            
+         Options: 
+                {sector:#} - sector to bwarp to 
+           {&quot;trader_name&quot;} - trader to bwarp to
+                       {p} - port after bwarping in 
+              
+         Examples:
+                    &gt;b 233 - normal bwarp
+                  &gt;b 233 p - bwarp to sector, and port 
+              &gt;b planet 12 - bwarp to last known 
+                             location of planet 12 
+                   &gt;b mind - bwarp to a corp member with mind
+                             in their name
+          &gt;b &quot;mind dagger&quot; - bwarp to corp member
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

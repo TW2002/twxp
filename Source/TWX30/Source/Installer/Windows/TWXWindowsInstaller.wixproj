@@ -1,0 +1,33 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <InstallerPlatform Condition="'$(InstallerPlatform)' == ''">x64</InstallerPlatform>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">3.0.0</ProductVersion>
+    <ProgramDirDefault Condition="'$(ProgramDirDefault)' == ''">C:\twxproxy</ProgramDirDefault>
+    <PayloadRoot Condition="'$(PayloadRoot)' == ''">$(MSBuildThisFileDirectory)artifacts\$(InstallerPlatform)\payload</PayloadRoot>
+    <TargetName>TWXProxy-$(InstallerPlatform)</TargetName>
+    <OutputPath>bin\$(Configuration)\$(InstallerPlatform)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(InstallerPlatform)\</IntermediateOutputPath>
+    <MtcIconPath>$(MSBuildThisFileDirectory)Assets\mtc2.ico</MtcIconPath>
+    <TwxpIconPath>$(MSBuildThisFileDirectory)Assets\TWXProxy_Icon.ico</TwxpIconPath>
+    <LicenseRtfPath>$(MSBuildThisFileDirectory)License.rtf</LicenseRtfPath>
+    <UpgradeCode Condition="'$(InstallerPlatform)' == 'x64'">{9C1F2C84-EBB2-4E42-95A4-A67899D30164}</UpgradeCode>
+    <UpgradeCode Condition="'$(InstallerPlatform)' == 'arm64'">{91D8E4EF-4F95-4AB8-A842-6E2509E7F1D2}</UpgradeCode>
+    <DefineConstants>
+      PayloadRoot=$(PayloadRoot);
+      ProgramDirDefault=$(ProgramDirDefault);
+      ProductVersion=$(ProductVersion);
+      UpgradeCode=$(UpgradeCode);
+      MtcIconPath=$(MtcIconPath);
+      TwxpIconPath=$(TwxpIconPath);
+      LicenseRtfPath=$(LicenseRtfPath)
+    </DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

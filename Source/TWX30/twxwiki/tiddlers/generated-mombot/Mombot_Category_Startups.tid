@@ -1,0 +1,19 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Startups
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Startups
+
+Startup and auto-loader scripts.
+
+!! Command List
+
+[[watcher]]
+
+Topics: 1
+
+!! Detailed List
+
+* [[watcher]] - refresh - refresh cached bot state from the live game

@@ -1,0 +1,18 @@
+                     
+   
+                <<<< ramgrid >>>>
+   
+         Rammars Legendary gridder converted to mombot
+         No more sectors have been gridded than with this... 
+         No more players have died using it... 
+         REFRESH FIG LIST!
+         
+         ramgrid [stop_turns] [stop_fighters] {saveme} {quiet}
+            
+      Options:
+         
+        [stop_turns]     stop when you get to these turns 
+        [stop_fighters]  stop when you get to these fighters
+        {saveme}  when gridder is stuck it will call saveme to be safe
+        {quiet}   suppress running Total Gridded / Efficiency messages
+                        

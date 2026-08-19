@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: Mombot Category: Resource
+type: text/vnd.tiddlywiki
+tags: mombot category
+
+! Resource
+
+Buying, refurbing, ship sales, and resource-management helpers.
+
+!! Command List
+
+[[buy]] [[colo]] [[dump]] [[ecolo]] [[farm]] [[fillships]] [[lsd]] [[makeplanet]] [[max]] [[move]] [[movefig]]
+[[moveship]] [[patp]] [[pimp]] [[refurb]] [[scruball]] [[sellship]] [[strip]] [[stripships]] [[upgrade]]
+
+Topics: 20
+
+!! Detailed List
+
+* [[buy]] - BUY - Buy Product from port in Sector or Fighters and/or
+* [[colo]] - Gets colos from Terra
+* [[dump]] - Dump resources from planet quickly and jettisons them
+* [[ecolo]] - Uses ecolo {all}
+* [[farm]] - FARM - Visits sectors in list and farms the planets there.
+* [[fillships]] - FILLSHIPS - Fills all empty ships with fighters from sector.
+* [[lsd]] - LSD - LoneStar's Dock Shopper (BAck End) - MOMBot Version
+* [[makeplanet]] - makeplanet {ewarp} {create:} {"custom planet name"}
+* [[max]] - MAX - Upgrades a Port in sector to its maximum
+* [[move]] - MOVE - Product Mover
+* [[movefig]] - MOVEFIG - Fighter Move
+* [[moveship]] - Moves empty ships from one sector to another.
+* [[patp]] - PATP - Pay At The Pump
+* [[pimp]] - PIMP - Makes planets and strips them of product
+* [[refurb]] - refurb {holds} {fighters} {shields} {seek}
+* [[scruball]] - Topic without live help text.
+* [[sellship]] - sellship
+* [[strip]] - Strips planets of resources and places them on starting planet.
+* [[stripships]] - Stripship - Strips fighters from all empty ships
+* [[upgrade]] - Topic without live help text.

@@ -1,0 +1,7 @@
+                     
+   
+               <<<< findplanet >>>>
+   
+     Locates a corporate or personal planet and reports back.  
+        
+     Usage:  findplanet # | list

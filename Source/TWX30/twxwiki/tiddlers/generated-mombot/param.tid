@@ -1,0 +1,33 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: param
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: param
+
+! param
+
+PARAM - Displays sector parameters saved in game.
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; param &gt;&gt;&gt;&gt;
+   
+        PARAM - Displays sector parameters saved in game.
+        
+        - param [sector]  
+             Displays all bot sector parameters 
+               (FIGSEC, MINESEC, LIMPSEC, MSLSEC, BUSTED, PSECTOR)
+        
+        - param [param]
+             Displays all sectors where that param is non-zero/non-blank
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

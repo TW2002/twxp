@@ -1,0 +1,8 @@
+                     
+   
+               <<<< ridealong >>>>
+   
+     Used to gather port and sector information by scanning as you ride
+     along in a citadel with another player moving a planet.
+            
+       Usage: ridealong [on/off]  

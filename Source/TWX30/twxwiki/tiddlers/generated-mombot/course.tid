@@ -1,0 +1,28 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: course
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: course
+
+! course
+
+Shows course path to sectors
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; course &gt;&gt;&gt;&gt;
+   
+     Shows course path to sectors
+        course {start sector} {end sector}
+        course {end sector}
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

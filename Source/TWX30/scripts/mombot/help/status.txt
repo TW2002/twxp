@@ -1,0 +1,11 @@
+                     
+   
+                 <<<< status >>>>
+   
+     Reports information about bot on subspace  
+             
+     Special stats that are bot specific:        
+       - Planet #: Last planet landed on
+       - Team Name: What team name your bot respondeds to, if any
+       - Bot mode:  What mode your bot is currently running
+             

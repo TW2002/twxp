@@ -1,0 +1,8 @@
+                     
+   
+                 <<<< ecolo >>>>
+   
+     Uses ecolo {all}
+     Uses E-warp to colonize.  For red or non-twarp ships.
+        Options:
+        Will attempt to fill all planets in sector owned by you.

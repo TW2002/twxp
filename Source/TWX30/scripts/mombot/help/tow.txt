@@ -1,0 +1,10 @@
+                     
+   
+                  <<<< tow >>>>
+   
+     tow [ship number | list]
+           
+       Tow ships and display tow list
+           
+         {ship number}  ship number to tow
+                {list}  list all tow ships in sector

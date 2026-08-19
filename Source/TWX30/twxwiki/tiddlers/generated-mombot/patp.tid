@@ -1,0 +1,39 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: patp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-resource kind-mode
+caption: patp
+
+! patp
+
+PATP - Pay At The Pump
+
+''Categories:'' Resource
+''Kinds:'' Mode
+''Source matches:'' Mode (Resource)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; patp &gt;&gt;&gt;&gt;
+   
+                   PATP - Pay At The Pump               
+       patp [min port fuel] {turbo} {upgrade} {buyhalf}
+            {docim} {destroyports}
+            
+             
+     Options:
+         [min port fuel]  minimum fuel a port must have to visit it
+         [turbo]          puts all buydowns in a burst
+         [upgrade]        upgrades fuel in each port
+         [buyhalf]        empties ports halfway
+         [docim]          does cim check before patp
+         [destroyports]   destroys every port it drains if you 
+         [bubble]         only visits bubble sectors  
+                          have enough fighters
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

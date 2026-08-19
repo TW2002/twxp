@@ -1,0 +1,38 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: wsst
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: wsst
+
+! wsst
+
+World Sell-Steal-Transport
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; wsst &gt;&gt;&gt;&gt;
+   
+     World Sell-Steal-Transport 
+      - wsst [ship2] {cash dropoff} {f} {s} {safe|passive} {furbpoint} 
+        Options: 
+          {cash dropoff} - if started from planet citadel  
+          {f}            - buy fighters
+          {s}            - buy shields 
+          {safe}         - Will not mow to locations, scans and moves
+          {passive}      - Will be safe, as well as avoid any enemy fighters 
+          {furbpoint}    - Terra, Dock (default), Alpha, Rylos 
+          {limp}         - Will lay 3 limps/sector if Furbing at Dock. 
+          {armid}        - Will lay 3 armids/sector if Furbing at Dock. 
+          {quiet}        - Will not braodcast BUSTED msgs on SubSpace  
+          {x100}         - Will Drop 100 Fighters per sector
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

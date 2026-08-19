@@ -1,0 +1,26 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ig
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: ig
+
+! ig
+
+IG - Interdictor Control Resetter
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+IG - Interdictor Control Resetter
+     Turns ship IG on, if it&#x27;s off, or when hit by
+     a Photon
+
+     IG [on/off]
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,6 @@
+                     
+   
+                 <<<< busts >>>>
+   
+     busts -
+         displays all busted sectors on subspace

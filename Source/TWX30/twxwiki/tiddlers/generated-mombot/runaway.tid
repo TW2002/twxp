@@ -1,0 +1,28 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: runaway
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-defense kind-mode
+caption: runaway
+
+! runaway
+
+RUNAWAY - Automatic Flee Mode
+
+''Categories:'' Defense
+''Kinds:'' Mode
+''Source matches:'' Mode (Defense)
+
+!! Help
+<pre>
+RUNAWAY - Automatic Flee Mode
+
+       runaway [on/off] {preset flee sector} {evac}
+
+       - [preset flee sector]   = Sector to attempt to flee to first
+       - [evac]                 = attempts to move all level 4 and 
+                                  above planets in the sector
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

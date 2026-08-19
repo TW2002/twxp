@@ -1,0 +1,53 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: update
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-command
+caption: update
+
+! update
+
+update {figs} {limps} {armids} {cim}
+
+''Categories:'' Data
+''Kinds:'' Command
+''Source matches:'' Command (Data)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; update &gt;&gt;&gt;&gt;
+   
+      update {figs} {limps} {armids} {cim}
+        
+          Checks deployment lists and sets sector
+          parameters.  Shows differences since last
+          update
+          
+          {figs} - fighter refresh
+         {limps} - limpet refresh, including active
+        {armids} - armid refresh
+           {cim} - will refresh port and warp info
+                  
+         update {cim} {upgrade level} {warps}   
+                                  
+          Options:
+                {upgrade level} - Amount on port to  
+                                  be considered upgraded
+                                  (default 10,000)
+                                                 
+                       {warps}  - Perform warp data  
+                                  instead of port CIM
+                                  
+          Examples:            
+                 &gt;update figs limps armids      
+                 &gt;update                 
+                 &gt;update cim warps     
+                 &gt;figs             
+                 &gt;limps            
+                 &gt;cim 10000
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,22 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: lift
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: lift
+
+! lift
+
+LIFT - Lifts bot off of planet
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+LIFT - Lifts bot off of planet
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

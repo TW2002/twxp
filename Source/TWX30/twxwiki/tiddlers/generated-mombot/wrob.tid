@@ -1,0 +1,32 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: wrob
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: wrob
+
+! wrob
+
+- wrob [minimum rob amount] {upgraded} {skipcim}
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+- wrob [minimum rob amount] {upgraded} {skipcim}            
+    Travels universe robbing ports                          
+                                                            
+    [minimum rob amount]                                    
+       - Amount that must be on port before attempting rob  
+    [upgraded]                                              
+       - Will only visit upgraded ports                     
+    [skipcim]                                               
+       - Will skip running CIM port report before running   
+    [CLEAR_EMPTY]                                           
+       - Will delete the empty port file
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

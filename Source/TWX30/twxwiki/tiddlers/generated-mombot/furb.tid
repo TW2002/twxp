@@ -1,0 +1,41 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: furb
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-cashing kind-mode
+caption: furb
+
+! furb
+
+FURB - Buys and delivers a Ship to a Corpy to attack
+
+''Categories:'' Cashing
+''Kinds:'' Mode
+''Source matches:'' Mode (Cashing)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; furb &gt;&gt;&gt;&gt;
+   
+     FURB - Buys and delivers a Ship to a Corpy to attack  
+     - furb [ship number] {swap} {bwarp} {extra holds} {ship letter} {topp}
+     - [ship number]   - ship number that needs the furb
+     - [extra holds]   - extra holds to buy      - default is 33
+     - [ship letter]   - ship letter to purchase - default is H
+     - [swap]          - swap furb (only use with twarp ships)
+     - [bwarp]         - bwarp from furb planet
+     - [planet:#]      - planet # of furb planet
+     - [topp]          - attempts to get ore from top planet in sector if port low
+                     
+      CK Furb Mode (Mimicks CK Furb)
+     - furb ck {[norm hold] [fake hold] [norm letter] [fake letter]}
+     - [normal holds]  - extra holds to buy - Normal    - default is 33
+     - [fake holds]    - extra holds to buy - Fake      - default is 97
+     - [normal letter] - ship letter to buy - Normal    - default is H
+     - [fake letter]   - ship letter to buy - Fake      - default is O
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,28 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ldrop
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-reference
+caption: ldrop
+
+! ldrop
+
+LDROP - Active Limpet Mine, Planet Drop MODE
+
+''Categories:'' Reference
+''Kinds:'' Help Topic
+''Source matches:'' No direct command, mode, startup, or daemon match was found.
+
+!! Help
+<pre>
+LDROP - Active Limpet Mine, Planet Drop MODE
+
+     ldrop {delay} {direct} - Limpet Dropper
+
+     [delay]  - Delay before drop in milliseconds
+     [direct] - Use this option to try to drop directly onto an
+                active limpet
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

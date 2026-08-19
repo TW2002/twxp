@@ -1,0 +1,7 @@
+                     
+   
+                 <<<< fedmon >>>>
+   
+     Monitors public FedSpace movement messages.
+     Relays warps, docks, Terra/Sol movement, logins, exits,
+     weapon power-up, and fighter launch messages to subspace.

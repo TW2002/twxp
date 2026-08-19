@@ -1,0 +1,54 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ugrid
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-grid kind-mode
+caption: ugrid
+
+! ugrid
+
+UGRID - Ultimate-Turn Gridder. Visits all targeted sectors.
+
+''Categories:'' Grid
+''Kinds:'' Mode
+''Source matches:'' Mode (Grid)
+
+!! Help
+<pre>
+UGRID - Ultimate-Turn Gridder. Visits all targeted sectors. 
+
+ugrid [targeting] {figs} {armids} {limpets} {safety} {planets} 
+                  {warp} {refurb} {scrub} {avoid) {aggressive} {clear}
+  
+                                                            
+  [targeting]   = How target list is generated.  Must be either
+                  a filename to pull list from or &#x27;auto&#x27; which 
+                  will autogenerate list of targets.           
+                                                                  
+  [figs]        = Number of fighters to drop                   
+                      - Default: 1                             
+  [armids]      = Number of armid mines to drop                
+                      - Default: 3                             
+  [limps]       = Number of limpet mines to drop               
+                      - Default: 3                             
+  [safety]      = &#x27;ultra&#x27;, &#x27;safe&#x27;, and &#x27;none&#x27;                  
+           none = Will land adjacent to all non-figged sectors 
+           safe = Only will land to sectors with friendly limps
+          ultra = Like safe, but needs friendly armids too     
+                      - Default: ultra                         
+  [planets]     = &#x27;all&#x27;, &#x27;shielded&#x27;, &#x27;none&#x27;                    
+            all = Avoid all planets in target sectors          
+       shielded = Avoid only shielded planets in target sectors
+                      - Default: all                           
+  [warp]        = &#x27;twarp&#x27; or &#x27;bwarp&#x27;                           
+                      - Default: twarp                         
+  [norefurb]    = Turns off auto refurbing of mines at Stardock
+  [scrub]       = Will scrub at dock when catching a limpet    
+  [avoid]       = Avoid sectors with enemy limpets             
+  [aggressive]  = Won&#x27;t avoid big fighter groups               
+  [passive]     = Avoids hitting player fighters or mines.     
+  [clear]       = Clears internal list of avoided sectors.
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

@@ -1,0 +1,16 @@
+                     
+   
+                  <<<< beam >>>>
+   
+        Beam Data to Corp Mate
+        
+        beam [file/param] [filename.txt/param] [botname] 
+                                      {override} {delete}
+        File should be in mombot game directory
+        
+        {override} - copy over their existing file 
+        {delete}   - delete their existing params 
+        
+        >beam file ports.txt ham
+        
+        >beam param targets ham

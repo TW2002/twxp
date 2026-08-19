@@ -1,0 +1,40 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: ztm
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-data kind-mode
+caption: ztm
+
+! ztm
+
+Zero Turn Mapping
+
+''Categories:'' Data
+''Kinds:'' Mode
+''Source matches:'' Mode (Data)
+
+!! Help
+<pre>
+                     
+   
+                  &lt;&lt;&lt;&lt; ztm &gt;&gt;&gt;&gt;
+   
+        Zero Turn Mapping
+       
+        ztm {p:n} {s:n} {one} {noreport}
+              
+        Will resume from PASS and FROMSECTOR if cancelled 
+              
+        {p:n} - Start Pass - n from 0 to 6
+        {s:n} - Start Sector - n from 2 to MAXSECTORS
+        {one} - Plot to Terra instead of random
+        {noreport} - Will not report potenial Class 0s
+        
+        Examples:
+        &gt;ztm p:2 s:400   - Pass 2, sector 400
+        &gt;ztm one         - Plot to one
+        &gt;ztm p:0 s:2 one - Start Again, Plot to one
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

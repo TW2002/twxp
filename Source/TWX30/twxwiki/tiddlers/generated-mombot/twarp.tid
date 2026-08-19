@@ -1,0 +1,44 @@
+created: 20260421171030000
+modified: 20260421171030000
+title: twarp
+type: text/vnd.tiddlywiki
+tags: mombot topic cat-general kind-command
+caption: twarp
+
+! twarp
+
+twarp {sector:#} {"trader_name"} {p}
+
+''Categories:'' General
+''Kinds:'' Command
+''Source matches:'' Command (General)
+
+!! Help
+<pre>
+                     
+   
+                 &lt;&lt;&lt;&lt; twarp &gt;&gt;&gt;&gt;
+   
+     twarp {sector:#} {&quot;trader_name&quot;} {p} 
+           
+             transwarps to sector as quickly 
+             and safely as possible.   
+           
+         Options: 
+                {sector:#} - sector to twarp to 
+           {&quot;trader_name&quot;} - trader to twarp to
+                       {p} - attempt to port after twarp
+              
+         Examples:
+                 &gt;t 233    - normal twarp
+                 &gt;t 233 12 - twarp, then land on planet 12
+                 &gt;t 233 p  - twarp, then port
+              &gt;t planet 12 - twarp to last known 
+                             location of planet 12 and land
+                   &gt;t mind - twarp to a corp member with mind
+                             in their name
+          &gt;t &quot;mind dagger&quot; - twarp to corp member
+</pre>
+
+!! Maintenance
+This tiddler is generated from the live Mombot tree. Put your own long-form notes in separate guide tiddlers so future imports do not overwrite them.

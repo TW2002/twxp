@@ -1,0 +1,28 @@
+                     
+   
+               <<<< alienhunt >>>>
+   
+     alienhunt {corp} {sell} {refuel} {upgrade} {cannon} {return}
+               {passive} {buyfig} {buyshield} {patp} {home} 
+               {"ship_filter"} {"alien_filter"} 
+                
+     Hunts down aliens and captures their ships.  
+     Will automatically turn ships and planet personal.
+     Will use shields on planet as well.
+     Best to use with a defender ship.
+              
+     Options: 
+               {off} - Turns off script and sets planet and ship corporate.
+              {corp} - Doesnt turn everything personal.
+              {sell} - Sell everyship you capture at dock and deposit the cash.
+            {refuel} - Refuel planet if possible.
+           {upgrade} - Upgrade fuel port if possible.
+            {cannon} - Will reset cannon levels after hunting alien.
+            {return} - Return to starting sector after each hunt.
+           {passive} - Surround passively when hunting.
+            {buyfig} - Auto buy figs when low.  Withdraws from citadel.
+         {buyshield} - Auto buy shields when low.  Withdraws from citadel.
+              {patp} - When planet is less than 10% of fuel, run patp.
+              {home} - Move ships to starting sector instead of stardock.
+     {"ship_filter"} - move ships matching this home, stardock for the others
+     {"alien_filter"} - ignore aliens matching this text

@@ -1,0 +1,22 @@
+                     
+   
+                  <<<< gpm >>>>
+   
+     GPM (GoPop Moo) version 5.0 for TWX Proxy 3.0
+     Designed by Rider for Mayhem Corp in ICE 2019
+     Authors: Rider, Shadow and LoneStar    
+         
+     Walks the universe, creates (pops) planets and sells off product for cash.  
+         
+     Options: 
+              {corp} - Pop corporate planets instead of personal
+           {skipore} - Doesnt keep popping planets until ore is gone
+           {skiporg} - Doesnt keep popping planets until organics are gone
+           {skipequ} - Doesnt keep popping planets until equipment is gone
+             {upequ} - Upgrade equipment port if MCIC is good
+             {probe} - Buy and use ether probes to find ports while cashing
+          {noaliens} - Avoid sectors with aliens in them
+           {buyfigs} - Buy fighters at dock if we have extra cash after furbing
+        {buyshields} - Buy shields at dock if we have extra cash after furbing
+         {twarponly} - Only use twarp to move, dont move to adjacent sectors
+            {window} - Open status window for dashboard summary
