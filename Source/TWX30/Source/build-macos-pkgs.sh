@@ -677,6 +677,13 @@ for rid in "${RIDS[@]}"; do
   mkdir -p "$assistant_payload_dir" "$assistant_scripts"
   copy_tree_clean "${BIN_ROOT}/${rid}/twxdb-assistant" "$assistant_payload_dir"
   sign_macho_tree "$assistant_payload_dir"
+  python3 - "$REPO_ROOT/twxdb-assistant/scripts/build_portable.py" "$assistant_payload_dir" "$rid" <<'PY'
+import runpy
+import sys
+from pathlib import Path
+
+runpy.run_path(sys.argv[1])["write_manifest"](Path(sys.argv[2]), sys.argv[3])
+PY
   write_programdir_postinstall "${assistant_scripts}/postinstall" "$rid" "assistant"
   build_component_pkg "$assistant_root" "$assistant_scripts" "com.mayhem.twx30.assistant.${rid}" "${components_dir}/assistant.pkg"
 

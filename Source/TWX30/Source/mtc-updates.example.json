@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "releases": {
     "stable": {
-      "version": "1.0.0-beta5",
-      "displayVersion": "MTC 1.0 beta5",
+      "version": "1.1.0",
+      "displayVersion": "MTC 1.1",
       "notesUrl": "https://sourceforge.net/projects/twx30/files/",
       "assets": {
         "osx-arm64": {
@@ -29,13 +29,18 @@
         "win-x64": {
           "name": "twx30-win-x64.msi",
           "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
+          "packageType": "msi"
+        },
+        "win-arm64": {
+          "name": "twx30-win-arm64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-arm64.msi/download",
           "packageType": "msi"
         }
       }
     },
     "beta": {
-      "version": "1.0.0-beta5",
-      "displayVersion": "MTC 1.0 beta5",
+      "version": "1.1.0",
+      "displayVersion": "MTC 1.1",
       "notesUrl": "https://sourceforge.net/projects/twx30/files/",
       "assets": {
         "osx-arm64": {
@@ -62,12 +67,17 @@
           "name": "twx30-win-x64.msi",
           "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
           "packageType": "msi"
+        },
+        "win-arm64": {
+          "name": "twx30-win-arm64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-arm64.msi/download",
+          "packageType": "msi"
         }
       }
     },
     "dev": {
-      "version": "1.0.0-beta5",
-      "displayVersion": "MTC 1.0 beta5",
+      "version": "1.1.0",
+      "displayVersion": "MTC 1.1",
       "notesUrl": "https://sourceforge.net/projects/twx30/files/",
       "assets": {
         "osx-arm64": {
@@ -93,6 +103,11 @@
         "win-x64": {
           "name": "twx30-win-x64.msi",
           "url": "https://sourceforge.net/projects/twx30/files/twx30-win-x64.msi/download",
+          "packageType": "msi"
+        },
+        "win-arm64": {
+          "name": "twx30-win-arm64.msi",
+          "url": "https://sourceforge.net/projects/twx30/files/twx30-win-arm64.msi/download",
           "packageType": "msi"
         }
       }
