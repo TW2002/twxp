@@ -4,6 +4,8 @@ twxproxy 3.0.1 is the current C#/.NET rewrite of the classic TWX Proxy helper fo
 
 Current source version: `3.0.1`; MTC client version: `1.1.0` (build 0101).
 
+The canonical repository for ongoing TWX30 development is `TW2002/twxp`, under `Source/TWX30`. `mosleymr/TWX30` is a mirror.
+
 The active code lives under `Source/` and includes:
 
 - `TWXProxy`: shared Core runtime, compiler support, script execution, proxy logic, and database code
