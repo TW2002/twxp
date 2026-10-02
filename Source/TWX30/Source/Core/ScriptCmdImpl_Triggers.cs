@@ -40,6 +40,36 @@ namespace TWXProxy.Core
         }
 
         /// <summary>
+        /// CMD: SETSLINETRIGGER name label [text]
+        /// Creates a trigger that activates when text appears at the start of a complete line.
+        /// If text is empty, trigger activates on every line.
+        /// </summary>
+        private static CmdAction CmdSetSLineTrigger_Impl(object script, CmdParam[] parameters)
+        {
+            if (script is not Script scriptObj)
+                return CmdAction.None;
+
+            string name = parameters[0].Value;
+            string label = parameters[1].Value;
+            string value = parameters.Length > 2 ? parameters[2].Value : string.Empty;
+
+            GlobalModules.TriggerDebugLog($"[SETSLINETRIGGER] name='{name}', label='{label}', value='{value}'\n");
+
+            try
+            {
+                scriptObj.SetTextStartLineTrigger(name, label, value);
+                GlobalModules.TriggerDebugLog($"[SETSLINETRIGGER] Trigger registered successfully\n");
+            }
+            catch (Exception ex)
+            {
+                GlobalModules.TriggerDebugLog($"[SETSLINETRIGGER] ERROR: {ex.Message}\n");
+                throw new Exception($"Error setting text start line trigger: {ex.Message}");
+            }
+
+            return CmdAction.None;
+        }
+
+        /// <summary>
         /// CMD: SETTEXTOUTTRIGGER name label [text]
         /// Creates a trigger that activates when text is sent to the output stream.
         /// Used for intercepting outgoing text before display.
@@ -92,6 +122,35 @@ namespace TWXProxy.Core
             {
                 GlobalModules.TriggerDebugLog($"[SETTEXTTRIGGER] ERROR: {ex.Message}\n");
                 throw new Exception($"Error setting text trigger: {ex.Message}");
+            }
+
+            return CmdAction.None;
+        }
+
+        /// <summary>
+        /// CMD: SETSTRIGGER name label [text]
+        /// Creates a trigger that activates when text appears at the start of the input line.
+        /// </summary>
+        private static CmdAction CmdSetSTrigger_Impl(object script, CmdParam[] parameters)
+        {
+            if (script is not Script scriptObj)
+                return CmdAction.None;
+
+            string name = parameters[0].Value;
+            string label = parameters[1].Value;
+            string value = parameters.Length > 2 ? parameters[2].Value : string.Empty;
+
+            GlobalModules.TriggerDebugLog($"[SETSTRIGGER] name='{name}', label='{label}', value='{value}'\n");
+
+            try
+            {
+                scriptObj.SetTextStartTrigger(name, label, value);
+                GlobalModules.TriggerDebugLog($"[SETSTRIGGER] Trigger registered successfully\n");
+            }
+            catch (Exception ex)
+            {
+                GlobalModules.TriggerDebugLog($"[SETSTRIGGER] ERROR: {ex.Message}\n");
+                throw new Exception($"Error setting text start trigger: {ex.Message}");
             }
 
             return CmdAction.None;

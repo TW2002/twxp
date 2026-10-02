@@ -297,7 +297,7 @@ public partial class MainWindow
             DatabasePathForMode(gameName, newProfile.EmbeddedProxy));
         await SaveEmbeddedGameConfigAsync(gameName, config);
         TwEditCatalogService.ApplyEditDefaults(gameName, newProfile.EditId);
-        await ApplyLoadedGameConfigAsync(config, path, addToRecent: true);
+        await ApplyLoadedGameConfigAsync(config, path, addToRecent: true, allowReplaceConnectedTab: true);
         if (dlg.AutoSetupRequested)
             await ConfigureAndStartNativeMombotForAutoSetupAsync(newProfile);
     }
@@ -327,7 +327,7 @@ public partial class MainWindow
         if (files.Count == 0) return;
 
         string path = files[0].Path.LocalPath;
-        await OpenPathAsync(path, addToRecent: true);
+        await OpenPathAsync(path, addToRecent: true, allowReplaceConnectedTab: true);
     }
 
     /// <summary>File > Save / Save As: persist the current shared game JSON.</summary>
@@ -375,7 +375,7 @@ public partial class MainWindow
             _embeddedGameConfig);
         await SaveEmbeddedGameConfigAsync(gameName, config);
         TwEditCatalogService.ApplyEditDefaults(gameName, saveAsProfile.EditId);
-        await ApplyLoadedGameConfigAsync(config, path, addToRecent: true);
+        await ApplyLoadedGameConfigAsync(config, path, addToRecent: true, allowReplaceConnectedTab: true);
     }
 
     private async Task<string?> PickProxySavePathAsync(

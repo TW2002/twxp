@@ -147,12 +147,14 @@ public partial class MainWindow
             },
         };
 
+        StylePanelValueText(_valSector);
+        _sectorValueHighlight = BuildSectorHighlightHost(_valSector, new Thickness(4, 0));
         var sectorValueHost = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Right,
-            Children = { _sectorBustIndicator, _valSector },
+            Children = { _sectorBustIndicator, _sectorValueHighlight },
         };
         panel.Children.Add(BuildPanelRow("Sector", sectorValueHost, _valSector));
         panel.Children.Add(BuildPanelRow("Turns", _valTurns));

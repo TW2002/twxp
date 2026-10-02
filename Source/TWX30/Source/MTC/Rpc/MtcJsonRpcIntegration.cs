@@ -67,16 +67,66 @@ public partial class MainWindow
             GetRecentEventsAsync = GetMtcRpcRecentEventsAsync,
             QuerySectorAsync = QueryMtcRpcSectorAsync,
             ListScriptsAsync = ListMtcRpcScriptsAsync,
+            GetDebugSettingsAsync = GetMtcRpcDebugSettingsAsync,
+            SetDebugSettingsAsync = SetMtcRpcDebugSettingsAsync,
             SendCommandAsync = SendMtcRpcCommandAsync,
+            SendPromptCommandAsync = SendMtcRpcPromptCommandAsync,
             RunMombotCommandAsync = ExecuteGameAgentMombotCommandAsync,
             RunScriptAsync = RunMtcRpcScriptAsync,
             StopScriptAsync = StopMtcRpcScriptAsync,
             ApproveActionAsync = ApproveMtcRpcActionAsync,
         };
 
+    private Task<MtcRpcDebugSnapshot> GetMtcRpcDebugSettingsAsync(string? gameName)
+        => InvokeMtcRpcDebugUiAsync(gameName, () => Task.FromResult(
+            MtcRpcDebugSettings.Snapshot(GetMtcTabGameIdentity(ResolveCurrentMtcTabContext()!), GetCurrentDebugConfig())));
+
+    private Task<MtcRpcDebugSnapshot> SetMtcRpcDebugSettingsAsync(string gameName, IReadOnlyDictionary<string, bool> patch)
+        => InvokeMtcRpcDebugUiAsync(gameName, async () =>
+        {
+            if (_embeddedGameConfig == null)
+                throw new MtcRpcException(-32005, "No game configuration is loaded for debug settings.");
+
+            MtcRpcDebugSettings.Apply(GetCurrentDebugConfig(), patch);
+            ApplyDebugLoggingPreferences(applyHaggleDebugLogging: false);
+            MtcRpcDebugSettings.ApplyHagglePatch(patch,
+                AppPaths.GetPortHaggleDebugLogPath(), AppPaths.GetPlanetHaggleDebugLogPath());
+            await SaveCurrentDebugConfigAsync().ConfigureAwait(true);
+            return MtcRpcDebugSettings.Snapshot(gameName, GetCurrentDebugConfig());
+        });
+
+    private Task<T> InvokeMtcRpcDebugUiAsync<T>(string? gameName, Func<Task<T>> action)
+    {
+        var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        Dispatcher.UIThread.Post(async () =>
+        {
+            try
+            {
+                // The RPC listener is window-wide. Do not inherit the tab that
+                // happened to start its background accept loop.
+                var owner = string.IsNullOrWhiteSpace(gameName) ? ActiveMtcTab :
+                    _mtcTabs.SingleOrDefault(tab => string.Equals(GetMtcTabGameIdentity(tab),
+                        gameName, StringComparison.OrdinalIgnoreCase));
+                if (owner == null || string.IsNullOrWhiteSpace(GetMtcTabGameIdentity(owner)))
+                    throw new MtcRpcException(-32005, "The requested game tab is not open.");
+                completion.SetResult(await ExecuteInOptionalMtcTabSessionAsync(owner, action));
+            }
+            catch (Exception ex)
+            {
+                completion.SetException(ex);
+            }
+        });
+        return completion.Task;
+    }
+
     private Task<GameAgentContextSnapshot> BuildMtcRpcContextAsync(int recentEventCount)
         => InvokeMtcRpcUiAsync(() =>
         {
+            // Prompt consumers must not wait for the throttled dashboard refresh.
+            // Leave the pending update in place so its scheduled visual refresh runs.
+            var owner = ResolveCurrentMtcTabContext();
+            if (owner?.PendingShipStatus is { } pendingStatus)
+                ApplyShipStatusToTabState(owner, pendingStatus, notifyChanged: false, observeAgent: false);
             _gameAgent.SetGameName(GetGameAgentGameName());
             return Task.FromResult(_gameAgent.BuildContextSnapshot(
                 _state,

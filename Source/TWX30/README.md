@@ -1,8 +1,8 @@
-# twxproxy 3.0 beta5
+# twxproxy 3.0.1
 
-twxproxy 3.0 beta5 is the current C#/.NET rewrite of the classic TWX Proxy helper for Trade Wars 2002.
+twxproxy 3.0.1 is the current C#/.NET rewrite of the classic TWX Proxy helper for Trade Wars 2002.
 
-Current source version: `3.0 beta5`
+Current source version: `3.0.1`; MTC client version: `1.1.0` (build 0101).
 
 The active code lives under `Source/` and includes:
 

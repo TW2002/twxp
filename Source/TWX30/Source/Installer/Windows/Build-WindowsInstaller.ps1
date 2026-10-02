@@ -56,11 +56,19 @@ $twxpPayload = Join-Path $payloadRoot 'TWXP'
 $outputRoot = Join-Path $scriptRoot "artifacts\$Architecture"
 $rid = "win-$Architecture"
 $twxpRid = if ($Architecture -eq 'x64') { 'win-x64' } else { 'win-arm64' }
+$twxdbSource = Join-Path $repoRoot "bin\$rid\twxdb-assistant"
+$twxdbBuilder = Join-Path $repoRoot 'twxdb-assistant\scripts\build_portable.py'
 $wixProject = Join-Path $scriptRoot 'TWXWindowsInstaller.wixproj'
 $sourceControlBuildProperties = @(
     '-p:EnableSourceControlManagerQueries=false',
     '-p:ContinuousIntegrationBuild=false'
 )
+
+Write-Host "==> Building TWXDB Assistant payload ($rid)"
+& python $twxdbBuilder --rid $rid
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path $twxdbSource)) {
+    throw "TWXDB Assistant payload build failed for $rid."
+}
 
 Write-Host "==> Cleaning payload for $Architecture"
 Remove-Item $payloadRoot -Recurse -Force -ErrorAction SilentlyContinue
@@ -70,6 +78,11 @@ Write-Host "==> Staging Mombot scripts payload from $mombotReleaseSourcePath"
 $mombotPayload = Join-Path $scriptsPayload 'mombot'
 New-Item -ItemType Directory -Force -Path $mombotPayload | Out-Null
 Get-ChildItem -LiteralPath $mombotReleaseSourcePath -Force | Copy-Item -Destination $mombotPayload -Recurse -Force
+
+Write-Host "==> Staging TWXDB Assistant payload"
+$twxdbPayload = Join-Path $programDirPayload 'tools\twxdb-assistant'
+New-Item -ItemType Directory -Force -Path $twxdbPayload | Out-Null
+Get-ChildItem -LiteralPath $twxdbSource -Force | Copy-Item -Destination $twxdbPayload -Recurse -Force
 
 Write-Host "==> Publishing MTC ($rid) - single-file self-contained"
 Invoke-DotNetPublish -Arguments @(

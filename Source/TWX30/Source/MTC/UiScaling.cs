@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -11,7 +11,9 @@ public partial class MainWindow
 {
     private const double DefaultShellFontSize = 13.0;
     private const double DefaultClassicSidebarWidth = 200.0;
-    private readonly Dictionary<object, double> _uiBaseFontSizes = new();
+    private sealed record UiBaseFontSize(double Value);
+    // Scaling metadata must not keep discarded tab layouts alive.
+    private readonly ConditionalWeakTable<object, UiBaseFontSize> _uiBaseFontSizes = new();
 
     private double CurrentUiScale =>
         Math.Clamp(_terminalFontSize / TerminalControl.DefaultFontSize, 0.82, 1.55);
@@ -155,12 +157,12 @@ public partial class MainWindow
         if (currentSize <= 0 || double.IsNaN(currentSize) || double.IsInfinity(currentSize))
             return;
 
-        if (!_uiBaseFontSizes.TryGetValue(key, out double baseSize))
+        if (!_uiBaseFontSizes.TryGetValue(key, out UiBaseFontSize? baseline))
         {
-            baseSize = currentSize;
-            _uiBaseFontSizes[key] = baseSize;
+            baseline = new UiBaseFontSize(currentSize);
+            _uiBaseFontSizes.Add(key, baseline);
         }
 
-        apply(Math.Round(baseSize * scale, 1, MidpointRounding.AwayFromZero));
+        apply(Math.Round(baseline.Value * scale, 1, MidpointRounding.AwayFromZero));
     }
 }

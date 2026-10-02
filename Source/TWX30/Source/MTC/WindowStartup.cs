@@ -31,7 +31,9 @@ public partial class MainWindow
     private bool _suppressMainWindowPositionPersistence = true;
 
     // ── Constructor ────────────────────────────────────────────────────────
-    public MainWindow()
+    public MainWindow() : this(null) { }
+
+    internal MainWindow(AppPreferences? preferences)
     {
         Title          = BaseWindowTitle;
         Icon           = new WindowIcon(AssetLoader.Open(new Uri("avares://MTC/mtc2.png")));
@@ -59,7 +61,7 @@ public partial class MainWindow
 
         // Load persisted preferences (recent file list etc.) before the first shell build
         // so we don't compose the visual tree twice on startup.
-        _appPrefs = AppPreferences.Load();
+        _appPrefs = preferences ?? AppPreferences.Load();
         _terminalFontSize = GetNearestTerminalFontSize(_appPrefs.TerminalFontSize);
         _buffer.ScrollbackLines = AppPreferences.NormalizeScrollbackLines(_appPrefs.ScrollbackLines);
         MigrateMainWindowGeometryIfNeeded();
@@ -145,6 +147,7 @@ public partial class MainWindow
         _onlineAutoRefreshTimer.Start();
 
         Closing += OnMainWindowClosing;
+        InitializeSectorExplorationStatus();
         Opened += (_, _) =>
         {
             Dispatcher.UIThread.Post(
@@ -254,18 +257,39 @@ public partial class MainWindow
             .ToArray();
     }
 
-    private static bool IsMtcTabConnectedToServer(MtcTabPrototype tab)
+    private bool IsMtcTabConnectedToServer(MtcTabPrototype tab)
     {
         if (tab.GameInstance?.IsConnected == true)
-            return true;
-
-        if (tab.Telnet.IsConnected)
             return true;
 
         if (Volatile.Read(ref tab.EmbeddedServerConnectedState) == 1)
             return true;
 
-        return tab.State.Connected;
+        if (IsManagedRemoteProxyGame(tab.State))
+            return IsManagedRemoteProxyTabConnectedToGameServer(tab);
+
+        return tab.Telnet.IsConnected || tab.State.Connected;
+    }
+
+    private static bool IsManagedRemoteProxyTabConnectedToGameServer(MtcTabPrototype tab)
+    {
+        if (!tab.Telnet.IsConnected)
+            return false;
+
+        string currentLine = NormalizeMombotPromptComparisonValue(Core.ScriptRef.GetCurrentLine(tab.RuntimeContext));
+        if (string.IsNullOrWhiteSpace(currentLine))
+            return false;
+
+        if (currentLine.StartsWith("Main>", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (currentLine.Contains("Disconnected from server", StringComparison.OrdinalIgnoreCase) ||
+            currentLine.Contains("Type $c to reconnect", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private static string BuildCloseConnectedGamesMessage(IReadOnlyList<MtcTabPrototype> connectedTabs)
@@ -376,7 +400,7 @@ public partial class MainWindow
 
         double width = Bounds.Width > 0 ? Bounds.Width : Width;
         double height = Bounds.Height > 0 ? Bounds.Height : Height;
-        _appPrefs.SetMainWindowSize(width, height);
+        _appPrefs.SetMainWindowSize(Math.Max(MinWidth, width - _scriptWindowAddedWidth), height);
     }
 
     private void OnMainWindowPositionChanged()

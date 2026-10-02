@@ -423,6 +423,7 @@ public partial class MainWindow
         var composer = new Grid
         {
             Margin = deckSkin ? new Thickness(8, 0, 8, 8) : new Thickness(6, 0, 6, 6),
+            ClipToBounds = true,
         };
         composer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         composer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -438,15 +439,24 @@ public partial class MainWindow
         composer.Children.Add(composeBox);
         composer.Children.Add(sendButton);
 
-        var logHost = new Grid();
+        var logHost = new Grid
+        {
+            ClipToBounds = true,
+            MinHeight = 0,
+            Margin = deckSkin ? new Thickness(0, 0, 0, 6) : new Thickness(0, 0, 0, 4),
+        };
         logHost.Children.Add(fedScrollViewer);
         logHost.Children.Add(subScrollViewer);
         logHost.Children.Add(privateScrollViewer);
         logHost.Children.Add(eventsScrollViewer);
 
-        var body = new Grid();
+        var body = new Grid
+        {
+            ClipToBounds = true,
+            RowSpacing = 0,
+        };
         body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        body.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        body.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 0 });
         body.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         Grid.SetRow(header, 0);
         Grid.SetRow(logHost, 1);
@@ -459,6 +469,7 @@ public partial class MainWindow
         {
             IsVisible = false,
             MinHeight = CommWindowMinHeight,
+            ClipToBounds = true,
             Background = deckSkin ? HudFrame : HudFrame,
             BorderBrush = deckSkin ? HudInnerEdge : HudInnerEdge,
             BorderThickness = new Thickness(deckSkin ? 1.5 : 1.5),
@@ -481,9 +492,11 @@ public partial class MainWindow
             _deckCommSubspaceScrollViewer = subScrollViewer;
             _deckCommPrivateScrollViewer = privateScrollViewer;
             _deckCommEventsScrollViewer = eventsScrollViewer;
+            _deckCommComposerGrid = composer;
             _deckCommComposeTextBox = composeBox;
             _deckCommPrivateTargetTextBox = targetBox;
             _deckCommPrivateTargetLabel = targetLabel;
+            _deckCommSendButton = sendButton;
         }
         else
         {
@@ -500,9 +513,11 @@ public partial class MainWindow
             _commSubspaceScrollViewer = subScrollViewer;
             _commPrivateScrollViewer = privateScrollViewer;
             _commEventsScrollViewer = eventsScrollViewer;
+            _commComposerGrid = composer;
             _commComposeTextBox = composeBox;
             _commPrivateTargetTextBox = targetBox;
             _commPrivateTargetLabel = targetLabel;
+            _commSendButton = sendButton;
         }
 
         SyncSelectedCommTab();
@@ -545,12 +560,16 @@ public partial class MainWindow
             Foreground = HudText,
             FontFamily = new FontFamily("Cascadia Code, Menlo, Consolas, Courier New, monospace"),
             FontSize = deckSkin ? 12 : 13,
-            Margin = new Thickness(deckSkin ? 8 : 8, 0, deckSkin ? 8 : 8, 0),
+            Margin = new Thickness(deckSkin ? 8 : 8, 0, deckSkin ? 8 : 8, deckSkin ? 6 : 4),
         };
 
         var viewer = new ScrollViewer
         {
             Background = Brushes.Black,
+            ClipToBounds = true,
+            MinHeight = 0,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             Content = textBlock,
@@ -680,7 +699,7 @@ public partial class MainWindow
         if (!PrepareMtcTabVisualRefresh())
             return;
 
-        _statusBar.IsVisible = _appPrefs.ShowBottomBar;
+        _statusBar.IsVisible = ShowMainStatusBar;
     }
 
     private void RefreshCommWindowUi()
@@ -805,25 +824,39 @@ public partial class MainWindow
             return;
 
         RefreshCommComposerState(
+            _commComposerGrid,
             _commPrivateTargetLabel,
             _commPrivateTargetTextBox,
             _commComposeTextBox,
+            _commSendButton,
             deckSkin: false);
         RefreshCommComposerState(
+            _deckCommComposerGrid,
             _deckCommPrivateTargetLabel,
             _deckCommPrivateTargetTextBox,
             _deckCommComposeTextBox,
+            _deckCommSendButton,
             deckSkin: true);
     }
 
     private void RefreshCommComposerState(
+        Grid? composerGrid,
         TextBlock? targetLabel,
         TextBox? targetBox,
         TextBox? composeBox,
+        Button? sendButton,
         bool deckSkin)
     {
         bool isPrivate = _commSelectedChannel == Core.CommMessageChannel.Private;
         bool isEvent = _commSelectedChannel == Core.CommMessageChannel.Event;
+
+        if (composerGrid != null)
+            composerGrid.IsVisible = !isEvent;
+
+        if (isEvent && composeBox?.IsFocused == true)
+            Focus();
+        if (isEvent && targetBox?.IsFocused == true)
+            Focus();
 
         if (targetLabel != null)
             targetLabel.IsVisible = isPrivate;
@@ -844,12 +877,14 @@ public partial class MainWindow
             {
                 Core.CommMessageChannel.Subspace => "Send subspace message",
                 Core.CommMessageChannel.Private => "Send private message",
-                Core.CommMessageChannel.Event => "Server events are read-only",
                 _ => "Send fedcomm message",
             };
-            composeBox.IsEnabled = !isEvent;
-            composeBox.Foreground = isEvent ? HudMuted : HudText;
+            composeBox.IsEnabled = true;
+            composeBox.Foreground = HudText;
         }
+
+        if (sendButton != null)
+            sendButton.IsEnabled = !isEvent;
     }
 
     private async Task SendCommWindowMessageAsync(bool deckSkin)
@@ -877,7 +912,7 @@ public partial class MainWindow
         if (string.IsNullOrEmpty(payload))
             return;
 
-        _commEntries.Add(new CommEntry(_commSelectedChannel, string.Empty, message, IsLocal: true));
+        _commEntries.Add(new CommEntry(_commSelectedChannel, string.Empty, message, IsLocal: true, DateTime.Now));
         if (_commEntries.Count > MaxCommEntries)
             _commEntries.RemoveAt(0);
         RefreshCommWindowText();
@@ -930,7 +965,7 @@ public partial class MainWindow
         var owner = ResolveCurrentMtcTabContext();
         PostToMtcTabSession(owner, () =>
         {
-            _commEntries.Add(new CommEntry(info.Channel, info.Sender, info.MessageText, IsLocal: false));
+            _commEntries.Add(new CommEntry(info.Channel, info.Sender, info.MessageText, IsLocal: false, DateTime.Now));
             if (_commEntries.Count > MaxCommEntries)
                 _commEntries.RemoveAt(0);
             if (info.Channel == Core.CommMessageChannel.Private && !string.IsNullOrWhiteSpace(info.Sender))
@@ -952,7 +987,7 @@ public partial class MainWindow
         var owner = ResolveCurrentMtcTabContext();
         PostToMtcTabSession(owner, () =>
         {
-            _commEntries.Add(new CommEntry(Core.CommMessageChannel.Event, string.Empty, eventText, IsLocal: false));
+            _commEntries.Add(new CommEntry(Core.CommMessageChannel.Event, string.Empty, eventText, IsLocal: false, DateTime.Now));
             if (_commEntries.Count > MaxCommEntries)
                 _commEntries.RemoveAt(0);
             if (!PrepareMtcTabVisualRefresh())
@@ -1054,6 +1089,14 @@ public partial class MainWindow
                 });
             }
 
+            if (channel == Core.CommMessageChannel.Event)
+            {
+                textBlock.Inlines?.Add(new Run(FormatCommEventTimestamp(entry.ReceivedAt))
+                {
+                    Foreground = HudMuted,
+                });
+            }
+
             textBlock.Inlines?.Add(new Run(entry.Message)
             {
                 Foreground = Brushes.White,
@@ -1062,6 +1105,9 @@ public partial class MainWindow
 
         scrollViewer?.ScrollToEnd();
     }
+
+    private static string FormatCommEventTimestamp(DateTime receivedAt)
+        => receivedAt.ToString("MMM d h:mmtt ", CultureInfo.InvariantCulture);
     // ── Ship status update ─────────────────────────────────────────────────────
 
     /// <summary>
@@ -2140,11 +2186,13 @@ public partial class MainWindow
         string traderName = string.IsNullOrEmpty(_state.TraderName) ? "-" : _state.TraderName;
         string turnsDisplay = GetTurnsDisplayText();
         bool currentSectorBusted = IsCurrentSectorBusted();
+        bool currentSectorMsl = IsCurrentSectorMsl();
         _shipInfoHeaderText.Text = GetShipInfoPanelTitle();
         _valName.Text      = traderName;
         _deckValName.Text  = traderName;
         _valSector.Text    = _state.Sector.ToString();
         _deckValSector.Text = _valSector.Text;
+        ApplyCurrentSectorMslStyle(currentSectorMsl);
         _sectorBustIndicator.IsVisible = currentSectorBusted;
         _valTurns.Text     = turnsDisplay;
         _deckValTurns.Text = _valTurns.Text;
@@ -2238,7 +2286,7 @@ public partial class MainWindow
             _deckHudShipSubtitle.Text = $"{captainText}  //  {corpText}";
 
         RequestStatusBarRefresh();
-        _tacticalMap?.InvalidateVisual();
+        RefreshCommandDeckTacticalContext();
     }
 
     private bool IsCurrentSectorBusted()
@@ -2249,6 +2297,45 @@ public partial class MainWindow
         string value = _sessionDb.GetSectorVar(_state.Sector, "BUSTED");
         return !string.IsNullOrWhiteSpace(value) &&
             !string.Equals(value, "0", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsCurrentSectorMsl()
+    {
+        if (_sessionDb == null || _state.Sector <= 0)
+            return false;
+
+        string value = _sessionDb.GetSectorVar(_state.Sector, "MSLSEC");
+        return !string.IsNullOrWhiteSpace(value) &&
+            !string.Equals(value, "0", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ApplyCurrentSectorMslStyle(bool isMsl)
+    {
+        ApplySectorHighlight(_sectorValueHighlight, _valSector, isMsl, HudText);
+        ApplySectorHighlight(_deckValSectorHighlight, _deckValSector, isMsl, HudText);
+        ApplySectorHighlight(_deckHudHeaderSectorHighlight, _deckHudHeaderSector, isMsl, HudAccentHot);
+    }
+
+    private static Border BuildSectorHighlightHost(TextBlock value, Thickness padding)
+    {
+        value.MinWidth = 0;
+        return new Border
+        {
+            Background = Brushes.Transparent,
+            BorderBrush = Brushes.Transparent,
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(3),
+            Padding = padding,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Child = value,
+        };
+    }
+
+    private static void ApplySectorHighlight(Border host, TextBlock value, bool isHighlighted, IBrush normalForeground)
+    {
+        host.Background = isHighlighted ? HudMslSectorBg : Brushes.Transparent;
+        host.BorderBrush = isHighlighted ? HudMslSectorBorder : Brushes.Transparent;
+        value.Foreground = isHighlighted ? Brushes.White : normalForeground;
     }
 
     private string GetTurnsDisplayText()
@@ -2432,6 +2519,16 @@ public partial class MainWindow
         }
 
         var activeTab = ActiveMtcTab;
+        RefreshSectorExplorationStatus();
+        _openTwMapStatusMenuItem.Header = activeTab is { OpenTwServerDetected: true }
+            ? $"OpenTW map: {activeTab.OpenTwMapSyncStatus}"
+            : "OpenTW map: not detected";
+        _openTwMapRefreshMenuItem.IsEnabled = activeTab is
+        {
+            OpenTwServerDetected: true,
+            OpenTwCommandReady: true
+        } && !activeTab.OpenTwMapProbe.Unsupported &&
+            Interlocked.CompareExchange(ref activeTab.OpenTwMapSyncRunning, 0, 0) == 0;
         Core.TwxRuntimeContext? displayContext =
             activeTab?.RuntimeContext ??
             ActiveMtcRuntimeContext;
@@ -2548,7 +2645,11 @@ public partial class MainWindow
             : null;
         string? botModeText = GetNativeBotModeStatusText();
         string? activeScriptText = GetActiveScriptStatusText();
-        _statusText.Text = string.Join("  ", new[] { botModeText, activeScriptText, haggleText, conn }.Where(static part => !string.IsNullOrWhiteSpace(part)));
+        string? mapSyncText = ActiveMtcTab is { OpenTwServerDetected: true } mapTab &&
+            !string.IsNullOrWhiteSpace(mapTab.OpenTwMapSyncStatus)
+            ? $"Map: {mapTab.OpenTwMapSyncStatus}"
+            : null;
+        _statusText.Text = string.Join("  ", new[] { botModeText, activeScriptText, haggleText, mapSyncText, conn }.Where(static part => !string.IsNullOrWhiteSpace(part)));
         _statusText.IsVisible = !string.IsNullOrWhiteSpace(_statusText.Text);
         SyncRedAlertFromMombotVar();
         UpdateTerminalLiveSelector();

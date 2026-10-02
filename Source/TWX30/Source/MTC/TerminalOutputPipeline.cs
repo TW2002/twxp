@@ -36,9 +36,10 @@ public partial class MainWindow
     private const int ActiveDisplayDrainByteLimit = 2 * 1024 * 1024;
     private const double ActiveDisplayDrainMilliseconds = 14;
     private const int CatchUpDisplayDrainThreshold = 512;
+    private const long CatchUpDisplayDrainByteThreshold = 256 * 1024;
     private const int CatchUpDisplayDrainChunkLimit = 4096;
     private const int CatchUpDisplayDrainByteLimit = 4 * 1024 * 1024;
-    private const double CatchUpDisplayDrainMilliseconds = 16;
+    private const double CatchUpDisplayDrainMilliseconds = 8;
     private const int InactiveVisualSnapshotMaxBytes = 512 * 1024;
 
     private MtcTabPrototype? ResolveTerminalOwner(MtcTabPrototype? owner)
@@ -314,14 +315,19 @@ public partial class MainWindow
             ? GetDisplayDrainThrottleDelay(drainOwner)
             : delay;
 
+        bool catchUp = IsDisplayDrainCatchUp(drainOwner);
+        DispatcherPriority priority = catchUp
+            ? DispatcherPriority.Background
+            : DispatcherPriority.Render;
+
         if (effectiveDelay <= TimeSpan.Zero)
         {
-            long postedTicks = RecordMtcUiPostStart(drainOwner, "display.drain", DispatcherPriority.Render);
-            Dispatcher.UIThread.Post(() => RunScheduledDisplayDrain(drainOwner, "display.drain", postedTicks), DispatcherPriority.Render);
+            long postedTicks = RecordMtcUiPostStart(drainOwner, "display.drain", priority);
+            Dispatcher.UIThread.Post(() => RunScheduledDisplayDrain(drainOwner, "display.drain", postedTicks), priority);
             return;
         }
 
-        DispatcherTimer timer = drainOwner.DisplayDrainTimer ??= new DispatcherTimer(DispatcherPriority.Render);
+        DispatcherTimer timer = drainOwner.DisplayDrainTimer ??= new DispatcherTimer(DispatcherPriority.Background);
         if (!drainOwner.DisplayDrainTimerWired)
         {
             timer.Tick += (_, _) =>
@@ -332,7 +338,7 @@ public partial class MainWindow
             drainOwner.DisplayDrainTimerWired = true;
         }
 
-        RecordMtcUiPost(drainOwner, "display.drain.delayed", DispatcherPriority.Render);
+        RecordMtcUiPost(drainOwner, "display.drain.delayed", DispatcherPriority.Background);
         timer.Stop();
         timer.Interval = effectiveDelay;
         timer.Start();
@@ -345,7 +351,7 @@ public partial class MainWindow
             return TimeSpan.Zero;
 
         TimeSpan elapsed = Stopwatch.GetElapsedTime(lastTicks);
-        TimeSpan minInterval = Volatile.Read(ref owner.PendingDisplayChunkCount) >= CatchUpDisplayDrainThreshold
+        TimeSpan minInterval = IsDisplayDrainCatchUp(owner)
             ? TerminalCatchUpDisplayDrainMinInterval
             : TerminalActiveDisplayDrainMinInterval;
 
@@ -414,7 +420,7 @@ public partial class MainWindow
         int queuedAtStart = Volatile.Read(ref ownerTab.PendingDisplayChunkCount);
         RecordMtcPerf(ownerTab, "display.drain.start");
         RecordMtcPerf(ownerTab, "display.drain.queued_start", queuedAtStart);
-        bool catchUp = queuedAtStart >= CatchUpDisplayDrainThreshold;
+        bool catchUp = IsDisplayDrainCatchUp(ownerTab);
         if (catchUp)
             RecordMtcPerf(ownerTab, "display.drain.catchup");
 
@@ -432,7 +438,7 @@ public partial class MainWindow
 
         if (!ownerTab.PendingDisplayChunks.IsEmpty)
         {
-            var nextDelay = Volatile.Read(ref ownerTab.PendingDisplayChunkCount) >= CatchUpDisplayDrainThreshold
+            var nextDelay = IsDisplayDrainCatchUp(ownerTab)
                 ? TerminalCatchUpDisplayDrainDelay
                 : TerminalActiveDisplayDrainDelay;
             ScheduleDisplayDrain(ownerTab, nextDelay);
@@ -441,6 +447,10 @@ public partial class MainWindow
 
         FlushDeferredPanelRefreshes();
     }
+
+    private static bool IsDisplayDrainCatchUp(MtcTabPrototype owner) =>
+        Volatile.Read(ref owner.PendingDisplayChunkCount) >= CatchUpDisplayDrainThreshold ||
+        Volatile.Read(ref owner.PendingDisplayByteCount) >= CatchUpDisplayDrainByteThreshold;
 
     private void RenderPendingDisplaySnapshotOnActivation(MtcTabPrototype owner)
     {

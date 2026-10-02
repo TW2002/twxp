@@ -40,7 +40,9 @@ namespace TWXC
 
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length == 0 || Array.Exists(args, arg =>
+                    string.Equals(arg, "--help", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(arg, "-h", StringComparison.OrdinalIgnoreCase)))
             {
                 // Display program description
                 Console.WriteLine($"TWXC - TWX Proxy command line script compilation utility {Constants.DisplayVersion}");
@@ -48,7 +50,9 @@ namespace TWXC
                 Console.WriteLine("       (c) Matt Mosley (\"reaper\") 2026");
                 Console.WriteLine();
                 Console.WriteLine("Usage: TWXC script [descfile]");
+                Console.WriteLine("   or: TWXC --help");
                 Console.WriteLine("   or: TWXC -compat script [descfile]");
+                Console.WriteLine("   or: TWXC --target-version 7 script [descfile]");
                 Console.WriteLine("   or: TWXC --precompile script [outfile]");
                 Console.WriteLine("   or: TWXC --trim-includes script [descfile]");
                 Console.WriteLine("   or: TWXC --prune-bytecode script [descfile]");
@@ -61,7 +65,13 @@ namespace TWXC
                 Console.WriteLine("             Description files have no effect on the operation of the script,");
                 Console.WriteLine("             but may provide useful information to users.");
                 Console.WriteLine("[outfile]  - Optional output filename for --precompile. Defaults to .inc.");
+                Console.WriteLine("--help / -h - Show this option list without compiling anything.");
                 Console.WriteLine("-compat / --compat - Compile with legacy non-pruned bytecode for parity/debugging.");
+                Console.WriteLine("--target-version 7|8 - CTS output format (default: 8). Version 7 converts SETSTRIGGER to");
+                Console.WriteLine("                      SETTEXTTRIGGER and SETSLINETRIGGER to SETTEXTLINETRIGGER.");
+                Console.WriteLine("                      Converted triggers match anywhere in the line, not just its start.");
+                Console.WriteLine("                      SWAITON expands to SETSTRIGGER and follows the same downgrade.");
+                Console.WriteLine("                      This targets older TWX30, not all historical TWX27 extensions.");
                 Console.WriteLine("--precompile - Produce a Pascal-compatible encrypted .inc include file.");
                 Console.WriteLine("--trim-includes - Experimentally compile only reachable labels from includes.");
                 Console.WriteLine("--prune-bytecode - Force post-compile unreachable-bytecode pruning (default behavior).");
@@ -85,9 +95,26 @@ namespace TWXC
             bool pruneBytecode = true;
             bool strictIncludes = false;
             bool pruneIncludeBranches = false;
+            int targetVersion = ScriptConstants.CompiledScriptVersion;
+            bool targetSpecified = false;
             var positionalArgs = new System.Collections.Generic.List<string>();
-            foreach (string arg in args)
+            for (int argIndex = 0; argIndex < args.Length; argIndex++)
             {
+                string arg = args[argIndex];
+                if (string.Equals(arg, "--target-version", StringComparison.OrdinalIgnoreCase)
+                    || arg.StartsWith("--target-version=", StringComparison.OrdinalIgnoreCase))
+                {
+                    string value = arg.Contains('=') ? arg.Substring(arg.IndexOf('=') + 1)
+                        : ++argIndex < args.Length ? args[argIndex] : string.Empty;
+                    if (targetSpecified || !int.TryParse(value, out targetVersion) || (targetVersion != 7 && targetVersion != 8))
+                    {
+                        Console.WriteLine("Specify --target-version once with either 7 or 8.");
+                        Environment.ExitCode = 1;
+                        return;
+                    }
+                    targetSpecified = true;
+                    continue;
+                }
                 if (string.Equals(arg, "--precompile", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(arg, "--encrypt-include", StringComparison.OrdinalIgnoreCase))
                 {
@@ -137,6 +164,12 @@ namespace TWXC
 
             if (precompileMode)
             {
+                if (targetSpecified)
+                {
+                    Console.WriteLine("--target-version applies to .cts output, not --precompile .inc files.");
+                    Environment.ExitCode = 1;
+                    return;
+                }
                 if (positionalArgs.Count < 1 || positionalArgs.Count > 2)
                 {
                     Console.WriteLine("Usage: TWXC --precompile script [outfile]");
@@ -184,6 +217,7 @@ namespace TWXC
             string fileOut = StripFileExtension(positionalArgs[0]);
             
             Console.WriteLine($"Compiling script '{fileOut}' ({(compatMode ? "compat" : "default-pruned")}) ...");
+            Console.WriteLine($"Target CTS version: {targetVersion}");
 
             try
             {
@@ -205,10 +239,16 @@ namespace TWXC
 
                 try
                 {
-                    scriptCmp.WriteToFile(tempFile);
+                    scriptCmp.WriteToFile(tempFile, targetVersion);
                     File.Move(tempFile, ctsFile, overwrite: true);
+                    if (targetVersion == 7)
+                    {
+                        int converted = scriptCmp.LastOutputConvertedTriggerCount;
+                        if (converted > 0)
+                            Console.WriteLine($"Warning: converted {converted} start-of-line trigger(s) to SETTEXTTRIGGER/SETTEXTLINETRIGGER for CTS 7; they now match anywhere in the line.");
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
                     try
                     {
@@ -219,7 +259,10 @@ namespace TWXC
                     {
                     }
 
-                    throw;
+                    Console.WriteLine(ex.Message);
+                    Environment.ExitCode = 1;
+                    scriptCmp.Dispose();
+                    return;
                 }
 
                 Console.WriteLine("Compilation successful.");

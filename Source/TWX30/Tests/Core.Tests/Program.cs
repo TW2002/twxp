@@ -2,8 +2,10 @@ using TWXProxy.Core;
 
 var tests = new (string Name, Action Body)[]
 {
+    ("CTS version-7 targeting preserves bytecode and downgrades start triggers", CtsTargetVersionTests.Run),
     ("Destroyed star port notice clears PORT.EXISTS in current sector", DestroyedStarPortNoticeClearsPortExists),
     ("Destroyed port display clears PORT.EXISTS and keeps dead marker", DestroyedPortDisplayClearsPortExists),
+    ("Port CIM revives an all-zero construction-site record", PortCimRevivesAllZeroConstructionSite),
     ("Setting BUSTED stamps current bust date", SettingBustedStampsCurrentBustDate),
     ("AutoRecorder sudden bust records dated bust", AutoRecorderSuddenBustRecordsDatedBust),
     ("AutoRecorder fake bust phrase records fake bust", AutoRecorderFakeBustPhraseRecordsFakeBust),
@@ -12,27 +14,53 @@ var tests = new (string Name, Action Body)[]
     ("Ship status parser publishes latest slash sector and fighters", ShipStatusParserPublishesLatestSlashSectorAndFighters),
     ("Script constants use latest slash ship status", ScriptConstantsUseLatestSlashShipStatus),
     ("AutoRecorder prompt restores current sector after holo sector display", AutoRecorderPromptRestoresCurrentSectorAfterHoloSectorDisplay),
+    ("AutoRecorder records generic alien trader labels", AutoRecorderRecordsGenericAlienTraderLabels),
     ("Disabled debug categories do not construct interpolated messages", DisabledDebugCategoriesSkipInterpolation),
     ("Disabled debug categories allocate no interpolated messages", DisabledDebugCategoriesAllocateNothing),
     ("Comma-formatted TWGS values are numeric", CommaFormattedTwxValuesAreNumeric),
     ("Nested script loads preserve configured script root", NestedScriptLoadsPreserveConfiguredScriptRoot),
     ("Delay-triggered halt removes script and emits stop event", DelayTriggeredHaltRemovesScriptAndEmitsStopEvent),
+    ("Stopped prepared callback cannot execute or rearm triggers", () => ScriptLifetimeTests.StopDuringCallback(true)),
+    ("Stopped legacy callback cannot execute or rearm triggers", () => ScriptLifetimeTests.StopDuringCallback(false)),
+    ("Concurrent stops preserve unrelated prepared script and its timer", () => ScriptLifetimeTests.ConcurrentStopsPreserveOtherScript(true)),
+    ("Concurrent stops preserve unrelated legacy script and its timer", () => ScriptLifetimeTests.ConcurrentStopsPreserveOtherScript(false)),
     ("Prompt probe rearms line trigger after partial prompt handler", PromptProbeRearmsLineTriggerAfterPartialPromptHandler),
     ("Prompt probe fires only once across partial and complete views of one line", PromptProbeFiresOnlyOncePerLine),
     ("Distinct prompt probes can fire on one unterminated line", DistinctPromptProbesFireOnOneLine),
+    ("SETSTRIGGER only fires at text start", SetSTriggerOnlyFiresAtTextStart),
+    ("SWAITON macro and decompiler preserve version-8 start matching", SWaitOnTests.CompileAndRoundTrip),
+    ("SWAITON matches line starts in prepared VM", () => SWaitOnTests.Execute(true)),
+    ("SWAITON matches line starts in legacy VM", () => SWaitOnTests.Execute(false)),
+    ("SETSLINETRIGGER only fires at line start", SetSLineTriggerOnlyFiresAtLineStart),
+    ("Program events serialize behind active script callbacks", ScriptSuspensionTests.SerializesProgramEvents),
+    ("GameInstance dispatches Connection Lost without host mediation", ScriptSuspensionTests.GameInstanceDispatchesConnectionLost),
     ("GETSECTOR refreshes flat warp array fields", GetSectorRefreshesFlatWarpArrayFields),
     ("GETSECTOR refreshes namespaced self target warp fields", GetSectorRefreshesNamespacedSelfTargetWarpFields),
     ("GETSECTOR namespaced record warp fields stay stable", GetSectorNamespacedRecordWarpFieldsStayStable),
     ("SECTOR.WARPS uses current dynamic index after GETSECTOR", SectorWarpsUsesCurrentDynamicIndexAfterGetSector),
     ("AutoRecorder records warps above UInt16 range", AutoRecorderRecordsWarpsAboveUInt16Range),
+    ("AutoRecorder marks successful ether probe headers explored immediately", EtherProbeExplorationTests.SuccessfulHeaders),
+    ("AutoRecorder preserves exploration when an ether probe is destroyed", EtherProbeExplorationTests.DestroyedProbe),
+    ("AutoRecorder limp scan avoids full-universe sector parameter writes", AutoRecorderLimpScanAvoidsFullUniverseSectorParameterWrites),
+    ("AutoRecorder armid scan avoids full-universe sector parameter writes", AutoRecorderArmidScanAvoidsFullUniverseSectorParameterWrites),
+    ("AutoRecorder fighter scan avoids full-universe sector parameter writes", AutoRecorderFighterScanAvoidsFullUniverseSectorParameterWrites),
+    ("AutoRecorder scan shorthand stores expanded counts", AutoRecorderScanShorthandStoresExpandedCounts),
+    ("AutoRecorder corporate planet scan reconciles planet locations", AutoRecorderCorporatePlanetScanReconcilesPlanetLocations),
+    ("AutoRecorder personal planet scan reconciles planet locations", AutoRecorderPersonalPlanetScanReconcilesPlanetLocations),
+    ("AutoRecorder records planet construction status", AutoRecorderRecordsPlanetConstructionStatus),
+    ("AutoRecorder records and persists planet colonists", AutoRecorderRecordsAndPersistsPlanetColonists),
     ("Stale database handle cannot overwrite reset database", StaleDatabaseHandleCannotOverwriteResetDatabase),
-    ("Sector parameter scans count as watchdog activity", SectorParameterScansCountAsWatchdogActivity),
-    ("High-volume local loops do not trip watchdog", HighVolumeLocalLoopsDoNotTripWatchdog),
+    ("Sector parameter scans can run high-volume local work", SectorParameterScansCanRunHighVolumeLocalWork),
+    ("High-volume local loops can complete", HighVolumeLocalLoopsCanComplete),
     ("Top-level return terminates without a script error", TopLevelReturnTerminatesWithoutScriptError),
     ("Game file lock inspection reports stale PID", GameFileLockInspectionReportsStalePid),
     ("Game file lock stale removal deletes lock", GameFileLockStaleRemovalDeletesLock),
-    ("Game idle keepalive uses ANSI status response bytes", GameIdleKeepaliveUsesAnsiStatusResponseBytes),
+    ("Game idle keepalive uses only Telnet control bytes", GameIdleKeepaliveUsesTelnetControlBytes),
     ("Game idle keepalive reaches server socket", GameIdleKeepaliveReachesServerSocket),
+    ("Game idle keepalive runs after queued server send", GameIdleKeepaliveRunsAfterQueuedServerSend),
+    ("Bot response follows submitted Enter on immediate send", () => ServerSendOrderingTests.Run("immediate")),
+    ("Bot response follows submitted Enter on queued send", () => ServerSendOrderingTests.Run("queued")),
+    ("Bot response follows submitted Enter on fast send", () => ServerSendOrderingTests.Run("fast")),
     ("Proxy accepts external clients by default", ProxyAcceptsExternalClientsByDefault),
     ("New clients do not enter streaming mode automatically", NewClientsDoNotEnterStreamingModeAutomatically),
     ("Variable reset clears pending saves and stale backup", VariableResetClearsPendingSavesAndStaleBackup),
@@ -67,7 +95,7 @@ static void DestroyedStarPortNoticeClearsPortExists()
     AssertDestroyedPort(fixture.Database, 3554);
 }
 
-static void GameIdleKeepaliveUsesAnsiStatusResponseBytes()
+static void GameIdleKeepaliveUsesTelnetControlBytes()
 {
     if (GameInstance.DefaultGameIdleKeepaliveIntervalSeconds != 30)
         throw new InvalidOperationException($"Expected default keepalive interval 30 seconds, got {GameInstance.DefaultGameIdleKeepaliveIntervalSeconds}.");
@@ -78,11 +106,11 @@ static void GameIdleKeepaliveUsesAnsiStatusResponseBytes()
     if (field?.GetValue(null) is not byte[] bytes)
         throw new InvalidOperationException("Could not inspect GameIdleKeepaliveBytes.");
 
-    byte[] expected = [(byte)'\x1B', (byte)'[', (byte)'0', (byte)'n'];
+    byte[] expected = [0xFF, 0xF1];
     if (!bytes.SequenceEqual(expected))
     {
         string actual = string.Join(" ", bytes.Select(b => b.ToString("X2")));
-        throw new InvalidOperationException($"Expected ANSI status response bytes 1B 5B 30 6E, got {actual}.");
+        throw new InvalidOperationException($"Expected Telnet NOP bytes FF F1 with no game input, got {actual}.");
     }
 }
 
@@ -93,7 +121,7 @@ static void GameIdleKeepaliveReachesServerSocket()
 
 static async Task RunGameIdleKeepaliveReachesServerSocketAsync()
 {
-    byte[] expected = [(byte)'\x1B', (byte)'[', (byte)'0', (byte)'n'];
+    byte[] expected = [0xFF, 0xF1];
     using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
     listener.Start();
     int port = ((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
@@ -139,7 +167,79 @@ static async Task RunGameIdleKeepaliveReachesServerSocketAsync()
     }
 
     string actual = string.Join(" ", received.Select(b => b.ToString("X2")));
-    throw new InvalidOperationException($"Expected keepalive sequence 1B 5B 30 6E to reach server socket, got {actual}.");
+    throw new InvalidOperationException($"Expected keepalive sequence FF F1 to reach server socket, got {actual}.");
+}
+
+static void GameIdleKeepaliveRunsAfterQueuedServerSend()
+{
+    RunGameIdleKeepaliveRunsAfterQueuedServerSendAsync().GetAwaiter().GetResult();
+}
+
+static async Task RunGameIdleKeepaliveRunsAfterQueuedServerSendAsync()
+{
+    byte[] expected = [0xFF, 0xF1];
+    using var listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+    listener.Start();
+    int port = ((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
+
+    using var game = new GameInstance("keepalive-pump-test", "127.0.0.1", port, 0)
+    {
+        GameIdleKeepaliveIntervalSeconds = 5,
+    };
+    using var clientOutput = new MemoryStream();
+    using var clientInput = new BlockingReadStream();
+    game.ConnectDirectClient(clientOutput, clientInput);
+
+    Task<System.Net.Sockets.TcpClient> acceptTask = listener.AcceptTcpClientAsync();
+    await game.ConnectToServerAsync();
+
+    using System.Net.Sockets.TcpClient serverClient = await acceptTask;
+    await using System.Net.Sockets.NetworkStream serverStream = serverClient.GetStream();
+
+    var lockField = typeof(GameInstance).GetField(
+        "_serverSendLock",
+        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+    if (lockField?.GetValue(game) is not SemaphoreSlim serverSendLock)
+        throw new InvalidOperationException("Could not inspect server send lock.");
+
+    serverSendLock.Wait();
+    try
+    {
+        await game.SendToServerAsync([0x41]);
+    }
+    finally
+    {
+        serverSendLock.Release();
+    }
+
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(9));
+    var received = new List<byte>();
+    byte[] buffer = new byte[64];
+
+    while (!cts.IsCancellationRequested)
+    {
+        int read;
+        try
+        {
+            read = await serverStream.ReadAsync(buffer, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            break;
+        }
+
+        if (read <= 0)
+            break;
+
+        for (int i = 0; i < read; i++)
+            received.Add(buffer[i]);
+
+        if (ContainsSequence(received, expected))
+            return;
+    }
+
+    string actual = string.Join(" ", received.Select(b => b.ToString("X2")));
+    throw new InvalidOperationException($"Expected keepalive after queued send pump, got {actual}.");
 }
 
 static bool ContainsSequence(IReadOnlyList<byte> data, IReadOnlyList<byte> sequence)
@@ -250,6 +350,64 @@ static void SeedLivePort(ModDatabase database, int sectorNumber)
         Dead = false,
         Update = DateTime.Now.AddDays(-1),
     };
+    database.SaveSector(sector);
+}
+
+static void PortCimRevivesAllZeroConstructionSite()
+{
+    using var fixture = DatabaseFixture.Create();
+    SectorData sector = fixture.Database.GetSector(401)
+        ?? throw new InvalidOperationException("Sector 401 was not created.");
+    sector.SectorPort = new Port
+    {
+        Dead = true,
+        Update = DateTime.Now.AddDays(-1),
+    };
+    fixture.Database.SaveSector(sector);
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine(":");
+    recorder.RecordLine("  401      0   0% -    0   0% -    0   0% ");
+
+    Port port = fixture.Database.GetSector(401)?.SectorPort
+        ?? throw new InvalidOperationException("Expected CIM to create a live port record.");
+    if (port.Dead)
+        throw new InvalidOperationException("Expected CIM observation to clear the stale destroyed-port marker.");
+    if (port.Name != "???" || port.ClassIndex != 3)
+        throw new InvalidOperationException($"Expected class-3 CIM port, got name='{port.Name}' class={port.ClassIndex}.");
+    if (port.ProductAmount.Values.Any(amount => amount != 0) ||
+        port.ProductPercent.Values.Any(percent => percent != 0))
+        throw new InvalidOperationException("Expected all-zero construction-site amounts and percentages to persist.");
+}
+
+static void SeedFriendlyLimpet(ModDatabase database, int sectorNumber, int quantity)
+{
+    SectorData sector = database.GetSector(sectorNumber)
+        ?? throw new InvalidOperationException($"Sector {sectorNumber} was not created.");
+
+    sector.MinesLimpet.Quantity = quantity;
+    sector.MinesLimpet.Owner = "belong to your Corp";
+    database.SaveSector(sector);
+}
+
+static void SeedFriendlyArmid(ModDatabase database, int sectorNumber, int quantity)
+{
+    SectorData sector = database.GetSector(sectorNumber)
+        ?? throw new InvalidOperationException($"Sector {sectorNumber} was not created.");
+
+    sector.MinesArmid.Quantity = quantity;
+    sector.MinesArmid.Owner = "belong to your Corp";
+    database.SaveSector(sector);
+}
+
+static void SeedFriendlyFighter(ModDatabase database, int sectorNumber, int quantity, FighterType type)
+{
+    SectorData sector = database.GetSector(sectorNumber)
+        ?? throw new InvalidOperationException($"Sector {sectorNumber} was not created.");
+
+    sector.Fighters.Quantity = quantity;
+    sector.Fighters.Owner = "belong to your Corp";
+    sector.Fighters.FigType = type;
     database.SaveSector(sector);
 }
 
@@ -440,6 +598,35 @@ static void AutoRecorderPromptRestoresCurrentSectorAfterHoloSectorDisplay()
 
     if (ScriptRef.GetCurrentSector() != 8822)
         throw new InvalidOperationException($"Expected CURRENTSECTOR source 8822, got {ScriptRef.GetCurrentSector()}.");
+}
+
+static void AutoRecorderRecordsGenericAlienTraderLabels()
+{
+    using var fixture = DatabaseFixture.Create(sectors: 20000);
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Sector  : 15116 in uncharted space.");
+    recorder.RecordLine("SubterFu: Chief Warrant Officer Puqu Ciomaq, w/ 37,601 ftrs,");
+    recorder.RecordLine("          in Oveih Vefichum (Unknown Subterfuge Enterra)");
+    recorder.RecordLine("Warps to Sector(s) :  4072 - 6716 - 8717 - 19031");
+
+    SectorData sector = fixture.Database.GetSector(15116)
+        ?? throw new InvalidOperationException("Expected sector 15116 to exist.");
+
+    if (sector.Traders.Count != 1)
+        throw new InvalidOperationException($"Expected 1 trader for generic alien label, got {sector.Traders.Count}.");
+
+    Trader trader = sector.Traders[0];
+    if (trader.DisplayLabel != "SubterFu")
+        throw new InvalidOperationException($"Expected label SubterFu, got '{trader.DisplayLabel}'.");
+    if (trader.Name != "Chief Warrant Officer Puqu Ciomaq")
+        throw new InvalidOperationException($"Expected alien trader name, got '{trader.Name}'.");
+    if (trader.Fighters != 37601)
+        throw new InvalidOperationException($"Expected 37601 fighters, got {trader.Fighters}.");
+    if (trader.ShipName != "Oveih Vefichum")
+        throw new InvalidOperationException($"Expected ship name Oveih Vefichum, got '{trader.ShipName}'.");
+    if (trader.ShipType != "Unknown Subterfuge Enterra")
+        throw new InvalidOperationException($"Expected ship type Unknown Subterfuge Enterra, got '{trader.ShipType}'.");
 }
 
 static void FeedLoggedSlashStatusToParser(ShipInfoParser parser, int sector, int fighters)
@@ -801,6 +988,500 @@ static void AutoRecorderRecordsWarpsAboveUInt16Range()
         throw new InvalidOperationException($"Expected warps [{string.Join(",", expected)}], got [{string.Join(",", warps)}].");
 }
 
+static void AutoRecorderLimpScanAvoidsFullUniverseSectorParameterWrites()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    SeedFriendlyLimpet(fixture.Database, 1200, 3);
+    SeedFriendlyLimpet(fixture.Database, 1300, 7);
+    fixture.Database.SetSectorVar(1200, "LIMPSEC", "1");
+    fixture.Database.SetSectorVar(1300, "LIMPSEC", "1");
+
+    long before = fixture.Database.ChangeStamp;
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Deployed  Limpet  Scan");
+    recorder.RecordLine("  1200  3  Corp");
+    recorder.RecordLine("3 Total");
+
+    long delta = fixture.Database.ChangeStamp - before;
+    if (delta > 4)
+        throw new InvalidOperationException($"Expected limp scan reconciliation to touch only changed sectors, change stamp moved by {delta}.");
+
+    if (fixture.Database.GetSectorVar(1200, "LIMPSEC") != "1")
+        throw new InvalidOperationException("Expected scanned friendly limpet marker to remain.");
+
+    string clearedMarker = fixture.Database.GetSectorVar(1300, "LIMPSEC");
+    if (!string.IsNullOrEmpty(clearedMarker) && clearedMarker != "0")
+        throw new InvalidOperationException($"Expected missing friendly limpet marker to be false, got '{clearedMarker}'.");
+
+    SectorData cleared = fixture.Database.GetSector(1300)
+        ?? throw new InvalidOperationException("Expected sector 1300 to exist.");
+    if (cleared.MinesLimpet.Quantity != 0 || cleared.MinesLimpet.Owner.Length != 0)
+        throw new InvalidOperationException("Expected missing friendly limpets to be cleared from sector data.");
+}
+
+static void AutoRecorderArmidScanAvoidsFullUniverseSectorParameterWrites()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    SeedFriendlyArmid(fixture.Database, 1200, 3);
+    SeedFriendlyArmid(fixture.Database, 1300, 7);
+    fixture.Database.SetSectorVar(1200, "MINESEC", "1");
+    fixture.Database.SetSectorVar(1300, "MINESEC", "1");
+
+    long before = fixture.Database.ChangeStamp;
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Deployed  Mine  Scan");
+    recorder.RecordLine("  1200  3  Corp");
+    recorder.RecordLine("3 Total");
+
+    long delta = fixture.Database.ChangeStamp - before;
+    if (delta > 4)
+        throw new InvalidOperationException($"Expected armid scan reconciliation to touch only changed sectors, change stamp moved by {delta}.");
+
+    if (fixture.Database.GetSectorVar(1200, "MINESEC") != "1")
+        throw new InvalidOperationException("Expected scanned friendly armid marker to remain.");
+
+    string clearedMarker = fixture.Database.GetSectorVar(1300, "MINESEC");
+    if (!string.IsNullOrEmpty(clearedMarker) && clearedMarker != "0")
+        throw new InvalidOperationException($"Expected missing friendly armid marker to be false, got '{clearedMarker}'.");
+
+    SectorData cleared = fixture.Database.GetSector(1300)
+        ?? throw new InvalidOperationException("Expected sector 1300 to exist.");
+    if (cleared.MinesArmid.Quantity != 0 || cleared.MinesArmid.Owner.Length != 0)
+        throw new InvalidOperationException("Expected missing friendly armids to be cleared from sector data.");
+}
+
+static void AutoRecorderFighterScanAvoidsFullUniverseSectorParameterWrites()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    SeedFriendlyFighter(fixture.Database, 1200, 3, FighterType.Defensive);
+    SeedFriendlyFighter(fixture.Database, 1300, 7, FighterType.Toll);
+    fixture.Database.SetSectorVar(1200, "FIGSEC", "1");
+    fixture.Database.SetSectorVar(1300, "FIGSEC", "1");
+    fixture.Database.SetSectorVar(2, "FIG_COUNT", "2");
+
+    long before = fixture.Database.ChangeStamp;
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Deployed  Fighter  Scan");
+    recorder.RecordLine("  1200  3  Corp  Defensive");
+    recorder.RecordLine("3 Total");
+
+    long delta = fixture.Database.ChangeStamp - before;
+    if (delta > 4)
+        throw new InvalidOperationException($"Expected fighter scan reconciliation to touch only changed sectors, change stamp moved by {delta}.");
+
+    if (fixture.Database.GetSectorVar(1200, "FIGSEC") != "1")
+        throw new InvalidOperationException("Expected scanned friendly fighter marker to remain.");
+
+    string clearedMarker = fixture.Database.GetSectorVar(1300, "FIGSEC");
+    if (!string.IsNullOrEmpty(clearedMarker) && clearedMarker != "0")
+        throw new InvalidOperationException($"Expected missing friendly fighter marker to be false, got '{clearedMarker}'.");
+
+    if (fixture.Database.GetSectorVar(2, "FIG_COUNT") != "1")
+        throw new InvalidOperationException($"Expected FIG_COUNT=1, got '{fixture.Database.GetSectorVar(2, "FIG_COUNT")}'.");
+
+    SectorData cleared = fixture.Database.GetSector(1300)
+        ?? throw new InvalidOperationException("Expected sector 1300 to exist.");
+    if (cleared.Fighters.Quantity != 0 ||
+        cleared.Fighters.Owner.Length != 0 ||
+        cleared.Fighters.FigType != FighterType.None)
+    {
+        throw new InvalidOperationException("Expected missing friendly fighters to be cleared from sector data.");
+    }
+}
+
+static void AutoRecorderScanShorthandStoresExpandedCounts()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    SeedFriendlyFighter(fixture.Database, 1200, 125000, FighterType.Defensive);
+    SeedFriendlyFighter(fixture.Database, 1300, 750000, FighterType.Defensive);
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Deployed  Fighter  Scan");
+    recorder.RecordLine("  1200  250T  Corp  Defensive");
+    recorder.RecordLine("  1300  1M  Corp  Defensive");
+    recorder.RecordLine("1.25M Total");
+
+    AssertFighterCount(fixture.Database, 1200, 250000);
+    AssertFighterCount(fixture.Database, 1300, 1000000);
+
+    recorder.RecordLine("Deployed  Mine  Scan");
+    recorder.RecordLine("  2200  250T  Corp");
+    recorder.RecordLine("  2300  1M  Corp");
+    recorder.RecordLine("1.25M Total");
+
+    AssertMineCount(fixture.Database, 2200, true, 250000);
+    AssertMineCount(fixture.Database, 2300, true, 1000000);
+
+    recorder.RecordLine("Deployed  Limpet  Scan");
+    recorder.RecordLine("  3200  250T  Corp");
+    recorder.RecordLine("250T Total");
+
+    AssertMineCount(fixture.Database, 3200, false, 250000);
+}
+
+static void AutoRecorderCorporatePlanetScanReconcilesPlanetLocations()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+    using var game = new GameInstance("corp-owner-test", "127.0.0.1", 0, 0);
+    game.SeedShipStatus(new ShipStatus { Corp = 2, TraderName = "R Madam" });
+    using var activeGame = new ActiveGameInstanceScope(game);
+
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 688,
+        Name = ".",
+        LastSector = 999,
+        Owner = "belong to your Corp",
+        Level = 5,
+        Fighters = 1,
+        FuelOre = 1,
+        Organics = 1,
+        Equipment = 1
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 999,
+        Name = "Stale Corporate",
+        LastSector = 1234,
+        Owner = "belong to your Corp",
+        Level = 6
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 1001,
+        Name = "Bracket Corp",
+        LastSector = 2468,
+        Owner = "[2]",
+        Level = 6
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 1002,
+        Name = "Other Corp",
+        LastSector = 1357,
+        Owner = "[3]",
+        Level = 6
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 1000,
+        Name = "Personal",
+        LastSector = 4321,
+        Owner = "yours",
+        Level = 3
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = -42,
+        Name = ".",
+        LastSector = 46,
+        ObservedOrder = 2,
+        Owner = "belong to your Corp",
+        Shielded = true
+    });
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("                           Corporate Planet Scan                              ");
+    recorder.RecordLine(" Sector  Planet Name    Ore  Org  Equ   Ore   Org   Equ   Fighters    Citadel");
+    recorder.RecordLine(" Shields Population    -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits");
+    recorder.RecordLine("==============================================================================");
+    recorder.RecordLine("    46   #688  .                        Class E, Striking Distanc     Level 6");
+    recorder.RecordLine("   200   (12M)          12T    0    0  925T     0     0        20T          0");
+    recorder.RecordLine("  6457   #1126 Tilting At Windmills     Class E, Striking Distanc  No Citadel");
+    recorder.RecordLine("   ---   (0)              0    0    0   25T     0     0          0        ---");
+    recorder.RecordLine("======   ============  ==== ==== ==== ===== ===== ===== ========== ==========");
+    recorder.RecordLine("  206T   (129B)         44M  52M  31M  354M  200M  137M       112M         6B");
+
+    Planet planet688 = fixture.Database.GetPlanet(688)
+        ?? throw new InvalidOperationException("Expected corporate scan to keep planet 688.");
+    if (planet688.LastSector != 46 ||
+        planet688.Level != 6 ||
+        planet688.Shielded != true ||
+        planet688.Fighters != 20000 ||
+        planet688.FuelOre != 925000 ||
+        planet688.Organics != 0 ||
+        planet688.Equipment != 0)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet 688 to update from TL scan, got sector={planet688.LastSector} level={planet688.Level} shielded={planet688.Shielded} fighters={planet688.Fighters} ore={planet688.FuelOre} org={planet688.Organics} equ={planet688.Equipment}.");
+    }
+
+    Planet planet1126 = fixture.Database.GetPlanet(1126)
+        ?? throw new InvalidOperationException("Expected corporate scan to add planet 1126.");
+    if (planet1126.LastSector != 6457 ||
+        planet1126.Name != "Tilting At Windmills" ||
+        planet1126.Level != 0 ||
+        planet1126.Shielded != false ||
+        planet1126.Fighters != 0)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet 1126 to update from TL scan, got sector={planet1126.LastSector} name='{planet1126.Name}' level={planet1126.Level} shielded={planet1126.Shielded} fighters={planet1126.Fighters}.");
+    }
+
+    Planet staleCorporate = fixture.Database.GetPlanet(999)
+        ?? throw new InvalidOperationException("Expected stale corporate planet record to remain.");
+    if (staleCorporate.LastSector != 0)
+        throw new InvalidOperationException($"Expected stale corporate planet sector to clear, got {staleCorporate.LastSector}.");
+
+    Planet bracketCorporate = fixture.Database.GetPlanet(1001)
+        ?? throw new InvalidOperationException("Expected current-corp bracket planet record to remain.");
+    if (bracketCorporate.LastSector != 0)
+        throw new InvalidOperationException($"Expected stale [2] corporate planet sector to clear, got {bracketCorporate.LastSector}.");
+
+    Planet otherCorp = fixture.Database.GetPlanet(1002)
+        ?? throw new InvalidOperationException("Expected other-corp bracket planet record to remain.");
+    if (otherCorp.LastSector != 1357)
+        throw new InvalidOperationException($"Expected [3] planet sector to remain, got {otherCorp.LastSector}.");
+
+    Planet personal = fixture.Database.GetPlanet(1000)
+        ?? throw new InvalidOperationException("Expected personal planet record to remain.");
+    if (personal.LastSector != 4321)
+        throw new InvalidOperationException($"Expected personal planet sector to remain, got {personal.LastSector}.");
+
+    if (fixture.Database.GetPlanet(-42) != null)
+        throw new InvalidOperationException("Expected stale provisional corporate planet sighting to be removed.");
+
+    SectorData sector46 = fixture.Database.GetSector(46)
+        ?? throw new InvalidOperationException("Expected sector 46 to exist.");
+    if (sector46.PlanetNames.Count != 1)
+        throw new InvalidOperationException($"Expected TL scan to replace sector 46 planet sightings with one planet, got {sector46.PlanetNames.Count}.");
+
+    long afterFirstScan = fixture.Database.ChangeStamp;
+    recorder.RecordLine("Corporate Planet Scan");
+    recorder.RecordLine(" Sector  Planet Name    Ore  Org  Equ   Ore   Org   Equ   Fighters    Citadel");
+    recorder.RecordLine("==============================================================================");
+    recorder.RecordLine("    46   #688  .                        Class E, Striking Distanc     Level 6");
+    recorder.RecordLine("   200   (12M)          12T    0    0  925T     0     0        20T          0");
+    recorder.RecordLine("  6457   #1126 Tilting At Windmills     Class E, Striking Distanc  No Citadel");
+    recorder.RecordLine("   ---   (0)              0    0    0   25T     0     0          0        ---");
+    recorder.RecordLine("======   ============  ==== ==== ==== ===== ===== ===== ========== ==========");
+
+    if (fixture.Database.ChangeStamp != afterFirstScan)
+        throw new InvalidOperationException("Expected identical corporate planet scan to avoid database churn.");
+}
+
+static void AutoRecorderPersonalPlanetScanReconcilesPlanetLocations()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+    using var game = new GameInstance("personal-owner-test", "127.0.0.1", 0, 0);
+    game.SeedShipStatus(new ShipStatus { Corp = 2, TraderName = "R Madam" });
+    using var activeGame = new ActiveGameInstanceScope(game);
+
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 354,
+        Name = "Old Personal",
+        LastSector = 999,
+        Owner = "yours",
+        Level = 1
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 777,
+        Name = "Stale Personal",
+        LastSector = 1234,
+        Owner = "R Madam",
+        Level = 5
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = 888,
+        Name = "Corp Planet",
+        LastSector = 4321,
+        Owner = "belong to your Corp",
+        Level = 6
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = -101,
+        Name = ".",
+        LastSector = 10266,
+        ObservedOrder = 2,
+        Owner = "yours",
+        Shielded = true
+    });
+    fixture.Database.SavePlanet(new Planet
+    {
+        Id = -102,
+        Name = ".",
+        LastSector = 10266,
+        ObservedOrder = 3,
+        Owner = "Ferrengi [inferred]",
+        Shielded = true
+    });
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("                           Personal Planet Scan                              ");
+    recorder.RecordLine(" Sector  Planet Name    Ore  Org  Equ   Ore   Org   Equ   Fighters    Citadel");
+    recorder.RecordLine(" Shields Population    -=Productions=-  -=-=-=-=-On Hands-=-=-=-=-    Credits");
+    recorder.RecordLine("==============================================================================");
+    recorder.RecordLine(" 10266   #354  M()M Pimp 44704          Class M, Final Frontier    No Citadel");
+    recorder.RecordLine("   ---   (0)              0    0    0    1T     0     0          0          0");
+    recorder.RecordLine(" 10266   #454  M()M Pimp 82875          Class E, Striking Distanc     Level 2");
+    recorder.RecordLine("   ---   (0)              0    0    0   35T     0     0        18T          0");
+    recorder.RecordLine("======   ============  ==== ==== ==== ===== ===== ===== ========== ==========");
+
+    Planet planet354 = fixture.Database.GetPlanet(354)
+        ?? throw new InvalidOperationException("Expected personal scan to keep planet 354.");
+    if (planet354.LastSector != 10266 ||
+        planet354.Owner != "yours" ||
+        planet354.Level != 0 ||
+        planet354.FuelOre != 1000 ||
+        planet354.Fighters != 0)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet 354 to update from CY scan, got sector={planet354.LastSector} owner='{planet354.Owner}' level={planet354.Level} ore={planet354.FuelOre} fighters={planet354.Fighters}.");
+    }
+
+    Planet planet454 = fixture.Database.GetPlanet(454)
+        ?? throw new InvalidOperationException("Expected personal scan to add planet 454.");
+    if (planet454.LastSector != 10266 ||
+        planet454.Owner != "yours" ||
+        planet454.Level != 2 ||
+        planet454.Fighters != 18000)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet 454 to update from CY scan, got sector={planet454.LastSector} owner='{planet454.Owner}' level={planet454.Level} fighters={planet454.Fighters}.");
+    }
+
+    Planet stalePersonal = fixture.Database.GetPlanet(777)
+        ?? throw new InvalidOperationException("Expected stale personal planet record to remain.");
+    if (stalePersonal.LastSector != 0)
+        throw new InvalidOperationException($"Expected stale personal planet sector to clear, got {stalePersonal.LastSector}.");
+
+    Planet corpPlanet = fixture.Database.GetPlanet(888)
+        ?? throw new InvalidOperationException("Expected corp planet record to remain.");
+    if (corpPlanet.LastSector != 4321)
+        throw new InvalidOperationException($"Expected corp planet sector to remain after CY, got {corpPlanet.LastSector}.");
+
+    if (fixture.Database.GetPlanet(-101) != null)
+        throw new InvalidOperationException("Expected stale provisional personal planet sighting to be removed.");
+
+    Planet otherProvisional = fixture.Database.GetPlanet(-102)
+        ?? throw new InvalidOperationException("Expected non-personal provisional planet sighting to remain.");
+    if (otherProvisional.LastSector != 10266)
+        throw new InvalidOperationException($"Expected non-personal provisional sector to remain, got {otherProvisional.LastSector}.");
+}
+
+static void AutoRecorderRecordsPlanetConstructionStatus()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Planet #1671 in sector 29929: .");
+    recorder.RecordLine("Planet has a level 5 Citadel, treasury contains 0 credits.");
+    recorder.RecordLine("Planetary Interdictor Generator under construction, 1 day(s) till complete.");
+
+    Planet planet = fixture.Database.GetPlanet(1671)
+        ?? throw new InvalidOperationException("Expected planet 1671 to be recorded.");
+    if (!planet.ConstructionStatusKnown ||
+        planet.ConstructionType != "Planetary Interdictor Generator" ||
+        planet.ConstructionDaysRemaining != 1)
+    {
+        throw new InvalidOperationException(
+            $"Expected PIG construction to persist in memory, got known={planet.ConstructionStatusKnown} type='{planet.ConstructionType}' days={planet.ConstructionDaysRemaining}.");
+    }
+
+    recorder.RecordLine("Thanks to the miracles of modern technology, your");
+    recorder.RecordLine("Planetary Defense Shielding will be completed in 2 days!");
+
+    planet = fixture.Database.GetPlanet(1671)
+        ?? throw new InvalidOperationException("Expected planet 1671 to remain recorded.");
+    if (!planet.ConstructionStatusKnown ||
+        planet.ConstructionType != "Planetary Defense Shielding" ||
+        planet.ConstructionDaysRemaining != 2)
+    {
+        throw new InvalidOperationException(
+            $"Expected wrapped construction confirmation to update the planet, got known={planet.ConstructionStatusKnown} type='{planet.ConstructionType}' days={planet.ConstructionDaysRemaining}.");
+    }
+
+    fixture.Database.SaveDatabase();
+
+    using var reopened = new ModDatabase();
+    reopened.OpenDatabase(fixture.DatabasePath);
+    Planet saved = reopened.GetPlanet(1671)
+        ?? throw new InvalidOperationException("Expected planet 1671 after reopening the XDB.");
+    if (!saved.ConstructionStatusKnown ||
+        saved.ConstructionType != "Planetary Defense Shielding" ||
+        saved.ConstructionDaysRemaining != 2)
+    {
+        throw new InvalidOperationException(
+            $"Expected construction status to survive XDB reload, got known={saved.ConstructionStatusKnown} type='{saved.ConstructionType}' days={saved.ConstructionDaysRemaining}.");
+    }
+}
+
+static void AutoRecorderRecordsAndPersistsPlanetColonists()
+{
+    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+    using var fixture = DatabaseFixture.Create(sectors: 100000);
+
+    var recorder = new AutoRecorder();
+    recorder.RecordLine("Planet #6310 in sector 18003: Zippity Doo Dah");
+    recorder.RecordLine("Fuel Ore     599,975          1    599,975  7,425,155          0  7,500,000");
+    recorder.RecordLine("Organics     120,032          1    120,032  1,363,000          0  2,000,000");
+    recorder.RecordLine("Equipment    273,027          1    273,027  5,853,000          0  2,000,000");
+
+    Planet planet = fixture.Database.GetPlanet(6310)
+        ?? throw new InvalidOperationException("Expected planet 6310 to be recorded.");
+    if (planet.FuelColonists != 599975 ||
+        planet.OrganicsColonists != 120032 ||
+        planet.EquipmentColonists != 273027 ||
+        planet.FuelOre != 7425155 ||
+        planet.Organics != 1363000 ||
+        planet.Equipment != 5853000)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet inventory and colonists to be recorded, got fuel={planet.FuelOre}/{planet.FuelColonists} org={planet.Organics}/{planet.OrganicsColonists} equ={planet.Equipment}/{planet.EquipmentColonists}.");
+    }
+
+    fixture.Database.SaveDatabase();
+
+    using var reopened = new ModDatabase();
+    reopened.OpenDatabase(fixture.DatabasePath);
+    Planet saved = reopened.GetPlanet(6310)
+        ?? throw new InvalidOperationException("Expected planet 6310 after reopening the XDB.");
+    if (saved.FuelColonists != 599975 ||
+        saved.OrganicsColonists != 120032 ||
+        saved.EquipmentColonists != 273027)
+    {
+        throw new InvalidOperationException(
+            $"Expected planet colonists to survive XDB reload, got fuel={saved.FuelColonists} org={saved.OrganicsColonists} equ={saved.EquipmentColonists}.");
+    }
+}
+
+static void AssertFighterCount(ModDatabase database, int sectorNumber, int expected)
+{
+    SectorData sector = database.GetSector(sectorNumber)
+        ?? throw new InvalidOperationException($"Sector {sectorNumber} was not created.");
+
+    if (sector.Fighters.Quantity != expected)
+        throw new InvalidOperationException($"Expected sector {sectorNumber} fighters={expected}, got {sector.Fighters.Quantity}.");
+}
+
+static void AssertMineCount(ModDatabase database, int sectorNumber, bool armid, int expected)
+{
+    SectorData sector = database.GetSector(sectorNumber)
+        ?? throw new InvalidOperationException($"Sector {sectorNumber} was not created.");
+
+    int actual = armid ? sector.MinesArmid.Quantity : sector.MinesLimpet.Quantity;
+    if (actual != expected)
+        throw new InvalidOperationException($"Expected sector {sectorNumber} {(armid ? "armids" : "limpets")}={expected}, got {actual}.");
+}
+
 static void GetSectorRefreshesFlatWarpArrayFields()
 {
     Directory.SetCurrentDirectory(AppContext.BaseDirectory);
@@ -1135,11 +1816,112 @@ halt
     }
 }
 
-static void SectorParameterScansCountAsWatchdogActivity()
+static void SetSTriggerOnlyFiresAtTextStart()
+{
+    string directory = Path.Combine(Path.GetTempPath(), "twx-start-trigger-tests", Guid.NewGuid().ToString("N"));
+    Directory.CreateDirectory(directory);
+    string resultPath = Path.Combine(directory, "marker.txt");
+    string scriptPath = Path.Combine(directory, "start-trigger.ts");
+    File.WriteAllText(scriptPath, $$"""
+setvar $result_file "{{resultPath}}"
+setstrigger prompt :prompt "READY"
+pause
+
+:prompt
+write $result_file currentline
+halt
+""");
+
+    try
+    {
+        using var interpreter = new ModInterpreter
+        {
+            ProgramDir = directory,
+            ScriptDirectory = directory,
+        };
+
+        interpreter.Load(scriptPath, silent: true);
+        interpreter.DispatchCompleteLine("NOT READY", "NOT READY", forceTrigger: false);
+
+        if (File.Exists(resultPath))
+            throw new InvalidOperationException("SETSTRIGGER matched text that was not at the start.");
+
+        interpreter.DispatchPartialLine("READY prompt", "READY prompt", forceTrigger: false);
+
+        if (!File.Exists(resultPath))
+            throw new InvalidOperationException("Expected SETSTRIGGER to match text at the start.");
+
+        string currentLine = File.ReadAllText(resultPath).TrimEnd('\r', '\n');
+        if (currentLine != "READY prompt")
+            throw new InvalidOperationException($"Expected currentline from matching text, got '{currentLine}'.");
+
+        if (interpreter.Count != 0)
+            throw new InvalidOperationException($"Expected the start trigger script to stop, found {interpreter.Count} running.");
+    }
+    finally
+    {
+        try { Directory.Delete(directory, recursive: true); } catch { }
+    }
+}
+
+static void SetSLineTriggerOnlyFiresAtLineStart()
+{
+    string directory = Path.Combine(Path.GetTempPath(), "twx-start-line-trigger-tests", Guid.NewGuid().ToString("N"));
+    Directory.CreateDirectory(directory);
+    string resultPath = Path.Combine(directory, "marker.txt");
+    string scriptPath = Path.Combine(directory, "start-line-trigger.ts");
+    File.WriteAllText(scriptPath, $$"""
+setvar $result_file "{{resultPath}}"
+setslinetrigger marker :marker "READY"
+pause
+
+:marker
+write $result_file currentline
+halt
+""");
+
+    try
+    {
+        using var interpreter = new ModInterpreter
+        {
+            ProgramDir = directory,
+            ScriptDirectory = directory,
+        };
+
+        interpreter.Load(scriptPath, silent: true);
+        interpreter.DispatchPartialLine("READY partial", "READY partial", forceTrigger: false);
+
+        if (File.Exists(resultPath))
+            throw new InvalidOperationException("SETSLINETRIGGER fired on a partial line.");
+
+        interpreter.DispatchCompleteLine("NOT READY", "NOT READY", forceTrigger: false);
+
+        if (File.Exists(resultPath))
+            throw new InvalidOperationException("SETSLINETRIGGER matched text that was not at the start.");
+
+        interpreter.DispatchCompleteLine("READY line", "READY line", forceTrigger: false);
+
+        if (!File.Exists(resultPath))
+            throw new InvalidOperationException("Expected SETSLINETRIGGER to match text at the start of a complete line.");
+
+        string currentLine = File.ReadAllText(resultPath).TrimEnd('\r', '\n');
+        if (currentLine != "READY line")
+            throw new InvalidOperationException($"Expected currentline from matching line, got '{currentLine}'.");
+
+        if (interpreter.Count != 0)
+            throw new InvalidOperationException($"Expected the start line trigger script to stop, found {interpreter.Count} running.");
+    }
+    finally
+    {
+        try { Directory.Delete(directory, recursive: true); } catch { }
+    }
+}
+
+static void SectorParameterScansCanRunHighVolumeLocalWork()
 {
     Directory.SetCurrentDirectory(AppContext.BaseDirectory);
     using var fixture = DatabaseFixture.Create();
-    string directory = Path.Combine(Path.GetTempPath(), "twx-sector-parameter-watchdog-tests", Guid.NewGuid().ToString("N"));
+    string directory = Path.Combine(Path.GetTempPath(), "twx-sector-parameter-loop-tests", Guid.NewGuid().ToString("N"));
     Directory.CreateDirectory(directory);
     string resultPath = Path.Combine(directory, "complete.txt");
     string scriptPath = Path.Combine(directory, "sector-parameter-scan.ts");
@@ -1180,10 +1962,10 @@ halt
     }
 }
 
-static void HighVolumeLocalLoopsDoNotTripWatchdog()
+static void HighVolumeLocalLoopsCanComplete()
 {
     Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-    string directory = Path.Combine(Path.GetTempPath(), "twx-watchdog-local-loop-tests", Guid.NewGuid().ToString("N"));
+    string directory = Path.Combine(Path.GetTempPath(), "twx-local-loop-tests", Guid.NewGuid().ToString("N"));
     Directory.CreateDirectory(directory);
     string resultPath = Path.Combine(directory, "complete.txt");
     string scriptPath = Path.Combine(directory, "local-loop.ts");
@@ -1196,8 +1978,6 @@ write "{{resultPath}}" "complete"
 halt
 """);
 
-    bool originalProtection = GlobalModules.ScriptInfiniteLoopProtectionEnabled;
-    GlobalModules.ScriptInfiniteLoopProtectionEnabled = true;
     try
     {
         using var interpreter = new ModInterpreter
@@ -1215,7 +1995,6 @@ halt
     }
     finally
     {
-        GlobalModules.ScriptInfiniteLoopProtectionEnabled = originalProtection;
         try { Directory.Delete(directory, recursive: true); } catch { }
     }
 }
@@ -1330,9 +2109,11 @@ sealed class DatabaseFixture : IDisposable
     {
         _directory = directory;
         Database = database;
+        DatabasePath = Path.Combine(directory, "game.xdb");
     }
 
     public ModDatabase Database { get; }
+    public string DatabasePath { get; }
 
     public static DatabaseFixture Create(int sectors = 5000)
     {
@@ -1340,7 +2121,8 @@ sealed class DatabaseFixture : IDisposable
         Directory.CreateDirectory(directory);
 
         var database = new ModDatabase();
-        database.CreateDatabase(Path.Combine(directory, "game.xdb"), new DataHeader
+        string databasePath = Path.Combine(directory, "game.xdb");
+        database.CreateDatabase(databasePath, new DataHeader
         {
             Sectors = sectors,
             CommandChar = '$',
@@ -1403,5 +2185,21 @@ sealed class LockFixture : IDisposable
     public void Dispose()
     {
         try { Directory.Delete(_directory, recursive: true); } catch { }
+    }
+}
+
+sealed class ActiveGameInstanceScope : IDisposable
+{
+    private readonly GameInstance? _previous;
+
+    public ActiveGameInstanceScope(GameInstance game)
+    {
+        _previous = GlobalModules.CurrentContext.ActiveGameInstance;
+        GlobalModules.CurrentContext.ActiveGameInstance = game;
+    }
+
+    public void Dispose()
+    {
+        GlobalModules.CurrentContext.ActiveGameInstance = _previous;
     }
 }

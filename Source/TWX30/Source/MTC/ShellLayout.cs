@@ -26,6 +26,7 @@ public partial class MainWindow
     private const double DeckConsolePanelVerticalChrome = 62;
     private const double DeckWorkspaceBaseWidth = 1280;
     private const double DeckWorkspaceBaseHeight = 820;
+    private (PixelPoint Position, double Width, double Height, WindowState State)? _windowBeforeCommandDeck;
 
     private TerminalControl CreateTerminalControl()
     {
@@ -66,6 +67,11 @@ public partial class MainWindow
                     ActivateMtcTab(tab.Id);
             },
             RoutingStrategies.Tunnel);
+        control.GotFocus += (_, _) =>
+        {
+            if (tab.Id != _activeMtcTabId)
+                ActivateMtcTab(tab.Id);
+        };
         return control;
     }
 
@@ -100,9 +106,11 @@ public partial class MainWindow
         _commSubspaceScrollViewer = null;
         _commPrivateScrollViewer = null;
         _commEventsScrollViewer = null;
+        _commComposerGrid = null;
         _commComposeTextBox = null;
         _commPrivateTargetTextBox = null;
         _commPrivateTargetLabel = null;
+        _commSendButton = null;
         _commSplitterRow = null;
         _commPanelRow = null;
         _commGridSplitter = null;
@@ -110,6 +118,7 @@ public partial class MainWindow
         _valName = new();
         _onlinePlayersHost = new() { Spacing = 2 };
         _valSector = new();
+        _sectorValueHighlight = new();
         _valTurns = new();
         _valExper = new();
         _valAlignm = new();
@@ -173,15 +182,18 @@ public partial class MainWindow
         _deckCommSubspaceScrollViewer = null;
         _deckCommPrivateScrollViewer = null;
         _deckCommEventsScrollViewer = null;
+        _deckCommComposerGrid = null;
         _deckCommComposeTextBox = null;
         _deckCommPrivateTargetTextBox = null;
         _deckCommPrivateTargetLabel = null;
+        _deckCommSendButton = null;
         _deckCommSplitterRow = null;
         _deckCommPanelRow = null;
         _deckCommGridSplitter = null;
 
         _deckValName = new();
         _deckValSector = new();
+        _deckValSectorHighlight = BuildSectorHighlightHost(_deckValSector, new Thickness(4, 0));
         _deckValTurns = new();
         _deckValExper = new();
         _deckValAlignm = new();
@@ -211,6 +223,7 @@ public partial class MainWindow
         _deckScanIndH = new();
         _deckScanIndP = new();
         _deckHudHeaderSector = new();
+        _deckHudHeaderSectorHighlight = new();
         _deckHudHeaderConnection = new();
         _deckHudShipName = new();
         _deckHudShipSubtitle = new();
@@ -261,6 +274,12 @@ public partial class MainWindow
         _statusText.FontSize           = 13;
         _statusText.IsVisible          = false;
 
+        _sectorExplorationText.FontSize = 11;
+        _sectorExplorationText.Foreground = HudMuted;
+        _sectorExplorationText.VerticalAlignment = VerticalAlignment.Center;
+        _sectorExplorationText.Margin = UiThickness(12, 0, 0, 0);
+        _sectorExplorationText.IsVisible = !string.IsNullOrEmpty(_sectorExplorationText.Text);
+
         _statusTerminalSizeText.Foreground = HudMuted;
         _statusTerminalSizeText.VerticalAlignment = VerticalAlignment.Center;
         _statusTerminalSizeText.HorizontalAlignment = HorizontalAlignment.Right;
@@ -283,7 +302,7 @@ public partial class MainWindow
         _statusBar.Height = UiSize(34);
         InvalidateStatusBarLayout();
         _statusBar.Child = _statusBarLayoutRoot;
-        _statusBar.IsVisible = _appPrefs.ShowBottomBar;
+        _statusBar.IsVisible = ShowMainStatusBar;
         DockPanel.SetDock(_statusBar, Dock.Bottom);
         dock.Children.Add(_statusBar);
 
@@ -301,15 +320,12 @@ public partial class MainWindow
         RecreateClassicShellControls();
         _tacticalMap = null;
         bool hasSidebarSections = HasVisibleStatusPanelSections();
-        bool showNotesPanel = ShouldShowNotesPanel();
 
         // Margin lets the gray BgChrome peek in on all four sides as a frame.
         var grid = new Grid();
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = hasSidebarSections ? new GridLength(ScaledClassicSidebarWidth) : new GridLength(0) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = hasSidebarSections ? new GridLength(UiSize(6)) : new GridLength(0) });
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = showNotesPanel ? new GridLength(UiSize(10)) : new GridLength(0) });
-        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = showNotesPanel ? new GridLength(ScaledNotesPanelWidth) : new GridLength(0) });
 
         if (hasSidebarSections)
         {
@@ -321,13 +337,6 @@ public partial class MainWindow
         var termArea = BuildTerminalArea();
         Grid.SetColumn(termArea, 2);
         grid.Children.Add(termArea);
-
-        if (showNotesPanel)
-        {
-            Control notesPanel = BuildNotesPanel();
-            Grid.SetColumn(notesPanel, 4);
-            grid.Children.Add(notesPanel);
-        }
 
         return new Border
         {
@@ -364,99 +373,7 @@ public partial class MainWindow
     }
 
     private Control BuildCommandDeckShell()
-    {
-        foreach (MtcTabPrototype tab in _mtcTabs)
-            Interlocked.Exchange(ref tab.DeckConsoleVisible, 0);
-        RecreateDeckShellControls();
-        _deckPanels.Clear();
-        _deckPanelsInitialized = false;
-        _suppressDeckPanelStateSync = false;
-        _deckWorkspaceMinimumWidth = DeckWorkspaceBaseWidth;
-        _deckWorkspaceMinimumHeight = DeckWorkspaceBaseHeight;
-        _tacticalMap = new TacticalMapControl(
-            () => ActiveMtcTab?.State.Sector ?? 0,
-            () =>
-            {
-                MtcTabPrototype? focusedTab = ActiveMtcTab;
-                return focusedTab?.RuntimeContext.ActiveDatabase ?? focusedTab?.SessionDb;
-            },
-            () => ActiveMtcTab?.State)
-        {
-            MinHeight = UiSize(220),
-        };
-        _tacticalMap.SectorDoubleClicked += (_, sectorNumber) => _tacticalMap?.CenterOnSector(sectorNumber);
-
-        var rootGrid = new Grid();
-        rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-        var banner = BuildDeckBanner();
-        Grid.SetRow(banner, 0);
-        rootGrid.Children.Add(banner);
-
-        _deckSurface = new Canvas
-        {
-            ClipToBounds = true,
-        };
-        _deckSurface.SizeChanged += (_, _) => EnsureDeckPanelsInitialized();
-
-        var surfaceRoot = new Grid { Margin = UiThickness(0, 14, 0, 0) };
-        surfaceRoot.Children.Add(new Border
-        {
-            Background = HudFrame,
-            BorderBrush = HudInnerEdge,
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(18),
-        });
-        surfaceRoot.Children.Add(_deckSurface);
-
-        foreach (MtcTabPrototype tab in _mtcTabs.Where(candidate => candidate.IsLiveSession))
-            CreateDeckConsolePanel(tab);
-        CreateDeckPanel("trader", "TRADER", "FOCUSED GAME", BuildDeckTraderPanel(), canClose: true);
-        CreateDeckPanel("online", "ONLINE", "FOCUSED GAME", BuildDeckOnlinePanel(), canClose: true);
-        CreateDeckPanel("ship", "SHIP INFO", "FOCUSED GAME", BuildDeckShipPanel(), canClose: true);
-        CreateDeckPanel("map", "TACTICAL OVERLAY", "FOCUSED GAME", BuildDeckMapBody(), canClose: true);
-        if (ShouldShowNotesPanel())
-            CreateDeckPanel("notes", "NOTES", "GAME", BuildNotesPanel(), canClose: false);
-        UpdateCommandDeckActiveConsole();
-        ExpandDeckWorkspaceMinimumToFitPanels();
-        Dispatcher.UIThread.Post(EnsureDeckPanelsInitialized, DispatcherPriority.Loaded);
-
-        Grid.SetRow(surfaceRoot, 1);
-        rootGrid.Children.Add(surfaceRoot);
-
-        _deckWorkspace = new Border
-        {
-            Width = _deckWorkspaceMinimumWidth,
-            Height = _deckWorkspaceMinimumHeight,
-            Background = HudShell,
-            BorderBrush = HudEdge,
-            BorderThickness = new Thickness(1.5),
-            CornerRadius = UiCornerRadius(22),
-            Padding = UiThickness(16),
-            Child = rootGrid,
-        };
-        _deckWorkspaceScaler = new Viewbox
-        {
-            Stretch = Stretch.Uniform,
-            StretchDirection = StretchDirection.DownOnly,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Child = _deckWorkspace,
-        };
-        _deckWorkspaceHost = new Grid
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Children =
-            {
-                _deckWorkspaceScaler,
-            },
-        };
-        _deckWorkspaceHost.SizeChanged += (_, _) => UpdateDeckWorkspaceSize();
-        Dispatcher.UIThread.Post(UpdateDeckWorkspaceSize, DispatcherPriority.Loaded);
-        return _deckWorkspaceHost;
-    }
+        => BuildCommandDeckLayout();
 
     private void CreateDeckConsolePanel(MtcTabPrototype tab)
     {
@@ -517,19 +434,6 @@ public partial class MainWindow
         _deckWorkspaceMinimumHeight = Math.Max(DeckWorkspaceBaseHeight, bottom + 190);
     }
 
-    private void UpdateDeckWorkspaceSize()
-    {
-        if (_deckWorkspaceHost is null || _deckWorkspace is null)
-            return;
-
-        Rect bounds = _deckWorkspaceHost.Bounds;
-        if (bounds.Width <= 0 || bounds.Height <= 0)
-            return;
-
-        _deckWorkspace.Width = Math.Max(_deckWorkspaceMinimumWidth, bounds.Width);
-        _deckWorkspace.Height = Math.Max(_deckWorkspaceMinimumHeight, bounds.Height);
-    }
-
     private void CreateDeckPanel(
         string panelId,
         string title,
@@ -577,9 +481,7 @@ public partial class MainWindow
 
     private bool IsMtcTabDeckConsoleVisible(MtcTabPrototype tab)
         => _useCommandDeckSkin &&
-           _deckTerminalControls.ContainsKey(tab.Id) &&
-           _deckPanels.TryGetValue(GetDeckConsolePanelId(tab), out FloatingDeckPanel? panel) &&
-           panel.IsVisible;
+           _commandDeckConsoles.TryGetValue(tab.Id, out var console) && console.IsVisible;
 
     private bool ShouldRenderMtcTabTerminal(MtcTabPrototype tab)
         => tab.Id == Volatile.Read(ref _activeMtcTabId) ||
@@ -587,6 +489,11 @@ public partial class MainWindow
 
     private void UpdateCommandDeckActiveConsole()
     {
+        if (_commandDeckRoot != null)
+        {
+            UpdateCommandDeckSelection();
+            return;
+        }
         foreach (MtcTabPrototype tab in _mtcTabs)
         {
             bool active = tab.Id == _activeMtcTabId;
@@ -785,7 +692,17 @@ public partial class MainWindow
 
     private void TileDeckConsoles()
     {
-        EnsureDeckPanelsInitialized();
+        if (_commandDeckRoot != null)
+        {
+            _commandDeckExpanded = null;
+            LayoutCommandDeckPage();
+            return;
+        }
+        if (!_deckPanelsInitialized)
+        {
+            EnsureDeckPanelsInitialized();
+            return;
+        }
         if (_deckSurface is null)
             return;
 
@@ -794,14 +711,25 @@ public partial class MainWindow
             return;
 
         double margin = DeckPanelGridSize;
-        double sharedWidth = Math.Clamp(_deckSurface.Bounds.Width * 0.24, 280, 340);
-        double availableWidth = Math.Max(420, _deckSurface.Bounds.Width - sharedWidth - (margin * 3));
+        FloatingDeckPanel[] sharedPanels = _deckPanels.Values
+            .Where(panel => !panel.PanelId.StartsWith("console:", StringComparison.OrdinalIgnoreCase) && !panel.IsClosed)
+            .ToArray();
+        double sharedWidth = sharedPanels.Length == 0 ? 0 : sharedPanels.Max(panel => panel.PanelWidth) + margin;
+        double sharedHeight = sharedPanels.Sum(panel => panel.PanelHeight + margin);
         double defaultPanelWidth = tabs.Max(tab => GetDeckConsoleDefaultPanelSize(tab.Id).Width);
         double defaultBodyHeight = tabs.Max(tab => GetDeckConsoleDefaultPanelSize(tab.Id).BodyHeight);
         double defaultPanelHeight = defaultBodyHeight + 56;
-        int columns = Math.Max(1, (int)Math.Floor((availableWidth + margin) / (defaultPanelWidth + margin)));
-        columns = Math.Min(columns, tabs.Length);
-        int rows = (int)Math.Ceiling(tabs.Length / (double)columns);
+        // Reserve a normal-size 2x2 console grid, expanding it only when there
+        // are more than four games. The Viewbox scales down only if necessary.
+        int slots = Math.Max(4, tabs.Length);
+        int columns = (int)Math.Ceiling(Math.Sqrt(slots));
+        int gridRows = (slots + columns - 1) / columns;
+        double tileWidth = defaultPanelWidth;
+        double tileHeight = defaultPanelHeight;
+        double workspaceWidth = Math.Max(DeckWorkspaceBaseWidth,
+            32 + margin * 2 + columns * (tileWidth + margin) + sharedWidth);
+        double workspaceHeight = Math.Max(DeckWorkspaceBaseHeight,
+            190 + margin * 2 + Math.Max(gridRows * (tileHeight + margin), sharedHeight));
 
         _suppressDeckPanelStateSync = true;
         try
@@ -812,12 +740,19 @@ public partial class MainWindow
                 if (!_deckPanels.TryGetValue(panelId, out FloatingDeckPanel? panel))
                     continue;
 
-                (double panelWidth, double bodyHeight) = GetDeckConsoleDefaultPanelSize(tabs[index].Id);
-                double left = margin + (index % columns) * (defaultPanelWidth + margin);
-                double top = margin + (index / columns) * (defaultPanelHeight + margin);
-                panel.SetPanelSize(panelWidth, bodyHeight);
+                double left = margin + (index % columns) * (tileWidth + margin);
+                double top = margin + (index / columns) * (tileHeight + margin);
+                panel.SetPanelSize(tileWidth, tileHeight - 56);
                 panel.MoveTo(left, top, clampToHost: false);
                 panel.SetMinimized(false);
+            }
+
+            double sharedLeft = margin + columns * (tileWidth + margin);
+            double sharedTop = margin;
+            foreach (FloatingDeckPanel panel in sharedPanels)
+            {
+                panel.MoveTo(sharedLeft, sharedTop, clampToHost: false);
+                sharedTop += panel.PanelHeight + margin;
             }
         }
         finally
@@ -825,18 +760,10 @@ public partial class MainWindow
             _suppressDeckPanelStateSync = false;
         }
 
-        foreach (MtcTabPrototype tab in tabs)
-        {
-            if (_deckPanels.TryGetValue(GetDeckConsolePanelId(tab), out FloatingDeckPanel? panel))
-                OnDeckPanelStateChanged(panel);
-        }
-        _deckWorkspaceMinimumHeight = Math.Max(
-            DeckWorkspaceBaseHeight,
-            190 + (margin * 2) + (rows * defaultPanelHeight) + ((rows - 1) * margin));
-        _deckWorkspaceMinimumWidth = Math.Max(
-            DeckWorkspaceBaseWidth,
-            defaultPanelWidth + sharedWidth + (margin * 4) + 32);
-        UpdateDeckWorkspaceSize();
+        foreach (FloatingDeckPanel panel in _deckPanels.Values)
+            OnDeckPanelStateChanged(panel);
+        _deckWorkspaceMinimumHeight = workspaceHeight;
+        _deckWorkspaceMinimumWidth = workspaceWidth;
         _appPrefs.Save();
     }
 
@@ -872,6 +799,7 @@ public partial class MainWindow
         foreach (FloatingDeckPanel panel in _deckPanels.Values)
             OnDeckPanelStateChanged(panel);
 
+        TileDeckConsoles();
         _appPrefs.Save();
     }
 
@@ -970,6 +898,7 @@ public partial class MainWindow
         _deckHudHeaderSector.FontWeight = FontWeight.SemiBold;
         _deckHudHeaderSector.Foreground = HudAccentHot;
         _deckHudHeaderSector.Text = "SECTOR ---";
+        _deckHudHeaderSectorHighlight = BuildSectorHighlightHost(_deckHudHeaderSector, new Thickness(6, 1));
 
         var bannerGrid = new Grid();
         bannerGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -1007,7 +936,7 @@ public partial class MainWindow
             VerticalAlignment = VerticalAlignment.Center,
             Children =
             {
-                BuildDeckInfoChip("Sector", _deckHudHeaderSector, HudAccentHot),
+                BuildDeckInfoChip("Sector", _deckHudHeaderSectorHighlight, HudAccentHot),
                 BuildDeckInfoChip("Link", _deckHudHeaderConnection, HudAccent),
             },
         };
@@ -1220,7 +1149,7 @@ public partial class MainWindow
             Children =
             {
                 BuildDeckMetricStretchRow("Trader", _deckValName),
-                BuildDeckMetricRow("Sector", _deckValSector),
+                BuildDeckMetricRow("Sector", _deckValSectorHighlight, _deckValSector),
                 BuildDeckMetricRow("Turns", _deckValTurns),
                 BuildDeckMetricRow("Experience", _deckValExper),
                 BuildDeckMetricRow("Alignment", _deckValAlignm),
@@ -1428,7 +1357,7 @@ public partial class MainWindow
         var commander = BuildDeckMetricCard(
             "Commander Link",
             BuildDeckMetricStretchRow("Trader", _deckValName),
-            BuildDeckMetricRow("Sector", _deckValSector),
+            BuildDeckMetricRow("Sector", _deckValSectorHighlight, _deckValSector),
             BuildDeckMetricRow("Turns", _deckValTurns));
         Grid.SetRow(commander, 0);
         Grid.SetColumn(commander, 0);
@@ -1816,6 +1745,7 @@ public partial class MainWindow
             ? new Thickness(6, 0, 0, 0)
             : new Thickness(0);
         _statusBarContent.Children.Add(_statusText);
+        _statusBarContent.Children.Add(_sectorExplorationText);
         _statusBarLayoutSignature = signature;
     }
 
@@ -2106,12 +2036,33 @@ public partial class MainWindow
         value.MaxLines = 1;
         value.HorizontalAlignment = HorizontalAlignment.Stretch;
 
+        return BuildDeckMetricRow(label, value, value);
+    }
+
+    private Control BuildDeckMetricRow(string label, Control valueControl, TextBlock? alignReference)
+    {
+        valueControl.HorizontalAlignment = HorizontalAlignment.Right;
+        valueControl.VerticalAlignment = VerticalAlignment.Center;
+        if (alignReference != null)
+        {
+            alignReference.Foreground = HudText;
+            alignReference.FontSize = 15;
+            alignReference.FontWeight = FontWeight.SemiBold;
+            alignReference.TextAlignment = TextAlignment.Right;
+            alignReference.TextTrimming = TextTrimming.CharacterEllipsis;
+            alignReference.TextWrapping = TextWrapping.NoWrap;
+            alignReference.MinWidth = 0;
+            alignReference.MaxLines = 1;
+            alignReference.HorizontalAlignment = HorizontalAlignment.Stretch;
+            alignReference.VerticalAlignment = VerticalAlignment.Center;
+        }
+
         var row = new Grid();
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8) });
         row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-        Grid.SetColumn(value, 2);
+        Grid.SetColumn(valueControl, 2);
         row.Children.Add(new TextBlock
         {
             Text = label,
@@ -2120,7 +2071,7 @@ public partial class MainWindow
             TextWrapping = TextWrapping.NoWrap,
             VerticalAlignment = VerticalAlignment.Center,
         });
-        row.Children.Add(value);
+        row.Children.Add(valueControl);
         return row;
     }
 
@@ -2178,6 +2129,12 @@ public partial class MainWindow
         UpdateTerminalLiveSelector();
         _shellHost.Padding = new Thickness(10, 8, 10, 10);
         _shellHost.Child = null;
+        _commandDeckRoot = null;
+        _commandDeckReports = null;
+        _commandDeckNotes = null;
+        _commandDeckConsoleGrid = null;
+        _commandDeckConsoles.Clear();
+        _tabStripHost.IsVisible = !_useCommandDeckSkin;
         if (!_useCommandDeckSkin)
         {
             foreach (MtcTabPrototype tab in _mtcTabs)
@@ -2186,7 +2143,8 @@ public partial class MainWindow
         }
         _shellHost.Child = _useCommandDeckSkin
             ? BuildCommandDeckShell()
-            : BuildClassicShell();
+            : BuildScriptWindowWorkspace(BuildClassicShell());
+        UpdateCommandDeckMenuChrome();
         _liveTabShell = _shellHost.Child;
         if (!IsLiveMtcTabActive() && ActiveMtcTab is { } activeTab)
             _shellHost.Child = BuildStagedMtcTabContent(activeTab);
@@ -2240,10 +2198,54 @@ public partial class MainWindow
         if (_useCommandDeckSkin == useCommandDeckSkin && _shellHost.Child != null)
             return;
 
+        if (useCommandDeckSkin)
+            _windowBeforeCommandDeck = (Position, Bounds.Width, Bounds.Height, WindowState);
+
         _useCommandDeckSkin = useCommandDeckSkin;
         _appPrefs.CommandDeckSkinEnabled = false;
         _appPrefs.Save();
         ApplySelectedSkinSafe();
+        if (_useCommandDeckSkin)
+            Dispatcher.UIThread.Post(SizeWindowForCommandDeck, DispatcherPriority.Loaded);
+        else
+            RestoreWindowAfterCommandDeck();
+    }
+
+    private void SizeWindowForCommandDeck()
+    {
+        if (!_useCommandDeckSkin || _deckWorkspaceHost is null)
+            return;
+
+        EnsureDeckPanelsInitialized();
+        var screen = Screens.ScreenFromWindow(this) ?? Screens.Primary;
+        if (screen is null)
+            return;
+
+        PixelRect workArea = screen.WorkingArea;
+        double scaling = screen.Scaling;
+        double chromeWidth = Math.Max(0, Bounds.Width - _deckWorkspaceHost.Bounds.Width);
+        double chromeHeight = Math.Max(0, Bounds.Height - _deckWorkspaceHost.Bounds.Height);
+        double width = Math.Min(_deckWorkspaceMinimumWidth + chromeWidth, workArea.Width / scaling - 24);
+        double height = Math.Min(_deckWorkspaceMinimumHeight + chromeHeight, workArea.Height / scaling - 60);
+        WindowState = WindowState.Normal;
+        Width = Math.Max(MinWidth, width);
+        Height = Math.Max(MinHeight, height);
+        Position = new PixelPoint(
+            workArea.X + (int)((workArea.Width - Width * scaling) / 2),
+            workArea.Y + (int)((workArea.Height - (Height + 28) * scaling) / 2));
+    }
+
+    private void RestoreWindowAfterCommandDeck()
+    {
+        if (_windowBeforeCommandDeck is not { } previous)
+            return;
+
+        _windowBeforeCommandDeck = null;
+        WindowState = WindowState.Normal;
+        Width = previous.Width;
+        Height = previous.Height;
+        Position = previous.Position;
+        WindowState = previous.State;
     }
 
     private void SetTerminalInputHandler(Action<byte[]> handler)
@@ -2264,7 +2266,13 @@ public partial class MainWindow
             _termCtrl.SendInput = handler;
         if (_deckTerminalControls.TryGetValue(_activeMtcTabId, out TerminalControl? activeDeckTerminal))
         {
-            activeDeckTerminal.SendInput = handler;
+            if (ActiveMtcTab is { } owner)
+                activeDeckTerminal.SendInput = bytes =>
+                {
+                    if (owner.Id != _activeMtcTabId)
+                        ActivateMtcTab(owner.Id);
+                    owner.TerminalInputHandler?.Invoke(bytes);
+                };
             _deckTermCtrl = activeDeckTerminal;
         }
         UpdateTemporaryMacroControls();
@@ -2677,7 +2685,8 @@ public partial class MainWindow
         if (!PrepareMtcTabVisualRefresh())
             return;
 
-        _viewBottomBar.Icon = _appPrefs.ShowBottomBar
+        _viewBottomBar.IsEnabled = !_useCommandDeckSkin;
+        _viewBottomBar.Icon = ShowMainStatusBar
             ? new TextBlock { Text = "●", Foreground = HudAccentOk }
             : null;
     }
@@ -2807,10 +2816,12 @@ public partial class MainWindow
             Items = { _viewClassicSkin, _viewCommandDeckSkin },
         };
 
+        var viewPrefs = new MenuItem { Header = "_Preferences..." };
+        viewPrefs.Click += (_, _) => _ = ExecuteInActiveMtcTabSessionAsync(OnViewPreferencesAsync);
         var viewMenu = new MenuItem
         {
             Header = "_View",
-            Items  = { viewFont, viewFontSize, skinMenu, _viewCommWindow, _viewNotes, _viewShowHaggleDetails, _viewBottomBar, new Separator(), viewCacheItem, viewGameInfoItem, viewAliensItem, viewDbItem, new Separator(), _viewClearRecents },
+            Items  = { viewFont, viewFontSize, skinMenu, viewPrefs, _viewCommWindow, _viewNotes, _viewShowHaggleDetails, _viewBottomBar, new Separator(), viewCacheItem, viewGameInfoItem, viewAliensItem, viewDbItem, new Separator(), _viewClearRecents },
         };
 
         var helpUpdates = new MenuItem { Header = "_Update MTC..." };
@@ -2885,6 +2896,8 @@ public partial class MainWindow
         toolsClearBustsItem.Click += (_, _) => _ = ExecuteInActiveMtcTabSessionAsync(OnToolsClearBustsAsync);
         var toolsManageProxyServerItem = new MenuItem { Header = "_Manage Proxy Server..." };
         toolsManageProxyServerItem.Click += (_, _) => _ = OnManageProxyServerAsync();
+        var toolsStartTwxdbAssistantItem = new MenuItem { Header = "Start TWXDB _Assistant MCP Server" };
+        toolsStartTwxdbAssistantItem.Click += (_, _) => _ = OnToolsStartTwxdbAssistantAsync();
         var toolsQCannonCalculatorItem = new MenuItem { Header = "_QCannon Calculator..." };
         toolsQCannonCalculatorItem.Click += (_, _) => ExecuteInActiveMtcTabSession(OnToolsQCannonCalculator);
         var toolsConfigureStatusPanelItem = new MenuItem { Header = "Configure Status _Panel..." };
@@ -2893,7 +2906,8 @@ public partial class MainWindow
         toolsConfigureStatusBarItem.Click += (_, _) => _ = ExecuteInActiveMtcTabSessionAsync(OnConfigureStatusBarAsync);
         var toolsScriptDebuggerItem = new MenuItem { Header = "_Script Debugger" };
         toolsScriptDebuggerItem.Click += (_, _) => ExecuteInActiveMtcTabSession(OnViewScriptDebugger);
-        _toolsMenu.ItemsSource = new object[] { toolsQuickMacroItem, toolsDockShopperItem, toolsClearBustsItem, toolsManageProxyServerItem, toolsQCannonCalculatorItem, new Separator(), toolsConfigureStatusPanelItem, toolsConfigureStatusBarItem, toolsScriptDebuggerItem };
+        _openTwMapRefreshMenuItem.Click += (_, _) => ExecuteInActiveMtcTabSession(RequestOpenTwMapRefresh);
+        _toolsMenu.ItemsSource = new object[] { toolsQuickMacroItem, toolsDockShopperItem, toolsClearBustsItem, toolsManageProxyServerItem, toolsStartTwxdbAssistantItem, toolsQCannonCalculatorItem, new Separator(), _openTwMapRefreshMenuItem, _openTwMapStatusMenuItem, new Separator(), toolsConfigureStatusPanelItem, toolsConfigureStatusBarItem, toolsScriptDebuggerItem };
         RebuildAiMenu();
 
         TrackSharedMenuOpenState(fileMenu);
@@ -2926,6 +2940,7 @@ public partial class MainWindow
         {
             ColumnDefinitions =
             {
+                new ColumnDefinition { Width = GridLength.Auto },
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = GridLength.Auto },
             },
@@ -2935,6 +2950,11 @@ public partial class MainWindow
         _menuBar.VerticalAlignment = VerticalAlignment.Stretch;
         Grid.SetColumn(_menuBar, 0);
         layout.Children.Add(_menuBar);
+        _commandDeckToolbarHost.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+        _commandDeckToolbarHost.VerticalContentAlignment = VerticalAlignment.Center;
+        _commandDeckToolbarHost.IsVisible = false;
+        Grid.SetColumn(_commandDeckToolbarHost, 1);
+        layout.Children.Add(_commandDeckToolbarHost);
 
         _statusMacroHost.Margin = new Thickness(0, 4, 0, 4);
         _statusMacroHost.VerticalAlignment = VerticalAlignment.Center;
@@ -2985,8 +3005,15 @@ public partial class MainWindow
                 _statusRedAlertFrame,
             },
         };
-        Grid.SetColumn(rightTools, 1);
-        layout.Children.Add(rightTools);
+        _menuInlineTools = rightTools;
+        _menuToolsFlyout = new Flyout();
+        _menuToolsOverflow = CommandDeckConsole.ActionButton("\u22ef", "More tools", () =>
+            FlyoutBase.ShowAttachedFlyout(_menuToolsOverflow!), DeckPalette);
+        FlyoutBase.SetAttachedFlyout(_menuToolsOverflow, _menuToolsFlyout);
+        _menuToolsHost.Content = rightTools;
+        _menuToolsHost.VerticalAlignment = VerticalAlignment.Center;
+        Grid.SetColumn(_menuToolsHost, 2);
+        layout.Children.Add(_menuToolsHost);
 
         return layout;
     }

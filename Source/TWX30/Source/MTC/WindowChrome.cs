@@ -63,6 +63,8 @@ public partial class MainWindow
     private static readonly IBrush HudAccentOk  = new SolidColorBrush(Color.FromRgb(118, 255, 141));
     private static readonly IBrush HudAccentWarn= new SolidColorBrush(Color.FromRgb(255, 112, 112));
     private static readonly IBrush HudBustBg    = new SolidColorBrush(Color.FromRgb(196, 48, 48));
+    private static readonly IBrush HudMslSectorBg = new SolidColorBrush(Color.FromRgb(0, 48, 178));
+    private static readonly IBrush HudMslSectorBorder = new SolidColorBrush(Color.FromRgb(80, 160, 255));
     private static readonly IBrush HudStatus    = new SolidColorBrush(Color.FromRgb(11,  20, 28));
     private static readonly IBrush HudInset     = new SolidColorBrush(Color.FromRgb(5,   12, 18));
     private static readonly IBrush HudInsetEdge = new SolidColorBrush(Color.FromRgb(69,  128, 144));

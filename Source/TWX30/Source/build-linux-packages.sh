@@ -9,6 +9,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 BIN_ROOT="${REPO_ROOT}/bin"
 MOMBOT_RELEASE_SOURCE="${MOMBOT_RELEASE_SOURCE:-/Users/mosleym/tw2002/mombot/mombot5.0/Release/mombot}"
 RID="${RID:-linux-x64}"
+TWXDB_RELEASE_SOURCE="${TWXDB_RELEASE_SOURCE:-${BIN_ROOT}/${RID}/twxdb-assistant}"
 VERSION="${VERSION:-$(date +%Y.%m.%d.%H%M)}"
 DEB_ARCH="${DEB_ARCH:-amd64}"
 RPM_ARCH="${RPM_ARCH:-x86_64}"
@@ -27,6 +28,10 @@ The twx30 package installs every component:
   - Tradewars Proxy
   - twxc and twxd
   - bundled Mombot scripts copied into <programdir>/scripts/mombot
+  - TWXDB Assistant copied into <programdir>/tools/twxdb-assistant
+
+Set TWXDB_AUTOSTART=1 while installing to enable its user systemd service.
+Auto-start is off by default.
 
 Set MOMBOT_RELEASE_SOURCE to override the Mombot release tree used for the
 scripts payload.
@@ -158,6 +163,28 @@ stage_scripts() {
   copy_tree_clean "$MOMBOT_RELEASE_SOURCE" "${root_dir}/opt/twx30/scripts/mombot"
 }
 
+stage_assistant() {
+  local root_dir="$1"
+
+  copy_tree_clean "$TWXDB_RELEASE_SOURCE" "${root_dir}/opt/twx30/twxdb-assistant"
+  mkdir -p "${root_dir}/usr/bin" "${root_dir}/usr/lib/systemd/user"
+  ln -s /opt/twx30/twxdb-assistant/twxdb-mcp "${root_dir}/usr/bin/twxdb-mcp"
+  cat >"${root_dir}/usr/lib/systemd/user/twxdb-assistant.service" <<'EOF'
+[Unit]
+Description=TWXDB Assistant MCP server
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=/opt/twx30/twxdb-assistant/twxdb-mcp --http
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
+EOF
+}
+
 stage_doc() {
   local root_dir="$1"
   local package_name="$2"
@@ -175,8 +202,14 @@ Default user program directory:
 Bundled Mombot scripts, when this package includes them, are staged in:
   /opt/twx30/scripts/mombot
 
+TWXDB Assistant is staged in:
+  /opt/twx30/twxdb-assistant
+
 During package installation, scripts are also copied into:
   <programdir>/scripts/mombot
+
+TWXDB Assistant is also copied into:
+  <programdir>/tools/twxdb-assistant
 
 The installer resolves <programdir> from TWX30_PROGRAMDIR, then the invoking
 sudo user, then the current login user. If no user home can be resolved, the
@@ -196,6 +229,7 @@ stage_payload() {
       stage_twxp "$root_dir"
       stage_tools "$root_dir"
       stage_scripts "$root_dir"
+      stage_assistant "$root_dir"
       ;;
     mtc)
       stage_mtc "$root_dir"
@@ -297,10 +331,17 @@ if [ -n "$program_dir" ]; then
   logs_dir="${program_dir%/}/logs"
   modules_dir="${program_dir%/}/modules"
   bin_dir="${program_dir%/}/bin"
-  mkdir -p "$scripts_dir" "$games_dir" "$logs_dir" "$modules_dir" "$bin_dir"
+  tools_dir="${program_dir%/}/tools"
+  mkdir -p "$scripts_dir" "$games_dir" "$logs_dir" "$modules_dir" "$bin_dir" "$tools_dir"
 
   if [ -d /opt/twx30/scripts ]; then
     cp -R /opt/twx30/scripts/. "$scripts_dir"/
+  fi
+
+  if [ -d /opt/twx30/twxdb-assistant ]; then
+    rm -rf "$tools_dir/twxdb-assistant"
+    cp -R /opt/twx30/twxdb-assistant "$tools_dir/twxdb-assistant"
+    ln -sfn ../tools/twxdb-assistant/twxdb-mcp "$bin_dir/twxdb-mcp"
   fi
 
   config_file="${program_dir%/}/config.twx"
@@ -330,6 +371,14 @@ CONFIG
     if [ -n "$home_dir" ]; then
       chown -R "$user_name" "${home_dir}/.local/share/twxproxy" 2>/dev/null || true
     fi
+  fi
+fi
+
+if [ "${TWXDB_AUTOSTART:-0}" = "1" ] && [ -n "$user_name" ] && command -v systemctl >/dev/null 2>&1; then
+  user_uid="$(id -u "$user_name")"
+  if command -v runuser >/dev/null 2>&1; then
+    XDG_RUNTIME_DIR="/run/user/$user_uid" runuser -u "$user_name" -- systemctl --user daemon-reload >/dev/null 2>&1 || true
+    XDG_RUNTIME_DIR="/run/user/$user_uid" runuser -u "$user_name" -- systemctl --user enable --now twxdb-assistant.service >/dev/null 2>&1 || true
   fi
 fi
 
@@ -529,6 +578,7 @@ require_executable "${BIN_ROOT}/${RID}/twxd"
 require_file "${SCRIPT_DIR}/MTC/mtc2.png"
 require_file "${SCRIPT_DIR}/TWXP/Resources/AppIcon/appicon.svg"
 require_dir "$MOMBOT_RELEASE_SOURCE"
+require_dir "$TWXDB_RELEASE_SOURCE"
 
 work_dir="$(mktemp -d "/tmp/twx30-linux-packages-XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
@@ -545,4 +595,4 @@ rm -f \
   "${OUTPUT_DIR}/twx30-scripts-${RID}.deb" \
   "${OUTPUT_DIR}/twx30-scripts-${RID}.rpm"
 build_package_pair "$work_dir" all twx30 "twx30-${RID}" \
-  "TWX30 TradeWars client, proxy, compiler tools, and bundled Mombot scripts." "$fpm_bin"
+  "TWX30 TradeWars client, proxy, compiler tools, bundled Mombot scripts, and TWXDB Assistant." "$fpm_bin"

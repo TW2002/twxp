@@ -54,7 +54,7 @@ namespace TWXProxy.Core
 
     public static class DatabaseConstants
     {
-        public const int DatabaseVersion = 16;
+        public const int DatabaseVersion = 19;
         public static readonly string[] DayNames = { "Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat" };
         public const string BustParameterName = "BUSTED";
         public const string FakeBustParameterName = "FAKEBUST";
@@ -147,6 +147,12 @@ namespace TWXProxy.Core
         public int FuelOre { get; set; } = -1;
         public int Organics { get; set; } = -1;
         public int Equipment { get; set; } = -1;
+        public int FuelColonists { get; set; } = -1;
+        public int OrganicsColonists { get; set; } = -1;
+        public int EquipmentColonists { get; set; } = -1;
+        public bool ConstructionStatusKnown { get; set; }
+        public string ConstructionType { get; set; } = string.Empty;
+        public int ConstructionDaysRemaining { get; set; } = -1;
     }
 
     /// <summary>
@@ -214,6 +220,9 @@ namespace TWXProxy.Core
         public byte StealFactor { get; set; }
         public DateTime LastPortCIM { get; set; }
         public char CommandChar { get; set; } = '$';
+        public string OpenTwUniverseId { get; set; } = string.Empty;
+        public string OpenTwTopologyHash { get; set; } = string.Empty;
+        public DateTime OpenTwTopologySyncedAtUtc { get; set; }
     }
 
     public sealed record MajorSpaceLaneRoute(
@@ -228,10 +237,10 @@ namespace TWXProxy.Core
     /// ModDatabase: High-performance in-memory database for Trade Wars 2002 universe
     /// Uses concurrent collections for thread-safe real-time updates
     /// </summary>
-    public class ModDatabase : TWXModule, ITWXDatabase, ITWXGlobals
+    public partial class ModDatabase : TWXModule, ITWXDatabase, ITWXGlobals
     {
-        private readonly ConcurrentDictionary<int, SectorData> _sectors;
-        private readonly ConcurrentDictionary<int, Planet> _planets;  // keyed by planet ID
+        private ConcurrentDictionary<int, SectorData> _sectors;
+        private ConcurrentDictionary<int, Planet> _planets;  // keyed by planet ID
         private DataHeader _header;
         private int _maxSectorSeen = 0;
         private string _databaseName = string.Empty;
@@ -500,6 +509,7 @@ namespace TWXProxy.Core
             for (int i = 1; i <= count; i++)
                 _sectors[i] = new SectorData { Number = i, Explored = ExploreType.No };
 
+            Interlocked.Increment(ref _changeStamp);
             SaveDatabase();
         }
 
@@ -513,6 +523,12 @@ namespace TWXProxy.Core
 
             lock (_saveLock)
             {
+                SaveDatabaseUnlocked();
+            }
+        }
+
+        private void SaveDatabaseUnlocked()
+        {
                 try
                 {
                     if (IsStaleDatabaseHandle())
@@ -554,19 +570,22 @@ namespace TWXProxy.Core
                             writer.Write(planet.FuelOre);
                             writer.Write(planet.Organics);
                             writer.Write(planet.Equipment);
+                            writer.Write(planet.ConstructionStatusKnown);
+                            writer.Write(planet.ConstructionType);
+                            writer.Write(planet.ConstructionDaysRemaining);
+                            writer.Write(planet.FuelColonists);
+                            writer.Write(planet.OrganicsColonists);
+                            writer.Write(planet.EquipmentColonists);
                         }
                     }
 
-                    // Atomic replace
-                    if (File.Exists(_databasePath))
-                        File.Delete(_databasePath);
-                    File.Move(tempPath, _databasePath);
+                    // Keep the last good database in place until the replacement is ready.
+                    File.Move(tempPath, _databasePath, overwrite: true);
                 }
                 catch (Exception ex)
                 {
                     throw new Exception($"Failed to save database: {ex.Message}", ex);
                 }
-            }
         }
 
         private static string NormalizeDatabasePath(string filename)
@@ -663,6 +682,18 @@ namespace TWXProxy.Core
                                 planet.FuelOre = reader.ReadInt32();
                                 planet.Organics = reader.ReadInt32();
                                 planet.Equipment = reader.ReadInt32();
+                                if (_header.Version >= 18 && reader.BaseStream.Position < reader.BaseStream.Length)
+                                {
+                                    planet.ConstructionStatusKnown = reader.ReadBoolean();
+                                    planet.ConstructionType = reader.ReadString();
+                                    planet.ConstructionDaysRemaining = reader.ReadInt32();
+                                }
+                                if (_header.Version >= 19 && reader.BaseStream.Position < reader.BaseStream.Length)
+                                {
+                                    planet.FuelColonists = reader.ReadInt32();
+                                    planet.OrganicsColonists = reader.ReadInt32();
+                                    planet.EquipmentColonists = reader.ReadInt32();
+                                }
                             }
 
                             _planets[id] = planet;
@@ -741,7 +772,6 @@ namespace TWXProxy.Core
             // TWX27 recalculates TSector.Warps from Warp[] on every save.
             sector.WarpCount = (byte)sector.Warp.Count(warp => warp != 0);
             _sectors[sector.Number] = sector;
-            sector.Update = DateTime.Now;
 
             // Track highest sector number seen (used by SECTORS sysconst before .twx load)
             if (sector.Number > _maxSectorSeen)
@@ -1046,6 +1076,97 @@ namespace TWXProxy.Core
             SavePlanetWithSectorIndex(planet);
         }
 
+        public bool SavePlanetSnapshotIfChanged(Planet planet)
+        {
+            if (planet.Id == 0)
+                return false;
+
+            Planet incoming = ClonePlanet(planet);
+            Planet? before = _planets.TryGetValue(incoming.Id, out Planet? existing)
+                ? ClonePlanet(existing)
+                : null;
+
+            if (before != null && PlanetSnapshotsEqual(before, incoming))
+                return false;
+
+            _planets[incoming.Id] = ClonePlanet(incoming);
+            SyncPlanetSectorMembership(before, incoming);
+            Interlocked.Increment(ref _changeStamp);
+            return true;
+        }
+
+        public (int Changed, int Cleared) SavePlanetSnapshotsBulk(
+            IReadOnlyCollection<Planet> snapshots,
+            ISet<int> currentIds,
+            Func<Planet, bool> shouldClearMissing)
+        {
+            int changed = 0;
+            int cleared = 0;
+            var touchedSectors = new HashSet<int>();
+
+            foreach (Planet snapshot in snapshots)
+            {
+                if (snapshot.Id == 0)
+                    continue;
+
+                Planet incoming = ClonePlanet(snapshot);
+                Planet? before = _planets.TryGetValue(incoming.Id, out Planet? existing)
+                    ? ClonePlanet(existing)
+                    : null;
+
+                if (before != null && PlanetSnapshotsEqual(before, incoming))
+                    continue;
+
+                _planets[incoming.Id] = ClonePlanet(incoming);
+                AddTouchedPlanetSectors(touchedSectors, before, incoming);
+                changed++;
+            }
+
+            foreach (Planet existing in _planets.Values.ToList())
+            {
+                if (existing.Id == 0 ||
+                    existing.LastSector <= 0 ||
+                    currentIds.Contains(existing.Id) ||
+                    !shouldClearMissing(existing))
+                {
+                    continue;
+                }
+
+                bool clearedExisting = false;
+                Planet before = ClonePlanet(existing);
+                if (existing.Id < 0)
+                {
+                    if (_planets.TryRemove(existing.Id, out _))
+                    {
+                        touchedSectors.Add(before.LastSector);
+                        clearedExisting = true;
+                    }
+                }
+                else
+                {
+                    Planet after = ClonePlanet(existing);
+                    after.LastSector = 0;
+                    after.ObservedOrder = 0;
+                    _planets[after.Id] = after;
+                    AddTouchedPlanetSectors(touchedSectors, before, after);
+                    clearedExisting = true;
+                }
+
+                if (clearedExisting)
+                    cleared++;
+            }
+
+            if (changed == 0 && cleared == 0)
+                return (0, 0);
+
+            RebuildPlanetDisplayNamesForSectors(touchedSectors);
+            if (cleared > 0)
+                ResetNextProvisionalPlanetId();
+
+            Interlocked.Increment(ref _changeStamp);
+            return (changed, cleared);
+        }
+
         public void ClearPlanetSector(int planetId)
         {
             if (planetId == 0)
@@ -1305,6 +1426,49 @@ namespace TWXProxy.Core
 
             if (currentSector > 0 && !string.IsNullOrWhiteSpace(currentName))
                 AddOrUpdatePlanetDisplayNameInSector(currentSector, previousName, after);
+        }
+
+        private static void AddTouchedPlanetSectors(HashSet<int> sectors, Planet? before, Planet after)
+        {
+            if (before?.LastSector > 0)
+                sectors.Add(before.LastSector);
+
+            if (after.LastSector > 0)
+                sectors.Add(after.LastSector);
+        }
+
+        private void RebuildPlanetDisplayNamesForSectors(IEnumerable<int> sectorNumbers)
+        {
+            var touchedSectors = sectorNumbers
+                .Where(sector => sector > 0)
+                .Distinct()
+                .ToHashSet();
+            if (touchedSectors.Count == 0)
+                return;
+
+            var displayNamesBySector = _planets.Values
+                .Where(planet => planet.LastSector > 0 &&
+                                 touchedSectors.Contains(planet.LastSector) &&
+                                 !string.IsNullOrWhiteSpace(planet.Name))
+                .GroupBy(planet => planet.LastSector)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group
+                        .OrderBy(planet => planet.ObservedOrder > 0 ? planet.ObservedOrder : int.MaxValue)
+                        .ThenBy(planet => planet.Id)
+                        .Select(BuildPlanetSectorDisplayName)
+                        .ToList());
+
+            foreach (int sectorNumber in touchedSectors)
+            {
+                SectorData? sector = GetOrCreateSectorData(sectorNumber);
+                if (sector == null)
+                    continue;
+
+                sector.PlanetNames.Clear();
+                if (displayNamesBySector.TryGetValue(sectorNumber, out var displayNames))
+                    sector.PlanetNames.AddRange(displayNames);
+            }
         }
 
         private void RemovePlanetDisplayNameFromSector(int sectorNumber, Planet planet, string fallbackName)
@@ -1612,7 +1776,32 @@ namespace TWXProxy.Core
             FuelOre = planet.FuelOre,
             Organics = planet.Organics,
             Equipment = planet.Equipment,
+            FuelColonists = planet.FuelColonists,
+            OrganicsColonists = planet.OrganicsColonists,
+            EquipmentColonists = planet.EquipmentColonists,
+            ConstructionStatusKnown = planet.ConstructionStatusKnown,
+            ConstructionType = planet.ConstructionType,
+            ConstructionDaysRemaining = planet.ConstructionDaysRemaining,
         };
+
+        private static bool PlanetSnapshotsEqual(Planet left, Planet right) =>
+            left.Id == right.Id &&
+            string.Equals(left.Name, right.Name, StringComparison.Ordinal) &&
+            left.LastSector == right.LastSector &&
+            left.ObservedOrder == right.ObservedOrder &&
+            string.Equals(left.Owner, right.Owner, StringComparison.Ordinal) &&
+            left.Level == right.Level &&
+            left.Shielded == right.Shielded &&
+            left.Fighters == right.Fighters &&
+            left.FuelOre == right.FuelOre &&
+            left.Organics == right.Organics &&
+            left.Equipment == right.Equipment &&
+            left.FuelColonists == right.FuelColonists &&
+            left.OrganicsColonists == right.OrganicsColonists &&
+            left.EquipmentColonists == right.EquipmentColonists &&
+            left.ConstructionStatusKnown == right.ConstructionStatusKnown &&
+            string.Equals(left.ConstructionType, right.ConstructionType, StringComparison.Ordinal) &&
+            left.ConstructionDaysRemaining == right.ConstructionDaysRemaining;
 
         private static Planet MergePlanet(Planet existing, Planet incoming) => new()
         {
@@ -1627,6 +1816,12 @@ namespace TWXProxy.Core
             FuelOre = incoming.FuelOre >= 0 ? incoming.FuelOre : existing.FuelOre,
             Organics = incoming.Organics >= 0 ? incoming.Organics : existing.Organics,
             Equipment = incoming.Equipment >= 0 ? incoming.Equipment : existing.Equipment,
+            FuelColonists = incoming.FuelColonists >= 0 ? incoming.FuelColonists : existing.FuelColonists,
+            OrganicsColonists = incoming.OrganicsColonists >= 0 ? incoming.OrganicsColonists : existing.OrganicsColonists,
+            EquipmentColonists = incoming.EquipmentColonists >= 0 ? incoming.EquipmentColonists : existing.EquipmentColonists,
+            ConstructionStatusKnown = incoming.ConstructionStatusKnown || existing.ConstructionStatusKnown,
+            ConstructionType = incoming.ConstructionStatusKnown ? incoming.ConstructionType : existing.ConstructionType,
+            ConstructionDaysRemaining = incoming.ConstructionStatusKnown ? incoming.ConstructionDaysRemaining : existing.ConstructionDaysRemaining,
         };
 
         private int AllocateProvisionalPlanetId()
@@ -1728,29 +1923,91 @@ namespace TWXProxy.Core
         /// </summary>
         public void SetSectorVar(int sectorNumber, string varName, string value)
         {
+            SetSectorVarCore(sectorNumber, varName, value, updateChangeStamp: true);
+        }
+
+        public int SetSectorVarsBulk(IEnumerable<(int SectorNumber, string VarName, string Value)> updates)
+        {
+            int changed = 0;
+
+            foreach (var update in updates)
+            {
+                if (SetSectorVarCore(update.SectorNumber, update.VarName, update.Value, updateChangeStamp: false))
+                    changed++;
+            }
+
+            if (changed > 0)
+                Interlocked.Increment(ref _changeStamp);
+
+            return changed;
+        }
+
+        public IReadOnlyList<SectorData> GetKnownSectorsSnapshot()
+        {
+            return _sectors.Values.ToList();
+        }
+
+        public IReadOnlyList<int> GetSectorsWithTruthySectorVar(string varName)
+        {
+            List<int> sectors = new();
+
+            foreach (SectorData sector in _sectors.Values)
+            {
+                if (sector.Variables.TryGetValue(varName, out string? value) &&
+                    IsTruthySectorParameter(value))
+                {
+                    sectors.Add(sector.Number);
+                }
+            }
+
+            return sectors;
+        }
+
+        private bool SetSectorVarCore(int sectorNumber, string varName, string value, bool updateChangeStamp)
+        {
             if (sectorNumber < 1 || sectorNumber > _header.Sectors)
-                return;
+                return false;
 
             var sector = _sectors.GetOrAdd(sectorNumber, number => new SectorData { Number = number });
+            bool changed;
 
             if (string.IsNullOrEmpty(value))
             {
-                sector.Variables.Remove(varName);
+                changed = sector.Variables.Remove(varName);
+            }
+            else if (!sector.Variables.TryGetValue(varName, out string? current) ||
+                     !string.Equals(current, value, StringComparison.Ordinal))
+            {
+                sector.Variables[varName] = value;
+                changed = true;
             }
             else
             {
-                sector.Variables[varName] = value;
+                changed = false;
             }
 
             if (string.Equals(varName, DatabaseConstants.BustParameterName, StringComparison.OrdinalIgnoreCase))
             {
                 if (IsTruthySectorParameter(value))
-                    sector.Variables[DatabaseConstants.BustDateParameterName] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-                else
-                    sector.Variables.Remove(DatabaseConstants.BustDateParameterName);
+                {
+                    string bustDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    if (!sector.Variables.TryGetValue(DatabaseConstants.BustDateParameterName, out string? currentBustDate) ||
+                        !string.Equals(currentBustDate, bustDate, StringComparison.Ordinal))
+                    {
+                        sector.Variables[DatabaseConstants.BustDateParameterName] = bustDate;
+                        changed = true;
+                    }
+                }
+                else if (sector.Variables.Remove(DatabaseConstants.BustDateParameterName))
+                {
+                    changed = true;
+                }
             }
 
-            Interlocked.Increment(ref _changeStamp);
+            if (changed && updateChangeStamp)
+                Interlocked.Increment(ref _changeStamp);
+
+            return changed;
         }
 
         public int ClearBustsBefore(DateTime localDay)
@@ -2527,6 +2784,10 @@ namespace TWXProxy.Core
             writer.Write(_header.LastPortCIM.ToBinary());
             // v11+
             writer.Write(_header.CommandChar);
+            // v17+
+            writer.Write(_header.OpenTwUniverseId);
+            writer.Write(_header.OpenTwTopologyHash);
+            writer.Write(_header.OpenTwTopologySyncedAtUtc.ToBinary());
         }
 
         private void ReadHeader(BinaryReader reader)
@@ -2554,6 +2815,12 @@ namespace TWXProxy.Core
             // v11: CommandChar added
             if (_header.Version >= 11 && reader.BaseStream.Position < reader.BaseStream.Length)
                 _header.CommandChar = reader.ReadChar();
+            if (_header.Version >= 17 && reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                _header.OpenTwUniverseId = reader.ReadString();
+                _header.OpenTwTopologyHash = reader.ReadString();
+                _header.OpenTwTopologySyncedAtUtc = DateTime.FromBinary(reader.ReadInt64());
+            }
         }
 
         public static bool TryReadHeader(string filename, out DataHeader header)
@@ -2587,6 +2854,12 @@ namespace TWXProxy.Core
                 header.LastPortCIM = DateTime.FromBinary(reader.ReadInt64());
                 if (header.Version >= 11 && reader.BaseStream.Position < reader.BaseStream.Length)
                     header.CommandChar = reader.ReadChar();
+                if (header.Version >= 17 && reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    header.OpenTwUniverseId = reader.ReadString();
+                    header.OpenTwTopologyHash = reader.ReadString();
+                    header.OpenTwTopologySyncedAtUtc = DateTime.FromBinary(reader.ReadInt64());
+                }
 
                 return true;
             }
@@ -3249,6 +3522,10 @@ namespace TWXProxy.Core
             if (_gameInstance != null && _gameInstance.IsRunning)
             {
                 await _gameInstance.SendToServerAsync(data);
+            }
+            else if (GlobalModules.CurrentContext.TWXServer != null)
+            {
+                await GlobalModules.CurrentContext.TWXServer.SendToServerAsync(data);
             }
         }
 

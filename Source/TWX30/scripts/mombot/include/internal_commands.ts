@@ -142,6 +142,11 @@ end
 goto :bot~wait_for_command
 
 :internal_commands~twarpswitch
+gosub :player~currentprompt
+if (((currentsector = 1) or ($player~current_sector = 1)) or (($player~current_prompt = "Do") or ($player~current_prompt = "How")))
+	setvar $bot~user_command_line "macro_kit"
+	goto :user_interface~runusercommandline
+end
 getinput $bot~parm1 "Twarp To:"
 getword $bot~parm1 $bot~parm1 1
 striptext $bot~parm1 " "

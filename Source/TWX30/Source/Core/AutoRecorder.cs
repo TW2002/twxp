@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -72,6 +73,7 @@ namespace TWXProxy.Core
         private int _activePlanetDetailId;
         private int _landedPlanetId;
         private int _landListPlanetIndex;
+        private bool _pendingPlanetConstructionCompletion;
         private readonly List<bool> _pendingLandListShielded = new();
 
         // Warp-lane (Frontier Map) parsing state
@@ -100,15 +102,22 @@ namespace TWXProxy.Core
         private bool _inPortCIM;          // Processing port CIM lines
         private bool _inWarpCIM;          // Processing warp CIM lines
         private bool _inFigScan;          // Processing deployed fighter scan lines
-        private readonly HashSet<int> _currentFigScanSectors = new();
+        private readonly Dictionary<int, (int Quantity, string Owner, FighterType FigType)> _currentFigScanSectors = new();
         private enum MineScanKind { None, Armid, Limpet }
+        private enum OwnedPlanetScanKind { None, Corporate, Personal }
         private MineScanKind _inMineScanKind;
         private readonly Dictionary<int, (int Quantity, string Owner)> _currentMineScanSectors = new();
+        private OwnedPlanetScanKind _ownedPlanetScanKind;
+        private readonly Dictionary<int, Planet> _currentCorporatePlanetScanPlanets = new();
+        private readonly Dictionary<int, int> _currentCorporatePlanetScanSectorCounts = new();
+        private int _pendingCorporatePlanetScanPlanetId;
         private bool _portCimBatchActive; // Tracking sectors observed in the current port CIM pass
         private readonly HashSet<int> _currentPortCimSectors = new();
 
         // ── Empty-density-scan detection ──────────────────────────────────────
         // ── Public API ─────────────────────────────────────────────────────────
+        private const string CorporatePlanetOwner = "belong to your Corp";
+        private const string PersonalPlanetOwner = "yours";
 
         /// <summary>
         /// True while holo-scan sector lines are being received.  Used to track
@@ -201,6 +210,10 @@ namespace TWXProxy.Core
             _inFigScan = false;
             _pendingPlanetFighterTransferKind = PendingPlanetFighterTransferKind.None;
             _pendingPlanetFighterTransferQuantity = 0;
+            _ownedPlanetScanKind = OwnedPlanetScanKind.None;
+            _currentCorporatePlanetScanPlanets.Clear();
+            _currentCorporatePlanetScanSectorCounts.Clear();
+            _pendingCorporatePlanetScanPlanetId = 0;
             _pendingPlanetProductTransferKind = PlanetProductTransferKind.None;
             _pendingPlanetProductName = string.Empty;
             _pendingPlanetProductQuantity = 0;
@@ -333,7 +346,7 @@ namespace TWXProxy.Core
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxPlanetInventoryLine = new(
-            @"^(Fuel Ore|Organics|Equipment)\s+[\d,]+\s+\d+\s+[\d,]+\s+([\d,]+)\s+[\d,]+\s+[\d,]+$",
+            @"^(Fuel Ore|Organics|Equipment)\s+([\d,]+)\s+\d+\s+[\d,]+\s+([\d,]+)\s+[\d,]+\s+[\d,]+$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxPlanetInventoryFighters = new(
@@ -341,7 +354,7 @@ namespace TWXProxy.Core
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxTraderLine = new(
-            @"^\s*(?<label>Traders|Federals|Aliens|Ferrengi|Jem'?Hada)\s*:\s*(?<name>.+?),\s+w/\s+(?<fighters>[\d,]+)\s+ftrs",
+            @"^\s*(?<label>[A-Za-z][A-Za-z' \-]{0,31})\s*:\s*(?<name>.+?),\s+w/\s+(?<fighters>[\d,]+)\s+ftrs",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxTraderContinuationLine = new(
@@ -445,11 +458,11 @@ namespace TWXProxy.Core
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxMineScanSector = new(
-            @"^\s*(\d+)\s+([\d,]+)\s+(Personal|Corp(?:orate)?|Corporate)\s*$",
+            @"^\s*(\d+)\s+([\d,.]+[TMB]?)\s+(Personal|Corp(?:orate)?|Corporate)\s*$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxScanTotal = new(
-            @"^\s*[\d,]+\s+Total\s*$",
+            @"^\s*[\d,.]+[TMB]?\s+Total\s*$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex _rxSectorDefenderPrompt = new(
@@ -579,6 +592,9 @@ namespace TWXProxy.Core
             if (TryProcessDockStatus(trimmedLine))
                 return;
 
+            if (TryProcessPlanetConstructionStatus(db, trimmedLine))
+                return;
+
             if (TryProcessPlanetFighterTransferStatus(trimmedLine))
                 return;
 
@@ -602,6 +618,18 @@ namespace TWXProxy.Core
 
             if (TryProcessWatcherState(db, rawLine, trimmedLine))
                 return;
+
+            if (TryGetOwnedPlanetScanKind(trimmedLine, out OwnedPlanetScanKind ownedPlanetScanKind))
+            {
+                BeginOwnedPlanetScan(db, ownedPlanetScanKind);
+                return;
+            }
+
+            if (_ownedPlanetScanKind != OwnedPlanetScanKind.None)
+            {
+                ProcessOwnedPlanetScanLine(db, rawLine, trimmedLine);
+                return;
+            }
 
             // ── Warp-lane trigger — checked on the RAW line before Trim() ────
             // Pascal: Copy(Line, 1, 19) = 'The shortest path (' or Copy(Line, 1, 7) = '  TO > '
@@ -811,18 +839,22 @@ namespace TWXProxy.Core
                 var product = _rxPlanetInventoryLine.Match(trimmedLine);
                 if (product.Success)
                 {
-                    int amount = ParseCommaInt(product.Groups[2].Value);
+                    int colonists = ParseCommaInt(product.Groups[2].Value);
+                    int amount = ParseCommaInt(product.Groups[3].Value);
                     var planet = new Planet { Id = _activePlanetDetailId };
                     switch (product.Groups[1].Value.Trim().ToLowerInvariant())
                     {
                         case "fuel ore":
                             planet.FuelOre = amount;
+                            planet.FuelColonists = colonists;
                             break;
                         case "organics":
                             planet.Organics = amount;
+                            planet.OrganicsColonists = colonists;
                             break;
                         case "equipment":
                             planet.Equipment = amount;
+                            planet.EquipmentColonists = colonists;
                             break;
                     }
 
@@ -956,21 +988,23 @@ namespace TWXProxy.Core
                         GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] Planet {_landedPlanetId} moved to sector {sn} from live sector display\n");
                     }
 
-                    // Always capture constellation name when present (works for both
-                    // normal sector display AND holo scan: "Sector  : 9363  in  The Crucible")
-                    if (m.Groups[2].Success)
+                    if (sec != null)
                     {
-                        string constName = m.Groups[2].Value.Trim();
-                        if (!string.IsNullOrEmpty(constName))
+                        // A Sector header proves a successful observation, even for an
+                        // empty ether-probe display with no port or warp lines. Merely
+                        // entering a sector (followed by Probe Destroyed!) does not.
+                        sec.Explored = ExploreType.Yes;
+                        sec.Update = DateTime.Now;
+                        if (m.Groups[2].Success)
                         {
-                            var constellationSector = GetOrCreate(db, sn);
-                            if (constellationSector != null)
+                            string constName = m.Groups[2].Value.Trim();
+                            if (!string.IsNullOrEmpty(constName))
                             {
-                                constellationSector.Constellation = constName;
-                                db.SaveSector(constellationSector);
+                                sec.Constellation = constName;
                                 GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] Sector {sn} constellation = {constName}\n");
                             }
                         }
+                        db.SaveSector(sec);
                     }
 
                     _inHoloScan = true;   // Any "Sector  : NNNN" marks start of a display block
@@ -1649,6 +1683,206 @@ namespace TWXProxy.Core
             return true;
         }
 
+        private bool TryProcessPlanetConstructionStatus(ModDatabase db, string trimmedLine)
+        {
+            if (_pendingPlanetConstructionCompletion)
+            {
+                _pendingPlanetConstructionCompletion = false;
+                if (TryParsePlanetConstructionCompletion(trimmedLine, out string pendingType, out int pendingDays))
+                    return SavePlanetConstructionStatus(db, pendingType, pendingDays);
+            }
+
+            if (TryParsePlanetConstructionDisplay(trimmedLine, out string displayType, out int displayDays))
+                return SavePlanetConstructionStatus(db, displayType, displayDays);
+
+            if (TryGetPlanetConstructionCompletionRemainder(trimmedLine, out string remainder))
+            {
+                if (TryParsePlanetConstructionCompletion(remainder, out string inlineType, out int inlineDays))
+                    return SavePlanetConstructionStatus(db, inlineType, inlineDays);
+
+                _pendingPlanetConstructionCompletion = true;
+                return true;
+            }
+
+            if (TryParsePlanetConstructionActiveStatus(trimmedLine, out string activeType))
+                return ClearPlanetConstructionStatus(db, activeType);
+
+            return false;
+        }
+
+        private static bool TryGetPlanetConstructionCompletionRemainder(string line, out string remainder)
+        {
+            const string pluralPrefix = "Thanks to the miracles of modern technology, your";
+            const string singularPrefix = "Thanks to the miracle of modern technology, your";
+
+            if (line.StartsWith(pluralPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                remainder = line[pluralPrefix.Length..].Trim();
+                return true;
+            }
+
+            if (line.StartsWith(singularPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                remainder = line[singularPrefix.Length..].Trim();
+                return true;
+            }
+
+            remainder = string.Empty;
+            return false;
+        }
+
+        private bool SavePlanetConstructionStatus(ModDatabase db, string constructionType, int daysRemaining)
+        {
+            int planetId = _activePlanetDetailId > 0 ? _activePlanetDetailId : _landedPlanetId;
+            if (planetId > 0)
+            {
+                db.SavePlanet(new Planet
+                {
+                    Id = planetId,
+                    ConstructionStatusKnown = true,
+                    ConstructionType = constructionType,
+                    ConstructionDaysRemaining = daysRemaining
+                });
+                GlobalModules.AutoRecorderDebugLog(
+                    $"[AutoRecorder] Planet {planetId} construction='{constructionType}' days={daysRemaining}\n");
+            }
+
+            return true;
+        }
+
+        private bool ClearPlanetConstructionStatus(ModDatabase db, string constructionType)
+        {
+            int planetId = _activePlanetDetailId > 0 ? _activePlanetDetailId : _landedPlanetId;
+            if (planetId <= 0)
+                return true;
+
+            Planet? existing = db.GetPlanet(planetId);
+            if (existing?.ConstructionStatusKnown == true &&
+                !string.Equals(existing.ConstructionType, constructionType, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            db.SavePlanet(new Planet
+            {
+                Id = planetId,
+                ConstructionStatusKnown = true,
+                ConstructionType = string.Empty,
+                ConstructionDaysRemaining = 0
+            });
+            GlobalModules.AutoRecorderDebugLog(
+                $"[AutoRecorder] Planet {planetId} construction complete for '{constructionType}'\n");
+            return true;
+        }
+
+        private static bool TryParsePlanetConstructionDisplay(string line, out string constructionType, out int daysRemaining)
+        {
+            constructionType = string.Empty;
+            daysRemaining = -1;
+
+            const string marker = " under construction,";
+            int markerIndex = line.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+            if (markerIndex <= 0)
+                return false;
+
+            constructionType = line[..markerIndex].Trim();
+            string remainder = line[(markerIndex + marker.Length)..].Trim();
+            return !string.IsNullOrWhiteSpace(constructionType) &&
+                   TryParseDaysRemaining(remainder, out daysRemaining) &&
+                   ContainsDayCompletionSuffix(remainder);
+        }
+
+        private static bool TryParsePlanetConstructionCompletion(string line, out string constructionType, out int daysRemaining)
+        {
+            constructionType = string.Empty;
+            daysRemaining = -1;
+
+            const string marker = " will be completed in ";
+            int markerIndex = line.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+            if (markerIndex <= 0)
+                return false;
+
+            constructionType = line[..markerIndex].Trim();
+            string remainder = line[(markerIndex + marker.Length)..].Trim();
+            return !string.IsNullOrWhiteSpace(constructionType) &&
+                   TryParseDaysRemaining(remainder, out daysRemaining) &&
+                   StartsWithDayWord(remainder);
+        }
+
+        private static bool TryParsePlanetConstructionActiveStatus(string line, out string constructionType)
+        {
+            constructionType = string.Empty;
+
+            const string interdictorType = "Planetary Interdictor Generator";
+            if (line.StartsWith(interdictorType, StringComparison.OrdinalIgnoreCase) &&
+                line.IndexOf("= ACTIVE", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                constructionType = interdictorType;
+                return true;
+            }
+
+            const string shieldingType = "Planetary Defense Shielding";
+            if (line.StartsWith("Planetary Defense Shielding Power Level", StringComparison.OrdinalIgnoreCase))
+            {
+                constructionType = shieldingType;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryParseDaysRemaining(string text, out int daysRemaining)
+        {
+            daysRemaining = -1;
+            int index = 0;
+            while (index < text.Length && char.IsWhiteSpace(text[index]))
+                index++;
+
+            int start = index;
+            int value = 0;
+            while (index < text.Length && char.IsDigit(text[index]))
+            {
+                int digit = text[index] - '0';
+                if (value > (int.MaxValue - digit) / 10)
+                    return false;
+
+                value = (value * 10) + digit;
+                index++;
+            }
+
+            if (index == start)
+                return false;
+
+            daysRemaining = value;
+            return true;
+        }
+
+        private static bool ContainsDayCompletionSuffix(string text)
+        {
+            int index = 0;
+            while (index < text.Length && char.IsWhiteSpace(text[index]))
+                index++;
+
+            while (index < text.Length && char.IsDigit(text[index]))
+                index++;
+
+            string suffix = text[index..].Trim();
+            return suffix.StartsWith("day(s) till complete", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool StartsWithDayWord(string text)
+        {
+            int index = 0;
+            while (index < text.Length && char.IsWhiteSpace(text[index]))
+                index++;
+
+            while (index < text.Length && char.IsDigit(text[index]))
+                index++;
+
+            string suffix = text[index..].Trim();
+            return suffix.StartsWith("day", StringComparison.OrdinalIgnoreCase);
+        }
+
         private bool TryProcessPlanetFighterTransferStatus(string trimmedLine)
         {
             var choice = _rxPlanetFighterTransferChoice.Match(trimmedLine);
@@ -2156,6 +2390,12 @@ namespace TWXProxy.Core
                 CompleteMineScan(db, "prompt");
             _inMineScanKind = MineScanKind.None;
             _currentMineScanSectors.Clear();
+            if (_ownedPlanetScanKind != OwnedPlanetScanKind.None && db != null)
+                CompleteOwnedPlanetScan(db, "prompt");
+            _ownedPlanetScanKind = OwnedPlanetScanKind.None;
+            _currentCorporatePlanetScanPlanets.Clear();
+            _currentCorporatePlanetScanSectorCounts.Clear();
+            _pendingCorporatePlanetScanPlanetId = 0;
             ResetPendingPlanetFighterTransfer();
             ResetPendingSectorDefense();
             _portCimBatchActive = false;
@@ -2377,13 +2617,346 @@ namespace TWXProxy.Core
                 ParseShipSummary(m);
         }
 
+        private void BeginOwnedPlanetScan(ModDatabase db, OwnedPlanetScanKind scanKind)
+        {
+            if (_ownedPlanetScanKind != OwnedPlanetScanKind.None)
+                CompleteOwnedPlanetScan(db, "new owned planet scan");
+
+            _ownedPlanetScanKind = scanKind;
+            _currentCorporatePlanetScanPlanets.Clear();
+            _currentCorporatePlanetScanSectorCounts.Clear();
+            _pendingCorporatePlanetScanPlanetId = 0;
+            GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] {scanKind} planet scan begin\n");
+        }
+
+        private void ProcessOwnedPlanetScanLine(ModDatabase db, string rawLine, string trimmedLine)
+        {
+            if (trimmedLine.Length == 0 ||
+                TryGetOwnedPlanetScanKind(trimmedLine, out _) ||
+                trimmedLine.StartsWith("Sector  Planet Name", StringComparison.OrdinalIgnoreCase) ||
+                trimmedLine.StartsWith("Shields Population", StringComparison.OrdinalIgnoreCase) ||
+                IsCorporatePlanetScanDashSeparator(trimmedLine) ||
+                IsCorporatePlanetScanHeaderSeparator(trimmedLine))
+            {
+                return;
+            }
+
+            if (IsCorporatePlanetScanTerminator(trimmedLine))
+            {
+                CompleteOwnedPlanetScan(db, "separator");
+                return;
+            }
+
+            if (TryParseCorporatePlanetScanEntryLine(rawLine, out Planet? planet) && planet != null)
+            {
+                planet.Owner = GetOwnedPlanetScanOwner(_ownedPlanetScanKind);
+                int sectorCount = _currentCorporatePlanetScanSectorCounts.TryGetValue(planet.LastSector, out int currentCount)
+                    ? currentCount + 1
+                    : 1;
+                _currentCorporatePlanetScanSectorCounts[planet.LastSector] = sectorCount;
+                planet.ObservedOrder = sectorCount;
+                _currentCorporatePlanetScanPlanets[planet.Id] = planet;
+                _pendingCorporatePlanetScanPlanetId = planet.Id;
+                return;
+            }
+
+            if (_pendingCorporatePlanetScanPlanetId > 0 &&
+                _currentCorporatePlanetScanPlanets.TryGetValue(_pendingCorporatePlanetScanPlanetId, out Planet? pending) &&
+                TryApplyCorporatePlanetScanDetailLine(trimmedLine, pending))
+            {
+                _pendingCorporatePlanetScanPlanetId = 0;
+            }
+        }
+
+        private static bool TryGetOwnedPlanetScanKind(string trimmedLine, out OwnedPlanetScanKind scanKind)
+        {
+            if (trimmedLine.Equals("Corporate Planet Scan", StringComparison.OrdinalIgnoreCase))
+            {
+                scanKind = OwnedPlanetScanKind.Corporate;
+                return true;
+            }
+
+            if (trimmedLine.Equals("Personal Planet Scan", StringComparison.OrdinalIgnoreCase))
+            {
+                scanKind = OwnedPlanetScanKind.Personal;
+                return true;
+            }
+
+            scanKind = OwnedPlanetScanKind.None;
+            return false;
+        }
+
+        private static bool IsCorporatePlanetScanDashSeparator(string trimmedLine)
+        {
+            if (trimmedLine.Length == 0)
+                return false;
+
+            foreach (char ch in trimmedLine)
+            {
+                if (ch != '-')
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsCorporatePlanetScanHeaderSeparator(string trimmedLine)
+        {
+            if (trimmedLine.Length == 0)
+                return false;
+
+            foreach (char ch in trimmedLine)
+            {
+                if (ch != '=')
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsCorporatePlanetScanTerminator(string trimmedLine) =>
+            trimmedLine.StartsWith("======", StringComparison.Ordinal) &&
+            trimmedLine.Contains(' ') &&
+            trimmedLine.IndexOf("============", StringComparison.Ordinal) >= 0;
+
+        private void CompleteOwnedPlanetScan(ModDatabase db, string reason)
+        {
+            OwnedPlanetScanKind scanKind = _ownedPlanetScanKind;
+            IReadOnlyDictionary<int, Planet> scannedPlanets = _currentCorporatePlanetScanPlanets;
+            HashSet<int> scannedIds = new(scannedPlanets.Keys);
+
+            var snapshots = scannedPlanets.Values
+                .Select(scanned => BuildOwnedPlanetScanSnapshot(scanned, db.GetPlanet(scanned.Id), scanKind))
+                .ToList();
+
+            var result = db.SavePlanetSnapshotsBulk(
+                snapshots,
+                scannedIds,
+                existing => existing.LastSector > 0 &&
+                            IsOwnedPlanetScanOwner(existing.Owner, scanKind));
+
+            GlobalModules.AutoRecorderDebugLog(
+                $"[AutoRecorder] {scanKind} planet scan complete: seen={scannedPlanets.Count} changed={result.Changed} cleared={result.Cleared} reason={reason}\n");
+
+            _ownedPlanetScanKind = OwnedPlanetScanKind.None;
+            _currentCorporatePlanetScanPlanets.Clear();
+            _currentCorporatePlanetScanSectorCounts.Clear();
+            _pendingCorporatePlanetScanPlanetId = 0;
+        }
+
+        private static Planet BuildOwnedPlanetScanSnapshot(Planet scanned, Planet? existing, OwnedPlanetScanKind scanKind)
+        {
+            return new Planet
+            {
+                Id = scanned.Id,
+                Name = string.IsNullOrWhiteSpace(scanned.Name)
+                    ? existing?.Name ?? "."
+                    : scanned.Name,
+                LastSector = scanned.LastSector,
+                ObservedOrder = scanned.ObservedOrder > 0
+                    ? scanned.ObservedOrder
+                    : existing?.ObservedOrder ?? 0,
+                Owner = GetOwnedPlanetScanOwner(scanKind),
+                Level = scanned.Level,
+                Shielded = scanned.Shielded ?? existing?.Shielded,
+                Fighters = scanned.Fighters >= 0 ? scanned.Fighters : existing?.Fighters ?? -1,
+                FuelOre = scanned.FuelOre >= 0 ? scanned.FuelOre : existing?.FuelOre ?? -1,
+                Organics = scanned.Organics >= 0 ? scanned.Organics : existing?.Organics ?? -1,
+                Equipment = scanned.Equipment >= 0 ? scanned.Equipment : existing?.Equipment ?? -1,
+                FuelColonists = existing?.FuelColonists ?? -1,
+                OrganicsColonists = existing?.OrganicsColonists ?? -1,
+                EquipmentColonists = existing?.EquipmentColonists ?? -1,
+                ConstructionStatusKnown = existing?.ConstructionStatusKnown ?? false,
+                ConstructionType = existing?.ConstructionType ?? string.Empty,
+                ConstructionDaysRemaining = existing?.ConstructionDaysRemaining ?? -1,
+            };
+        }
+
+        private static string GetOwnedPlanetScanOwner(OwnedPlanetScanKind scanKind) =>
+            scanKind == OwnedPlanetScanKind.Personal ? PersonalPlanetOwner : CorporatePlanetOwner;
+
+        private static bool IsOwnedPlanetScanOwner(string? owner, OwnedPlanetScanKind scanKind)
+        {
+            return scanKind switch
+            {
+                OwnedPlanetScanKind.Corporate => IsCorporatePlanetOwner(owner),
+                OwnedPlanetScanKind.Personal => IsPersonalPlanetOwner(owner),
+                _ => false
+            };
+        }
+
+        private static bool IsCorporatePlanetOwner(string? owner)
+        {
+            if (string.IsNullOrWhiteSpace(owner))
+                return false;
+
+            string trimmed = owner.Trim();
+            return trimmed.Equals(CorporatePlanetOwner, StringComparison.OrdinalIgnoreCase) ||
+                   trimmed.Contains("your Corp", StringComparison.OrdinalIgnoreCase) ||
+                   IsCurrentCorpOwner(trimmed);
+        }
+
+        private static bool IsPersonalPlanetOwner(string? owner)
+        {
+            if (string.IsNullOrWhiteSpace(owner))
+                return false;
+
+            string trimmed = owner.Trim();
+            if (trimmed.Equals(PersonalPlanetOwner, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            string traderName = GlobalModules.CurrentContext.ActiveGameInstance?.CurrentShipStatus.TraderName?.Trim() ?? string.Empty;
+            return traderName.Length > 0 &&
+                   trimmed.Equals(traderName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsCurrentCorpOwner(string owner)
+        {
+            int currentCorp = GlobalModules.CurrentContext.ActiveGameInstance?.CurrentShipStatus.Corp ?? 0;
+            return currentCorp > 0 &&
+                   owner.Equals($"[{currentCorp.ToString(CultureInfo.InvariantCulture)}]", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool TryParseCorporatePlanetScanEntryLine(string line, out Planet? planet)
+        {
+            planet = null;
+            int index = 0;
+            SkipHorizontalWhiteSpace(line, ref index);
+
+            if (!TryReadPositiveInt(line, ref index, out int sectorNumber))
+                return false;
+
+            SkipHorizontalWhiteSpace(line, ref index);
+            if (index < line.Length &&
+                char.ToUpperInvariant(line[index]) == 'T' &&
+                (index + 1 >= line.Length || char.IsWhiteSpace(line[index + 1])))
+            {
+                index++;
+                SkipHorizontalWhiteSpace(line, ref index);
+            }
+
+            if (index >= line.Length || line[index] != '#')
+                return false;
+
+            index++;
+            if (!TryReadPositiveInt(line, ref index, out int planetId))
+                return false;
+
+            SkipHorizontalWhiteSpace(line, ref index);
+            int nameStart = index;
+            int levelIndex = line.IndexOf("Level ", nameStart, StringComparison.OrdinalIgnoreCase);
+            int noCitadelIndex = line.IndexOf("No Citadel", nameStart, StringComparison.OrdinalIgnoreCase);
+            int citadelIndex = levelIndex > nameStart ? levelIndex : noCitadelIndex;
+            if (citadelIndex <= nameStart)
+                return false;
+
+            int classIndex = FindCorporatePlanetClassColumn(line, nameStart);
+            if (classIndex <= nameStart)
+            {
+                const int corporatePlanetNameColumnWidth = 25;
+                classIndex = Math.Min(nameStart + corporatePlanetNameColumnWidth, citadelIndex);
+            }
+
+            string name = line[nameStart..classIndex].Trim();
+            if (string.IsNullOrWhiteSpace(name))
+                name = ".";
+
+            planet = new Planet
+            {
+                Id = planetId,
+                Name = name,
+                LastSector = sectorNumber,
+                Owner = CorporatePlanetOwner,
+                Level = levelIndex > nameStart ? ParseCorporatePlanetCitadelLevel(line, levelIndex) : 0,
+                Fighters = -1,
+                FuelOre = -1,
+                Organics = -1,
+                Equipment = -1
+            };
+            return true;
+        }
+
+        private static bool TryApplyCorporatePlanetScanDetailLine(string trimmedLine, Planet planet)
+        {
+            string[] tokens = trimmedLine.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length < 9)
+                return false;
+
+            int shields = ParseDisplayedFighterCount(tokens[0], -1);
+            if (shields >= 0)
+                planet.Shielded = shields > 0;
+            else if (tokens[0].Equals("---", StringComparison.Ordinal))
+                planet.Shielded = false;
+
+            planet.FuelOre = ParseDisplayedFighterCount(tokens[5], planet.FuelOre);
+            planet.Organics = ParseDisplayedFighterCount(tokens[6], planet.Organics);
+            planet.Equipment = ParseDisplayedFighterCount(tokens[7], planet.Equipment);
+            planet.Fighters = ParseDisplayedFighterCount(tokens[8], planet.Fighters);
+            return true;
+        }
+
+        private static int FindCorporatePlanetClassColumn(string line, int startIndex)
+        {
+            for (int i = startIndex; i <= line.Length - 6; i++)
+            {
+                if (i > 0 &&
+                    !char.IsWhiteSpace(line[i - 1]))
+                {
+                    continue;
+                }
+
+                if (string.Compare(line, i, "Class ", 0, 6, ignoreCase: true, CultureInfo.InvariantCulture) == 0)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private static int ParseCorporatePlanetCitadelLevel(string line, int startIndex)
+        {
+            int levelIndex = line.IndexOf("Level ", startIndex, StringComparison.OrdinalIgnoreCase);
+            if (levelIndex < 0)
+                return 0;
+
+            int index = levelIndex + 6;
+            SkipHorizontalWhiteSpace(line, ref index);
+            return TryReadPositiveInt(line, ref index, out int level) ? level : 0;
+        }
+
+        private static void SkipHorizontalWhiteSpace(string text, ref int index)
+        {
+            while (index < text.Length && (text[index] == ' ' || text[index] == '\t'))
+                index++;
+        }
+
+        private static bool TryReadPositiveInt(string text, ref int index, out int value)
+        {
+            value = 0;
+            int start = index;
+            while (index < text.Length && char.IsDigit(text[index]))
+            {
+                int digit = text[index] - '0';
+                if (value > (int.MaxValue - digit) / 10)
+                    return false;
+
+                value = (value * 10) + digit;
+                index++;
+            }
+
+            return index > start && value > 0;
+        }
+
         private void ProcessFigScanLine(ModDatabase db, string line)
         {
             if (line.StartsWith("No fighters deployed", StringComparison.OrdinalIgnoreCase))
             {
-                ResetFigDatabase(db);
-                _currentFigScanSectors.Clear();
-                _inFigScan = false;
+                CompleteFigScan(db, "no fighters deployed");
+                return;
+            }
+
+            if (_rxScanTotal.IsMatch(line))
+            {
+                CompleteFigScan(db, "total");
                 return;
             }
 
@@ -2394,75 +2967,119 @@ namespace TWXProxy.Core
             if (!int.TryParse(m.Groups[1].Value, out int sectorNum) || sectorNum <= 0)
                 return;
 
-            var sector = GetOrCreate(db, sectorNum);
-            if (sector == null) return;
+            var sector = db.GetSector(sectorNum);
+            int existingQuantity = sector?.Fighters.Quantity ?? 0;
 
-            _currentFigScanSectors.Add(sectorNum);
-
-            sector.Fighters.Owner = m.Groups[3].Value.StartsWith("Personal", StringComparison.OrdinalIgnoreCase)
+            string owner = m.Groups[3].Value.StartsWith("Personal", StringComparison.OrdinalIgnoreCase)
                 ? "yours"
                 : "belong to your Corp";
 
-            sector.Fighters.Quantity = ParseDisplayedFighterCount(m.Groups[2].Value, sector.Fighters.Quantity);
+            int quantity = ParseDisplayedFighterCount(m.Groups[2].Value, existingQuantity);
             string figType = m.Groups[4].Value;
-            sector.Fighters.FigType = figType.Equals("Defensive", StringComparison.OrdinalIgnoreCase)
+            FighterType type = figType.Equals("Defensive", StringComparison.OrdinalIgnoreCase)
                 ? FighterType.Defensive
                 : figType.Equals("Toll", StringComparison.OrdinalIgnoreCase)
                     ? FighterType.Toll
                     : FighterType.Offensive;
 
-            db.SaveSector(sector);
-            AddFigMarker(db, sectorNum);
-            GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] Fig scan sector={sectorNum} qty={sector.Fighters.Quantity} owner={sector.Fighters.Owner} type={sector.Fighters.FigType}\n");
+            _currentFigScanSectors[sectorNum] = (quantity, owner, type);
+            GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] Fig scan sector={sectorNum} qty={quantity} owner={owner} type={type}\n");
         }
 
         private void CompleteFigScan(ModDatabase db, string reason)
         {
             ReconcileFriendlyFightersFromScan(db, _currentFigScanSectors, reason);
+            _inFigScan = false;
+            _currentFigScanSectors.Clear();
         }
 
         private static void ResetFigDatabase(ModDatabase db)
         {
-            ReconcileFriendlyFightersFromScan(db, new HashSet<int>(), "no fighters deployed");
+            ReconcileFriendlyFightersFromScan(
+                db,
+                new Dictionary<int, (int Quantity, string Owner, FighterType FigType)>(),
+                "no fighters deployed");
         }
 
-        private static void ReconcileFriendlyFightersFromScan(ModDatabase db, IReadOnlySet<int> scannedSectors, string reason)
+        private static void ReconcileFriendlyFightersFromScan(
+            ModDatabase db,
+            IReadOnlyDictionary<int, (int Quantity, string Owner, FighterType FigType)> scannedSectors,
+            string reason)
         {
-            int maxSector = db.DBHeader.Sectors > 0 ? db.DBHeader.Sectors : db.MaxSectorSeen;
             int clearedFriendlyFighters = 0;
             int removedFigMarkers = 0;
+            HashSet<int> sectorsToClear = new(db.GetSectorsWithTruthySectorVar("FIGSEC"));
+            List<SectorData> changedSectors = new();
+            List<(int SectorNumber, string VarName, string Value)> markerUpdates = new(scannedSectors.Count + sectorsToClear.Count + 1);
 
-            for (int i = 1; i <= maxSector; i++)
+            foreach (var pair in scannedSectors)
             {
-                if (scannedSectors.Contains(i))
-                    continue;
+                int sectorNum = pair.Key;
+                var entry = pair.Value;
+                sectorsToClear.Remove(sectorNum);
 
-                var sector = db.GetSector(i);
+                var sector = GetOrCreate(db, sectorNum);
                 if (sector == null)
                     continue;
 
-                bool hadFriendlyFighters = sector.Fighters.Quantity > 0 && IsFriendlyFighterOwner(sector.Fighters.Owner);
-                bool hadFigMarker = IsSectorVarTrue(db, i, "FIGSEC");
+                if (ApplyFighterScanToSector(sector, entry.Quantity, entry.Owner, entry.FigType))
+                    changedSectors.Add(sector);
 
-                if (hadFriendlyFighters)
+                markerUpdates.Add((sectorNum, "FIGSEC", "1"));
+            }
+
+            foreach (int sectorNum in sectorsToClear)
+            {
+                var sector = db.GetSector(sectorNum);
+                if (sector == null)
                 {
-                    sector.Fighters.Owner = string.Empty;
-                    sector.Fighters.FigType = FighterType.None;
-                    sector.Fighters.Quantity = 0;
-                    db.SaveSector(sector);
+                    markerUpdates.Add((sectorNum, "FIGSEC", "0"));
+                    continue;
+                }
+
+                if (ClearFighterScanFromSector(sector))
+                {
+                    changedSectors.Add(sector);
                     clearedFriendlyFighters++;
                 }
 
-                if (hadFigMarker)
-                {
-                    RemoveFigMarker(db, i);
-                    removedFigMarkers++;
-                }
+                markerUpdates.Add((sectorNum, "FIGSEC", "0"));
+                removedFigMarkers++;
             }
 
-            db.SetSectorVar(2, "FIG_COUNT", scannedSectors.Count.ToString());
+            markerUpdates.Add((2, "FIG_COUNT", scannedSectors.Count.ToString()));
+            db.SaveSectorsBulk(changedSectors);
+            db.SetSectorVarsBulk(markerUpdates);
             GlobalModules.AutoRecorderDebugLog(
                 $"[AutoRecorder] Fig scan complete: seen={scannedSectors.Count} clearedFriendlyFigSectors={clearedFriendlyFighters} removedFigMarkers={removedFigMarkers} reason={reason}\n");
+        }
+
+        private static bool ApplyFighterScanToSector(SectorData sector, int quantity, string owner, FighterType type)
+        {
+            SpaceObject fighters = sector.Fighters;
+            if (fighters.Quantity == quantity &&
+                fighters.FigType == type &&
+                string.Equals(fighters.Owner, owner, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            fighters.Quantity = quantity;
+            fighters.Owner = owner;
+            fighters.FigType = type;
+            return true;
+        }
+
+        private static bool ClearFighterScanFromSector(SectorData sector)
+        {
+            SpaceObject fighters = sector.Fighters;
+            bool changed = fighters.Quantity != 0 ||
+                           fighters.FigType != FighterType.None ||
+                           fighters.Owner.Length != 0;
+            fighters.Quantity = 0;
+            fighters.Owner = string.Empty;
+            fighters.FigType = FighterType.None;
+            return changed;
         }
 
         private void BeginMineScan(ModDatabase db, MineScanKind kind)
@@ -2497,19 +3114,12 @@ namespace TWXProxy.Core
             if (!int.TryParse(m.Groups[1].Value, out int sectorNum) || sectorNum <= 0)
                 return;
 
-            int quantity = ParseCommaInt(m.Groups[2].Value);
+            int quantity = ParseDisplayedFighterCount(m.Groups[2].Value, 0);
             string owner = m.Groups[3].Value.StartsWith("Personal", StringComparison.OrdinalIgnoreCase)
                 ? "yours"
                 : "belong to your Corp";
 
             _currentMineScanSectors[sectorNum] = (quantity, owner);
-
-            var sector = GetOrCreate(db, sectorNum);
-            if (sector == null) return;
-
-            ApplyMineScanToSector(sector, _inMineScanKind, quantity, owner);
-            db.SaveSector(sector);
-            SetMineMarker(db, sectorNum, _inMineScanKind, quantity > 0 && IsFriendlyDeploymentOwner(owner));
             GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] Mine scan sector={sectorNum} kind={_inMineScanKind} qty={quantity} owner={owner}\n");
         }
 
@@ -2530,61 +3140,76 @@ namespace TWXProxy.Core
             IReadOnlyDictionary<int, (int Quantity, string Owner)> scannedSectors,
             string reason)
         {
-            int maxSector = db.DBHeader.Sectors > 0 ? db.DBHeader.Sectors : db.MaxSectorSeen;
             int clearedFriendlyMineSectors = 0;
+            string markerName = GetMineMarkerName(kind);
+            HashSet<int> sectorsToClear = new(db.GetSectorsWithTruthySectorVar(markerName));
+            List<SectorData> changedSectors = new();
+            List<(int SectorNumber, string VarName, string Value)> markerUpdates = new(scannedSectors.Count + sectorsToClear.Count);
 
             foreach (var pair in scannedSectors)
             {
                 int sectorNum = pair.Key;
                 var entry = pair.Value;
+                sectorsToClear.Remove(sectorNum);
+
                 var sector = GetOrCreate(db, sectorNum);
                 if (sector == null)
                     continue;
 
-                ApplyMineScanToSector(sector, kind, entry.Quantity, entry.Owner);
-                db.SaveSector(sector);
-                SetMineMarker(db, sectorNum, kind, entry.Quantity > 0 && IsFriendlyDeploymentOwner(entry.Owner));
+                if (ApplyMineScanToSector(sector, kind, entry.Quantity, entry.Owner))
+                    changedSectors.Add(sector);
+
+                markerUpdates.Add((
+                    sectorNum,
+                    markerName,
+                    entry.Quantity > 0 && IsFriendlyDeploymentOwner(entry.Owner) ? "1" : "0"));
             }
 
-            for (int i = 1; i <= maxSector; i++)
+            foreach (int sectorNum in sectorsToClear)
             {
-                if (scannedSectors.ContainsKey(i))
-                    continue;
-
-                var sector = db.GetSector(i);
-                bool hadMarker = IsSectorVarTrue(db, i, GetMineMarkerName(kind));
+                var sector = db.GetSector(sectorNum);
                 if (sector == null)
                 {
-                    if (hadMarker)
-                        SetMineMarker(db, i, kind, false);
+                    markerUpdates.Add((sectorNum, markerName, "0"));
                     continue;
                 }
 
-                SpaceObject mines = kind == MineScanKind.Armid ? sector.MinesArmid : sector.MinesLimpet;
-                bool hadFriendlyMines = mines.Quantity > 0 && IsFriendlyDeploymentOwner(mines.Owner);
-                if (!hadFriendlyMines && !hadMarker)
-                    continue;
-
-                if (hadFriendlyMines)
+                if (ClearMineScanFromSector(sector, kind))
                 {
-                    mines.Quantity = 0;
-                    mines.Owner = string.Empty;
-                    db.SaveSector(sector);
+                    changedSectors.Add(sector);
                     clearedFriendlyMineSectors++;
                 }
 
-                SetMineMarker(db, i, kind, false);
+                markerUpdates.Add((sectorNum, markerName, "0"));
             }
 
+            db.SaveSectorsBulk(changedSectors);
+            db.SetSectorVarsBulk(markerUpdates);
             GlobalModules.AutoRecorderDebugLog(
                 $"[AutoRecorder] Mine scan complete: kind={kind} seen={scannedSectors.Count} clearedFriendlyMineSectors={clearedFriendlyMineSectors} reason={reason}\n");
         }
 
-        private static void ApplyMineScanToSector(SectorData sector, MineScanKind kind, int quantity, string owner)
+        private static bool ApplyMineScanToSector(SectorData sector, MineScanKind kind, int quantity, string owner)
         {
             SpaceObject mines = kind == MineScanKind.Armid ? sector.MinesArmid : sector.MinesLimpet;
+            if (mines.Quantity == quantity &&
+                string.Equals(mines.Owner, owner, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
             mines.Quantity = quantity;
             mines.Owner = owner;
+            return true;
+        }
+
+        private static bool ClearMineScanFromSector(SectorData sector, MineScanKind kind)
+        {
+            SpaceObject mines = kind == MineScanKind.Armid ? sector.MinesArmid : sector.MinesLimpet;
+            bool changed = mines.Quantity != 0 || mines.Owner.Length != 0;
+            mines.Quantity = 0;
+            mines.Owner = string.Empty;
+            return changed;
         }
 
         private static bool IsFriendlyFighterOwner(string owner)
@@ -2612,7 +3237,11 @@ namespace TWXProxy.Core
                 return existingValue;
 
             char suffix = char.ToUpperInvariant(normalized[^1]);
-            if (!double.TryParse(normalized[..^1], out double baseValue))
+            if (!double.TryParse(
+                    normalized[..^1],
+                    NumberStyles.AllowDecimalPoint,
+                    CultureInfo.InvariantCulture,
+                    out double baseValue))
                 return existingValue;
 
             double multiplier = suffix switch
@@ -2626,11 +3255,14 @@ namespace TWXProxy.Core
             if (multiplier <= 0)
                 return existingValue;
 
-            int approx = (int)(baseValue * multiplier);
-            int margin = (int)(multiplier / 2d);
-            if (existingValue < approx - margin || existingValue > approx + margin)
-                return approx;
-            return existingValue;
+            double expanded = baseValue * multiplier;
+            if (expanded < 0 || double.IsNaN(expanded) || double.IsInfinity(expanded))
+                return existingValue;
+
+            if (expanded > int.MaxValue)
+                return int.MaxValue;
+
+            return (int)Math.Round(expanded, MidpointRounding.AwayFromZero);
         }
 
         private void ParseSectorDefenderPrompt(ModDatabase db, Match m)
@@ -3332,12 +3964,11 @@ namespace TWXProxy.Core
 
             // Pascal SectorCompleted() sets etHolo (the maximum explored level) whenever
             // a full sector display finishes — this covers both direct visits and holo scans.
-            // Only upgrade, never downgrade (density-only will already be ExploreType.Density).
             if (sector.Explored != ExploreType.Yes)
             {
                 sector.Explored = ExploreType.Yes;
-                sector.Update = DateTime.Now;
             }
+            sector.Update = DateTime.Now;
 
             db.SaveSector(sector);
             GlobalModules.AutoRecorderDebugLog($"[AutoRecorder] ParseWarpsLine sect={sectorNum} stored=[{string.Join(",", sector.Warp)}]\n");
@@ -3986,6 +4617,7 @@ namespace TWXProxy.Core
                 ? CapturePortStaticSnapshot(sector.SectorPort)
                 : null;
             sector.SectorPort ??= new Port();
+            sector.SectorPort.Dead = false;
 
             sector.SectorPort.ProductAmount[ProductType.FuelOre] = (ushort)Math.Min(ore, ushort.MaxValue);
             sector.SectorPort.ProductAmount[ProductType.Organics] = (ushort)Math.Min(org, ushort.MaxValue);

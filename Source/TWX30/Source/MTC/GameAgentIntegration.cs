@@ -236,7 +236,15 @@ public partial class MainWindow
     }
 
     private static bool IsGameAgentWindowActive(MtcTabPrototype? owner)
-        => owner?.GameAgentWindow is { IsVisible: true };
+    {
+        // The embedded server reader calls this before queueing observations.
+        // Avalonia visibility belongs to the UI thread; the recorder's locked
+        // active state tracks the window lifetime and is safe on that reader.
+        if (!Dispatcher.UIThread.CheckAccess())
+            return owner?.GameAgent.IsActive == true;
+
+        return owner?.GameAgentWindow is { IsVisible: true };
+    }
 
     private void ObserveGameAgentClientInput(byte[] bytes)
     {
@@ -245,6 +253,11 @@ public partial class MainWindow
 
         if (bytes.Length == 0)
             return;
+
+        // Identical text after input is a new response opportunity. Keep the
+        // duplicate-render filter only within the same input boundary.
+        _lastGameAgentServerEventSignature = string.Empty;
+        _lastGameAgentServerEventUtc = DateTime.MinValue;
 
         bool redact = !_state.Connected && LooksLikeSensitiveLoginInput(bytes);
         string text = redact
@@ -265,6 +278,9 @@ public partial class MainWindow
             {
                 ["bytes"] = bytes.Length.ToString(),
                 ["redacted"] = redact ? "true" : "false",
+                // Preserve CR/control boundaries for event-to-action training.
+                // PlainText is display-normalized and cannot reconstruct a macro.
+                ["inputHex"] = redact ? string.Empty : Convert.ToHexString(bytes),
             },
         });
     }
@@ -369,7 +385,9 @@ public partial class MainWindow
         if (string.IsNullOrWhiteSpace(normalized))
             return false;
 
-        return normalized.Contains("(?=Help)?", StringComparison.OrdinalIgnoreCase) ||
+        return GameAgentPromptClassifier.IsEconomicPrompt(normalized) ||
+               GameAgentPromptClassifier.IsMissionPrompt(normalized) ||
+               normalized.Contains("(?=Help)?", StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("Command [TL=", StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("Citadel command", StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("Computer command", StringComparison.OrdinalIgnoreCase) ||

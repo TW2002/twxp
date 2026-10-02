@@ -11,7 +11,7 @@ namespace MTC;
 public partial class MainWindow
 {
     private const double QuickMacroOverlayBaseWidth = 760;
-    private const double QuickMacroOverlayBaseHeight = 48;
+    private const double QuickMacroOverlayBaseHeight = 84;
 
     private bool IsActiveQuickMacroOverlayVisible()
         => ActiveMtcTab?.QuickMacroPlayOverlay is { IsVisible: true };
@@ -35,7 +35,7 @@ public partial class MainWindow
             macroText,
             UiSize(QuickMacroOverlayBaseWidth),
             UiSize(QuickMacroOverlayBaseHeight),
-            UiFontSize(12.5),
+            UiFontSize(11.5),
             (macro, count) => ExecuteInOptionalMtcTabSessionAsync(owner, () => PlayQuickMacroOverlayAsync(macro, count)),
             () => CloseQuickMacroOverlay(owner),
             FocusActiveTerminal);

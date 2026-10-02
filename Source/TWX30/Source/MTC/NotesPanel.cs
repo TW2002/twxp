@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Core = TWXProxy.Core;
 
 namespace MTC;
 
@@ -243,6 +244,7 @@ public partial class MainWindow
             FontSize = 15,
             FontWeight = FontWeight.Bold,
             Text = "Notes",
+            TextTrimming = TextTrimming.CharacterEllipsis,
         };
 
         _notesStatusText = new TextBlock
@@ -290,7 +292,7 @@ public partial class MainWindow
 
         var panel = new Border
         {
-            Width = ScaledNotesPanelWidth,
+            ClipToBounds = true,
             Background = HudFrame,
             BorderBrush = HudEdge,
             BorderThickness = new Thickness(1.5),
@@ -388,6 +390,61 @@ public partial class MainWindow
         {
             _notesLoading = false;
             UpdateNotesHeader();
+        }
+    }
+
+    private void ResetNotesForGame(string gameName)
+    {
+        string normalizedGameName = NormalizeGameName(gameName);
+        if (string.IsNullOrWhiteSpace(normalizedGameName))
+            return;
+
+        string path = AppPaths.NotesPathForGame(normalizedGameName);
+        _notesSaveTimer?.Stop();
+
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch (Exception ex)
+        {
+            Core.GlobalModules.DebugLog($"[ResetGame] Failed to delete notes '{path}': {ex.Message}\n");
+            throw;
+        }
+
+        foreach (var tab in _mtcTabs)
+        {
+            if (string.Equals(tab.NotesGameName, normalizedGameName, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(tab.NotesFilePath, path, StringComparison.OrdinalIgnoreCase))
+            {
+                tab.NotesDirty = false;
+                tab.NotesGameName = normalizedGameName;
+                tab.NotesFilePath = path;
+                tab.NotesText = string.Empty;
+                tab.NotesStatus = path;
+            }
+        }
+
+        if (string.Equals(_notesGameName, normalizedGameName, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(_notesFilePath, path, StringComparison.OrdinalIgnoreCase))
+        {
+            _notesLoading = true;
+            try
+            {
+                _notesGameName = normalizedGameName;
+                _notesFilePath = path;
+                _notesDirty = false;
+
+                if (_notesTextBox != null)
+                    _notesTextBox.Text = string.Empty;
+                if (_notesStatusText != null)
+                    _notesStatusText.Text = path;
+            }
+            finally
+            {
+                _notesLoading = false;
+            }
         }
     }
 

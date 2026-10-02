@@ -27,32 +27,42 @@ namespace MTC;
 
 public partial class MainWindow
 {
+    private Core.GameInstance? _embeddedServerDataSentSource;
+    private EventHandler<Core.DataReceivedEventArgs>? _embeddedServerDataSentHandler;
+
     /// <summary>Connects using the current Host/Port already set in state.</summary>
     private void DoConnect()
         => _ = ConnectDirectTelnetAsync(reconnectIfConnected: true);
 
     private async Task<bool> ConnectDirectTelnetAsync(bool reconnectIfConnected)
+        => await ConnectDirectTelnetAsync(CurrentMtcTabContext(), reconnectIfConnected);
+
+    private async Task<bool> ConnectDirectTelnetAsync(MtcTabPrototype? tab, bool reconnectIfConnected)
     {
-        var tab = CurrentMtcTabContext();
-        if (_telnet.IsConnected)
+        GameState state = tab?.State ?? _state;
+        TelnetClient telnet = tab?.Telnet ?? _telnet;
+        TerminalBuffer buffer = tab?.Buffer ?? _buffer;
+        AnsiParser parser = tab?.Parser ?? _parser;
+
+        if (telnet.IsConnected)
         {
             if (!reconnectIfConnected)
                 return true;
-            _telnet.Disconnect();
+            telnet.Disconnect();
         }
 
-        _telnet.SetWindowSize(_buffer.Columns, _buffer.Rows);
+        telnet.SetWindowSize(buffer.Columns, buffer.Rows);
         try
         {
-            await _telnet.ConnectAsync(_state.Host, _state.Port);
+            await telnet.ConnectAsync(state.Host, state.Port).ConfigureAwait(false);
             return true;
         }
         catch (Exception ex)
         {
             void Report()
             {
-                _parser.Feed($"\x1b[1;31m[Connect failed: {ex.Message}]\x1b[0m\r\n");
-                _buffer.Dirty = true;
+                parser.Feed($"\x1b[1;31m[Connect failed: {ex.Message}]\x1b[0m\r\n");
+                buffer.Dirty = true;
             }
 
             if (Dispatcher.UIThread.CheckAccess())
@@ -619,6 +629,14 @@ public partial class MainWindow
 
         void ProcessEmbeddedServerData(string text, bool allowUiObservers, bool queueUiObservers = false)
         {
+            if (owningTab is not null)
+            {
+                byte[] filtered = owningTab.ScriptMapFrameFilter.Filter(System.Text.Encoding.Latin1.GetBytes(text));
+                if (filtered.Length == 0)
+                    return;
+                text = System.Text.Encoding.Latin1.GetString(filtered);
+            }
+
             List<(string Stripped, string Ansi, bool IsPrompt)>? queuedUiObserverLines =
                 queueUiObservers && owningTab is not null ? [] : null;
             bool queuedOnlineCapture = owningTab?.CapturingOnlinePlayers == true;
@@ -682,6 +700,7 @@ public partial class MainWindow
                                 lastDispatchedPartialAnsiLine = remainderAnsi;
 
                                 string strippedRemainder = Core.AnsiCodes.NormalizeTerminalText(scriptRemainder);
+                                ObserveOpenTwMapSyncLine(owningTab, strippedRemainder);
                                 Core.GlobalModules.GlobalAutoRecorder.ProcessPrompt(strippedRemainder, remainderAnsi);
                                 if (allowUiObservers)
                                     ObserveGameAgentServerLine(strippedRemainder, remainderAnsi, isPrompt: true);
@@ -733,6 +752,7 @@ public partial class MainWindow
                     string lineRaw = bufferedAnsi[lastAnsiProcessedPos..(ansiCrPos + 1)];
                     string lineForScript = NormalizeLegacyInterrogLineForScripts(buffered[lastProcessedPos..crPos]);
                     string lineStripped = Core.AnsiCodes.NormalizeTerminalText(lineForScript);
+                    ObserveOpenTwMapSyncLine(owningTab, lineStripped);
                     lastDispatchedPartialLine = string.Empty;
                     lastDispatchedPartialAnsiLine = string.Empty;
 
@@ -839,6 +859,8 @@ public partial class MainWindow
         // update game-connection state (status bar, _state.Connected) here.
         gi.Connected += (_, _) =>
         {
+            if (owningTab is not null)
+                ResetOpenTwMapSync(owningTab);
             bool wasConnected = owningTab is not null
                 ? Interlocked.Exchange(ref owningTab.EmbeddedServerConnectedState, 1) == 1
                 : _state.Connected;
@@ -863,6 +885,8 @@ public partial class MainWindow
 
         gi.Disconnected += (_, _) =>
         {
+            if (owningTab is not null)
+                CancelOpenTwMapSync(owningTab);
             bool wasConnected = owningTab is not null
                 ? Interlocked.Exchange(ref owningTab.EmbeddedServerConnectedState, 0) == 1
                 : _state.Connected;
@@ -886,8 +910,6 @@ public partial class MainWindow
                         preserveShipDestroyed: HasNativeMombotShipDestroyedFlag());
                 }
 
-                // Fire 'Connection Lost' so scripts can re-register triggers, etc.
-                interpreter.ProgramEvent("Connection Lost", "", false);
                 Dispatcher.UIThread.Post(() => ExecuteInOptionalMtcTabSession(owningTab, () =>
                 {
                     _state.Connected = false;
@@ -1008,6 +1030,7 @@ public partial class MainWindow
                 _mombot.HandleObservedScriptStop();
                 ScheduleNativeMombotStartupWatch(owningTab);
                 HandleNativeMombotPostLoginScriptStop();
+                TryDispatchPendingNativeMombotCommand();
             });
         };
 
@@ -1047,17 +1070,37 @@ public partial class MainWindow
         ReloadRegisteredBotConfigs();
         SyncMombotRuntimeConfigFromTwxpCfg(gameConfig);
         _mombot.AttachSession(gi, _sessionDb, interpreter, GetOrCreateEmbeddedMombotConfig(gameConfig));
-        gi.ServerDataSent += (_, e) =>
+        EventHandler<Core.DataReceivedEventArgs> serverDataSentHandler = (_, e) =>
         {
             if (owningTab is not null)
             {
-                ExecuteInMtcTabBackgroundContext(owningTab, () => _mombot.ObserveOutboundText(e.Text));
+                ExecuteInMtcTabBackgroundContext(owningTab, () => owningTab.Mombot.ObserveOutboundText(e.Text, e));
                 return;
             }
 
             using var outboundScope = Core.GlobalModules.UseRuntimeContext(runtimeContext);
-            _mombot.ObserveOutboundText(e.Text);
+            _mombot.ObserveOutboundText(e.Text, e);
         };
+        if (owningTab is not null)
+        {
+            if (owningTab.EmbeddedServerDataSentSource is not null &&
+                owningTab.EmbeddedServerDataSentHandler is not null)
+            {
+                owningTab.EmbeddedServerDataSentSource.ServerDataSent -= owningTab.EmbeddedServerDataSentHandler;
+            }
+
+            owningTab.EmbeddedServerDataSentSource = gi;
+            owningTab.EmbeddedServerDataSentHandler = serverDataSentHandler;
+        }
+        else
+        {
+            if (_embeddedServerDataSentSource is not null && _embeddedServerDataSentHandler is not null)
+                _embeddedServerDataSentSource.ServerDataSent -= _embeddedServerDataSentHandler;
+
+            _embeddedServerDataSentSource = gi;
+            _embeddedServerDataSentHandler = serverDataSentHandler;
+        }
+        gi.ServerDataSent += serverDataSentHandler;
         RefreshStatusBar();
         Core.ScriptRef.SetActiveGameInstance(runtimeContext, gi);  // routes getinput through the pipe, not the system console
         await LoadEmbeddedExpansionModulesAsync(gameName, programDir, effectiveScriptDir, gi, interpreter);
@@ -1143,18 +1186,35 @@ public partial class MainWindow
         }
 
         _gameInstance = null;
-        if (gi != null && owningTab is not null)
+        if (gi != null)
         {
-            if (owningTab.EmbeddedNativeHaggleChangedHandler is not null)
-                gi.NativeHaggleChanged -= owningTab.EmbeddedNativeHaggleChangedHandler;
-            if (owningTab.EmbeddedNativeHaggleStatsChangedHandler is not null)
-                gi.NativeHaggleStatsChanged -= owningTab.EmbeddedNativeHaggleStatsChangedHandler;
-            if (owningTab.EmbeddedShipStatusUpdatedHandler is not null)
-                gi.ShipStatusUpdated -= owningTab.EmbeddedShipStatusUpdatedHandler;
+            Core.GameInstance? serverDataSentSource =
+                owningTab?.EmbeddedServerDataSentSource ?? _embeddedServerDataSentSource;
+            EventHandler<Core.DataReceivedEventArgs>? serverDataSentHandler =
+                owningTab?.EmbeddedServerDataSentHandler ?? _embeddedServerDataSentHandler;
+            if (serverDataSentSource is not null && serverDataSentHandler is not null)
+                serverDataSentSource.ServerDataSent -= serverDataSentHandler;
 
-            owningTab.EmbeddedNativeHaggleChangedHandler = null;
-            owningTab.EmbeddedNativeHaggleStatsChangedHandler = null;
-            owningTab.EmbeddedShipStatusUpdatedHandler = null;
+            if (owningTab is not null)
+            {
+                if (owningTab.EmbeddedNativeHaggleChangedHandler is not null)
+                    gi.NativeHaggleChanged -= owningTab.EmbeddedNativeHaggleChangedHandler;
+                if (owningTab.EmbeddedNativeHaggleStatsChangedHandler is not null)
+                    gi.NativeHaggleStatsChanged -= owningTab.EmbeddedNativeHaggleStatsChangedHandler;
+                if (owningTab.EmbeddedShipStatusUpdatedHandler is not null)
+                    gi.ShipStatusUpdated -= owningTab.EmbeddedShipStatusUpdatedHandler;
+
+                owningTab.EmbeddedNativeHaggleChangedHandler = null;
+                owningTab.EmbeddedNativeHaggleStatsChangedHandler = null;
+                owningTab.EmbeddedShipStatusUpdatedHandler = null;
+                owningTab.EmbeddedServerDataSentSource = null;
+                owningTab.EmbeddedServerDataSentHandler = null;
+            }
+            else
+            {
+                _embeddedServerDataSentSource = null;
+                _embeddedServerDataSentHandler = null;
+            }
         }
         await DisposeEmbeddedExpansionModulesAsync();
         RebindMtcTabSessionAfterAwait(owningTab);

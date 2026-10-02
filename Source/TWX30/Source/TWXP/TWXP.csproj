@@ -7,12 +7,12 @@
     <Nullable>enable</Nullable>
     <RootNamespace>TWXP</RootNamespace>
     <AssemblyName>twxp</AssemblyName>
-    <Version>3.0.0-beta5</Version>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <Version>3.0.1</Version>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <FileVersion>3.0.1.0</FileVersion>
     <Authors>Matt Mosley (reaper)</Authors>
     <Company>twxproxy</Company>
-    <Product>twxproxy 3.0 beta5</Product>
+    <Product>twxproxy 3.0.1</Product>
     <Description>Cross-platform Trade Wars 2002 proxy client</Description>
     <ApplicationTitle>twxp</ApplicationTitle>
     <RuntimeIdentifiers>osx-arm64;osx-x64;win-x64;win-arm64;linux-x64</RuntimeIdentifiers>

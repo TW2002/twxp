@@ -1,0 +1,293 @@
+I just need the first damage number not the second, and I need to know what planet number was landed on (in cases where it was planets being landed). Also I just need the last 10
+how many times with a timestamp of today did I end up with ship destroyed?
+in nearly any tradewars game with few exceptions, most ships have escape pods and the game standard is that you can be "podded" or have your ship destroyed but escape twice in a day; the third time means you are dead and out for the day. the exception is if you are killed while in a pod before getting back in another ship, or if you are in a ship with no pod. but the standard is usually 2 pods per calendar day. pods should not and don't seem to trigger ISSHIPDESTROYED
+what pattern is freejack using to grid in game the_city_on_the_edge_of_forever_e? he gridded against us (destroyed our fighters and added his) doing a bunch of sectors, but every gridder uses a pattern, and if we can figure out the pattern we can stop it
+can you write me a script that will wait for a few fighter hits, predict the next sector he is going to grid and then jump there before he can grid it? or at least the fundamental logic in tw script for looking at a run and predicting?
+i see two modes. one to just lock on to a sector and try to hit it at the same time as him, the other to use timing and look at the time between sector hits (in milliseconds) and try to get there just before he does, as close as possible, because otherwise if I move there first he will see me there and not grid. in order to do that it'll first need to do a couple moves and determine my response time to the server, or use its own analysis to see how quickly the server responds to my commands
+update it to remove the ask for target (it should target anyone hitting figs or limps except aliens) and use the logic in chaser.ts, which works, to detect alien hits. don't ask about limpsec, that's irrelevant, always fire on limps or figs, either is an indication someone is entering a sector we own - but only fire on limps if we have a fighter in that sector too, otherwise it's not gridding. the limpet will show up before the fighter so you can hit them faster if you fire off a limpet but I don't have limpets in every sector. Also don't ask about checking timing, always do it. The goal here is to remove it asking any questions, it should just do - this isn't about freejack, it's about placing a planet in front of anyone hitting our fighters. the object is to land the planet just milliseconds before they enter the next sector, then they will move into the sector and the planet cannon will fire, podding them. the way gridders generally work is they holo scan immediately before moving into a sector so you need to catch them between the holo scan and them entering. they are probably also using a planet gridder which has one player on 'saveme', the other calls saveme which causes the first player to send "p<sector>*y" a bunch of times, then the first player enters the sector and attempts to attack the fighter and put his own down while the first player is sending the commands to send the planet. he lands when the planet arrives and is only sitting in the sector for a short period of time. the goal is to land my planet in the sector before he can even enter and then the cannon will fire.
+grid runs are not always hub/chain sweeps, they can also be linear (especially when gridding toward deadends), alternating linear on multiple paths, or random
+i made some modifications, specifically adding a check for enemies after it moves the planet. can you review the logic and ensure it still makes sense? i also added the player include to get starting sector so it'll need to compile with that. finally just to clarify what limpets mean: when a player enters a sector, if there is a limpet from another corp they trigger it which gets notified to us as a limpet hit, and it gets attached to their ship. then after that they reach the fighters and the fighter hit gets notified. so if you are trying to pwarp on someone as they enter a sector, limpet hits will get you there potentially even before they make it in, though in this case predictive is still a better call. recompile the script with these changes
+fix that please then re evaluate with the newer hits, they are leaving large time gaps between fig hits so maybe we're better off just plocking sectors they are likely to go based on their pattern - higher numbers first or lower numbers? where do they start on sector.warps[$sector], first or last? then if they go fast again, go back to trying to land in front of them. if you read the log you'll see a message about plock decaying, there is a time limit, if that happens you can send "n" and then resend the plock
+that is not at all correct but probably because i haven't run cim. i will ask again in a minute
+how much cash did I have on the planet I am using with merch when I started this run?
+can you find me all sectors in sk_r that have 6 warps, a backdoor warp in (a warp in that is not a warp out), and are within 14 hops of terra (sector 1)? sort them by distance from 1
+okay, very oddly, i am not finding stardock in any of those. go out to 25
+can you analyze all of the existing xdb files in my games directory, find stardock in each one, and look for characteristics that are common that i can use to better triangulate it here, especially since I have alpha and rylos? there is something called the major space lanes" that run between alpha, rylos, stardock and terra and is usually a pattern there, or a pattern in distance from terra, or a patter on the sector itself or surrounding sectors. try to find a consistent pattern for me if you can. the reason it's not in my db yet is that i have not observed it - this game has a "hidden stardock" which is an uncommon but sometimes used option where the user has to locate stardock themselves
+find me all the port pairs I've seen (ports with ore/equ buyers adjacent to ore/equ sellers) in sk_r, ordered by closest to terra
+distance from terra
+my gridder in sk_o just reported one sector with high fig count in the grid run that just ended. what sector was it?
+what was the sector with the 1 high fig count reported by mgrid in sk_o?
+the mgrid I just ran reported a high fig count in 1 sector and i didn't run it in 20022
+how many unique sectors did Dizturbed grid today in the_city_e? Each one looks like this: Deployed Fighters Report Sector 5675: Dizturbed's RedRum entered sector.
+can you analyze dizturbed's last 66 sectors including the 5 most recent and see if you are able to come up with an accurately predictive algorithm that would be able to place a planet where he is going just before he goes there?
+he's clearing limpets right before he grid a sector, can you predict based on the limpets he is clearing where he is going next?
+i know, there is always a limpet hit immediately after entering a sector if i have a limpet there. what i am interested in is the sometimes two or three limpet hits before that. they very likely project where he is going. these happen just a few seconds before the fighter hit but not immediately before. look at those and analyze
+if I have four full planets (7,500,000 ore) available, and the formula for sector damage is (fuel * sector cannon %)/3, then what percent would be optimal on each planet to be able to destroy 8 ships that can each take 396000 damage points? the cannon setting is generally not getting modified after each hit, but give me numbers both for a static cannon setting and one updated after each hit. the settings should be the same (spread damage across 3 planets) and should do at least 400k damage each hit to have a little margin for error over the 396k.
+i need to know the timings between when i see a limpet hit and a fighter hit that immediately follows it. how many milliseconds on average are passing? can you see this from the debug logs we have or do we need different instrumentation for this?
+if I wanted to possibly have a sub-millisecond response capability to the limpet hit to send a predefined string to the server as soon as it receives that hit, could that be done in a script or would that have to be done in code? if it is faster to do that in code, could that be done through the existing module function in mtc or would we need something specific for this purpose to make it as fast as possible?
+can you create a core api plugin for this purpose and an mtc module that will leverage it? let's call it Mayhem Defender and it will have the following characteristics: must start in Citadel, gives two main options to activate: foton and pdrop. the script will start at the "p" prompt to pwarp the planet, so it will send "p" and wait at this prompt: What sector do you want to warp this planet to? (Q to Abort) the foton path will wait for a limpet or deployed fighter report hit, and then send a preloaded command to warp the planet to an adjacent figged sector (FIGSEC=1) and fire a photon as such (using tradewars script lingo for *): p[adjacent]* y c p y [sector]* q It will build this macro for each sector in advance, exactly how chaser.ts does, so when it sees a limpet or fighter hit on a sector, it fires that pre build adjacent move/photon macro as defined for that sector. it will need to have the cleanup, refurb, other options as in chaser.ts - basically i want it to do chaser.ts in code rather than script. for the second, ldrop command, i want it to instead just do this when it sees a limpet hit (only for liimpets): p[sector]*y if it does that as fast as possible, the hope is that it can reach the sector before he hits the fighter, capturing the player there. if it fails, it should just try again and maybe instrument the timing between the limpet and fighter hit and the pwarp there so that it can see how close it got.
+mayhem defender fired at sector 1 from the destroyed 1 of your fighters message and not at the actual limpet hit, it should only grab the line from the actual limpet hit and should fire much more quickly than that. did you get any telemtry on timing? also - i don't want to have to restart mtc every time i do this, can you make it possible to reload the module?
+ldrop does not appear to even be attempting to move the planet in the_city_e
+i found an issue - if it fires off limpet hits that don't have actual deployed fighters hits, it wil get you cannot blind jump a planet and will end up back at citadel. if this happens it should just hit p to get back to pwarp prompt. see latest log
+i hit p manually but it was at citadel
+if there is no ANSI will it gain the speed advantage as it is written or do you need to update it for no ANSI? see this: Limpet mine in 12718 activated What sector do you want to warp this planet to? (Q to Abort) Incoming transmission from Deployed Fighters: Report Sector 12718: Dizturbed's RedRum entered sector. What sector do you want to warp this planet to? (Q to Abort) Incoming transmission from Deployed Fighters: Report Sector 12718: Dizturbed is attacking! What sector do you want to warp this planet to? (Q to Abort) Dizturbed destroyed 1 of your fighters in sector 12718 What sector do you want to warp this planet to? (Q to Abort) 12718 Sector 12718 is 24 hops away from here. You do not have any fighters in Sector 12718. Your own fighters must be in the destination to make a safe jump. You cannot "Blind Jump" a planet. Citadel treasury contains 11,024,289 credits. Citadel command (?=help) P it appears from this log that the prompt redraw happened several times before it attempted to send the string. this is with ANSI off
+go back and analyze all of the fighter hits from dizturbed today. again, look for a pattern, based on distance from deadends, number of warps, or any other factor. this is an auto planet gridder and it is using some sort of math to come up with the list; help me find out what
+also look at the limpet cleanups that happen right before the limpets that occur simultaneous to the deployed fighter reports. generally he seems to clean limpets on already gridded sectors and then go back to gridding.
+can you update the predictor script to use this data and pick from a sector within that criteria, rotating through the pool as you suggest? the goal is to plock the sector and if we see a limpet hit in that sector, immediately send 'y' to send the planet to the plocked sector. then return home after 10 seconds. focus on distance closest to deadend, within >= 14 to dock/terra. non-port is unlikely a factor so ignore that. can you also look and see if he is going back and gridding the adjacents to the cleaned up sectors later, even if not immediately?
+interesting. what are the deepest places in our grid (most hops away from a non figged sector)?
+can you find me a deadend in the_city_e of at least four sectors of which all have our fighters and limpets and ideally at least two or three layers outside it also do?
+why did farm fail to land on starting planet at the end of the_city_e?
+the scenario I am looking for is that I am trying to get from sector a to sector b, but somewhere along that path, the direct path between them was blocked. so i am now sitting at sector c but i cannot continue the original path. can i set an avoid for the blocked sector and do getcourse $course from sector c to sector b and have it route me a different way?
+can you look at all the sectors rider has gridded today following this pattern: R rider Gridding sector 74 R rider Gridding sector 14046 R rider Gridding sector 12371 R rider Gridding sector 12103 R rider Gridding sector 241 Analyze them and attempt to identify any pattern, and give me an idea of randomness within his choices
+the echoe should not be out of sync because of the waiton "Sector. :" and waiton "Citadel treasury contains"
+So the likely real bug is that plimper is reading sector.limpets.quantity[$startingsector] before the autorecorder/sector array reflects the just-scanned mine state. That is a DB/update-order problem, not a variable-staleness problem. The log ordering supports that because the script’s failure echo appears before the queued mine-control macro output finishes, meaning the script is validating against data at the wrong point in the output stream. If that is true then autorecorder/sector recording is horribly broken and needs to be fixed. it should update as quickly as the script runs
+was dizturbed's last couple of fighter hits part of a surround? the pattern seems different. please check quickly
+what is the msweep option you added to go a certain distance from perimeter? and is my understanding correct that if I give it a depth of 1 or whatever the option is, it will only go to sectors adjacent to enemy figs, and 2 would go to those not adjacent? i'd like to make it do everything below eg 2 would do 2, 3, 4, 5, 6 hops from enemy fig.
+with 7500000 ore on a planet, how high do the sector and atmos cannons need to be set to fire at 400000 twice?
+why is chaser3.ts getting stuck on qcannon control in rogue_t? what exactly is it sending after landing on the planet, and where is that coming from?
+what happened this run? why did it not move to teh sector?
+how big is the area of fighters we have that are adjacent to his fighters (or any not ours) and close to a deadend?
+how far is 12277 from a sector that is not FIGSEC?
+what is the farthest 4-sector-deep deadend from any sector that is not FIGSEC?
+how about the farthest from the junction to a non-figsec, for 4-sector, 5-sector, and 6-sector deadends?
+is there a smaller group of sectors to probe that would hit the vast majority of the grid, skipping outlier sectors?
+there is no need to probe any sector more than once, so the goal is a list of sectors that hits virtually all of the grid in the least probes possible
+why is >farm all all in sk_o not filling all the planets in sector?
+what is the closest deadend to terra (1) that we have a fig and limpet down?
+can you modify mpgrid.ts and the border generation logic to build me a list of griddable sectors - all those with figsec=0 with adjacent figsec=1 that is not a one way - build a list, then randomly pick from it during each run where it was going to :nearfig before. i want to randomize my grid sector selection. it should make sure the adjacent is still figged before trying to go there.
+why did it immediately warp to the sector it was in?
+can you also make sure it never picks a sector within 3 hops of the previously gridded one?
+why did mpgrid break in the_city_e and leave me stuck at fig prompt?
+has mpgrid.cts actually holo scanned and rejected a sector in sk_o yet?
+did any enemy hit one of our fighters today? did we get a limpet or fighter hit not from an alien?
+can you analyze the current psst run in the_city_e and tell me if it is going back to higher mcic ports as madam is clearing my busts? we are both running the new psst version that focuses on higher mcic ports and we are both running teampsst.cts, so in theory we should be clearing each other's busts and both focusing on higher mcic ports, but so far the credits per port look lower than earlier.
+why does psst always upgrade ports and fail if it can't? if the port has room to buy there should be no need to upgrade it. can you fix that in psst so it checks if the port is buying product and if it's buying enough it doesn't bother to upgrade? that might allow it to use the maxed ports
+why is the window showing very low credits per port, much lower than in past runs?
+how many pods would it take to get a ship in to a sector with 5 planets, each with 7.5m ore, set at 10% cannons? the pods carry 396k fighters. keep in mind a cannon will only go off if the ship is still alive, so if the first two planets fire for 10% each which would hit for 250k each (i think), only two would hit and get reduced by 10%. the third would hit when the first two get depleted to where the pod survives, etc, etc.
+given this math with 5 planets per sector and up to 7.5m ore on each planet, what is the optimum cannon setting to prevent a ship with 396k fighters from getting in for the longest period of time, taking into account that only the necessary plants will fire each time?
+why did my surround break and warp me out in sk_m?
+i landed a planet with cannons on, probably with 7.5m ore. the first hit was 675000 and the third was 453974. i missed the second hit. what is the cannon % and what will the next 2 hits be?
+it failed again, i think you were wrong about the problem the last time because i put in a wait for citadel treasury. i think the long list of ships in that sector is breaking it for some reason
+now it's never trading at all, congrats for that. it still scans the sector. i think it needs the s* to get info from the port in order to work
+actually undo that. the right way to do this is just to scan the sector, then it will know it has mines. I want it to also fire on other sectors if they have them, not just the noe I know about.
+if not twarp, just "s" from the planet before moving will scan it. If twarp, it should do a holoscan before sweeping, which I thought it already did but maybe I'm wrong
+what are the best cannon settings for 3 planets with 6.5-7million ore to kill 380k fig ships?
+what if I am connecting to twxp or mtc listener port via telnet? will it suppress them then?
+but why does it twarp out at that point, shouldn't it still be waiting in the cit at home until it picks the next target? i thought this code was to deal with cases where it might furb while needing to disrupt mines and was out of disruptors so it wants to go back to the target sector
+that's what the $sector <> $startingsector is meant to do, differentiate between go-home and return-to-target, if it is being set properly
+the alien files should be added to the main ships.cfg and planets.cfg if they are there. write those files but also keep the additional information in the downloaded files; next to the edit chooser pulldown should be a button view edit that will show you the full planets and ships for the selected edit in a user-friendly view format
+at the bottom of ships, place the alien ones in alphabetical order by alien race. put all the generals first then the aliens in order.
+TextLine SUCCESS = Success! BUSTED = Suddenly you're Busted! PORTMAXXED = There aren't that many holds of Equipment at this port! FAKEBUST = Do you want instructions (Y/N) [N]?
+okay, the fix is after i run buyfuel in a sector, send "jy" to jet holds before doing any steals. can you implement this?
+thecity_a just told me ship already stored in bot file but i dont think thats possible since i've never seen it before
+why did strip all fig do nothing in abandoned_stardock_e?
+now i've got game activity including alien fighters hits leaking in on top of me while i am in script menus. i was just in thecity_a at the planet #s prompt in proecolonizer and a bunch of fig hits overwrote what i was trying to do. what the actual fuck? isn't the client supposed to be deaf in menus?
+where did Dizturbed likely disrupt those mines from? what sector is adjacent to those?
+i made a copy in mombot/local/modes/grid/ram.ts, can you review this file, reformat it and make it use proper includes, switchboard etc, and otherwise designed more like the other scripts we've done; also fix the formatting
+what is the deepest sector in the bubble starting at sector 1833 in thecity_a?
+what do you mean it's not a bubble? it's listed as one, and from 14694 i cannot reach any sector outside the bubble if i set the avoid to 18311
+why is moveship saying I am at the wrong prompt in thecity_a when I am clearly at a planet prompt?
+got it. ok, move is still not working from stardock in game thecity_a. can you find out exactly what key sequences it is sending the server and at what prompts, and if it is not seeing the code in planet.ts to skip certain code when at stardock?
+where did baal marduk hit a fighter in the_city_e? We saw his ship blown up but not the fighter hit that came before
+the other team is in the bubble beginning at 4767, 491 sectors. can you find me any sectors outside of that bubble that have a backdoor from inside the bubble?
+why did the pgrid command in thecity_e grid in but not drop a fighter? it absolutely needs to do that
+what sectors did dizturbed grid recently?
+i am not sure what cannon though. where do we have a planet near 4183?
+also check if 4183 is near stardock, rylos or alpha
+the major space lanes (MSL's) in tradewars are the following paths: - 1 to stardock
+they are: 1 to stardock stardock to 1 stardock to rylos rylos to stardock stardock to alpha alpha centauri to stardock rylos to alpha centauri alpha centauri to rylos I would like MTC to mark all of these sectors in the database once they are known (the routes), and show them on the map with a blue circle around them. I would also like a way to see them through view -> show MSL's that will list each of the paths and the sectors between them.
+can you list the MSL sectors for me in thecity_e?
+in my last mpgrid run in the_city_e, the gridder stopped when it hit a sector with a bunch of aliens, I am guessing based on the attack macro intended to clear a fighter in the sector; however, it should still have dropped a fighter. what happened?
+nope it's stil looking broken. strip and farm both fail and at login it didn't get to citadel like its supposed to. can you just undo all work on triggers in the past 48 hours, revert only that part to where it was 48 hours ago? were there any other changes to core?
+ok i need you to tell me HOW THE ACTUAL FUCK strip.cts is landing and entering the citadel and trying to run planetinfo when planet~nocit is EXPLICITLY FUCKING SET to true before it runs landingsub there. what is happening?
+this is inside planet.ts so it should not matter one bit if it sets planet~nocit or just nocit, because it is planet~nocit in this context
+this is the same reason it can gosub :landingsub and not gosub :planet~landingsub as it does all over that file
+in thecity_l, i have found at least one sector belonging to each alien race, and they are all contiguous meaning each alien race has a small grouping of sectors adjacent to one another. given that, if you take a sector in a bubble, avoid the entrance, and try to find a path to an alien sector and it's not there, the aliens are not in that bubble. there are a lot of big bubbles in this game (100+ sectors). for each alien race, can you tell me if it is inside a bubble, and if so which one; and can you then tell me the largest bubble without an alien race?
+the issue isn't it going into alien sectors, that's fine and allowed. the issue is it not recognizing and handling the aliens gracefully and there IS a guard for that, starting in line 173
+can you tell me all of the MSL sectors in thecity_e?
+17915 is the backdoor to dock and is an msl
+remark them correctly based on this. you also need to mark the path from rylos/alpha to dock fully as msl which includes 17915
+look at the attached list and tell me what sectors have more than 1 of my fighter in them
+can you find all of those in MSL's?
+is sector 10960 in a bubble or deadend in game joes_tavern_k?
+what fighter hits did we have today in thecity_e that were not from aliens?
+how many big fighter gorups in msl?
+where do I have more than 500 fighters in MSL in the_city_e?
+what fig hits happened in city_e today from non ferrengi? also show me the logs around and related to any combat today in city_e
+also look at how colo works and make it faster - if there are more than a handful of colonists on the planet it should colo rapidly until it is down to a few holds worth, then switch to milk
+where do I currently have more than 500 fighters in MSL lanes in the_city_e?
+show me all the fighter hits today in thecity_e
+show me all the sectors in thecity_e with > 500 corp fighters that are also an MSL
+have any of our figs been taken out by anyone who is not an alien in thecity_e?
+what time were those fighter hits? and why do you think my mdrop script din't attempt to respond?
+not responding to deployed fighter reports was intentional, but currentline should never include the prompt because the Limpet m ... is a new line from the server and it should be looking at what comes from the server. If those are not showing up as new lines from the server, something else is broken.
+show me all MSL with more than 500 of my fighters
+is 19677 an MSL?
+why did mpgrid get stuck in the last sector in thecity_e?
+it wasn't suppose to block it - the macro is supposed to move in and kill the enemy fig, why didnt it kill the fig?
+okay, offensive fighters don't have to be destroyed, they are automatically destroyed when you enter the sector, so tell the macro not to hit those. look at what just happened in thecity_e
+the enemy fighter attack macro I had previously would have worked anyway because it had a safety in it to not break the path if there were offensive figs. your recent changes have broken my attack macro
+show me all MSL sectors with more than 500 of my fighters in thecity_e
+what is the path by which 19677 would be an MSL?
+what are the first three deadend sectors in the list ~/twx/joes_f.list in the game joes_tavern_f?
+of the sectors in pirate_s_a where i have a fighter, what is the deepest deadend (most two-sector links in a row to a sector with only one link)?
+run the same deadend search again please. also look for fully figged bubbles.
+in pirate_s_a, why is mpgrid's guard against aliens that is supposed to send "*" at the alien attack prompts so it still drops figs, wh y is that not working? this is a script in twx/scripts/mombot/local
+add the details on the parser and how to use it to the twx-scripting skill. also record the DB fighter owner label ("yours" or "belong to your Corp") as they are standard
+which of those lowest count is closest to terra?
+what is the largest bubble and largest deadend we current have fully figged (with fighters) in joes_tavern_b?
+which of these are closest to terra and stardock, and how many hops to each?
+can you give me a list, one sector per line, of sectors that are not currently figged in pirate_s_a?
+can you search the logs the last three days for "Enter a new password" in pirate_s_a? at some point I changed the password on ship 24 accidentally due to a script problem and I don't know what I changed it to. it should be in the logs. I just ran it to test the string so I don't want the one from the last 5 minutes, but any time that happened before that.
+what is the largest bubble we have figged in joes_tavern_b?
+what is the largest bubble we have gridded in pirate_s_a?
+show me the largest deadends where every sector in the deadend is figged in the same game
+is 11802 in an MSL?
+what are the MSL adjacent to dock?
+what happened to wsst in the_city_k? why did it warp out to space?
+show me all MSL in microblaster_network_s where we have more than 500 figs. also show me all sectors off terra that are not MSL
+sorry I mean all sectors off stardock, not terra
+what are the largest figged bubbles/deadends in microblaster_network_s, and how far is each from a enemy fighter?
+when i run the portman script in microblaster_network_s (from scripts/mombot/local), it reports 33 border sectors; those being sectors that have my fighter and at least one adjacent with an enemy fighter. is that right? that seems like far too few, but it could be right
+what if you reverse the definition: what I really want to know is how many sectors have an enemy fighter and at least one sector with my fighter, because that tells me what sectors they have the ability to potentially attack
+can you check the logic and accuracy of portman.ts's findborder routine in microblaster_network_s? keep in mind that the only sectors we know for 100% certainty have our fighter are the ones with FIGSEC immediately after running >figs, because that comes directly from the server data download and could have data that is not present in the database. anything else relies on the database being current, which is mostly going to be true but if we were logged out or missed a message, might not be.
+why was mpgrid2 going to a bunch of sectors, holo scanning and giving up, when the check for sector.figs.quantity[$test] <> 200000 should only go to sectors adjacent 200k fig sectors? in microblaster_network_s
+why did mpgrid2 enter the sector and not send the attack macro in the last run in microblaster_network_s?
+why is citcap using only 1 fighter again in rogue_t?
+is this output, from microblaster_network_s, correct? i am looking to determine how many sectors have <= 250,000 figs and are thus attackable with my ship. these are enemy sectors adjacent to sectors where my fighters exist. can you confirm this and give me the sector list?
+what differences are there in logic between mpgrid.ts and mpgrid3.ts, besides sector selection?
+why is citcap not attacking shields with more than one fighter in abandoned_stardock_b?
+the <10 ship fighters rule should only apply if there are no shields on the ship
+what sectors do we have fighters in (figsec=1) in microblaster_network_s that are in alien space?
+what about sectors immediately adjacent to alien space?
+go through today's log, grab a list of every sector zop gridded, and make a list, one sector per line, in a file in \~/twx/micro\_s.list
+why is mpgrid3 trying sectors where i have corp fighters when i updated it to check the list for the sector parameter?
+i ran the latest and it still skipped corp fighters a bunch so wtf is it doing? also why did it not kill the enemy fighter when i entered and the planet was there?
+forget the fighter selection. why did i not fire at the one fighter in sector?
+what is the largest bubble we currently have gridded in microblaster\_network\_s?
+one sector per line
+can you identify the best sectors in our grid to lay down a larger amount of fighters on (like 200,000) with about 100 or so of such sectors maximum? a friend suggested the way to do this is to run a ztm and add +1 everytime a sector shows up because those sectors are right in the 'middle' of the map but what i am really looking to do is create a protected area that will make it much harder for them to grid the sectors behind it
+can you run the last check again based on the current FIGSEC=1 sectors (some have been added)? also can you tell me what is the deepest sector in our grid currently, eg figsec=1 farthest from figsec=0?
+In game microblaster\_network\_s, reevaluate the universe and recommend the best placement of fighter groups to deter/slow down gridding from outside our perimeter based on current fighter locations. give me options for up to 300 sectors that will have the greatest impact; consider whether 5-ways, 6-ways make the most sense, what sectors would be most commonly hit from outside our grid, and if there are any sectors or sets of them that would protect a significant number behind them.
+can you find a couple examples from friday's microblaster\_network\_s log that show enemy corp limps active in a limpet scan? look for "Activated Limpet Scan" followed by some sectors listed as Corp and show me that full block
+i have enough fighters to add up to another 400 defensive sectors with big fig groups. where should i put them?
+give me the 350 sector list
+how much planet ore does it take to cause 300,000 damage at 100% cannons?
+how much of our grid is now protected behind 250k fig sectors?
+how many sectors do I have left on my border with only 1 fighter based on the latest data?
+i want a list only of sectors that an enemy can warp in to (at least one sector that is not figsec)
+with one fighter
+i asked you for a count of them. recommend the best 300 of those sectors to place larger fig groups. exclude any that are completely surrounded by enemy fighters, meaning i have no adjacent warp in to them that is figsec. and i want that in a file not in a text list.
+what is the largest area within our remaining figs that i can protect behind an approximately 10- sector barrier wall?
+what is the cannon setting with four planets at 7.4 million ore, to take out the most ships with up to 396,000 ore per hit? for sector and atmos
+what are the next largest areas I can protect with one or more planets in front? I need about 14 sectors total, and prefer the greatest depth possible in the innermost sector (depth away from a non figsec)
+give me a list of the best 50 sectors to place defensive planets in outside of our two already existing bubble zones
+review the current microblaster\_network\_s database for border sectors that have 250k figs but don't yet have a planet in them and rank those by the best sectors to protect to guard the most behind them
+what values does sector.explored[$sector] return?
+how do i test a sector to see if the fighters there are offensive?
+give me a list of sectors in microblaster\_network\_s where i have more than one fighter but less than 250k fighters
+how many sectors in microblaster\_network\_s with just 1 fighter?
+give me an updated list of my sectors with 250000-375000 fighters and no planet in \~/twx/micro\_s.list
+rewrite it with just the list of sectors with 375000 and no planet, same file
+how many sectors with 1, 275000, or 375000 fighters do we now have that also have a planet in them?
+only sectors without a current planet
+make the list of planets (the 257) into micro\_s.list. after that, how many more planets do i need to have every figsec sector protected either directly or by a planet in front of it?
+give me a list of every sector in microblaster\_network\_s where i currently have less than 250,000 fighters and no planet
+give me the reverse - a list of every sector with a port where i currently have a fig that is not one of those 213
+give me the same list but only sectors without a planet
+give me a list of sectors in microblaster\_s where i have a fighter and at least two planets but less than four.
+give me a current list of border sectors in micro\_s that do not have a planet, put it in micro\_s.list
+give me the same list, in the same file, with any MSL sectors excluded
+can you tell me why mgrid failed to grid those 6 sectors and said they were blocked in the most recent run in joes\_tavern\_d? it skipped a lot more in a prior run as well.
+give me some sectors near 11802 in microblaster\_network\_s that don't currently have planets and are behind the planet wall
+11802 is an MSL. don't include MSLs
+are any of those deadends or near deadends? and which deadend empty sectors are closest to 11802?
+what sectors have more than 3 level 4 or higher planets of mine that have less than 25,000 colonists on them?
+there are 3 planets in 7029. in fact, virtually all those planets were moved out of those sectors yesterday. why is the data not updated, when the evidence of them moving was in the log, and I have run tl multiple times since then and it doesn't show them there? also, why does the planet table not persist colonists counts? did the twx27 version not persist that data?
+update your helper so it answers queries like this correctly in the future, and so it can query for any type of data in the xdb and produce accurate results; make it portable and document it in a markdown so I could share it with other users as an agent to use for these queries
+how many figged sectors in micro\_s that are not MSL and are adjacent to an enemy fig (on my border) do not yet have a planet in them?
+are there any planets in micro\_s.list currently that are in MSLs and are level 4 citadel or higher if you can tell that?
+how many border sectors in microblaster\_network\_s have a planet that has less than 900,000 ore on it? of those, how many have only 1 fighter?
+give me the 16 with exactly 1 fighter in micro\_s.list
+I ran a tl in that game, do you have actual amounts for those 191 now?
+how many sectors on the border now have less than 250,000 figs and a planet with less than 900,000 ore and are not in msl's?
+how many msl sectors currently have my planets in them?
+give me the 51 sectors with exactly 2 planet
+show me the largest bubble in worldsapart\_l that we have fully gridded out
+make a change to mtc so the database records not only the current citadel level but if a citadel is upgrading. it can't see that from the tl list but can get that from the "Thanks to the miracle of modern technology" message, or from landing on the planet and displaying it, which will show the message "under construction, x day(s) till complete" where x is a number. that is in the second screenshot.
+what are the 9 sectors i lost in the MSL in microblaster\_network\_s? what msl sectors are not currently figged?
+give me a list of all of my border sectors, sectors that are figged but adjacent to a sector that is not figged and not msl or fedspace that has a warp out to my figged sectors
+can you give me a list of all sectors in microblaster\_network\_s that have my fig but are adjacent to a sector without my fig, not counting MSLs, and remove from that list the sectors that were done in the last run of pmgr set ig before it finished (the ones it successfully did), then leave the resulting list in micro\_s2.list
+update micro\_s.list to include all border sectors that are not MSLs and have my fig but no planet in them currently. and update micro\_s2.list to include all border sectors that are not MSLs where I have less than 250,000 fighters currently.
+check the list of non-MSL border sectors with my fig and no friendly planet again
+I just pwarped and confirmed that all 8 of those have friendly planets. Why didn't you see that, especially after multiple tl list runs? Is it becomes someone else created the planets, but they are claimed by my corp? always use claimed by as the value for who currently owns it
+give me a list of MSL sectors with my fig and less than 2 planets in micro\_s2.list
+give me a list of non-MSL border sectors with my fig and less than 2 planets in micro\_s2.list
+which have 0 planet evidence?
+make a list of non-MSL border sectors in micro\_s that have less than 375,000 fighters and put it in micro\_s.list
+make a separate list of those sectors with just 1 fig in micro\_s3.list
+what sectors in the most recent tl run have planets with more than 800,000 fighters on them?
+in msdt.ts, fix the text indentation throughout the file; and replace any routines like this: ```yaml send "'{" $bot~bot_name "} - World SDT must be run from command or citadel prompt*" with the new style: setvar $switchboard~message "World Sdt .." gosub :switchboard~switchboard ```
+and actually make the fix so that it checks first and never goes to a sector where equipment buying is 0, or if it gets to be 0 after a sale, it moves
+no, you are totally wrong on your diagnosis, at least as to the real problem. yes it didn't see an alien in sector, but then it holoscanned and the holo scan should have seen one adjacent. why didn't it?
+how many non-MSL border sectors in microblaster\_network\_s have less than 375k of my fighters?
+run again for fighter quantity < 1000000 and write to micro\_s2.list
+all non-MSL border sectors
+give me a listing of all non-MSL border sectors in micro\_s\_border.list
+give me a list of all non-MSL border sectors with exactly one planet in micro\_s3.list
+give me a list of all non-MSL border sectors with exactly two planets in micro\_s3.list
+rewrite with the list with exactly one planet
+how could that have increased from the last count when I added planets to the one planet sectors?
+i just ran tl again in microblaster\_network\_s, compare that to the results of your last search and give me the right numbers
+put the list of sectors with 1 planet in micro\_s3.list
+update micro\_s.list with all non-MSL border sectors that have less than 1 million fighters
+how many fighters do we have in non-MSL border sectors, by fighter?
+create a list of all non-MSL border sectors in microblaster\_network\_s and place it in micro\_s2.list
+give me a list of border sectors in micro\_s, non-MSL, where i currently have only one planet. in micro\_s.lost
+funny, i had 3 planets in sector 55, not 4. how could you be so wrong?
+the tl list is authoritative so every time it runs successfully it should wipe out anything that is not seen on it
+to be clear, provisional sector-scan records are still accurate if they're not corp planets. tl ONLY shows planets owned by your corp
+the cy list, which is nearly identical in formation to tl, is authoritative for your personal (non corp) planets
+if the server reports 0 shields, it should always hit for 1 fighter at a time. above 0, it should do the right math. fix that
+ok if the server reports 0% shields but the enemy ship still has fighters, it should hit for enough figs to destroy the shields, and maybe even a little extra (but not enough to destroy the fighters), otherwise it gets stuck hitting the 0% one fig at a time
+i ran the new tl in the new mtc in micro\_s, give me the new list of non-MSL border sectors with 0 or 1 planet in them.
+make me a new list of all non-MSL border sectors with less than 3 planets in micro\_s.list
+what is the unfigged sector furthest from our current figs in joes\_tavern\_g?
+what are the 3 closest deadends within the sector 8003 bubble? Closest to the entrance at 8003? Also, what are the 3 largest deadends inside that bubble? And is there any known alien space in that bubble?
+you are showing a bunch with 0 and 1 planet which did not exist in the previous run and I don't really believe exists, can you figure out why and fix it?
+update micro\_s.list to contain all non-MSL border sectors with less than 4 planets
+how many sectors are left to grid in joes\_g.list in joes\_tavern\_g? and can you see why mgrid said there were 84 blocked sectors?
+what sectors have exactly 2? and no i want the "enemy can warp into it" count
+lookin at the most recent tl list in microblaster\_network\_s, can you give me a list of the 5 most overloaded planets I have? overloaded is defined as having more colonists for a product category than that product category can produce. for class E planets in this game, that means more than 300,000 fuel colonists, 500,000 organics colonists, or 300,000 equipment colonists. if you look at the most recent tl list run in there, you can see where that is shown in the tl list; presumably it is being captured by MTC but if it's not, extract it from there.
+give me a list of sectors that currently have planets with at least 100k in any of the three colonist categories, and the number of planets in each sector with more than 100k colonists on them.
+update micro\_s.list for all current non-MSL border sectors with less than 3 planets
+update micro\_s with all non-msl border sectors with less than 4 planets
+how many planets do we have total in micro\_s based on the latest tl list?
+what non-msl border sectors have more than 3 planets?
+what non-msl, non-border sectors in micro\_s have more than one but less than four planets?
+give me a list of non-MSL border sectors in microblaster\_network\_s with less than 1 million fighters in micro\_s.list
+any sector with a known port/class name is what i am looking for
+sector numbers only
+update micro\_s2.list with non-msl border sectors with less than 4 planets
+update micro\_s.list with all non-msl border sectors that have under 1 million fighters
+refresh the `/Users/mosleym/twx/micro_s2.list` with all non-MSL border sectors with under 4 planets from `microblaster_network_s` XDB.
+find all non-MSL border sectors in microblaster\_network\_s with less than 4 planets and write them to \~/twx/micro\_s2.list
+give me a list of all "Zippity Doo Dah" planets that are NOT in non-MSL border sectors
+how is 1794 not a border sector? i see an enemy sector adjacent to it. it is it a one-way?
+what non-MSL border sectors have planets not named "Zippity Doo Dah"?
+give me a list of all non-MSL border sectors in microblaster\_network\_s that that have less than 1 million figs
+give me a list of all non-MSL border sectors in microblaster\_network\_s that have planets with citadels less than level 6 in the file micro\_s2.list
+replace micro\_s.list with the full list of all non-MSL border sectors
+what sector has the least amount of enemy figs adjacent to my border?
+what planets in the same game have the most fuel onboard? planet # and sector
+stardock is sector 99 in that game
+what sectors in microblaster\_network\_s do i still have figs in but do not yet have a port either open or under construction?
+there were 700 some port construction sites, not 62
+you can also get it from the cim i just ran which shows ports in each of those sectors with 0 on all three prods. those should be getting populated in the xdb
+review the updated "blow" mode code in the local script pmgr.ts; specifically, I updated it to only blow up to $maxplanets instead of blowing every level 0 planet in the specified sectors; check it to make sure this logic is correct
+why did keeper not work in acap? i just saw it sell two alien starships in worldsapart\_k despite running with keeper set for that ship
+how many sectors are there left in microblaster\_network\_s with a million or less enemy figs, adjacent to mine?
+how many enemy sectors adjacent to our figs (that we can warp into) have Offensive fighters? give me a list as micro\_s3.list
+how many sectors are left in joes\_tavern\_g from joes\_g.list that do not have ports in them, based on the latest CIM?
+from the last tl list in microblaster\_network\_s, give me a list of planets with more than 300k on fuel, 500k on organics, or 300k on equipment in current planet production
+in worldsapart\_l, there are three large bubbles that have the front doors protected by enemy planets: sectors 3023, 9510, and 14447. some of them have figs one or two sectors in to a tunnel but all of those sectors protect large bubbles behind them. those bubbles total over 600 fighters but there are under 500 where we don't currently have fighters, which means we must have fighters deeper inside at least one of those bubbles. find out which bubble and what sectors we have fighters inside those bubbles and let me know

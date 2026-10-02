@@ -299,8 +299,6 @@ namespace TWXProxy.Core
             if (activeDatabase != null && sectorNum > 0 && sectorNum <= activeDatabase.SectorCount)
             {
                 activeDatabase.SetSectorVar(sectorNum, paramName, value);
-                if (script is Script activeScript)
-                    activeScript.MarkExecutionWatchdogActivity();
             }
 
             return CmdAction.None;
@@ -430,26 +428,29 @@ namespace TWXProxy.Core
                 var path = CalculateGetCoursePath(activeDatabase, fromSector, toSector);
                 parameters[0].Value = (path.Count - 1).ToString(); // Distance is path length - 1
 
-                string pathDesc = path.Count > 0
-                    ? string.Join(" > ", path.Select(sectorNum =>
-                    {
-                        var sector = activeDatabase.GetSector(sectorNum);
-                        string explored = sector?.Explored switch
+                if (GlobalModules.DebugMode && GlobalModules.ScriptTraceDebugMode)
+                {
+                    string pathDesc = path.Count > 0
+                        ? string.Join(" > ", path.Select(sectorNum =>
                         {
-                            ExploreType.No => "No",
-                            ExploreType.Calc => "Calc",
-                            ExploreType.Density => "Density",
-                            ExploreType.Yes => "Yes",
-                            _ => "?"
-                        };
-                        return $"{sectorNum}({explored})";
-                    }))
-                    : "<no path>";
-                string avoids = _avoidedSectors.Count > 0
-                    ? string.Join(",", _avoidedSectors.OrderBy(x => x))
-                    : "<none>";
-                GlobalModules.DebugLog(
-                    $"[GETDISTANCE] from={fromSector} to={toSector} distance={parameters[0].Value} path={pathDesc} avoids={avoids}\n");
+                            var sector = activeDatabase.GetSector(sectorNum);
+                            string explored = sector?.Explored switch
+                            {
+                                ExploreType.No => "No",
+                                ExploreType.Calc => "Calc",
+                                ExploreType.Density => "Density",
+                                ExploreType.Yes => "Yes",
+                                _ => "?"
+                            };
+                            return $"{sectorNum}({explored})";
+                        }))
+                        : "<no path>";
+                    string avoids = _avoidedSectors.Count > 0
+                        ? string.Join(",", _avoidedSectors.OrderBy(x => x))
+                        : "<none>";
+                    GlobalModules.ScriptTraceDebugLog(
+                        $"[GETDISTANCE] from={fromSector} to={toSector} distance={parameters[0].Value} path={pathDesc} avoids={avoids}\n");
+                }
             }
             else
             {

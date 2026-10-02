@@ -4,7 +4,7 @@
     <OutputType>Package</OutputType>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <InstallerPlatform Condition="'$(InstallerPlatform)' == ''">x64</InstallerPlatform>
-    <ProductVersion Condition="'$(ProductVersion)' == ''">3.0.0</ProductVersion>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">3.0.1</ProductVersion>
     <ProgramDirDefault Condition="'$(ProgramDirDefault)' == ''">C:\twxproxy</ProgramDirDefault>
     <PayloadRoot Condition="'$(PayloadRoot)' == ''">$(MSBuildThisFileDirectory)artifacts\$(InstallerPlatform)\payload</PayloadRoot>
     <TargetName>TWXProxy-$(InstallerPlatform)</TargetName>

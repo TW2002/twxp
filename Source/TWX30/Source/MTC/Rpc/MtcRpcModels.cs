@@ -84,7 +84,10 @@ internal sealed class MtcRpcBridge
     public required Func<int, bool, Task<IReadOnlyList<GameAgentEvent>>> GetRecentEventsAsync { get; init; }
     public required Func<int, Task<GameAgentSectorSnapshot?>> QuerySectorAsync { get; init; }
     public required Func<Task<IReadOnlyList<GameAgentRunningScriptSnapshot>>> ListScriptsAsync { get; init; }
+    public required Func<string?, Task<MtcRpcDebugSnapshot>> GetDebugSettingsAsync { get; init; }
+    public required Func<string, IReadOnlyDictionary<string, bool>, Task<MtcRpcDebugSnapshot>> SetDebugSettingsAsync { get; init; }
     public required Func<string, bool, Task<MtcRpcActionResult>> SendCommandAsync { get; init; }
+    public Func<MtcRpcPromptCommand, Task<MtcRpcActionResult>>? SendPromptCommandAsync { get; init; }
     public required Func<string, Task<MtcRpcActionResult>> RunMombotCommandAsync { get; init; }
     public required Func<string, Task<MtcRpcActionResult>> RunScriptAsync { get; init; }
     public required Func<int?, string?, Task<MtcRpcActionResult>> StopScriptAsync { get; init; }

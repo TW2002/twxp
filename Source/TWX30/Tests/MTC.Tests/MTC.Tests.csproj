@@ -10,9 +10,24 @@
 
   <ItemGroup>
     <Compile Include="../../Source/MTC/AnsiParser.cs" Link="MTC/AnsiParser.cs" />
+    <Compile Include="../../Source/MTC/SectorExplorationSummary.cs" Link="MTC/SectorExplorationSummary.cs" />
     <Compile Include="../../Source/MTC/GameSizeLimits.cs" Link="MTC/GameSizeLimits.cs" />
+    <Compile Include="../../Source/MTC/MtcTelnetTwxServer.cs" Link="MTC/MtcTelnetTwxServer.cs" />
     <Compile Include="../../Source/MTC/NativeMombotStartupBridge.cs" Link="MTC/NativeMombotStartupBridge.cs" />
+    <Compile Include="../../Source/MTC/MombotPromptClassifier.cs" Link="MTC/MombotPromptClassifier.cs" />
+    <Compile Include="../../Source/MTC/ProxyManagementClient.cs" Link="MTC/ProxyManagementClient.cs" />
     <Compile Include="../../Source/MTC/TerminalBuffer.cs" Link="MTC/TerminalBuffer.cs" />
+    <Compile Include="../../Source/MTC/TelnetClient.cs" Link="MTC/TelnetClient.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotCatalog.cs" Link="MTC/mombot/mombotCatalog.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotCompatContext.cs" Link="MTC/mombot/mombotCompatContext.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotConfig.cs" Link="MTC/mombot/mombotConfig.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotService.cs" Link="MTC/mombot/mombotService.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotSettings.cs" Link="MTC/mombot/mombotSettings.cs" />
+    <Compile Include="../../Source/MTC/mombot/mombotWatcher.cs" Link="MTC/mombot/mombotWatcher.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Source/TWXProxy.csproj" />
   </ItemGroup>
 
 </Project>

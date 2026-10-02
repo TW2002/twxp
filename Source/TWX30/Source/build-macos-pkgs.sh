@@ -7,6 +7,13 @@ export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 BIN_ROOT="${REPO_ROOT}/bin"
+
+SIGNING_ENV_FILE="${TWX30_RELEASE_SIGNING_ENV:-${HOME}/.config/twx30/release-signing.env}"
+if [[ -f "$SIGNING_ENV_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$SIGNING_ENV_FILE"
+fi
+
 MOMBOT_RELEASE_SOURCE="${MOMBOT_RELEASE_SOURCE:-/Users/mosleym/tw2002/mombot/mombot5.0/Release/mombot}"
 MTC_ICON_SOURCE="${SCRIPT_DIR}/MTC/mtc2.png"
 TWXP_ICON_SOURCE="${SCRIPT_DIR}/TWXP/TWXProxy_Icon.ico"
@@ -29,17 +36,28 @@ Each package is a macOS product installer with selectable choices:
   - Tradewars Proxy
   - Compiler Package (twxc and twxd)
   - Bundled Mombot scripts
+  - TWXDB Assistant MCP server, planner model, and private runtimes
+  - Optional TWXDB Assistant login auto-start (off by default)
 
 During installation, tools and scripts use the TWX program directory stored in
 ~/Library/twxproxy/programdir.txt when present. Otherwise it defaults to
 ~/twxproxy and stores that path for both apps. Mombot scripts are copied into:
   - <programdir>/scripts/mombot
+TWXDB Assistant is copied into:
+  - <programdir>/tools/twxdb-assistant
 
 Set RID_LIST to narrow the target list, e.g.:
   RID_LIST=osx-arm64 ./build-macos-pkgs.sh
 
 Set MOMBOT_RELEASE_SOURCE to override the Mombot release tree used for the
 scripts payload.
+
+Local signing configuration:
+  ~/.config/twx30/release-signing.env
+
+Set TWX30_RELEASE_SIGNING_ENV to override that path. The file is sourced before
+environment defaults are evaluated, so it can persist the variables below
+without committing secrets or machine-local profile names to git.
 
 Distribution signing/notarization:
   MACOS_SIGN=developer-id     # default, required for public packages
@@ -141,6 +159,20 @@ sign_path() {
   else
     codesign --force --deep --sign - "$path" >/dev/null
   fi
+}
+
+sign_macho_tree() {
+  local root="$1"
+
+  if [[ "$MACOS_SIGN_MODE" == "none" ]]; then
+    return
+  fi
+
+  while IFS= read -r -d '' path; do
+    if file -b "$path" | grep -q 'Mach-O'; then
+      sign_path "$path"
+    fi
+  done < <(find "$root" -type f -print0)
 }
 
 sign_app_bundle() {
@@ -348,6 +380,7 @@ RID="${rid}"
 MODE="${mode}"
 TOOLS_PAYLOAD_DIR="/Library/Application Support/TWX30/InstallerTools/\${RID}"
 SCRIPTS_PAYLOAD_DIR="/Library/Application Support/TWX30/InstallerScripts/\${RID}/scripts"
+ASSISTANT_PAYLOAD_DIR="/Library/Application Support/TWX30/InstallerAssistant/\${RID}/twxdb-assistant"
 LOG_FILE="/Library/Logs/TWX30Installer.log"
 
 log() {
@@ -386,7 +419,8 @@ scripts_dir="\${program_dir}/scripts"
 games_dir="\${program_dir}/games"
 logs_dir="\${program_dir}/logs"
 modules_dir="\${program_dir}/modules"
-mkdir -p "\$bin_dir" "\$scripts_dir" "\$games_dir" "\$logs_dir" "\$modules_dir"
+tools_dir="\${program_dir}/tools"
+mkdir -p "\$bin_dir" "\$scripts_dir" "\$games_dir" "\$logs_dir" "\$modules_dir" "\$tools_dir"
 
 if [[ "\$MODE" == "tools" ]]; then
   if [[ ! -x "\${TOOLS_PAYLOAD_DIR}/twxc" || ! -x "\${TOOLS_PAYLOAD_DIR}/twxd" ]]; then
@@ -405,6 +439,48 @@ if [[ "\$MODE" == "scripts" ]]; then
   fi
   ditto "\$SCRIPTS_PAYLOAD_DIR" "\$scripts_dir"
   rm -rf "/Library/Application Support/TWX30/InstallerScripts/\${RID}"
+fi
+
+if [[ "\$MODE" == "assistant" ]]; then
+  if [[ ! -x "\${ASSISTANT_PAYLOAD_DIR}/twxdb-mcp" ]]; then
+    log "Installer assistant payload missing for \${RID}: \${ASSISTANT_PAYLOAD_DIR}"
+    exit 1
+  fi
+  rm -rf "\${tools_dir}/twxdb-assistant"
+  ditto "\$ASSISTANT_PAYLOAD_DIR" "\${tools_dir}/twxdb-assistant"
+  ln -sfn "../tools/twxdb-assistant/twxdb-mcp" "\${bin_dir}/twxdb-mcp"
+  rm -rf "/Library/Application Support/TWX30/InstallerAssistant/\${RID}"
+fi
+
+if [[ "\$MODE" == "assistant-autostart" ]]; then
+  assistant_launcher="\${tools_dir}/twxdb-assistant/twxdb-mcp"
+  if [[ ! -x "\$assistant_launcher" || -z "\$home_dir" || -z "\$console_user" ]]; then
+    log "TWXDB Assistant or console user missing; auto-start was not configured."
+    exit 1
+  fi
+  launch_agents_dir="\${home_dir}/Library/LaunchAgents"
+  launch_agent="\${launch_agents_dir}/com.mayhem.twx30.twxdb-assistant.plist"
+  mkdir -p "\$launch_agents_dir"
+  cat >"\$launch_agent" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.mayhem.twx30.twxdb-assistant</string>
+  <key>ProgramArguments</key>
+  <array><string>\${assistant_launcher}</string><string>--http</string></array>
+  <key>EnvironmentVariables</key>
+  <dict><key>TWX30_PROGRAMDIR</key><string>\${program_dir}</string></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+</dict>
+</plist>
+PLIST
+  chown "\$console_user":staff "\$launch_agent" 2>/dev/null || true
+  console_uid="\$(id -u "\$console_user")"
+  launchctl bootout "gui/\${console_uid}" "\$launch_agent" >/dev/null 2>&1 || true
+  launchctl bootstrap "gui/\${console_uid}" "\$launch_agent" >/dev/null 2>&1 || true
 fi
 
 if [[ -n "\$home_dir" ]]; then
@@ -430,7 +506,7 @@ CONFIG
 fi
 
 if [[ -n "\$console_user" && "\$console_user" != "root" && -n "\$home_dir" ]]; then
-  for owned_path in "\$program_dir" "\$bin_dir" "\$scripts_dir" "\$games_dir" "\$logs_dir" "\$modules_dir" "\${home_dir}/Library/twxproxy"; do
+  for owned_path in "\$program_dir" "\$bin_dir" "\$scripts_dir" "\$games_dir" "\$logs_dir" "\$modules_dir" "\$tools_dir" "\${home_dir}/Library/twxproxy"; do
     if [[ "\$owned_path" == "\$home_dir"* ]]; then
       chown -R "\$console_user":staff "\$owned_path" 2>/dev/null || true
     fi
@@ -439,6 +515,7 @@ fi
 
 rmdir "/Library/Application Support/TWX30/InstallerTools" 2>/dev/null || true
 rmdir "/Library/Application Support/TWX30/InstallerScripts" 2>/dev/null || true
+rmdir "/Library/Application Support/TWX30/InstallerAssistant" 2>/dev/null || true
 log "Installed \${MODE} payload for \${RID} into \${program_dir}"
 exit 0
 EOF
@@ -494,6 +571,9 @@ write_distribution() {
     <line choice="twxp"/>
     <line choice="tools"/>
     <line choice="scripts"/>
+    <line choice="assistant">
+      <line choice="assistant-autostart"/>
+    </line>
   </choices-outline>
   <choice id="mtc" title="Mayhem Tradewars Client" description="Install the MTC desktop client." selected="true" visible="true" enabled="true">
     <pkg-ref id="com.mayhem.twx30.mtc.${rid}"/>
@@ -507,10 +587,18 @@ write_distribution() {
   <choice id="scripts" title="Bundled Mombot Scripts" description="Populate the configured TWX scripts directory with bundled Mombot scripts only." selected="true" visible="true" enabled="true">
     <pkg-ref id="com.mayhem.twx30.scripts.${rid}"/>
   </choice>
+  <choice id="assistant" title="TWXDB Assistant" description="Install the local MCP server, query planner model, and private runtimes into the configured TWX program directory." selected="true" visible="true" enabled="true">
+    <pkg-ref id="com.mayhem.twx30.assistant.${rid}"/>
+  </choice>
+  <choice id="assistant-autostart" title="Start TWXDB Assistant at Login" description="Start the localhost MCP server automatically when this user logs in." selected="false" visible="true" enabled="true">
+    <pkg-ref id="com.mayhem.twx30.assistant-autostart.${rid}"/>
+  </choice>
   <pkg-ref id="com.mayhem.twx30.mtc.${rid}" version="${VERSION}" auth="Root">mtc.pkg</pkg-ref>
   <pkg-ref id="com.mayhem.twx30.twxp.${rid}" version="${VERSION}" auth="Root">twxp.pkg</pkg-ref>
   <pkg-ref id="com.mayhem.twx30.tools.${rid}" version="${VERSION}" auth="Root">tools.pkg</pkg-ref>
   <pkg-ref id="com.mayhem.twx30.scripts.${rid}" version="${VERSION}" auth="Root">scripts.pkg</pkg-ref>
+  <pkg-ref id="com.mayhem.twx30.assistant.${rid}" version="${VERSION}" auth="Root">assistant.pkg</pkg-ref>
+  <pkg-ref id="com.mayhem.twx30.assistant-autostart.${rid}" version="${VERSION}" auth="Root">assistant-autostart.pkg</pkg-ref>
 </installer-gui-script>
 EOF
 }
@@ -530,6 +618,7 @@ for rid in "${RIDS[@]}"; do
   require_binary "${BIN_ROOT}/${rid}/twxp"
   require_binary "${BIN_ROOT}/${rid}/twxc"
   require_binary "${BIN_ROOT}/${rid}/twxd"
+  require_dir "${BIN_ROOT}/${rid}/twxdb-assistant"
   require_dir "$MOMBOT_RELEASE_SOURCE"
 
   work_dir="$(mktemp -d "/tmp/twx30-macos-pkg-${rid}-XXXXXX")"
@@ -581,6 +670,21 @@ for rid in "${RIDS[@]}"; do
   copy_tree_clean "$MOMBOT_RELEASE_SOURCE" "${scripts_payload_dir}/mombot"
   write_programdir_postinstall "${scripts_scripts}/postinstall" "$rid" "scripts"
   build_component_pkg "$scripts_root" "$scripts_scripts" "com.mayhem.twx30.scripts.${rid}" "${components_dir}/scripts.pkg"
+
+  assistant_root="${work_dir}/assistant-root"
+  assistant_scripts="${work_dir}/assistant-scripts"
+  assistant_payload_dir="${assistant_root}/Library/Application Support/TWX30/InstallerAssistant/${rid}/twxdb-assistant"
+  mkdir -p "$assistant_payload_dir" "$assistant_scripts"
+  copy_tree_clean "${BIN_ROOT}/${rid}/twxdb-assistant" "$assistant_payload_dir"
+  sign_macho_tree "$assistant_payload_dir"
+  write_programdir_postinstall "${assistant_scripts}/postinstall" "$rid" "assistant"
+  build_component_pkg "$assistant_root" "$assistant_scripts" "com.mayhem.twx30.assistant.${rid}" "${components_dir}/assistant.pkg"
+
+  assistant_autostart_root="${work_dir}/assistant-autostart-root"
+  assistant_autostart_scripts="${work_dir}/assistant-autostart-scripts"
+  mkdir -p "$assistant_autostart_root" "$assistant_autostart_scripts"
+  write_programdir_postinstall "${assistant_autostart_scripts}/postinstall" "$rid" "assistant-autostart"
+  build_component_pkg "$assistant_autostart_root" "$assistant_autostart_scripts" "com.mayhem.twx30.assistant-autostart.${rid}" "${components_dir}/assistant-autostart.pkg"
 
   distribution="${work_dir}/Distribution.xml"
   write_distribution "$distribution" "$rid"

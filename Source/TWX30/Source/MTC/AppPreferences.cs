@@ -120,12 +120,18 @@ public class AppPreferences
     public double TerminalFontSize { get; set; } = TerminalControl.DefaultFontSize;
     public int ScrollbackLines { get; set; } = DefaultScrollbackLines;
     public bool PreparedVmEnabled { get; set; } = true;
-    public bool ScriptInfiniteLoopProtectionEnabled { get; set; } = true;
     public bool StaleConnectionProbeEnabled { get; set; } = true;
     public int StaleConnectionProbeTimeoutSeconds { get; set; } = DefaultLocalInputResponseTimeoutSeconds;
     public bool GameIdleKeepaliveEnabled { get; set; } = true;
     public int GameIdleKeepaliveIntervalSeconds { get; set; } = DefaultGameIdleKeepaliveIntervalSeconds;
     public bool DisableScriptWindowStayInFront { get; set; }
+    public bool ScriptWindowsAboveNotes { get; set; } = true;
+    public double NotesPaneWidth { get; set; }
+    public double CommandDeckInspectorWidth { get; set; } = 250;
+    public double CommandDeckReportsWidth { get; set; } = 300;
+    public HashSet<string> CommandDeckClosedPanels { get; set; } = new(StringComparer.Ordinal);
+    public HashSet<string> CommandDeckCollapsedPanels { get; set; } = new(StringComparer.Ordinal);
+    public bool ScriptWindowsInsideMtc { get; set; } = true;
     public bool PythonScriptsEnabled { get; set; } = true;
     public string PythonInterpreterPath { get; set; } = "auto";
     public bool PythonExposeJsonRpcToken { get; set; }
@@ -143,6 +149,8 @@ public class AppPreferences
     public bool CommandDeckSkinEnabled { get; set; }
     public int CommandDeckLayoutVersion { get; set; }
     public int MainWindowGeometryVersion { get; set; }
+    public string DefaultLoginName { get; set; } = string.Empty;
+    public string DefaultNativeMombotBotName { get; set; } = string.Empty;
     public string LastNativeMombotBotName { get; set; } = string.Empty;
     public bool HasMainWindowPosition { get; private set; }
     public int MainWindowX { get; private set; }
@@ -206,7 +214,7 @@ public class AppPreferences
         };
     }
 
-    public void Save()
+    public virtual void Save()
     {
         try
         {
@@ -247,12 +255,18 @@ public class AppPreferences
                 new XElement("TerminalFontSize", TerminalFontSize.ToString(CultureInfo.InvariantCulture)),
                 new XElement("ScrollbackLines", NormalizeScrollbackLines(ScrollbackLines)),
                 new XElement("PreparedVmEnabled", PreparedVmEnabled),
-                new XElement("ScriptInfiniteLoopProtectionEnabled", ScriptInfiniteLoopProtectionEnabled),
                 new XElement("StaleConnectionProbeEnabled", StaleConnectionProbeEnabled),
                 new XElement("StaleConnectionProbeTimeoutSeconds", NormalizeNetworkWatchdogSeconds(StaleConnectionProbeTimeoutSeconds, DefaultLocalInputResponseTimeoutSeconds)),
                 new XElement("GameIdleKeepaliveEnabled", GameIdleKeepaliveEnabled),
                 new XElement("GameIdleKeepaliveIntervalSeconds", NormalizeNetworkWatchdogSeconds(GameIdleKeepaliveIntervalSeconds, DefaultGameIdleKeepaliveIntervalSeconds)),
                 new XElement("DisableScriptWindowStayInFront", DisableScriptWindowStayInFront),
+                new XElement("ScriptWindowsAboveNotes", ScriptWindowsAboveNotes),
+                new XElement("NotesPaneWidth", NotesPaneWidth.ToString(CultureInfo.InvariantCulture)),
+                new XElement("CommandDeckInspectorWidth", CommandDeckInspectorWidth.ToString(CultureInfo.InvariantCulture)),
+                new XElement("CommandDeckReportsWidth", CommandDeckReportsWidth.ToString(CultureInfo.InvariantCulture)),
+                new XElement("CommandDeckClosedPanels", CommandDeckClosedPanels.OrderBy(x => x).Select(x => new XElement("Panel", x))),
+                new XElement("CommandDeckCollapsedPanels", CommandDeckCollapsedPanels.OrderBy(x => x).Select(x => new XElement("Panel", x))),
+                new XElement("ScriptWindowsInsideMtc", ScriptWindowsInsideMtc),
                 new XElement("PythonScriptsEnabled", PythonScriptsEnabled),
                 new XElement("PythonInterpreterPath", NormalizePythonInterpreterPath(PythonInterpreterPath)),
                 new XElement("PythonExposeJsonRpcToken", PythonExposeJsonRpcToken),
@@ -273,6 +287,8 @@ public class AppPreferences
                 new XElement("CommandDeckSkinEnabled", CommandDeckSkinEnabled),
                 new XElement("CommandDeckLayoutVersion", CommandDeckLayoutVersion),
                 new XElement("MainWindowGeometryVersion", MainWindowGeometryVersion),
+                new XElement("DefaultLoginName", DefaultLoginName?.Trim() ?? string.Empty),
+                new XElement("DefaultNativeMombotBotName", DefaultNativeMombotBotName?.Trim() ?? string.Empty),
                 new XElement("LastNativeMombotBotName", LastNativeMombotBotName),
                 HasMainWindowPosition || HasMainWindowSize
                     ? new XElement("MainWindowPosition",
@@ -423,8 +439,6 @@ public class AppPreferences
                 prefs.ScrollbackLines = NormalizeScrollbackLines(scrollbackLines);
             if (bool.TryParse((string?)root.Element("PreparedVmEnabled"), out bool preparedVmEnabled))
                 prefs.PreparedVmEnabled = preparedVmEnabled;
-            if (bool.TryParse((string?)root.Element("ScriptInfiniteLoopProtectionEnabled"), out bool scriptInfiniteLoopProtectionEnabled))
-                prefs.ScriptInfiniteLoopProtectionEnabled = scriptInfiniteLoopProtectionEnabled;
             if (bool.TryParse((string?)root.Element("StaleConnectionProbeEnabled"), out bool staleConnectionProbeEnabled))
                 prefs.StaleConnectionProbeEnabled = staleConnectionProbeEnabled;
             if (int.TryParse((string?)root.Element("StaleConnectionProbeTimeoutSeconds"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int staleConnectionProbeTimeoutSeconds))
@@ -437,6 +451,21 @@ public class AppPreferences
                     DefaultGameIdleKeepaliveIntervalSeconds);
             if (bool.TryParse((string?)root.Element("DisableScriptWindowStayInFront"), out bool disableScriptWindowStayInFront))
                 prefs.DisableScriptWindowStayInFront = disableScriptWindowStayInFront;
+            if (bool.TryParse((string?)root.Element("ScriptWindowsAboveNotes"), out bool scriptWindowsAboveNotes))
+                prefs.ScriptWindowsAboveNotes = scriptWindowsAboveNotes;
+            if (double.TryParse((string?)root.Element("NotesPaneWidth"), NumberStyles.Float, CultureInfo.InvariantCulture, out double notesPaneWidth) &&
+                double.IsFinite(notesPaneWidth) && notesPaneWidth > 0)
+                prefs.NotesPaneWidth = Math.Clamp(notesPaneWidth, 120, 1200);
+            if (bool.TryParse((string?)root.Element("ScriptWindowsInsideMtc"), out bool scriptWindowsInsideMtc))
+                prefs.ScriptWindowsInsideMtc = scriptWindowsInsideMtc;
+            if (double.TryParse((string?)root.Element("CommandDeckInspectorWidth"), NumberStyles.Float, CultureInfo.InvariantCulture, out double inspectorWidth) && double.IsFinite(inspectorWidth))
+                prefs.CommandDeckInspectorWidth = Math.Clamp(inspectorWidth, 180, 520);
+            if (double.TryParse((string?)root.Element("CommandDeckReportsWidth"), NumberStyles.Float, CultureInfo.InvariantCulture, out double reportsWidth) && double.IsFinite(reportsWidth))
+                prefs.CommandDeckReportsWidth = Math.Clamp(reportsWidth, 180, 520);
+            prefs.CommandDeckClosedPanels = root.Element("CommandDeckClosedPanels")?.Elements("Panel")
+                .Select(x => x.Value).ToHashSet(StringComparer.Ordinal) ?? new(StringComparer.Ordinal);
+            prefs.CommandDeckCollapsedPanels = root.Element("CommandDeckCollapsedPanels")?.Elements("Panel")
+                .Select(x => x.Value).ToHashSet(StringComparer.Ordinal) ?? new(StringComparer.Ordinal);
             if (bool.TryParse((string?)root.Element("PythonScriptsEnabled"), out bool pythonScriptsEnabled))
                 prefs.PythonScriptsEnabled = pythonScriptsEnabled;
             prefs.PythonInterpreterPath = NormalizePythonInterpreterPath((string?)root.Element("PythonInterpreterPath"));
@@ -466,6 +495,8 @@ public class AppPreferences
                 prefs.CommandDeckLayoutVersion = commandDeckLayoutVersion;
             if (int.TryParse((string?)root.Element("MainWindowGeometryVersion"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int mainWindowGeometryVersion))
                 prefs.MainWindowGeometryVersion = mainWindowGeometryVersion;
+            prefs.DefaultLoginName = ((string?)root.Element("DefaultLoginName") ?? string.Empty).Trim();
+            prefs.DefaultNativeMombotBotName = ((string?)root.Element("DefaultNativeMombotBotName") ?? string.Empty).Trim();
             prefs.LastNativeMombotBotName = ((string?)root.Element("LastNativeMombotBotName") ?? string.Empty).Trim();
             XElement? mainWindowPosition = root.Element("MainWindowPosition");
             if (mainWindowPosition != null)

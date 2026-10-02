@@ -78,6 +78,7 @@ public sealed class TelnetClient : IDisposable
     /// (IAC-stripped but ANSI codes still present). Use for session logging.
     /// </summary>
     public event Action<string>? AppDataDecoded;
+    public Func<byte[], byte[]>? ApplicationDataFilter { get; set; }
 
     /// <summary>Set before connecting if the terminal size differs from 80x24.</summary>
     public void SetWindowSize(int cols, int rows) { _termCols = cols; _termRows = rows; }
@@ -175,10 +176,14 @@ public sealed class TelnetClient : IDisposable
                 int appLen = ProcessTelnet(raw, n, app);
                 if (appLen > 0)
                 {
-                    _parser.Feed(app, appLen);
+                    byte[] applicationData = app[..appLen].ToArray();
+                    applicationData = ApplicationDataFilter?.Invoke(applicationData) ?? applicationData;
+                    if (applicationData.Length == 0)
+                        continue;
+                    _parser.Feed(applicationData, applicationData.Length);
                     _buffer.Dirty = true;
-                    AppDataDecoded?.Invoke(Encoding.Latin1.GetString(app, 0, appLen));
-                    FeedTextLines(app, appLen);
+                    AppDataDecoded?.Invoke(Encoding.Latin1.GetString(applicationData));
+                    FeedTextLines(applicationData, applicationData.Length);
                 }
             }
         }

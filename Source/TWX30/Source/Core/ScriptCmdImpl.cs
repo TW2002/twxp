@@ -1186,17 +1186,39 @@ namespace TWXProxy.Core
             if (GlobalModules.VerboseDebugMode)
                 GlobalModules.DebugLog($"[SEND] Output: '{output.Replace("\r", "\\r").Replace("\n", "\\n")}'\n");
 
-            // Send to game server via GameInstance (which acts as the client)
-            if (_activeGameInstance != null)
+            TwxRuntimeContext runtimeContext = CurrentScriptContext(script);
+            ITWXServer? contextServer = runtimeContext.TWXServer;
+            GameInstance? contextGameInstance = contextServer as GameInstance;
+            GameInstance? activeGameInstance = runtimeContext.ActiveGameInstance;
+            GameInstance? gameInstance = contextGameInstance ?? (contextServer == null ? activeGameInstance : null);
+            string scriptName = script is Script scriptObj ? scriptObj.ScriptName : script.GetType().Name;
+
+            if (gameInstance != null &&
+                !gameInstance.IsConnected &&
+                activeGameInstance != null &&
+                !ReferenceEquals(activeGameInstance, gameInstance) &&
+                activeGameInstance.IsConnected)
+            {
+                GlobalModules.DebugLog(
+                    $"[SEND] Rebinding stale disconnected server for script='{scriptName}' context='{runtimeContext.Name}' " +
+                    $"fromGame='{gameInstance.GameName}' toGame='{activeGameInstance.GameName}'\n");
+                runtimeContext.TWXServer = activeGameInstance;
+                gameInstance = activeGameInstance;
+            }
+
+            if (gameInstance != null)
             {
                 if (GlobalModules.VerboseDebugMode)
-                    Console.WriteLine($"[SEND] GameInstance available, IsConnected: {_activeGameInstance.IsConnected}");
+                    Console.WriteLine($"[SEND] GameInstance available, IsConnected: {gameInstance.IsConnected}");
 
-                if (!_activeGameInstance.IsConnected)
+                if (!gameInstance.IsConnected)
                 {
                     if (GlobalModules.VerboseDebugMode)
                         Console.WriteLine($"[SEND] Not connected to server - command ignored");
-                    GlobalModules.DebugLog($"[SEND] Not connected to server - command ignored\n");
+                    GlobalModules.DebugLog(
+                        $"[SEND] Not connected to server - command ignored script='{scriptName}' context='{runtimeContext.Name}' " +
+                        $"game='{gameInstance.GameName}' activeGame='{activeGameInstance?.GameName ?? "<none>"}' " +
+                        $"activeConnected='{activeGameInstance?.IsConnected.ToString() ?? "<none>"}'\n");
                     return CmdAction.None;
                 }
 
@@ -1208,12 +1230,16 @@ namespace TWXProxy.Core
                     GlobalModules.DebugLog($"[SEND] Sending {data.Length} bytes to server\n");
                 }
 
-                _activeGameInstance.ObserveScriptSend(output);
-                if (script is Script activeScript)
-                    activeScript.MarkExecutionWatchdogActivity();
+                gameInstance.ObserveScriptSend(output);
 
                 // SendToServerAsync preserves order through the shared async socket pump.
-                _activeGameInstance.SendToServerAsync(data).GetAwaiter().GetResult();
+                gameInstance.SendToServerAsync(data).GetAwaiter().GetResult();
+            }
+            else if (contextServer != null)
+            {
+                byte[] data = System.Text.Encoding.Latin1.GetBytes(output);
+
+                contextServer.SendToServerAsync(data).GetAwaiter().GetResult();
             }
             else
             {
@@ -1622,6 +1648,7 @@ namespace TWXProxy.Core
             if (script is Script scriptObj)
             {
                 string prompt = parameters.Length > 1 ? parameters[1].Value : "";
+                bool keypressMode = string.IsNullOrEmpty(prompt);
 
                 // Send prompt to client via active game instance
                 if (_activeGameInstance != null)
@@ -1630,9 +1657,6 @@ namespace TWXProxy.Core
 
                     // Clear any accumulated input before prompting
                     _activeGameInstance.ClearInputBuffer();
-
-                    // Empty prompt = keypress mode: no Enter needed, fire on the next single character.
-                    bool keypressMode = string.IsNullOrEmpty(prompt);
 
                     // Set script to wait for input from client
                     scriptObj.SetWaitingForInput(parameters[0], keypressMode);
@@ -1656,9 +1680,19 @@ namespace TWXProxy.Core
 
                     return CmdAction.Pause;
                 }
+                else if (GlobalModules.CurrentContext.TWXServer != null)
+                {
+                    QueueScriptInputPrompt(prompt);
+
+                    scriptObj.Locked = true;
+                    scriptObj.SetWaitingForInput(parameters[0], keypressMode);
+                    scriptObj.PausedReason = PauseReason.Input;
+
+                    return CmdAction.Pause;
+                }
                 else
                 {
-                    GlobalModules.TWXServer?.ClientMessage($"[GETINPUT] Using Console Mode (fallback)\r\n");
+                    GlobalModules.DebugLog("[GETINPUT] Using Console Mode (fallback)\n");
 
                     // Pure console test mode (TestScriptLoader)
                     Console.WriteLine($"\n[GETINPUT Console Mode] Prompting: {prompt}");
@@ -1672,7 +1706,7 @@ namespace TWXProxy.Core
             }
 
             Console.WriteLine($"[GETINPUT] Script is not Script object - returning None");
-            GlobalModules.TWXServer?.ClientMessage($"[GETINPUT] Script is not Script object - returning None\r\n");
+            GlobalModules.DebugLog("[GETINPUT] Script is not Script object - returning None\n");
             return CmdAction.None;
         }
 
@@ -1764,9 +1798,19 @@ namespace TWXProxy.Core
             return CmdSetTextLineTrigger_Impl(script, parameters);
         }
 
+        private static CmdAction CmdSetSLineTrigger(object script, CmdParam[] parameters)
+        {
+            return CmdSetSLineTrigger_Impl(script, parameters);
+        }
+
         private static CmdAction CmdSetTextOutTrigger(object script, CmdParam[] parameters)
         {
             return CmdSetTextOutTrigger_Impl(script, parameters);
+        }
+
+        private static CmdAction CmdSetSTrigger(object script, CmdParam[] parameters)
+        {
+            return CmdSetSTrigger_Impl(script, parameters);
         }
 
         private static CmdAction CmdSetDelayTrigger(object script, CmdParam[] parameters)
@@ -2407,7 +2451,8 @@ namespace TWXProxy.Core
                 bool onTop = parameters.Length >= 5;
                 GlobalModules.DebugLog($"[Window] name='{windowName}' size={sizeX}x{sizeY} title='{title}' onTop={onTop}\n");
 
-                var window = GlobalModules.ScriptWindowFactory.CreateWindow(windowName, title, sizeX, sizeY, onTop);
+                var factory = GlobalModules.CurrentContext.ScriptWindowFactory ?? GlobalModules.ScriptWindowFactory;
+                var window = factory.CreateWindow(windowName, title, sizeX, sizeY, onTop);
 
                 if (script is Script scriptObj)
                 {

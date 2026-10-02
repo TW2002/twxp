@@ -17,6 +17,7 @@ Builds standalone binaries for packageable host targets:
   - TWXP
   - TWXC
   - TWXD
+  - TWXDB Assistant MCP server, planner model, and private runtimes
 
 Build/package targets:
   - osx-arm64
@@ -32,6 +33,7 @@ Outputs:
   - TWX30/bin/<rid>/twxp
   - TWX30/bin/<rid>/twxc
   - TWX30/bin/<rid>/twxd
+  - TWX30/bin/<rid>/twxdb-assistant
   - bundled Mombot scripts in packages that support script payloads
   - TWX30/bin/twx30-osx-<arch>.pkg
   - TWX30/bin/twx30-linux-x64.deb
@@ -63,6 +65,8 @@ fi
 
 for rid in "${RIDS[@]}"; do
   echo "==> Packaging ${rid}..."
+
+  python3 "${REPO_ROOT}/twxdb-assistant/scripts/build_portable.py" --rid "$rid"
 
   if [[ "${rid}" == linux-* ]]; then
     RID_LIST="${rid}" ./build-linux-packages.sh

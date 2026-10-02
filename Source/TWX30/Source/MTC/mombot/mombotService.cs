@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Core = TWXProxy.Core;
 
 namespace MTC.mombot;
@@ -56,6 +57,13 @@ internal sealed record mombotTransientModeRestore(
     string ParentMode,
     string ParentLastLoadedModule);
 
+internal sealed class mombotSelfCommandPairState
+{
+    public int OutboundWaitingForInbound { get; set; }
+    public int InboundWaitingForOutbound { get; set; }
+    public long ExpiresAt { get; set; }
+}
+
 internal sealed class mombotService
 {
     private static readonly string[] WarmModuleCommands =
@@ -85,13 +93,19 @@ internal sealed class mombotService
     private Core.GameInstance? _gameInstance;
     private Core.ModDatabase? _database;
     private Core.ModInterpreter? _interpreter;
+    private Func<byte[], Task>? _sendToServerAsync;
+    private Action<string>? _clientMessagePublisher;
     private mombotConfig _config = new();
     private readonly HashSet<string> _authorizedUsers = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _commandAliases = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, mombotTransientModeRestore> _transientModeRestores = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _outboundLineLock = new();
     private readonly StringBuilder _outboundLineBuffer = new();
+    private readonly Dictionary<string, mombotSelfCommandPairState> _selfCommandPairs = new(StringComparer.OrdinalIgnoreCase);
+    private object? _lastOutboundDispatchIdentity;
     private readonly Core.TwxRuntimeContext _runtimeContext;
+
+    private const long OutboundSelfCommandEchoLifetimeTicks = 30 * TimeSpan.TicksPerSecond;
 
     public mombotService(Core.TwxRuntimeContext? runtimeContext = null)
     {
@@ -103,7 +117,7 @@ internal sealed class mombotService
     public mombotConfig Config => _config;
     public mombotWatcher Watcher { get; }
     public mombotCompatContext Compat { get; }
-    public bool IsAttached => _gameInstance != null;
+    public bool IsAttached => _gameInstance != null || _sendToServerAsync != null;
     public bool Enabled => _config.Enabled;
     public IReadOnlyList<mombotInternalCommandGroup> InternalCommandGroups => mombotCatalog.InternalCommandGroups;
     public IReadOnlyList<mombotHotkeyBinding> DefaultHotkeys => mombotCatalog.DefaultHotkeys;
@@ -158,13 +172,18 @@ internal sealed class mombotService
         Core.GameInstance? gameInstance,
         Core.ModDatabase? database,
         Core.ModInterpreter? interpreter,
-        mombotConfig? config)
+        mombotConfig? config,
+        Func<byte[], Task>? sendToServerAsync = null,
+        Action<string>? clientMessagePublisher = null)
     {
         _gameInstance = gameInstance;
         _database = database;
         _interpreter = interpreter;
+        _sendToServerAsync = sendToServerAsync;
+        _clientMessagePublisher = clientMessagePublisher;
         _config = config ?? new mombotConfig();
         _config.Enabled = false;
+        ResetOutboundCommandState();
         NormalizeConfig();
         ReloadCommandAliases();
         ResetAuthorizedUsers();
@@ -178,6 +197,9 @@ internal sealed class mombotService
         _gameInstance = null;
         _database = null;
         _interpreter = null;
+        _sendToServerAsync = null;
+        _clientMessagePublisher = null;
+        ResetOutboundCommandState();
     }
 
     public void ApplyConfig(mombotConfig? config)
@@ -498,6 +520,25 @@ internal sealed class mombotService
         return true;
     }
 
+    private void StopActiveModeChain(string currentLastLoadedModule)
+    {
+        var modulesToStop = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!string.IsNullOrWhiteSpace(currentLastLoadedModule))
+            modulesToStop.Add(currentLastLoadedModule);
+
+        foreach ((string childModule, mombotTransientModeRestore restore) in _transientModeRestores)
+        {
+            modulesToStop.Add(childModule);
+            if (!string.IsNullOrWhiteSpace(restore.ParentLastLoadedModule))
+                modulesToStop.Add(restore.ParentLastLoadedModule);
+        }
+
+        // Clear restoration state first so stop notifications cannot revive a parent.
+        _transientModeRestores.Clear();
+        foreach (string module in modulesToStop)
+            StopScriptByName(module);
+    }
+
     public bool TryResolveInitialCommand(string input, out mombotCommandSpec? command, out string canonical)
     {
         canonical = NormalizeConfiguredCommandAlias(mombotCatalog.NormalizeCommandName(input));
@@ -586,6 +627,9 @@ internal sealed class mombotService
             return watcherHandled;
         }
 
+        if (PairInboundSelfCommand(context))
+            return true;
+
         mombotCommandContext dispatchContext = NormalizeDispatchContext(
             context.CommandName,
             context.Parameters,
@@ -606,7 +650,7 @@ internal sealed class mombotService
         return true;
     }
 
-    public void ObserveOutboundText(string text)
+    public void ObserveOutboundText(string text, object? dispatchIdentity = null)
     {
         if (!Enabled || string.IsNullOrEmpty(text))
             return;
@@ -614,6 +658,14 @@ internal sealed class mombotService
         List<string> completeLines = new();
         lock (_outboundLineLock)
         {
+            if (dispatchIdentity != null)
+            {
+                if (ReferenceEquals(dispatchIdentity, _lastOutboundDispatchIdentity))
+                    return;
+
+                _lastOutboundDispatchIdentity = dispatchIdentity;
+            }
+
             foreach (char ch in text)
             {
                 if (ch == '\r' || ch == '\n')
@@ -651,6 +703,9 @@ internal sealed class mombotService
         if (context.CommandLine.Length == 0)
             return;
 
+        if (PairOutboundSelfCommand(context.CommandLine))
+            return;
+
         mombotCommandContext dispatchContext = NormalizeDispatchContext(
             context.CommandName,
             context.Parameters,
@@ -660,6 +715,92 @@ internal sealed class mombotService
             context.TrustedSelfCommand,
             context.TypedParameterLine);
         ExecuteCommandContext(dispatchContext);
+    }
+
+    private bool PairOutboundSelfCommand(string commandLine)
+    {
+        long now = DateTime.UtcNow.Ticks;
+        lock (_outboundLineLock)
+        {
+            RemoveExpiredSelfCommandPairs(now);
+            mombotSelfCommandPairState state = GetOrCreateSelfCommandPair(commandLine, now);
+            if (state.InboundWaitingForOutbound > 0)
+            {
+                state.InboundWaitingForOutbound--;
+                RemoveCompletedSelfCommandPair(commandLine, state);
+                return true;
+            }
+
+            state.OutboundWaitingForInbound++;
+            return false;
+        }
+    }
+
+    private bool PairInboundSelfCommand(mombotCommandContext context)
+    {
+        if (!context.TrustedSelfCommand ||
+            !string.Equals(context.Route, "subspace", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        long now = DateTime.UtcNow.Ticks;
+        lock (_outboundLineLock)
+        {
+            RemoveExpiredSelfCommandPairs(now);
+            mombotSelfCommandPairState state = GetOrCreateSelfCommandPair(context.CommandLine, now);
+            if (state.OutboundWaitingForInbound > 0)
+            {
+                state.OutboundWaitingForInbound--;
+                RemoveCompletedSelfCommandPair(context.CommandLine, state);
+                return true;
+            }
+
+            state.InboundWaitingForOutbound++;
+            return false;
+        }
+    }
+
+    private mombotSelfCommandPairState GetOrCreateSelfCommandPair(string commandLine, long now)
+    {
+        if (!_selfCommandPairs.TryGetValue(commandLine, out mombotSelfCommandPairState? state))
+        {
+            state = new mombotSelfCommandPairState();
+            _selfCommandPairs[commandLine] = state;
+        }
+
+        state.ExpiresAt = now + OutboundSelfCommandEchoLifetimeTicks;
+        return state;
+    }
+
+    private void RemoveCompletedSelfCommandPair(string commandLine, mombotSelfCommandPairState state)
+    {
+        if (state.OutboundWaitingForInbound == 0 && state.InboundWaitingForOutbound == 0)
+            _selfCommandPairs.Remove(commandLine);
+    }
+
+    private void RemoveExpiredSelfCommandPairs(long now)
+    {
+        if (_selfCommandPairs.Count == 0)
+            return;
+
+        foreach (string commandLine in _selfCommandPairs
+                     .Where(entry => entry.Value.ExpiresAt < now)
+                     .Select(entry => entry.Key)
+                     .ToArray())
+        {
+            _selfCommandPairs.Remove(commandLine);
+        }
+    }
+
+    private void ResetOutboundCommandState()
+    {
+        lock (_outboundLineLock)
+        {
+            _outboundLineBuffer.Clear();
+            _selfCommandPairs.Clear();
+            _lastOutboundDispatchIdentity = null;
+        }
     }
 
     public IReadOnlyList<mombotDispatchResult> ExecuteCommandLine(
@@ -763,9 +904,14 @@ internal sealed class mombotService
         string currentLastLoadedModule = GetSessionVar("$BOT~LAST_LOADED_MODULE", string.Empty);
         bool isMode = string.Equals(module.Category, "Modes", StringComparison.OrdinalIgnoreCase);
         bool helpRequested = HasHelpParameter(context.Parameters);
-        // Bot scripts can send "'bot helper" and wait for the helper's switchboard reply.
-        // Treat that own-subspace dispatch as transient so it does not kill the caller.
-        bool transientModeCommand = isMode && !helpRequested && IsTrustedOwnSubspaceCommand(context);
+        bool hasActiveParentMode = !string.IsNullOrWhiteSpace(currentLastLoadedModule) &&
+                                   !string.Equals(module.ScriptReference, currentLastLoadedModule, StringComparison.OrdinalIgnoreCase) &&
+                                   IsModeScriptReference(currentLastLoadedModule) &&
+                                   IsScriptCurrentlyLoaded(currentLastLoadedModule);
+        bool transientModeCommand = isMode &&
+                                    !helpRequested &&
+                                    hasActiveParentMode &&
+                                    IsTrustedOwnSubspaceCommand(context);
         bool replaceActiveMode = isMode && !helpRequested && !transientModeCommand;
         bool modeOffRequested = isMode &&
                                 !helpRequested &&
@@ -775,8 +921,7 @@ internal sealed class mombotService
 
         if (modeOffRequested)
         {
-            if (!string.IsNullOrWhiteSpace(currentLastLoadedModule))
-                StopScriptByName(currentLastLoadedModule);
+            StopActiveModeChain(currentLastLoadedModule);
 
             ApplySessionVar("$BOT~MODE", "General");
             ApplySessionVar("$bot~mode", "General");
@@ -798,14 +943,13 @@ internal sealed class mombotService
             return true;
         }
 
-        if (replaceActiveMode && !string.IsNullOrWhiteSpace(currentLastLoadedModule))
-            StopScriptByName(currentLastLoadedModule);
+        if (replaceActiveMode)
+            StopActiveModeChain(currentLastLoadedModule);
 
         if (transientModeCommand)
         {
             bool hasExistingTransient = _transientModeRestores.TryGetValue(module.ScriptReference, out transientRestore);
-            bool moduleIsCurrentParent = string.Equals(module.ScriptReference, currentLastLoadedModule, StringComparison.OrdinalIgnoreCase);
-            if (hasExistingTransient || !moduleIsCurrentParent)
+            if (hasExistingTransient)
                 StopScriptByName(module.ScriptReference);
 
             transientRestore ??= new mombotTransientModeRestore(
@@ -821,11 +965,8 @@ internal sealed class mombotService
         {
             string modeName = FormatModeName(context.CommandName);
 
-            if (transientModeCommand)
-            {
-                if (transientRestore != null)
-                    _transientModeRestores[module.ScriptReference] = transientRestore;
-            }
+            if (transientModeCommand && transientRestore != null)
+                _transientModeRestores[module.ScriptReference] = transientRestore;
 
             ApplySessionVar("$BOT~MODE", modeName);
             ApplySessionVar("$bot~mode", modeName);
@@ -1000,7 +1141,7 @@ internal sealed class mombotService
 
     private void SendSwitchboardStyleSubspaceMessage(string message)
     {
-        if (_gameInstance == null || !_gameInstance.IsConnected)
+        if (!CanSendToGameServer())
         {
             PublishMessage(message.Replace("*", "\r\n", StringComparison.Ordinal));
             return;
@@ -1016,7 +1157,7 @@ internal sealed class mombotService
 
         string switchboardMessage = "'*[" + mode + "] {" + botName + "} - * " + message + "*";
         string serverText = switchboardMessage.Replace("*", "\r", StringComparison.Ordinal);
-        _gameInstance.SendToServerAsync(System.Text.Encoding.ASCII.GetBytes(serverText)).GetAwaiter().GetResult();
+        SendToGameServer(System.Text.Encoding.ASCII.GetBytes(serverText));
     }
 
     private mombotDispatchResult ExecuteBotStatus(string canonical)
@@ -1043,7 +1184,25 @@ internal sealed class mombotService
 
     private void PublishMessage(string message)
     {
-        _gameInstance?.ClientMessage("\r\n" + message + "\r\n");
+        string output = "\r\n" + message + "\r\n";
+        if (_gameInstance != null)
+            _gameInstance.ClientMessage(output);
+        else
+            _clientMessagePublisher?.Invoke(output);
+    }
+
+    private bool CanSendToGameServer()
+        => _gameInstance?.IsConnected == true || _sendToServerAsync != null;
+
+    private void SendToGameServer(byte[] data)
+    {
+        if (_gameInstance?.IsConnected == true)
+        {
+            _gameInstance.SendToServerAsync(data).GetAwaiter().GetResult();
+            return;
+        }
+
+        _sendToServerAsync?.Invoke(data).GetAwaiter().GetResult();
     }
 
     private string GetSessionVar(string name, string fallback = "")

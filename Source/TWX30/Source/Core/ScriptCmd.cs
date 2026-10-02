@@ -548,6 +548,8 @@ namespace TWXProxy.Core
             AddCommand("NATIVEBOT", 1, 1, CmdNativeBot, Array.Empty<ParamKind>(), ParamKind.Value);
             AddCommand("QUIKSTATS", 0, 0, CmdQuikStats, Array.Empty<ParamKind>(), ParamKind.Value);
             AddCommand("GETCOURSES", 3, 3, CmdGetCourses, new[] { ParamKind.Variable, ParamKind.Value, ParamKind.Value }, ParamKind.Value);
+            AddCommand("SETSTRIGGER", 2, 3, CmdSetSTrigger, Array.Empty<ParamKind>(), ParamKind.Value);
+            AddCommand("SETSLINETRIGGER", 2, 3, CmdSetSLineTrigger, Array.Empty<ParamKind>(), ParamKind.Value);
         }
 
         private void BuildSysConstList()
@@ -968,7 +970,7 @@ namespace TWXProxy.Core
             AddSysConstant("LIBMULTILINE", (indexes) => "0");
             AddSysConstant("LIBMSG", (indexes) => string.Empty);
             AddSysConstant("ISNATIVEBOT", (indexes) =>
-                IsAnyNativeBotRunning(GetActiveGameInstance()) ? "1" : "0");
+                IsAnyNativeBotRunning(GetActiveServer()) ? "1" : "0");
             AddSysConstant("CURRENTHOLDS", (indexes) => GetCurrentTotalHolds());
             AddSysConstant("HAGGLE", (indexes) => GetNativeHaggle());
         }
@@ -1300,7 +1302,10 @@ namespace TWXProxy.Core
         /// </summary>
         public static string GetConnected()
         {
-            return (ActiveGameInstance?.IsConnected ?? false) ? "1" : "0";
+            if (ActiveGameInstance?.IsConnected == true)
+                return "1";
+
+            return (GlobalModules.CurrentContext.TWXServer?.IsConnected ?? false) ? "1" : "0";
         }
 
         /// <summary>

@@ -39,8 +39,53 @@ namespace TWXProxy.Core
 
             if (gameInstance == null)
             {
-                GlobalModules.DebugLog($"[CONNECT] ERROR: No active game instance\n");
-                Console.WriteLine("[Script] CONNECT: No active game instance");
+                ITWXServer? server = GlobalModules.CurrentContext.TWXServer;
+                GlobalModules.DebugLog($"[CONNECT] no active game instance, server={server?.GetType().Name ?? "NULL"}, isConnected={server?.IsConnected}\n");
+
+                if (server == null)
+                {
+                    GlobalModules.DebugLog($"[CONNECT] ERROR: No active game instance or TWX server adapter\n");
+                    Console.WriteLine("[Script] CONNECT: No active game instance");
+                    return CmdAction.None;
+                }
+
+                if (server.IsConnected)
+                {
+                    GlobalModules.DebugLog($"[CONNECT] Server adapter already connected, skipping\n");
+                    Console.WriteLine($"[Script] CONNECT: Already connected to server");
+                    return CmdAction.None;
+                }
+
+                TwxRuntimeContext context = GlobalModules.CurrentContext;
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        using var _ = GlobalModules.UseRuntimeContext(context);
+                        GlobalModules.DebugLog($"[CONNECT] Server adapter ConnectToServerAsync starting\n");
+                        await server.ConnectToServerAsync();
+                        GlobalModules.DebugLog($"[CONNECT] Server adapter ConnectToServerAsync completed successfully\n");
+                        if (context.ActiveInterpreter is ModInterpreter interpreter)
+                            interpreter.HandleConnectionAccepted();
+                        GlobalModules.FlushDebugLog();
+                    }
+                    catch (Exception ex)
+                    {
+                        GlobalModules.DebugLog($"[CONNECT] Server adapter failed: {ex.Message}\n");
+                        GlobalModules.FlushDebugLog();
+                        try
+                        {
+                            server.ClientMessage($"\r\nConnection failed: {ex.Message}\r\n");
+                        }
+                        catch
+                        {
+                            Console.WriteLine($"[Script] CONNECT failed: {ex.Message}");
+                        }
+
+                        if (GetActiveInterpreter() is ModInterpreter interpreter)
+                            interpreter.ProgramEvent("Failed to Connect.", string.Empty, false);
+                    }
+                });
                 return CmdAction.None;
             }
 
@@ -109,7 +154,41 @@ namespace TWXProxy.Core
             GameInstance? gameInstance = ActiveGameInstance;
             if (gameInstance == null)
             {
-                Console.WriteLine("[Script] DISCONNECT: No active game instance");
+                ITWXServer? server = GlobalModules.CurrentContext.TWXServer;
+                if (server == null)
+                {
+                    Console.WriteLine("[Script] DISCONNECT: No active game instance");
+                    return CmdAction.None;
+                }
+
+                if (!server.IsConnected)
+                {
+                    Console.WriteLine("[Script] DISCONNECT: Not connected to server");
+                    return CmdAction.None;
+                }
+
+                try
+                {
+                    TwxRuntimeContext context = GlobalModules.CurrentContext;
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            using var _ = GlobalModules.UseRuntimeContext(context);
+                            GlobalModules.DebugLog($"[Script.DISCONNECT] Server adapter DisconnectFromServerAsync starting\n");
+                            await server.DisconnectFromServerAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[Script] DISCONNECT failed: {ex.Message}");
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Script] DISCONNECT error: {ex.Message}");
+                }
+
                 return CmdAction.None;
             }
 

@@ -45,8 +45,8 @@ namespace TWXProxy.Core
         // TWX Proxy 2.04 is version 4
         // TWX Proxy 2.05 is version 5
         // TWX Proxy 2.06 is version 6
-        // twxproxy 3.0 beta5 native-extension refresh is version 7
-        public const int CompiledScriptVersion = 7;
+        // twxproxy 3.0.1 start-of-line trigger commands are version 8
+        public const int CompiledScriptVersion = 8;
 
         public const byte PARAM_CMD = 0;
         public const byte PARAM_VAR = 1;        // User variable prefix
@@ -1169,7 +1169,7 @@ namespace TWXProxy.Core
                 return;
             }
 
-            // Macro commands (IF, WHILE, ELSE, ELSEIF, END, INCLUDE, WAITON)
+            // Macro commands (IF, WHILE, ELSE, ELSEIF, END, INCLUDE, WAITON, SWAITON)
             if (HandleMacroCommand(paramLine, lineNumber, scriptID))
                 return;
 
@@ -1425,6 +1425,10 @@ namespace TWXProxy.Core
                     HandleWaitOn(paramLine, lineNumber, scriptID);
                     return true;
 
+                case "SWAITON":
+                    HandleWaitOn(paramLine, lineNumber, scriptID, startOfLine: true);
+                    return true;
+
                 default:
                     return false;
             }
@@ -1563,18 +1567,19 @@ namespace TWXProxy.Core
             IncludeFile(filename);
         }
 
-        private void HandleWaitOn(List<string> paramLine, int lineNumber, byte scriptID)
+        private void HandleWaitOn(List<string> paramLine, int lineNumber, byte scriptID, bool startOfLine = false)
         {
+            string macroName = startOfLine ? "SWAITON" : "WAITON";
             if (paramLine.Count > 2)
-                throw new Exception("Unnecessary parameters after WAITON macro");
+                throw new Exception($"Unnecessary parameters after {macroName} macro");
             if (paramLine.Count < 2)
-                throw new Exception("No wait text supplied for WAITON macro");
+                throw new Exception($"No wait text supplied for {macroName} macro");
 
             _waitOnCount++;
-            string triggerName = "WAITON" + _waitOnCount;
-            string labelName = ":WAITON" + _waitOnCount;
+            string triggerName = macroName + _waitOnCount;
+            string labelName = ":" + triggerName;
 
-            RecurseCmd(new[] { "SETTEXTTRIGGER", triggerName, labelName, paramLine[1] }, lineNumber, scriptID);
+            RecurseCmd(new[] { startOfLine ? "SETSTRIGGER" : "SETTEXTTRIGGER", triggerName, labelName, paramLine[1] }, lineNumber, scriptID);
             RecurseCmd(new[] { "PAUSE" }, lineNumber, scriptID);
             RecurseCmd(new[] { labelName }, lineNumber, scriptID);
         }
@@ -1792,6 +1797,8 @@ namespace TWXProxy.Core
 
                     case "SETTEXTTRIGGER":
                     case "SETTEXTLINETRIGGER":
+                    case "SETSTRIGGER":
+                    case "SETSLINETRIGGER":
                     case "SETTEXTOUTTRIGGER":
                     case "SETDELAYTRIGGER":
                     case "SETEVENTTRIGGER":
@@ -1859,6 +1866,8 @@ namespace TWXProxy.Core
                 paramIndex == 0 &&
                 (cmdName == "SETTEXTLINETRIGGER" ||
                  cmdName == "SETTEXTTRIGGER" ||
+                 cmdName == "SETSLINETRIGGER" ||
+                 cmdName == "SETSTRIGGER" ||
                  cmdName == "SETTEXTOUTTRIGGER" ||
                  cmdName == "SETDELAYTRIGGER" ||
                  cmdName == "KILLTRIGGER");
@@ -2596,6 +2605,8 @@ namespace TWXProxy.Core
 
                     case "SETTEXTTRIGGER":
                     case "SETTEXTLINETRIGGER":
+                    case "SETSTRIGGER":
+                    case "SETSLINETRIGGER":
                     case "SETTEXTOUTTRIGGER":
                     case "SETDELAYTRIGGER":
                     case "SETEVENTTRIGGER":
@@ -3197,6 +3208,8 @@ namespace TWXProxy.Core
 
                         case "SETTEXTTRIGGER":
                         case "SETTEXTLINETRIGGER":
+                        case "SETSTRIGGER":
+                        case "SETSLINETRIGGER":
                         case "SETTEXTOUTTRIGGER":
                         case "SETDELAYTRIGGER":
                         case "SETEVENTTRIGGER":
@@ -3684,6 +3697,8 @@ namespace TWXProxy.Core
 
                 case "SETTEXTTRIGGER":
                 case "SETTEXTLINETRIGGER":
+                case "SETSTRIGGER":
+                case "SETSLINETRIGGER":
                 case "SETTEXTOUTTRIGGER":
                 case "SETDELAYTRIGGER":
                 case "SETEVENTTRIGGER":
@@ -4616,37 +4631,86 @@ namespace TWXProxy.Core
             return SplitSourceLines(LoadSourceText(filename));
         }
 
-        public void WriteToFile(string filename)
+        public void WriteToFile(string filename) => WriteToFile(filename, ScriptConstants.CompiledScriptVersion);
+
+        public void WriteToFile(string filename, int targetVersion)
         {
+            byte[] outputCode = PrepareOutputCode(targetVersion);
             using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
             using (var writer = new BinaryWriter(fs))
             {
-                WriteToWriter(writer);
+                WriteToWriter(writer, targetVersion, outputCode);
             }
         }
 
-        public byte[] WriteToBytes()
+        public byte[] WriteToBytes() => WriteToBytes(ScriptConstants.CompiledScriptVersion);
+
+        public byte[] WriteToBytes(int targetVersion)
         {
+            byte[] outputCode = PrepareOutputCode(targetVersion);
             using var stream = new MemoryStream();
             using var writer = new BinaryWriter(stream, Encoding.Latin1, leaveOpen: true);
-            WriteToWriter(writer);
+            WriteToWriter(writer, targetVersion, outputCode);
             writer.Flush();
             return stream.ToArray();
         }
 
-        private void WriteToWriter(BinaryWriter writer)
+        public int LastOutputConvertedTriggerCount { get; private set; }
+
+        private byte[] PrepareOutputCode(int targetVersion)
+        {
+            LastOutputConvertedTriggerCount = 0;
+            if (targetVersion != 7 && targetVersion != ScriptConstants.CompiledScriptVersion)
+                throw new ArgumentOutOfRangeException(nameof(targetVersion), "Supported CTS output versions are 7 and 8.");
+            if (targetVersion == ScriptConstants.CompiledScriptVersion || _code.Length == 0)
+                return _code;
+
+            // Version 8 appended these opcodes; the rest of the version-7
+            // instruction encoding and file layout are unchanged.
+            int firstVersion8Command = _scriptRef!.FindCmd("SETSTRIGGER");
+            byte[]? outputCode = null;
+            foreach (var instruction in PreparedScriptDecoder.Decode(this).Instructions)
+            {
+                if (instruction.IsLabel || instruction.CommandId < firstVersion8Command)
+                    continue;
+                string? replacement = instruction.CommandName switch
+                {
+                    "SETSTRIGGER" => "SETTEXTTRIGGER",
+                    "SETSLINETRIGGER" => "SETTEXTLINETRIGGER",
+                    _ => null
+                };
+                if (replacement != null)
+                {
+                    outputCode ??= (byte[])_code.Clone();
+                    int commandId = _scriptRef.FindCmd(replacement);
+                    // Same operands and instruction width; only replace the little-endian opcode.
+                    int offset = instruction.RawOffset + 3;
+                    outputCode[offset] = (byte)commandId;
+                    outputCode[offset + 1] = (byte)(commandId >> 8);
+                    LastOutputConvertedTriggerCount++;
+                    continue;
+                }
+                string source = instruction.ScriptId < _includeScriptList.Count
+                    ? _includeScriptList[instruction.ScriptId] : _scriptFile;
+                throw new Exception($"Cannot target CTS version {targetVersion}: {instruction.CommandName} " +
+                    $"requires CTS version 8 (line {instruction.LineNumber} in '{source}').");
+            }
+            return outputCode ?? _code;
+        }
+
+        private void WriteToWriter(BinaryWriter writer, int targetVersion, byte[] outputCode)
         {
             byte[] descBytes = Encoding.ASCII.GetBytes(string.Join("\r\n", _description));
             writer.Write((byte)10);
             writer.Write(Encoding.ASCII.GetBytes("TWX SCRIPT"));
             writer.Write((byte)0);
-            writer.Write((ushort)ScriptConstants.CompiledScriptVersion);
+            writer.Write((ushort)targetVersion);
             writer.Write((byte)0);
             writer.Write((byte)0);
             writer.Write(descBytes.Length);
             writer.Write(_codeSize);
             writer.Write(descBytes);
-            writer.Write(_code);
+            writer.Write(outputCode);
 
             foreach (var param in _paramList)
             {

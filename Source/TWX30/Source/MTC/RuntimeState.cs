@@ -295,9 +295,9 @@ public partial class MainWindow
 
     private bool HasCompleteNativeMombotRelogSettings()
     {
-        string configLogin = NormalizeMombotValue(_embeddedGameConfig?.LoginName, treatSelfAsEmpty: true);
-        string configPassword = NormalizeMombotValue(_embeddedGameConfig?.Password);
-        string configGameLetter = NormalizeMombotValue(_embeddedGameConfig?.GameLetter);
+        string configLogin = CurrentConfiguredRelogLoginName();
+        string configPassword = CurrentConfiguredRelogPassword();
+        string configGameLetter = CurrentConfiguredRelogGameLetter();
 
         string loginName = FirstMeaningfulMombotValue(
             configLogin,
@@ -575,6 +575,7 @@ public partial class MainWindow
             await GameConfigService.ResetVariablesAsync(gameName, config.Variables);
             ClearMombotRelogState();
             ResetMombotGameStorage(gameName, resetProgramDir, resetNativeScriptRoot);
+            ResetNotesForGame(gameName);
 
             Directory.CreateDirectory(Path.GetDirectoryName(config.DatabasePath)!);
             using (Core.GameFileLock.Acquire("MTC reset game", configPath, config.DatabasePath))
@@ -755,6 +756,9 @@ public partial class MainWindow
             RobFactor = sourceHeader.RobFactor,
             StealFactor = sourceHeader.StealFactor,
             CommandChar = commandChar,
+            OpenTwUniverseId = sourceHeader.OpenTwUniverseId,
+            OpenTwTopologyHash = sourceHeader.OpenTwTopologyHash,
+            OpenTwTopologySyncedAtUtc = sourceHeader.OpenTwTopologySyncedAtUtc,
         };
     }
 
@@ -826,7 +830,10 @@ public partial class MainWindow
         await dlg.ShowDialog(this);
     }
 
-    private async Task OnPreferencesAsync()
+    private Task OnPreferencesAsync() => ShowPreferencesAsync(false);
+    private Task OnViewPreferencesAsync() => ShowPreferencesAsync(true);
+
+    private async Task ShowPreferencesAsync(bool viewPreferences)
     {
         MtcTabPrototype? owner = ResolveCurrentMtcTabContext() ?? ActiveMtcTab;
         if (owner is not null)
@@ -846,7 +853,7 @@ public partial class MainWindow
             }
         }
 
-        bool saved = await new PreferencesDialog(_appPrefs, debugPrefs, GetCurrentJsonRpcConfig(), gameConfig, gameName).ShowDialog<bool>(this);
+        bool saved = await new PreferencesDialog(_appPrefs, debugPrefs, GetCurrentJsonRpcConfig(), gameConfig, gameName, viewPreferences).ShowDialog<bool>(this);
         if (!saved)
         {
             PostToCurrentMtcTabSession(FocusActiveTerminal, DispatcherPriority.Input);
@@ -869,6 +876,7 @@ public partial class MainWindow
         ApplySessionLogSettings(_embeddedGameConfig);
         ApplyRedAlertPreference();
         ApplyScriptWindowStayInFrontPreference();
+        ApplyScriptWindowPreferences();
         RebuildScriptsMenu();
         PostToCurrentMtcTabSession(FocusActiveTerminal, DispatcherPriority.Input);
     }
@@ -946,7 +954,7 @@ public partial class MainWindow
         _appPrefs.Save();
     }
 
-    private void ApplyDebugLoggingPreferences()
+    private void ApplyDebugLoggingPreferences(bool applyHaggleDebugLogging = true)
     {
         MtcTabPrototype? owner = ResolveCurrentMtcTabContext();
         IDisposable? runtimeScope = owner is null ? null : Core.GlobalModules.UseRuntimeContext(owner.RuntimeContext);
@@ -957,7 +965,6 @@ public partial class MainWindow
             Core.GlobalModules.ProgramDir = programDir;
             EmbeddedMtcDebugConfig debugPrefs = GetCurrentDebugConfig();
             Core.GlobalModules.PreferPreparedVm = _appPrefs.PreparedVmEnabled;
-            Core.GlobalModules.ScriptInfiniteLoopProtectionEnabled = _appPrefs.ScriptInfiniteLoopProtectionEnabled;
             Core.GlobalModules.EnableVmMetrics = _appPrefs.VmMetricsEnabled;
             Core.GlobalModules.PreparedScriptCacheLimitBytes =
                 Math.Max(1, _appPrefs.PreparedScriptCacheLimitKb) * 1024L;
@@ -975,11 +982,14 @@ public partial class MainWindow
                 debugPrefs.ScriptTraceDebugLogging,
                 debugPrefs.AutoRecorderDebugLogging,
                 debugPrefs.VariablePersistenceDebugLogging);
-            Core.GlobalModules.ConfigureHaggleDebugLogging(
-                AppPaths.GetPortHaggleDebugLogPath(),
-                debugPrefs.DebugPortHaggleEnabled,
-                AppPaths.GetPlanetHaggleDebugLogPath(),
-                debugPrefs.DebugPlanetHaggleEnabled);
+            if (applyHaggleDebugLogging)
+            {
+                Core.GlobalModules.ConfigureHaggleDebugLogging(
+                    AppPaths.GetPortHaggleDebugLogPath(),
+                    debugPrefs.DebugPortHaggleEnabled,
+                    AppPaths.GetPlanetHaggleDebugLogPath(),
+                    debugPrefs.DebugPlanetHaggleEnabled);
+            }
             Core.GlobalModules.ConfigureDatabaseCorrectionLogging(
                 string.IsNullOrWhiteSpace(debugGameName)
                     ? AppPaths.GetDatabaseCorrectionLogPath()

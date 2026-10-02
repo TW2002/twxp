@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../Source/TWXProxy.csproj" />
+    <Compile Include="../../Source/TWXD/ScriptDecompiler.cs" Link="ScriptDecompiler.cs" />
   </ItemGroup>
 
 </Project>

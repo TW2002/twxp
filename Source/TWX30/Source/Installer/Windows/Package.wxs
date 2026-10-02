@@ -1,6 +1,6 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-  <Package Name="twxproxy 3.0 beta5"
+  <Package Name="twxproxy 3.0.1"
            Manufacturer="twxproxy"
            Version="$(var.ProductVersion)"
            UpgradeCode="$(var.UpgradeCode)"
@@ -35,11 +35,15 @@
     <StandardDirectory Id="ProgramMenuFolder">
       <Directory Id="TWXSTARTMENUDIR" Name="TWX Proxy" />
     </StandardDirectory>
+    <StandardDirectory Id="CommonStartupFolder" />
 
     <StandardDirectory Id="TARGETDIR">
       <Directory Id="PROGRAMROOTDIR" Name="twxproxy" ComponentGuidGenerationSeed="{A5A0D0D8-486C-43C2-9803-B07D8D34744C}">
         <Directory Id="BINDIR" Name="bin" />
         <Directory Id="SCRIPTSDIR" Name="scripts" />
+        <Directory Id="TOOLSDIR" Name="tools">
+          <Directory Id="TWXDBASSISTANTDIR" Name="twxdb-assistant" />
+        </Directory>
         <Directory Id="DATADIR" Name="data" />
         <Directory Id="LOGSDIR" Name="logs" />
         <Directory Id="MODULESDIR" Name="modules" />
@@ -113,6 +117,16 @@
         <RegistryValue Root="HKLM"
                        Key="Software\TWXProxy\TWX30\Folders"
                        Name="scripts"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <Component Directory="TOOLSDIR" Guid="*">
+        <CreateFolder />
+        <RegistryValue Root="HKLM"
+                       Key="Software\TWXProxy\TWX30\Folders"
+                       Name="tools"
                        Type="integer"
                        Value="1"
                        KeyPath="yes" />
@@ -208,6 +222,29 @@
       <Files Directory="SCRIPTSDIR" Include="$(var.PayloadRoot)\scripts\**" />
     </ComponentGroup>
 
+    <ComponentGroup Id="TwxdbAssistantPayload">
+      <Files Directory="TWXDBASSISTANTDIR" Include="$(var.PayloadRoot)\ProgramDir\tools\twxdb-assistant\**" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="TwxdbAssistantAutoStartPayload">
+      <Component Directory="TWXDBASSISTANTDIR" Guid="*">
+        <Shortcut Id="TwxdbAssistantStartupShortcut"
+                  Directory="CommonStartupFolder"
+                  Name="TWXDB Assistant MCP Server"
+                  Description="Start the local TWXDB Assistant MCP server"
+                  Target="[SystemFolder]wscript.exe"
+                  Arguments="&quot;[TWXDBASSISTANTDIR]twxdb-mcp-http.vbs&quot;"
+                  WorkingDirectory="TWXDBASSISTANTDIR"
+                  Advertise="no" />
+        <RegistryValue Root="HKLM"
+                       Key="Software\TWXProxy\TWX30"
+                       Name="TwxdbAssistantAutoStart"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
     <Feature Id="Complete"
              Title="TWX Proxy Suite"
              Description="All TWX Proxy components."
@@ -241,6 +278,20 @@
                Description="Bundled Mombot script library installed to the scripts\mombot folder."
                Level="1">
         <ComponentGroupRef Id="ScriptsPayload" />
+      </Feature>
+
+      <Feature Id="FeatureTwxdbAssistant"
+               Title="TWXDB Assistant"
+               Description="Local MCP server, query planner model, and private runtimes for TWX30 database questions."
+               Level="1">
+        <ComponentGroupRef Id="TwxdbAssistantPayload" />
+
+        <Feature Id="FeatureTwxdbAssistantAutoStart"
+                 Title="Start TWXDB Assistant at Login"
+                 Description="Start the localhost MCP server automatically when Windows starts."
+                 Level="2">
+          <ComponentGroupRef Id="TwxdbAssistantAutoStartPayload" />
+        </Feature>
       </Feature>
     </Feature>
   </Package>

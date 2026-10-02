@@ -24,17 +24,18 @@ received this source in.
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace TWXProxy.Core
 {
     public static class Constants
     {
         public const string ProductName = "twxproxy";
-        public const string DisplayVersion = "3.0 beta5";
-        public const string ProductDisplayName = "twxproxy 3.0 beta5";
-        public const string ProgramVersion = "3.0.0";
-        public const int ReleaseNumber = 5;
-        public const string ReleaseVersion = "beta5";
+        public const string DisplayVersion = "3.0.1";
+        public const string ProductDisplayName = "twxproxy 3.0.1";
+        public const string ProgramVersion = "3.0.1";
+        public const int ReleaseNumber = 1;
+        public const string ReleaseVersion = "3.0.1";
         public const string SetupFile = "TWX26.dat";
         public const string EndLine = "\r\n";
     }
@@ -268,11 +269,15 @@ namespace TWXProxy.Core
     /// </summary>
     public interface ITWXServer : IModServer
     {
+        bool IsConnected { get; }
         void Broadcast(string message);
         void Broadcast(string message, bool broadcastDeaf);
         void BroadcastLiteral(string message);
         void BroadcastLiteral(string message, bool broadcastDeaf);
         void ClientMessage(string message);
+        Task ConnectToServerAsync();
+        Task DisconnectFromServerAsync();
+        Task SendToServerAsync(byte[] data);
         void AddQuickText(string key, string value);
         void ClearQuickText(string? key = null);
         int ClientCount { get; }

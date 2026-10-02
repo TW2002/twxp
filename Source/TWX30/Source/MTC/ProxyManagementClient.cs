@@ -6,6 +6,8 @@ namespace MTC;
 
 internal sealed class ProxyManagementClient
 {
+    private static readonly TimeSpan ManagementOperationTimeout = TimeSpan.FromSeconds(10);
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -29,7 +31,7 @@ internal sealed class ProxyManagementClient
         ProxyManagementResponse response = await SendAsync(new Dictionary<string, object?>
         {
             ["action"] = "listGames",
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
         return response.Result.Deserialize<List<ProxyManagedGame>>(JsonOptions) ?? [];
     }
 
@@ -39,7 +41,7 @@ internal sealed class ProxyManagementClient
         {
             ["action"] = "listScripts",
             ["gameId"] = gameId ?? string.Empty,
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
         return response.Result.Deserialize<List<ProxyManagedScript>>(JsonOptions) ?? [];
     }
 
@@ -48,7 +50,7 @@ internal sealed class ProxyManagementClient
         ProxyManagementResponse response = await SendAsync(new Dictionary<string, object?>
         {
             ["action"] = "listBotConfigs",
-        }, cancellationToken);
+        }, cancellationToken).ConfigureAwait(false);
         return response.Result.Deserialize<List<ProxyManagedBotConfig>>(JsonOptions) ?? [];
     }
 
@@ -104,6 +106,14 @@ internal sealed class ProxyManagementClient
             ["botName"] = botName,
         }, cancellationToken);
 
+    public Task<ProxyManagementResponse> SendToServerAsync(string gameId, byte[] data, CancellationToken cancellationToken = default)
+        => SendAsync(new Dictionary<string, object?>
+        {
+            ["action"] = "sendToServer",
+            ["gameId"] = gameId,
+            ["contentBase64"] = Convert.ToBase64String(data),
+        }, cancellationToken);
+
     public Task<ProxyManagementResponse> SaveBotConfigAsync(
         string gameId,
         ProxyManagedBotConfig bot,
@@ -116,10 +126,10 @@ internal sealed class ProxyManagementClient
         }, cancellationToken);
 
     public async Task<ProxyManagementResponse> UploadScriptAsync(string relativePath, byte[] content, CancellationToken cancellationToken = default)
-        => await UploadFileAsync("uploadScript", relativePath, content, cancellationToken);
+        => await UploadFileAsync("uploadScript", relativePath, content, cancellationToken).ConfigureAwait(false);
 
     public async Task<ProxyManagementResponse> UploadConfigAsync(string relativePath, byte[] content, CancellationToken cancellationToken = default)
-        => await UploadFileAsync("uploadConfig", relativePath, content, cancellationToken);
+        => await UploadFileAsync("uploadConfig", relativePath, content, cancellationToken).ConfigureAwait(false);
 
     private Task<ProxyManagementResponse> UploadFileAsync(
         string action,
@@ -138,28 +148,39 @@ internal sealed class ProxyManagementClient
         CancellationToken cancellationToken)
     {
         request["token"] = _server.SecurityToken ?? string.Empty;
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(ManagementOperationTimeout);
+        CancellationToken operationToken = timeout.Token;
+
         using var client = new TcpClient();
-        await client.ConnectAsync(_server.Host, AppPreferences.NormalizeTcpPort(_server.ManagementPort, 2099), cancellationToken);
-        await using NetworkStream stream = client.GetStream();
-        await using var writer = new StreamWriter(stream, new UTF8Encoding(false), leaveOpen: true)
+        try
         {
-            AutoFlush = true,
-            NewLine = "\n",
-        };
-        using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+            await client.ConnectAsync(_server.Host, AppPreferences.NormalizeTcpPort(_server.ManagementPort, 2099), operationToken).ConfigureAwait(false);
+            await using NetworkStream stream = client.GetStream();
+            await using var writer = new StreamWriter(stream, new UTF8Encoding(false), leaveOpen: true)
+            {
+                AutoFlush = true,
+                NewLine = "\n",
+            };
+            using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
 
-        string json = JsonSerializer.Serialize(request, JsonOptions);
-        await writer.WriteLineAsync(json.AsMemory(), cancellationToken);
-        string? responseLine = await reader.ReadLineAsync(cancellationToken);
-        if (string.IsNullOrWhiteSpace(responseLine))
-            throw new InvalidOperationException("Proxy management server returned an empty response.");
+            string json = JsonSerializer.Serialize(request, JsonOptions);
+            await writer.WriteLineAsync(json.AsMemory(), operationToken).ConfigureAwait(false);
+            string? responseLine = await reader.ReadLineAsync(operationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseLine))
+                throw new InvalidOperationException("Proxy management server returned an empty response.");
 
-        ProxyManagementResponse? response = JsonSerializer.Deserialize<ProxyManagementResponse>(responseLine, JsonOptions);
-        if (response == null)
-            throw new InvalidOperationException("Proxy management server returned an invalid response.");
-        if (!response.Ok)
-            throw new InvalidOperationException(string.IsNullOrWhiteSpace(response.Error) ? "Proxy management command failed." : response.Error);
-        return response;
+            ProxyManagementResponse? response = JsonSerializer.Deserialize<ProxyManagementResponse>(responseLine, JsonOptions);
+            if (response == null)
+                throw new InvalidOperationException("Proxy management server returned an invalid response.");
+            if (!response.Ok)
+                throw new InvalidOperationException(string.IsNullOrWhiteSpace(response.Error) ? "Proxy management command failed." : response.Error);
+            return response;
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException($"Proxy management server did not respond within {ManagementOperationTimeout.TotalSeconds:0} seconds.");
+        }
     }
 }
 

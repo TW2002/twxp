@@ -108,6 +108,7 @@ namespace TWXProxy.Core
         public int LifeCycle { get; set; }
         public DelayTimer? Timer { get; set; }
         public bool IsCancelled { get; set; }
+        public bool MatchStartOnly { get; set; }
     }
 
     internal static class ScriptDiagnosticOutput
@@ -133,6 +134,7 @@ namespace TWXProxy.Core
     public class ModInterpreter : TWXModule, ITWXGlobals, IObserver
     {
         private List<Script> _scriptList;
+        private readonly object _scriptListLock = new();
         private object? _scriptMenu;
         private ScriptRef? _scriptRef;
         private List<string> _autoRun;
@@ -172,7 +174,6 @@ namespace TWXProxy.Core
         public override void Dispose()
         {
             StopAll(true);
-            _scriptList.Clear();
             _tmrTime?.Dispose();
             base.Dispose();
         }
@@ -389,12 +390,11 @@ namespace TWXProxy.Core
 
             // MB - Stop script if it is already running
             int i = 0;
-            while (i < Count)
+            while (GetScript(i) is Script runningScript)
             {
-                var runningScript = _scriptList[i];
                 string runningScriptName = runningScript.LoadEventName ?? runningScript.Compiler?.ScriptFile ?? runningScript.ScriptName;
                 if (ScriptReferencesMatch(runningScriptName, filename, _programDir, _scriptDirectory))
-                    Stop(i);
+                    StopByHandle(runningScript);
                 else
                     i++;
             }
@@ -404,7 +404,8 @@ namespace TWXProxy.Core
             var script = new Script(this);
             script.Silent = silent;
             script.LoadEventName = eventScriptName;
-            _scriptList.Add(script);
+            lock (_scriptListLock)
+                _scriptList.Add(script);
 
             _lastScript = filename;
             bool error = true;
@@ -435,7 +436,7 @@ namespace TWXProxy.Core
                     GlobalModules.FlushDebugLog();
                     ScriptDiagnosticOutput.Write($"\r\n[ERROR] Loading script failed: {ex.Message}\r\n");
                     Console.WriteLine($"[ERROR] Loading script failed: {ex.Message}\r\n{ex.StackTrace}");
-                    Stop(Count - 1);
+                    StopByHandle(script);
                     throw; // Rethrow so caller knows it failed
                 }
             }
@@ -462,7 +463,7 @@ namespace TWXProxy.Core
                     ScriptDiagnosticOutput.Write($"\r\n[ERROR] Compiling script failed: {ex.Message}\r\n");
                     Console.WriteLine($"[ERROR] Compiling script failed: {ex.Message}\r\n{ex.StackTrace}");
                     // TWXServer.Broadcast($"\r\n{AnsiCodes.ANSI_15}Script compilation error: {AnsiCodes.ANSI_7}{ex.Message}\r\n\r\n");
-                    Stop(Count - 1);
+                    StopByHandle(script);
                 }
             }
 
@@ -480,7 +481,7 @@ namespace TWXProxy.Core
                     {
                         GlobalModules.DebugLog(
                             $"[ModInterpreter.Load] Failed to jump to entry label '{entryLabel}' in '{filename}': {ex.Message}\n");
-                        Stop(Count - 1);
+                        StopByHandle(script);
                         throw new Exception($"Entry label '{entryLabel}' not found in script '{filename}'", ex);
                     }
                 }
@@ -620,12 +621,23 @@ namespace TWXProxy.Core
 
         public void Stop(int index)
         {
+            Script? script = GetScript(index);
+            if (script != null)
+                StopByHandle(script);
+        }
+
+        public void StopByHandle(Script script)
+        {
             using var runtimeScope = GlobalModules.UseRuntimeContext(RuntimeContext);
-            var script = _scriptList[index];
+            lock (_scriptListLock)
+            {
+                if (!_scriptList.Contains(script))
+                    return;
+            }
             // Match Pascal: ProgramEvent('SCRIPT STOPPED', Script.Cmp.ScriptFile, TRUE)
             string scriptName = script.LoadEventName ?? script.Compiler?.ScriptFile ?? string.Empty;
 
-            GlobalModules.DebugLog($"[Script.Stop] Stopping script[{index}]='{scriptName}', remaining after={_scriptList.Count - 1}\n");
+            GlobalModules.DebugLog($"[Script.Stop] Stopping script='{scriptName}'\n");
             GlobalModules.FlushDebugLog();
 
             // Broadcast termination message
@@ -640,8 +652,13 @@ namespace TWXProxy.Core
             // Free the script
             script.Dispose();
 
-            // Remove script from list
-            _scriptList.RemoveAt(index);
+            // Another stop/load may have shifted the list during disposal. Remove
+            // this exact instance, and publish its stop notification only once.
+            lock (_scriptListLock)
+            {
+                if (!_scriptList.Remove(script))
+                    return;
+            }
 
             GlobalModules.DebugLog($"[Script.Stop] Script removed, _scriptList.Count={_scriptList.Count}, firing ProgramEvent SCRIPT STOPPED\n");
             GlobalModules.FlushDebugLog();
@@ -653,18 +670,9 @@ namespace TWXProxy.Core
                 gameServer.NotifyScriptStop();
         }
 
-        public void StopByHandle(Script script)
-        {
-            int index = _scriptList.IndexOf(script);
-            if (index >= 0)
-                Stop(index);
-        }
-
         private bool IsScriptStillAtIndex(int index, Script script)
         {
-            return index >= 0 &&
-                   index < _scriptList.Count &&
-                   ReferenceEquals(_scriptList[index], script);
+            return ReferenceEquals(GetScript(index), script);
         }
 
         public void StopAll(bool stopSysScripts)
@@ -673,10 +681,10 @@ namespace TWXProxy.Core
             // Terminate all scripts
             int i = 0;
 
-            while (i < _scriptList.Count)
+            while (GetScript(i) is Script script)
             {
-                if (stopSysScripts || !_scriptList[i].System)
-                    Stop(i);
+                if (stopSysScripts || !script.System)
+                    StopByHandle(script);
                 else
                     i++;
             }
@@ -687,14 +695,16 @@ namespace TWXProxy.Core
             using var runtimeScope = GlobalModules.UseRuntimeContext(RuntimeContext);
             for (int i = _scriptList.Count - 1; i >= 0; i--)
             {
-                Script script = _scriptList[i];
+                Script? script = GetScript(i);
+                if (script == null)
+                    continue;
                 if (!stopSysScripts && script.System)
                     continue;
 
                 script.RequestForceStop();
 
                 if (!script.IsExecuting && IsScriptStillAtIndex(i, script))
-                    Stop(i);
+                    StopByHandle(script);
             }
         }
 
@@ -703,14 +713,16 @@ namespace TWXProxy.Core
             using var runtimeScope = GlobalModules.UseRuntimeContext(RuntimeContext);
             for (int i = _scriptList.Count - 1; i >= 0; i--)
             {
-                Script script = _scriptList[i];
+                Script? script = GetScript(i);
+                if (script == null)
+                    continue;
                 if (script.System && !script.IsBot)
                     continue;
 
                 script.RequestForceStop();
 
                 if (!script.IsExecuting && IsScriptStillAtIndex(i, script))
-                    Stop(i);
+                    StopByHandle(script);
             }
         }
 
@@ -760,8 +772,8 @@ namespace TWXProxy.Core
             {
                 for (int index = _scriptList.Count - 1; index >= 0; index--)
                 {
-                    if (_scriptList[index].IsBot)
-                        Stop(index);
+                    if (GetScript(index) is Script script && script.IsBot)
+                        StopByHandle(script);
                 }
             }
 
@@ -873,7 +885,8 @@ namespace TWXProxy.Core
                 IsBot = true,
                 BotName = botName,
             };
-            _scriptList.Add(script);
+            lock (_scriptListLock)
+                _scriptList.Add(script);
 
             try
             {
@@ -885,7 +898,8 @@ namespace TWXProxy.Core
             catch (Exception ex)
             {
                 Console.WriteLine($"[StartBot] Error loading bot '{botName}': {ex.Message}");
-                _scriptList.Remove(script);
+                lock (_scriptListLock)
+                    _scriptList.Remove(script);
                 script.Dispose();
             }
         }
@@ -907,10 +921,10 @@ namespace TWXProxy.Core
 
             for (int index = _scriptList.Count - 1; index >= 0; index--)
             {
-                if (_scriptList[index].IsBot &&
-                    _scriptList[index].BotName.Equals(resolvedBotName, StringComparison.OrdinalIgnoreCase))
+                if (GetScript(index) is Script script && script.IsBot &&
+                    script.BotName.Equals(resolvedBotName, StringComparison.OrdinalIgnoreCase))
                 {
-                    Stop(index);
+                    StopByHandle(script);
                     stoppedAny = true;
                 }
             }
@@ -1125,6 +1139,11 @@ namespace TWXProxy.Core
                     i++;
                 }
             }
+        }
+
+        public void DispatchProgramEvent(string eventName, string matchText, bool exclusive)
+        {
+            RunSerializedScriptEvent(() => ProgramEvent(eventName, matchText, exclusive));
         }
 
         public void HandleConnectionAccepted()
@@ -1524,9 +1543,12 @@ namespace TWXProxy.Core
 
         public Script? GetScript(int index)
         {
-            if (index >= 0 && index < _scriptList.Count)
-                return _scriptList[index];
-            return null;
+            lock (_scriptListLock)
+            {
+                if (index >= 0 && index < _scriptList.Count)
+                    return _scriptList[index];
+                return null;
+            }
         }
 
         public string GetProgVar(string progVarName)
@@ -1786,18 +1808,15 @@ namespace TWXProxy.Core
 #pragma warning restore CS0169
         private bool _paused;
         private PauseReason _pausedReason = PauseReason.None;
-        private bool _forceStopRequested;
-        private bool _isExecuting;
-        private int _executionWatchdogActivityCounter;
+        private volatile bool _forceStopRequested;
+        private volatile bool _disposed;
+        private volatile bool _isExecuting;
         private bool _lastLineHandled;
         private int _promptProbesHandledOnCurrentLine;
         private int _lastCodePos = -1;
         private int _loopCounter = 0;
         private DateTime _lastLoopCheck = DateTime.MinValue;
         private const int MAX_LOOP_ITERATIONS = 50;  // Max iterations before warning
-        private const int MIN_COMMANDS_PER_NO_IO_WATCHDOG_CHECK = 10_000_000;
-        private const int EXECUTION_WATCHDOG_CHECK_MASK = 0xFFFF;
-        private static readonly TimeSpan MAX_EXECUTION_SLICE_DURATION = TimeSpan.FromSeconds(60);
         private bool _resetLoopDetectionOnNextExecute;
         private bool _enableVariableDebug = false;  // Toggle for [VAR] output
         private string _waitText = string.Empty;
@@ -1872,6 +1891,17 @@ namespace TWXProxy.Core
 
         public void Dispose()
         {
+            lock (_triggerLock)
+            {
+                if (_disposed)
+                    return;
+
+                // Stop is terminal even if a VM command or timer callback is still unwinding.
+                // Share the registration lock so no callback can rearm after cleanup.
+                _disposed = true;
+                KillAllTriggers();
+            }
+
             if (GlobalModules.DebugMode)
             {
                 string triggerSummary;
@@ -1901,19 +1931,6 @@ namespace TWXProxy.Core
             {
                 _windowList[0].Dispose();
                 _windowList.RemoveAt(0);
-            }
-
-            // Free up trigger lists
-            lock (_triggerLock)
-            {
-                foreach (var triggerType in Enum.GetValues(typeof(TriggerType)).Cast<TriggerType>())
-                {
-                    while (_triggers[triggerType].Count > 0)
-                    {
-                        FreeTrigger(_triggers[triggerType][0]);
-                        _triggers[triggerType].RemoveAt(0);
-                    }
-                }
             }
 
             // Free up sub stack
@@ -1955,7 +1972,7 @@ namespace TWXProxy.Core
 
         private bool ShouldAbortForForceStop()
         {
-            if (!_forceStopRequested)
+            if (!_forceStopRequested && !_disposed)
                 return false;
 
             _paused = false;
@@ -2006,6 +2023,8 @@ namespace TWXProxy.Core
             // Check through triggers for matches with Text
             bool result = false;
             handled = false;
+            if (_disposed || _forceStopRequested)
+                return true;
             bool matched = false;
             int lifeCycle = 0;
             string labelName = string.Empty;
@@ -2034,7 +2053,7 @@ namespace TWXProxy.Core
                 {
                     Trigger trigger = triggerList[i];
                     GlobalModules.TriggerDebugLog($"[CheckTriggers] Checking trigger {i}: value='{trigger.Value}', label='{trigger.LabelName}'\n");
-                    if (text.Contains(trigger.Value) || string.IsNullOrEmpty(trigger.Value))
+                    if (TriggerMatches(trigger, text))
                     {
                         _lastLineHandled = true;
                         matched = true;
@@ -2067,6 +2086,9 @@ namespace TWXProxy.Core
 
             if (matched)
             {
+                if (_disposed || _forceStopRequested)
+                    return true;
+
                 if (!string.IsNullOrEmpty(response))
                 {
                     // Handle autotrigger response - send the compiled bytes as-is.
@@ -2200,6 +2222,16 @@ namespace TWXProxy.Core
             return result;
         }
 
+        private static bool TriggerMatches(Trigger trigger, string text)
+        {
+            if (string.IsNullOrEmpty(trigger.Value))
+                return true;
+
+            return trigger.MatchStartOnly
+                ? text.StartsWith(trigger.Value, StringComparison.Ordinal)
+                : text.Contains(trigger.Value, StringComparison.Ordinal);
+        }
+
         private static string NormalizeTextOutCurrentLine(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -2322,6 +2354,8 @@ namespace TWXProxy.Core
 
         public bool ProgramEvent(string eventName, string matchText, bool exclusive)
         {
+            if (_disposed || _forceStopRequested)
+                return true;
             // SetEventTrigger stores Value as ToUpperInvariant(), so match case-insensitively
             string eventNameUpper = eventName.ToUpperInvariant();
 
@@ -2452,6 +2486,9 @@ namespace TWXProxy.Core
 
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 Trigger? trigger = timer.DelayTrigger;
                 if (trigger == null || trigger.IsCancelled)
                     return;
@@ -2488,7 +2525,7 @@ namespace TWXProxy.Core
             }
         }
 
-        private Trigger CreateTrigger(string name, string labelName, string value)
+        private Trigger CreateTrigger(string name, string labelName, string value, bool matchStartOnly = false)
         {
             if (_cmp != null)
             {
@@ -2506,7 +2543,8 @@ namespace TWXProxy.Core
                 Response = string.Empty,
                 Value = value,
                 Timer = null,
-                LifeCycle = 1 // default lifecycle is single response / no repeat
+                LifeCycle = 1, // default lifecycle is single response / no repeat
+                MatchStartOnly = matchStartOnly
             };
         }
 
@@ -2514,6 +2552,9 @@ namespace TWXProxy.Core
         {
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 if (TriggerExists(name))
                     throw new Exception($"Trigger already exists: '{name}'");
 
@@ -2535,6 +2576,9 @@ namespace TWXProxy.Core
         {
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 KillTrigger(name); // upsert: replace any existing trigger with this name
                 var trigger = CreateTrigger(name, labelName, value);
                 // LifeCycle = 1 (one-shot, default from CreateTrigger): matches Pascal behavior where
@@ -2545,10 +2589,26 @@ namespace TWXProxy.Core
             }
         }
 
+        public void SetTextStartLineTrigger(string name, string labelName, string value)
+        {
+            lock (_triggerLock)
+            {
+                if (_disposed || _forceStopRequested)
+                    return;
+
+                KillTrigger(name);
+                var trigger = CreateTrigger(name, labelName, value, matchStartOnly: true);
+                _triggers[TriggerType.TextLine].Add(trigger);
+            }
+        }
+
         public void SetTextOutTrigger(string name, string labelName, string value)
         {
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 KillTrigger(name); // upsert: replace any existing trigger with this name
                 var trigger = CreateTrigger(name, labelName, value);
                 // LifeCycle = 1 (one-shot): matches Pascal behavior.
@@ -2560,11 +2620,27 @@ namespace TWXProxy.Core
         {
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 // Upsert: remove any existing trigger with this name first.
                 // In the original Pascal TWX, re-registering a waitOn is valid and simply
                 // replaces the old entry (e.g. when a persistent handler re-issues the same waitOn).
                 KillTrigger(name);
                 var trigger = CreateTrigger(name, labelName, value);
+                _triggers[TriggerType.Text].Add(trigger);
+            }
+        }
+
+        public void SetTextStartTrigger(string name, string labelName, string value)
+        {
+            lock (_triggerLock)
+            {
+                if (_disposed || _forceStopRequested)
+                    return;
+
+                KillTrigger(name);
+                var trigger = CreateTrigger(name, labelName, value, matchStartOnly: true);
                 _triggers[TriggerType.Text].Add(trigger);
             }
         }
@@ -2581,6 +2657,9 @@ namespace TWXProxy.Core
 
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 if (TriggerExists(name))
                     throw new Exception($"Trigger already exists: '{name}'");
 
@@ -2612,18 +2691,21 @@ namespace TWXProxy.Core
 
             lock (_triggerLock)
             {
+                if (_disposed || _forceStopRequested)
+                    return;
+
                 if (TriggerExists(name))
                     throw new Exception($"Trigger already exists: '{name}'");
 
-                var trigger = new Trigger
-                {
-                    Name = name,
-                    LabelName = labelName,
-                    Response = string.Empty,
-                    Value = string.Empty,
-                    Param = string.Empty,
-                    LifeCycle = 1
-                };
+	                var trigger = new Trigger
+	                {
+	                    Name = name,
+	                    LabelName = labelName,
+	                    Response = string.Empty,
+	                    Value = value.ToString(CultureInfo.InvariantCulture),
+	                    Param = string.Empty,
+	                    LifeCycle = 1
+	                };
 
                 var timer = new DelayTimer
                 {
@@ -3216,48 +3298,6 @@ namespace TWXProxy.Core
             }
         }
 
-        internal void MarkExecutionWatchdogActivity()
-        {
-            unchecked
-            {
-                _executionWatchdogActivityCounter++;
-            }
-        }
-
-        private void CheckExecutionWatchdog(
-            int commandsExecuted,
-            ref int watchdogCommandBaseline,
-            ref long watchdogStartTimestamp,
-            ref int watchdogActivityCounter)
-        {
-            if (!GlobalModules.ScriptInfiniteLoopProtectionEnabled)
-                return;
-
-            int currentActivityCounter = _executionWatchdogActivityCounter;
-            if (currentActivityCounter != watchdogActivityCounter)
-            {
-                watchdogActivityCounter = currentActivityCounter;
-                watchdogCommandBaseline = commandsExecuted;
-                watchdogStartTimestamp = Stopwatch.GetTimestamp();
-                return;
-            }
-
-            int commandsSinceActivity = commandsExecuted - watchdogCommandBaseline;
-            if (commandsSinceActivity < MIN_COMMANDS_PER_NO_IO_WATCHDOG_CHECK)
-                return;
-
-            if ((commandsSinceActivity & EXECUTION_WATCHDOG_CHECK_MASK) != 0)
-                return;
-
-            TimeSpan elapsed = Stopwatch.GetElapsedTime(watchdogStartTimestamp);
-            if (elapsed >= MAX_EXECUTION_SLICE_DURATION)
-            {
-                throw new ScriptException(
-                    $"Script '{ScriptName}' appears to be spinning without server I/O or pause " +
-                    $"({commandsSinceActivity:N0} commands in {elapsed.TotalSeconds:F1}s).");
-            }
-        }
-
         private CmdParam[] GetDispatchParamBuffer(int paramCount)
         {
             if (!_dispatchParamCache.TryGetValue(paramCount, out var buffer))
@@ -3681,9 +3721,6 @@ namespace TWXProxy.Core
             var server = GlobalModules.TWXServer;
             IExecutionObserver? observer = ExecutionObserver;
             long metricsStart = GlobalModules.EnableVmMetrics ? Stopwatch.GetTimestamp() : 0;
-            long executionWatchdogStart = Stopwatch.GetTimestamp();
-            int executionWatchdogCommandBaseline = 0;
-            int executionWatchdogActivityCounter = _executionWatchdogActivityCounter;
             int commandsExecuted = 0;
             int resolvedParamCount = 0;
             _isExecuting = true;
@@ -3795,7 +3832,6 @@ namespace TWXProxy.Core
                     if (commandName == "RETURN")
                     {
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         if (GlobalModules.VerboseDebugMode)
                             GlobalModules.DebugLog($"[Execute] RETURN - popping substack (depth={_subStack.Count}, codePos={_codePos})\n");
                         long returnStart = observer != null ? Stopwatch.GetTimestamp() : 0;
@@ -3831,7 +3867,6 @@ namespace TWXProxy.Core
                             dispatchParams[i] = _cmdParams[i];
 
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         resolvedParamCount += _cmdParams.Count;
                         action = cmd.OnCmd(this, dispatchParams);
                     }
@@ -3925,9 +3960,6 @@ namespace TWXProxy.Core
             var server = GlobalModules.TWXServer;
             IExecutionObserver? observer = ExecutionObserver;
             long metricsStart = GlobalModules.EnableVmMetrics ? Stopwatch.GetTimestamp() : 0;
-            long executionWatchdogStart = Stopwatch.GetTimestamp();
-            int executionWatchdogCommandBaseline = 0;
-            int executionWatchdogActivityCounter = _executionWatchdogActivityCounter;
             int commandsExecuted = 0;
             int resolvedParamCount = 0;
             _isExecuting = true;
@@ -4038,7 +4070,6 @@ namespace TWXProxy.Core
                     if (instruction.IsReturnCommand)
                     {
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         if (GlobalModules.VerboseDebugMode)
                             GlobalModules.DebugLog($"[Execute] RETURN - popping substack (depth={_subStack.Count}, codePos={_codePos})\n");
                         long returnStart = observer != null ? Stopwatch.GetTimestamp() : 0;
@@ -4067,7 +4098,6 @@ namespace TWXProxy.Core
                     try
                     {
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         action = instruction.Handler(this, dispatchParams);
                     }
                     catch (Exception ex)
@@ -4163,9 +4193,6 @@ namespace TWXProxy.Core
             var server = GlobalModules.TWXServer;
             IExecutionObserver? observer = ExecutionObserver;
             long metricsStart = GlobalModules.EnableVmMetrics ? Stopwatch.GetTimestamp() : 0;
-            long executionWatchdogStart = Stopwatch.GetTimestamp();
-            int executionWatchdogCommandBaseline = 0;
-            int executionWatchdogActivityCounter = _executionWatchdogActivityCounter;
             int commandsExecuted = 0;
             int resolvedParamCount = 0;
             _isExecuting = true;
@@ -4539,7 +4566,6 @@ namespace TWXProxy.Core
                     if (commandName == "RETURN")
                     {
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         if (GlobalModules.VerboseDebugMode)
                             GlobalModules.DebugLog($"[Execute] RETURN - popping substack (depth={_subStack.Count}, codePos={_codePos})\n");
                         long returnStart = observer != null ? Stopwatch.GetTimestamp() : 0;
@@ -4574,7 +4600,6 @@ namespace TWXProxy.Core
                             dispatchParams[i] = _cmdParams[i];
 
                         commandsExecuted++;
-                        CheckExecutionWatchdog(commandsExecuted, ref executionWatchdogCommandBaseline, ref executionWatchdogStart, ref executionWatchdogActivityCounter);
                         resolvedParamCount += _cmdParams.Count;
                         action = cmd.OnCmd(this, dispatchParams);
                     }
@@ -5012,8 +5037,9 @@ namespace TWXProxy.Core
         /// </summary>
         public bool SetScriptVar(string varName, string value)
         {
-            if (_cmp == null) return false;
-            foreach (var param in _cmp.ParamList)
+            var cmp = _cmp;
+            if (cmp == null) return false;
+            foreach (var param in cmp.ParamList.ToArray())
             {
                 if (param is VarParam vp && vp.Name == varName && vp.Vars.Count == 0)
                 {
@@ -5028,8 +5054,9 @@ namespace TWXProxy.Core
 
         public bool SetScriptVarIgnoreCase(string varName, string value)
         {
-            if (_cmp == null) return false;
-            foreach (var param in _cmp.ParamList)
+            var cmp = _cmp;
+            if (cmp == null) return false;
+            foreach (var param in cmp.ParamList.ToArray())
             {
                 if (param is VarParam vp &&
                     vp.Vars.Count == 0 &&

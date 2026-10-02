@@ -266,7 +266,7 @@ internal sealed class mombotRelogDialog : Window
                     ? NormalizeFreeform(txtBotCommand.Text)
                     : string.Empty,
                 string.Equals(afterLoginAction, "terra", StringComparison.OrdinalIgnoreCase)
-                    ? "pt"
+                    ? "L"
                     : string.Equals(afterLoginAction, "macro", StringComparison.OrdinalIgnoreCase)
                     ? NormalizeFreeform(txtMacro.Text)
                     : string.Empty,

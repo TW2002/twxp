@@ -7,7 +7,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>twxd</AssemblyName>
     <RootNamespace>TWXD</RootNamespace>
-    <Version>3.0.0-beta5</Version>
+    <Version>3.0.1</Version>
     <RuntimeIdentifiers>osx-arm64;osx-x64;win-x64;win-arm64;linux-x64</RuntimeIdentifiers>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>

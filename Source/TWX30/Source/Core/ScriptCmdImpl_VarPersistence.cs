@@ -37,6 +37,9 @@ namespace TWXProxy.Core
         private static Dictionary<string, string> CurrentGameVarsFor(TwxRuntimeContext? context)
             => (context ?? GlobalModules.CurrentContext).CurrentGameVars;
 
+        private static TwxRuntimeContext CurrentScriptContext(object script)
+            => script is Script scriptObj ? scriptObj.Controller.RuntimeContext : GlobalModules.CurrentContext;
+
         /// <summary>
         /// Called whenever savevar persists a value. The delegate (set by
         /// ProxyService) writes the key/value into GameConfig.Variables and
@@ -79,9 +82,10 @@ namespace TWXProxy.Core
             if (parameters[0] is VarParam varParam)
             {
                 string scriptId = GetScriptId(script);
+                TwxRuntimeContext runtimeContext = CurrentScriptContext(script);
                 string varName = varParam.Name;
 
-                if (TryGetCompatibleVarValue(_currentGameVars, varName, out var gameValue, out var resolvedGameName))
+                if (TryGetCompatibleVarValue(CurrentGameVarsFor(runtimeContext), varName, out var gameValue, out var resolvedGameName))
                 {
                     varParam.Value = gameValue;
                     GlobalModules.VariablePersistenceDebugLog($"[LOADVAR] scriptId='{scriptId}' var='{varName}' source='game-store' resolved='{resolvedGameName}' value='{gameValue}'\n");
@@ -102,14 +106,15 @@ namespace TWXProxy.Core
             if (parameters[0] is VarParam varParam)
             {
                 string scriptId = GetScriptId(script);
+                TwxRuntimeContext runtimeContext = CurrentScriptContext(script);
                 string varName = varParam.Name;
                 string value = varParam.Value;
 
                 GlobalModules.VariablePersistenceDebugLog($"[SAVEVAR] scriptId='{scriptId}' var='{varName}' value='{value}'\n");
 
                 // Persist to the per-game data file via ProxyService callback.
-                _currentGameVars[varName] = value;
-                OnVariableSaved?.Invoke(varName, value);
+                CurrentGameVarsFor(runtimeContext)[varName] = value;
+                InvokeOnVariableSaved(runtimeContext, varName, value);
             }
             return CmdAction.None;
         }

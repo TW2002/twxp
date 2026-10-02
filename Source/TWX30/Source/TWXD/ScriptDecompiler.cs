@@ -671,7 +671,8 @@ namespace TWXD
                         parts[1] = Unquote(parts[1]);
                         parts[2] = NormalizeLabelReference(parts[2], scriptID);
 
-                        if (parts[1].Contains("WAITON", StringComparison.OrdinalIgnoreCase) &&
+                        if ((cmdName == "SETTEXTTRIGGER" || cmdName == "SETSTRIGGER") &&
+                            parts[1].Contains("WAITON", StringComparison.OrdinalIgnoreCase) &&
                             parts[2].Contains("WAITON", StringComparison.OrdinalIgnoreCase) &&
                             parts.Count >= 4)
                         {
@@ -679,7 +680,8 @@ namespace TWXD
                             waitOnLabels.Add(parts[2]);
                             string waitText = ExpandTempVars(parts[3], tempVars);
                             PadToLine(lineNum);
-                            WriteTrackedLine($"{Indent(indent)}waiton {waitText}");
+                            string waitCommand = cmdName == "SETSTRIGGER" ? "swaiton" : "waiton";
+                            WriteTrackedLine($"{Indent(indent)}{waitCommand} {waitText}");
                             skipOutput = true;
                         }
                     }
@@ -1397,8 +1399,10 @@ namespace TWXD
         private static bool IsTriggerCommand(string cmdName)
         {
             return cmdName == "SETTEXTTRIGGER" ||
+                   cmdName == "SETSTRIGGER" ||
                    cmdName == "SETTEXTOUTTRIGGER" ||
                    cmdName == "SETTEXTLINETRIGGER" ||
+                   cmdName == "SETSLINETRIGGER" ||
                    cmdName == "SETEVENTTRIGGER" ||
                    cmdName == "SETDELAYTRIGGER";
         }

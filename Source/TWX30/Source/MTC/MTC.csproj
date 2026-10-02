@@ -7,10 +7,10 @@
     <Nullable>enable</Nullable>
     <RootNamespace>MTC</RootNamespace>
     <AssemblyName>MTC</AssemblyName>
-    <Version>1.0.0-beta5</Version>
+    <Version>1.1.0</Version>
     <Authors>Matt Mosley (reaper)</Authors>
     <Company>TWXProxy</Company>
-    <Product>Mayhem Tradewars Client 1.0 beta5</Product>
+    <Product>Mayhem Tradewars Client 1.1</Product>
     <Description>Cross-platform terminal emulation client for Trade Wars 2002</Description>
     <Copyright>Copyright (C) 2026 Matt Mosley - Licensed under GPL v2+</Copyright>
     <!-- Avalonia requires this to suppress WinExe warning on non-Windows -->
@@ -36,6 +36,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.*" />
     <PackageReference Include="Avalonia.Desktop" Version="11.*" />
+    <PackageReference Include="Avalonia.Skia" Version="11.*" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.*" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.*" />
     <PackageReference Include="SkiaSharp" Version="2.88.*" />
@@ -44,6 +45,9 @@
 
   <ItemGroup>
     <ProjectReference Include="../TWXProxy.csproj" />
+    <InternalsVisibleTo Include="MTC.Rpc.Tests" />
+    <InternalsVisibleTo Include="MTC.Desktop.Player.Tests" />
+    <InternalsVisibleTo Include="MTC.ScriptWindows.Tests" />
   </ItemGroup>
 
 </Project>

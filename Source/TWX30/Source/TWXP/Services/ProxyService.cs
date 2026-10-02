@@ -15,6 +15,7 @@ public interface IProxyService
     Task<IReadOnlyList<RunningScriptInfo>> GetRunningScriptsAsync(string gameId);
     Task LoadScriptAsync(string gameId, string scriptPath);
     Task SwitchBotAsync(string gameId, string botName);
+    Task SendToServerAsync(string gameId, byte[] data);
     Task ReloadBotConfigsAsync(string gameId);
     Task StopScriptAsync(string gameId, int scriptId);
     Task StopAllScriptsAsync(string gameId, bool includeSystemScripts);
@@ -475,12 +476,6 @@ public class ProxyService : IProxyService
                 using var eventScope = GlobalModules.UseRuntimeContext(proxyInstance.RuntimeContext);
                 // Don't change status - still running and accepting connections
                 System.Diagnostics.Debug.WriteLine($"[{config.Name}] Server disconnected: {e.Reason}");
-                // Fire 'Connection Lost' program event so scripts can react (re-register their triggers, etc.)
-                if (TWXProxy.Core.GlobalModules.TWXInterpreter is TWXProxy.Core.ModInterpreter interpD)
-                {
-                    TWXProxy.Core.GlobalModules.DebugLog($"[ProxyService] Firing ProgramEvent 'Connection Lost'\n");
-                    interpD.ProgramEvent("Connection Lost", "", false);
-                }
             };
             
             // Hook up clear input buffer handler
@@ -680,6 +675,21 @@ public class ProxyService : IProxyService
         using var runtimeScope = GlobalModules.UseRuntimeContext(instance.RuntimeContext);
         instance.Interpreter.SwitchBot(string.Empty, botName, stopBotScripts: true);
         return Task.CompletedTask;
+    }
+
+    public Task SendToServerAsync(string gameId, byte[] data)
+    {
+        if (!_runningGames.TryGetValue(gameId, out var instance))
+            throw new InvalidOperationException("Game is not running.");
+
+        if (!instance.GameInstance.IsConnected)
+            throw new InvalidOperationException("Game server is not connected.");
+
+        if (data.Length == 0)
+            return Task.CompletedTask;
+
+        using var runtimeScope = GlobalModules.UseRuntimeContext(instance.RuntimeContext);
+        return instance.GameInstance.SendToServerAsync(data);
     }
 
     public async Task ReloadBotConfigsAsync(string gameId)

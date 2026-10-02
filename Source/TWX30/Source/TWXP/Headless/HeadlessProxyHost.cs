@@ -526,6 +526,7 @@ internal sealed class HeadlessManagementServer
             "stopscript" => await StopScriptAsync(request),
             "stopallscripts" => await StopAllScriptsAsync(request),
             "switchbot" => await SwitchBotAsync(request),
+            "sendtoserver" => await SendToServerAsync(request),
             "uploadscript" => await UploadFileAsync(request, scriptFile: true, cancellationToken),
             "uploadconfig" => await UploadFileAsync(request, scriptFile: false, cancellationToken),
             _ => new ManagementResponse(false, action, Error: $"unknown action '{action}'"),
@@ -758,6 +759,29 @@ internal sealed class HeadlessManagementServer
 
         await _proxyService.SwitchBotAsync(gameId, botName);
         return new ManagementResponse(true, "switchBot", new { gameId, botName });
+    }
+
+    private async Task<ManagementResponse> SendToServerAsync(JsonElement request)
+    {
+        string gameId = GetString(request, "gameId");
+        string contentBase64 = GetString(request, "contentBase64");
+        if (string.IsNullOrWhiteSpace(gameId))
+            return new ManagementResponse(false, "sendToServer", Error: "missing gameId");
+        if (string.IsNullOrWhiteSpace(contentBase64))
+            return new ManagementResponse(false, "sendToServer", Error: "missing contentBase64");
+
+        byte[] data;
+        try
+        {
+            data = Convert.FromBase64String(contentBase64);
+        }
+        catch (FormatException)
+        {
+            return new ManagementResponse(false, "sendToServer", Error: "invalid contentBase64");
+        }
+
+        await _proxyService.SendToServerAsync(gameId, data);
+        return new ManagementResponse(true, "sendToServer", new { gameId, Bytes = data.Length });
     }
 
     private async Task<ManagementResponse> UploadFileAsync(JsonElement request, bool scriptFile, CancellationToken cancellationToken)

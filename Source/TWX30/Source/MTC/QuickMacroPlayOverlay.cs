@@ -3,11 +3,14 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace MTC;
 
@@ -52,6 +55,9 @@ public sealed class QuickMacroPlayOverlay : Border
         _playAsync = playAsync;
         _refocusRequested = refocusRequested;
 
+        double lineHeight = Math.Ceiling(fontSize * 1.5);
+        double editorHeight = lineHeight * 3;
+        height = Math.Max(height, editorHeight + 28);
         Width = width;
         Height = height;
         MinWidth = width;
@@ -74,15 +80,42 @@ public sealed class QuickMacroPlayOverlay : Border
             AcceptsReturn = false,
             FontFamily = new FontFamily("Cascadia Code, Menlo, Consolas, Courier New, monospace"),
             FontSize = fontSize,
-            Height = Math.Max(26, height - 24),
-            MinHeight = Math.Max(26, height - 24),
-            MaxHeight = Math.Max(26, height - 24),
+            LineHeight = lineHeight,
+            Height = editorHeight,
+            MinHeight = editorHeight,
+            MaxHeight = editorHeight,
             Background = Brushes.Transparent,
             BorderThickness = new Thickness(0),
-            Padding = new Thickness(8, 1, 6, 1),
+            Padding = new Thickness(8, 0, 6, 0),
             HorizontalContentAlignment = HorizontalAlignment.Left,
-            VerticalContentAlignment = VerticalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Top,
             VerticalAlignment = VerticalAlignment.Center,
+        };
+        ScrollViewer.SetHorizontalScrollBarVisibility(_macroTextBox, ScrollBarVisibility.Disabled);
+        ScrollViewer.SetVerticalScrollBarVisibility(_macroTextBox, ScrollBarVisibility.Hidden);
+        _macroTextBox.TemplateApplied += (_, e) =>
+        {
+            var presenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
+            var scroll = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer");
+            if (presenter == null || scroll == null)
+                return;
+
+            // A blank visual row at either end lets the first/last caret row
+            // center too, without inserting any characters into the macro.
+            presenter.Margin = new Thickness(0, lineHeight, 0, lineHeight);
+            presenter.HorizontalAlignment = HorizontalAlignment.Stretch;
+            presenter.AddHandler(Control.RequestBringIntoViewEvent, (_, request) =>
+            {
+                // Use content coordinates directly: repeated caret requests can
+                // otherwise apply stale visual offsets before the next layout.
+                scroll.Offset = new Vector(0, Math.Max(0, request.TargetRect.Y));
+                request.Handled = true;
+            });
+            presenter.SizeChanged += (_, _) => Dispatcher.UIThread.Post(() =>
+            {
+                if (presenter.IsAttachedToVisualTree())
+                    presenter.MoveCaretToTextPosition(presenter.CaretIndex);
+            }, DispatcherPriority.Loaded);
         };
         _macroTextBox.GotFocus += (_, _) => _macroEditing = true;
         _macroTextBox.LostFocus += (_, _) => _macroEditing = false;
@@ -116,7 +149,8 @@ public sealed class QuickMacroPlayOverlay : Border
         {
             Text = "1",
             Width = 48,
-            Height = Math.Max(30, height - 18),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Center,
             Background = BgPanelSoft,
             Foreground = FgNormal,
             BorderBrush = BdInput,

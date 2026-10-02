@@ -256,29 +256,34 @@ public partial class MainWindow
     private void ScheduleNativeMombotStartupWatch(MtcTabPrototype? owner)
     {
         if (!_mombot.Enabled ||
-            (!_mombotStartupDataGatherPending && !_mombotStartupPostInitPending))
+            (!_mombotStartupDataGatherPending && !_mombotStartupPostInitPending) ||
+            !NativeMombotStartupBridge.CanTakeExclusiveServerControl(_mombot.GetRunningScripts()))
         {
             return;
         }
 
-        if (Interlocked.Exchange(ref _nativeMombotStartupWatchScheduled, 1) != 0)
+        if (!NativeMombotStartupBridge.RequestStartupWatch(ref _nativeMombotStartupWatchScheduled))
             return;
 
-        _ = Task.Run(async () =>
-            await ExecuteInOptionalMtcTabSessionAsync(owner, RunNativeMombotStartupWatchAsync).ConfigureAwait(false));
-    }
+        _ = Task.Run(async () => await ExecuteInOptionalMtcTabSessionAsync(owner, async () =>
+        {
+            while (true)
+            {
+                try
+                {
+                    await TryRunNativeMombotInitialSettingsAsync();
+                    await FinalizeNativeMombotStartupAsync();
+                }
+                catch (Exception ex)
+                {
+                    Core.GlobalModules.DebugLog($"[MTC.NativeBotStart] startup watch failed: {ex.Message}\n");
+                    Core.GlobalModules.FlushDebugLog();
+                }
 
-    private async Task RunNativeMombotStartupWatchAsync()
-    {
-        try
-        {
-            await TryRunNativeMombotInitialSettingsAsync();
-            await FinalizeNativeMombotStartupAsync();
-        }
-        finally
-        {
-            Interlocked.Exchange(ref _nativeMombotStartupWatchScheduled, 0);
-        }
+                if (!NativeMombotStartupBridge.FinishStartupWatchPass(ref _nativeMombotStartupWatchScheduled))
+                    return;
+            }
+        }).ConfigureAwait(false));
     }
 
     private static bool IsSessionTerminationWarningLine(string line)
@@ -299,7 +304,7 @@ public partial class MainWindow
         if (gameInstance == null || !gameInstance.IsConnected)
             return;
 
-        Core.GlobalModules.DebugLog($"[MTC.Keepalive] Sending ANSI status-response keepalive for {reason}\n");
+        Core.GlobalModules.DebugLog($"[MTC.Keepalive] Sending telnet NOP keepalive for {reason}\n");
         await gameInstance.SendGameIdleKeepaliveAsync(reason);
     }
 
@@ -310,6 +315,13 @@ public partial class MainWindow
     {
         if (chunk.Length == 0)
             return chunk;
+
+        if (owner is not null)
+        {
+            chunk = owner.TerminalMapFrameFilter.Filter(chunk);
+            if (chunk.Length == 0)
+                return chunk;
+        }
 
         object sync = owner?.TerminalDisplayArtifactSync ?? _terminalDisplayArtifactSync;
         lock (sync)
@@ -492,6 +504,9 @@ public partial class MainWindow
 
     private void HandleNativeMombotPostLoginScriptStop()
     {
+        if (!NativeMombotStartupBridge.CanTakeExclusiveServerControl(_mombot.GetRunningScripts()))
+            return;
+
         string macro = ConsumeNativeMombotPostLoginMacro();
         if (string.IsNullOrWhiteSpace(macro))
             return;
@@ -559,7 +574,7 @@ public partial class MainWindow
     {
         await Task.Yield();
 
-        if (!_mombot.Enabled || _gameInstance == null || ShouldStopNativeMombotAfterDisconnect())
+        if (!_mombot.Enabled || !CanUseAttachedNativeMombotUi() || ShouldStopNativeMombotAfterDisconnect())
             return;
 
         if (!ShouldNativeMombotAutoRelog())
@@ -579,7 +594,7 @@ public partial class MainWindow
         {
             string currentLine = NormalizeMombotPromptComparisonValue(
                 Core.ScriptRef.GetCurrentLine(CurrentMombotRuntimeContext()));
-            if (_gameInstance.IsConnected && !IsNativeMombotReconnectPrompt(currentLine))
+            if (IsNativeMombotServerConnected() && !IsNativeMombotReconnectPrompt(currentLine))
                 return;
 
             Core.GlobalModules.DebugLog("[MTC.NativeBotRelog] clearing stale relogging flag before relog trigger\n");
@@ -591,9 +606,32 @@ public partial class MainWindow
         if (!string.IsNullOrWhiteSpace(relogMessage))
             SetMombotCurrentVars(relogMessage, "$relog_message");
 
-        if (disconnectFirst && _gameInstance.IsConnected)
+        if (disconnectFirst && _gameInstance?.IsConnected == true)
             await _gameInstance.DisconnectFromServerAsync();
+        else if (disconnectFirst && TryGetCurrentMtcTelnetServer(out MtcTelnetTwxServer? telnetServer) && telnetServer!.IsConnected)
+            await telnetServer.DisconnectFromServerAsync();
 
+        MTC.mombot.mombotRelogDialogResult relogSettings = BuildMombotRelogDefaults();
+        IReadOnlyDictionary<string, string> initialVars = BuildNativeMombotConnectivityRelogVars(relogSettings);
+        foreach ((string name, string value) in initialVars)
+            SetMombotCurrentVars(value, name);
+
+        if (_mombot.TryLoadInstalledScriptAtLabel(
+                "commands/general/relog.cts",
+                string.Empty,
+                initialVars,
+                out string? relogScriptReference,
+                out string? relogError))
+        {
+            Core.GlobalModules.DebugLog(
+                $"[MTC.NativeBotRelog] launched relog script='{relogScriptReference}' with current tab credentials\n");
+            Core.GlobalModules.FlushDebugLog();
+            return;
+        }
+
+        Core.GlobalModules.DebugLog(
+            $"[MTC.NativeBotRelog] direct relog launch failed: {relogError}; falling back to command dispatcher\n");
+        Core.GlobalModules.FlushDebugLog();
         await ExecuteMombotUiCommandAsync("relog");
     }
 
@@ -674,44 +712,7 @@ public partial class MainWindow
     }
 
     private static bool TryGetMombotPromptNameFromLine(string line, out string promptName)
-    {
-        promptName = string.Empty;
-        if (string.IsNullOrWhiteSpace(line))
-            return false;
-
-        if (line.StartsWith("Command [TL=", StringComparison.OrdinalIgnoreCase))
-        {
-            promptName = "Command";
-            return true;
-        }
-
-        if (line.StartsWith("Computer command [TL=", StringComparison.OrdinalIgnoreCase))
-        {
-            promptName = "Computer";
-            return true;
-        }
-
-        if (line.StartsWith("Citadel command (", StringComparison.OrdinalIgnoreCase) ||
-            line.Contains("<Enter Citadel>", StringComparison.OrdinalIgnoreCase) ||
-            line.Contains("Citadel treasury contains", StringComparison.OrdinalIgnoreCase))
-        {
-            promptName = "Citadel";
-            return true;
-        }
-
-        int commandIndex = line.IndexOf(" command (", StringComparison.OrdinalIgnoreCase);
-        if (commandIndex > 0)
-        {
-            string candidate = line[..commandIndex].Trim();
-            if (!string.IsNullOrWhiteSpace(candidate))
-            {
-                promptName = candidate;
-                return true;
-            }
-        }
-
-        return false;
-    }
+        => MombotPromptClassifier.TryGetPromptName(line, out promptName);
 
     private Core.TwxRuntimeContext? CurrentMombotRuntimeContext()
         => ResolveCurrentMtcTabContext()?.RuntimeContext ?? _gameInstance?.RuntimeContext ?? ActiveMtcRuntimeContext;
@@ -837,6 +838,32 @@ public partial class MainWindow
         }
 
         return string.Empty;
+    }
+
+    private string CurrentConfiguredRelogLoginName()
+        => FirstMeaningfulMombotValue(
+            _embeddedGameConfig?.LoginName,
+            _state.LoginName,
+            _sessionDb?.DBHeader.LoginName);
+
+    private string CurrentConfiguredRelogPassword()
+        => FirstMeaningfulMombotValue(
+            _embeddedGameConfig?.Password,
+            _state.Password,
+            _sessionDb?.DBHeader.Password);
+
+    private string CurrentConfiguredRelogGameLetter()
+    {
+        string configured = FirstMeaningfulMombotValue(
+            NormalizeGameLetter(_embeddedGameConfig?.GameLetter),
+            NormalizeGameLetter(_state.GameLetter));
+        if (!string.IsNullOrWhiteSpace(configured))
+            return configured;
+
+        char dbGame = _sessionDb?.DBHeader.Game ?? '\0';
+        return dbGame == '\0' || char.IsControl(dbGame) || char.IsWhiteSpace(dbGame)
+            ? string.Empty
+            : char.ToUpperInvariant(dbGame).ToString();
     }
 
     private static string NormalizeMombotValue(string? value, bool treatSelfAsEmpty = false)
@@ -1213,9 +1240,66 @@ public partial class MainWindow
         if (TryInterceptMombotCommandPrompt(bytes))
             return;
 
+        if (TryHandleTelnetScriptInput(bytes))
+            return;
+
         ObserveForwardedServerInput(bytes);
         ObserveGameAgentClientInput(bytes);
         forward(bytes);
+    }
+
+    private bool TryHandleTelnetScriptInput(byte[] bytes)
+    {
+        if (_gameInstance != null || bytes.Length == 0)
+            return false;
+
+        Core.ModInterpreter? interpreter = CurrentInterpreter;
+        if (interpreter == null || !interpreter.IsAnyScriptWaitingForInput())
+        {
+            _telnetScriptInputBuffer = string.Empty;
+            return false;
+        }
+
+        if (interpreter.HasKeypressInputWaiting)
+        {
+            foreach (byte value in bytes)
+            {
+                if (value is 0x0D or 0x0A)
+                    continue;
+
+                interpreter.LocalInputEvent(Encoding.Latin1.GetString([value]));
+                _telnetScriptInputBuffer = string.Empty;
+                return true;
+            }
+
+            return true;
+        }
+
+        foreach (byte value in bytes)
+        {
+            switch (value)
+            {
+                case 0x08:
+                case 0x7F:
+                    if (_telnetScriptInputBuffer.Length > 0)
+                        _telnetScriptInputBuffer = _telnetScriptInputBuffer[..^1];
+                    break;
+
+                case 0x0D:
+                case 0x0A:
+                    string line = _telnetScriptInputBuffer;
+                    _telnetScriptInputBuffer = string.Empty;
+                    interpreter.LocalInputEvent(line);
+                    return true;
+
+                default:
+                    if (value >= 0x20)
+                        _telnetScriptInputBuffer += Encoding.Latin1.GetString([value]);
+                    break;
+            }
+        }
+
+        return true;
     }
 
     private void ObserveForwardedServerInput(byte[] bytes)
@@ -1702,8 +1786,8 @@ public partial class MainWindow
         if (string.IsNullOrWhiteSpace(commandText))
             return "Enter a native Mombot command after >.";
 
-        if (_gameInstance == null)
-            return "Command macros need the embedded proxy to be running.";
+        if (!CanUseAttachedNativeMombotUi())
+            return "Command macros need native MomBot to be attached to a game connection.";
 
         for (int i = 0; i < count; i++)
             await ExecuteMombotUiCommandAsync(commandText);
@@ -2078,9 +2162,9 @@ public partial class MainWindow
 
     private void BeginMombotHotkeyPrompt()
     {
-        if (_gameInstance == null)
+        if (!CanUseAttachedNativeMombotUi())
         {
-            PublishMombotLocalMessage("Mombot hotkeys are only available while the embedded proxy is running.");
+            PublishMombotLocalMessage("Mombot hotkeys need native MomBot to be attached to a game connection.");
             return;
         }
 
@@ -2159,9 +2243,9 @@ public partial class MainWindow
 
     private void BeginMombotPrompt(string initialValue = "", Func<string, string>? submitTransform = null)
     {
-        if (_gameInstance == null)
+        if (!CanUseAttachedNativeMombotUi())
         {
-            PublishMombotLocalMessage("Mombot commands are only available while the embedded proxy is running.");
+            PublishMombotLocalMessage("Mombot commands need native MomBot to be attached to a game connection.");
             return;
         }
 
@@ -2196,7 +2280,7 @@ public partial class MainWindow
         if (!_mombotPromptOpen || _mombotMacroPromptOpen)
             return;
 
-        if (_gameInstance == null || !_gameInstance.IsConnected)
+        if (!CanSendMombotServerInput())
         {
             PublishMombotLocalMessage("Mombot macros need an active game connection.");
             return;
@@ -2456,9 +2540,9 @@ public partial class MainWindow
 
     private void BeginMombotPreferencesMenu(MombotPreferencesPage page = MombotPreferencesPage.General)
     {
-        if (_gameInstance == null)
+        if (!CanUseAttachedNativeMombotUi())
         {
-            PublishMombotLocalMessage("Mombot preferences are only available while the embedded proxy is running.");
+            PublishMombotLocalMessage("Mombot preferences need native MomBot to be attached to a game connection.");
             return;
         }
 
@@ -4354,6 +4438,9 @@ public partial class MainWindow
     private void PersistMombotVars(string value, params string[] names)
     {
         Core.TwxRuntimeContext? context = CurrentMombotRuntimeContext();
+        if (_embeddedGameConfig != null)
+            AttachGameConfigVariablePersistence(context, _embeddedGameConfig, NormalizeGameName(_embeddedGameName ?? _embeddedGameConfig.Name ?? DeriveGameName()));
+
         foreach (string name in names.Where(static name => !string.IsNullOrWhiteSpace(name)).Distinct(StringComparer.OrdinalIgnoreCase))
         {
             Core.ScriptRef.SetCurrentGameVar(context, name, value);
@@ -4508,12 +4595,12 @@ public partial class MainWindow
 
     private bool TryInterceptMombotCommandPrompt(byte[] bytes)
     {
-        if (_gameInstance == null ||
+        if (!CanUseAttachedNativeMombotUi() ||
             !_mombot.Enabled ||
             _mombotPromptOpen ||
             _mombotHotkeyPromptOpen ||
             _mombotScriptPromptOpen ||
-            _gameInstance.IsProxyMenuActive)
+            IsNativeMombotProxyMenuActive())
         {
             return false;
         }
@@ -4530,7 +4617,7 @@ public partial class MainWindow
         }
 
         MombotPromptSurface surface = GetMombotPromptSurface();
-        if (_gameInstance.IsConnected && surface == MombotPromptSurface.Unknown)
+        if (CanSendMombotServerInput() && surface == MombotPromptSurface.Unknown)
             return false;
 
         BeginMombotPrompt();
@@ -4539,11 +4626,11 @@ public partial class MainWindow
 
     private bool TryInterceptMombotHotkeyAccess(byte[] bytes)
     {
-        if (_gameInstance == null ||
+        if (!CanUseAttachedNativeMombotUi() ||
             !_mombot.Enabled ||
             _mombotHotkeyPromptOpen ||
             _mombotScriptPromptOpen ||
-            _gameInstance.IsProxyMenuActive)
+            IsNativeMombotProxyMenuActive())
         {
             return false;
         }
@@ -4565,6 +4652,13 @@ public partial class MainWindow
 
     private MombotPromptSurface GetMombotPromptSurface()
     {
+        Core.TwxRuntimeContext? context = CurrentMombotRuntimeContext();
+        string currentLine = Core.ScriptRef.GetCurrentLine(context).Trim();
+        if (currentLine.StartsWith("Command [TL=", StringComparison.OrdinalIgnoreCase))
+            return MombotPromptClassifier.IsCommandPrompt(currentLine)
+                ? MombotPromptSurface.Command
+                : MombotPromptSurface.Unknown;
+
         string promptVar = ReadCurrentMombotVar(string.Empty, "$PLAYER~CURRENT_PROMPT");
         if (string.Equals(promptVar, "Command", StringComparison.OrdinalIgnoreCase))
             return MombotPromptSurface.Command;
@@ -4575,11 +4669,7 @@ public partial class MainWindow
         if (string.Equals(promptVar, "Computer", StringComparison.OrdinalIgnoreCase))
             return MombotPromptSurface.Computer;
 
-        Core.TwxRuntimeContext? context = CurrentMombotRuntimeContext();
-        string currentLine = Core.ScriptRef.GetCurrentLine(context).Trim();
         string currentAnsi = Core.ScriptRef.GetCurrentAnsiLine(context);
-        if (currentLine.StartsWith("Command [TL=", StringComparison.OrdinalIgnoreCase))
-            return MombotPromptSurface.Command;
         if (currentLine.StartsWith("Planet command (", StringComparison.OrdinalIgnoreCase))
             return MombotPromptSurface.Planet;
         if (currentLine.StartsWith("Computer command [TL=", StringComparison.OrdinalIgnoreCase))
@@ -4649,6 +4739,12 @@ public partial class MainWindow
                 return;
 
             case ":internal_commands~twarpswitch":
+                if (IsMombotAtTerra())
+                {
+                    await ExecuteMombotHotkeyCommandAsync("macro_kit");
+                    return;
+                }
+
                 ResetMombotPromptState();
                 _parser.Feed("\r\x1b[K");
                 _buffer.Dirty = true;
@@ -4785,6 +4881,12 @@ public partial class MainWindow
         switch (normalized)
         {
             case ":internal_commands~twarpswitch":
+                if (IsMombotAtTerra())
+                {
+                    await ExecuteMombotUiCommandAsync("macro_kit");
+                    return Core.NativeBotClientInputResult.Handled;
+                }
+
                 return Core.NativeBotClientInputResult.StartPrompt("twarp ");
 
             case ":internal_commands~mowswitch":
@@ -4862,6 +4964,17 @@ public partial class MainWindow
         return string.Equals(mode, "Foton", StringComparison.OrdinalIgnoreCase)
             ? "foton off"
             : "foton on p";
+    }
+
+    private bool IsMombotAtTerra()
+    {
+        if (Core.ScriptRef.GetCurrentSector(CurrentMombotRuntimeContext()) == 1)
+            return true;
+
+        if (ParseGameVarInt(ReadCurrentMombotSectorVar("0", "$PLAYER~CURRENT_SECTOR", "$player~current_sector")) == 1)
+            return true;
+
+        return _state.Sector == 1;
     }
 
     private async Task ExecuteMombotHotkeyCommandAsync(string command)
@@ -5128,6 +5241,29 @@ public partial class MainWindow
     private void ExecuteMombotLocalInput(string input)
     {
         RecordMombotCommandHistory(input);
+        string command = (input ?? string.Empty).Trim();
+
+        if (NativeMombotStartupBridge.ShouldClearQueuedUserCommands(command))
+            _pendingNativeMombotCommands.Clear();
+
+        if (NativeMombotStartupBridge.ShouldQueueUserCommand(
+                command,
+                _mombotStartupDataGatherRunning,
+                IsNativeMombotRefreshScriptLoaded()))
+        {
+            _pendingNativeMombotCommands.Add(command);
+            Core.GlobalModules.DebugLog(
+                $"[MTC.NativeBotStart] queued user command='{command}' until refresh releases the server session\n");
+            Core.GlobalModules.FlushDebugLog();
+            PublishMombotLocalMessage($"mombot: startup refresh is still running; queued '{command}'.");
+            return;
+        }
+
+        DispatchMombotLocalInput(command);
+    }
+
+    private void DispatchMombotLocalInput(string input)
+    {
         EnsureEmbeddedMombotClientAudible();
 
         try
@@ -5142,6 +5278,30 @@ public partial class MainWindow
         }
 
         ApplyMombotExecutionRefresh();
+    }
+
+    private void TryDispatchPendingNativeMombotCommand()
+    {
+        if (_pendingNativeMombotCommands.Count == 0 ||
+            !_mombot.Enabled ||
+            !IsNativeMombotServerConnected() ||
+            _mombotStartupDataGatherPending ||
+            _mombotStartupDataGatherRunning ||
+            _mombotStartupPostInitPending ||
+            _mombotStartupFinalizeRunning ||
+            IsNativeMombotRefreshScriptLoaded() ||
+            !NativeMombotStartupBridge.CanTakeExclusiveServerControl(_mombot.GetRunningScripts()))
+        {
+            return;
+        }
+
+        string command = _pendingNativeMombotCommands[0];
+        _pendingNativeMombotCommands.RemoveAt(0);
+        Core.GlobalModules.DebugLog(
+            $"[MTC.NativeBotStart] dispatching queued user command='{command}' after refresh completed\n");
+        Core.GlobalModules.FlushDebugLog();
+        PublishMombotLocalMessage($"mombot: startup refresh complete; running queued command '{command}'.");
+        DispatchMombotLocalInput(command);
     }
 
     private void RecordMombotCommandHistory(string input)
@@ -5186,7 +5346,7 @@ public partial class MainWindow
 
     private async Task SendMombotServerMacroAsync(string macro)
     {
-        if (_gameInstance == null || !_gameInstance.IsConnected)
+        if (!CanSendMombotServerInput())
         {
             PublishMombotLocalMessage("This Mombot action requires an active game connection.");
             return;
@@ -5195,9 +5355,19 @@ public partial class MainWindow
         if (string.IsNullOrWhiteSpace(macro))
             return;
 
-        await _gameInstance.SendToServerAsync(System.Text.Encoding.ASCII.GetBytes(TranslateMombotBurstText(macro)));
+        byte[] bytes = System.Text.Encoding.ASCII.GetBytes(TranslateMombotBurstText(macro));
+        if (_gameInstance?.IsConnected == true)
+            await _gameInstance.SendToServerAsync(bytes);
+        else
+            _telnet.SendRaw(bytes);
         FocusActiveTerminal();
     }
+
+    private bool CanUseAttachedNativeMombotUi()
+        => _gameInstance != null || _mombot.IsAttached;
+
+    private bool CanSendMombotServerInput()
+        => _gameInstance?.IsConnected == true || _telnet.IsConnected;
 
     private static string TranslateMombotBurstText(string text)
         => text.Replace("*", "\r", StringComparison.Ordinal);
@@ -5206,9 +5376,9 @@ public partial class MainWindow
     {
         await Task.Yield();
 
-        if (_gameInstance == null)
+        if (!CanUseAttachedNativeMombotUi())
         {
-            PublishMombotLocalMessage("Mombot controls are only available while the embedded proxy is running.");
+            PublishMombotLocalMessage("Mombot controls need native MomBot to be attached to a game connection.");
             return;
         }
 

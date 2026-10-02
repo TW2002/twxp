@@ -15,13 +15,16 @@ public partial class MainWindow
     }
 
     private bool TryGetCurrentProxyManagementClient(out ProxyManagementClient? client)
+        => TryGetProxyManagementClient(_state.RemoteProxyServerId, out client);
+
+    private bool TryGetProxyManagementClient(string remoteProxyServerId, out ProxyManagementClient? client)
     {
         client = null;
-        if (string.IsNullOrWhiteSpace(_state.RemoteProxyServerId))
+        if (string.IsNullOrWhiteSpace(remoteProxyServerId))
             return false;
 
         AppPreferences.ProxyServerPreference? server = _appPrefs.ProxyServers.FirstOrDefault(candidate =>
-            string.Equals(candidate.Id, _state.RemoteProxyServerId, StringComparison.OrdinalIgnoreCase));
+            string.Equals(candidate.Id, remoteProxyServerId, StringComparison.OrdinalIgnoreCase));
         if (server == null)
             return false;
 
@@ -30,10 +33,14 @@ public partial class MainWindow
     }
 
     private bool IsManagedRemoteProxyGame()
-        => !_state.EmbeddedProxy &&
-           !string.IsNullOrWhiteSpace(_state.RemoteProxyServerId) &&
-           !string.IsNullOrWhiteSpace(_state.RemoteProxyGameId) &&
-           TryGetCurrentProxyManagementClient(out _);
+        => IsManagedRemoteProxyGame(_state);
+
+    private bool IsManagedRemoteProxyGame(GameState? state)
+        => state is not null &&
+           !state.EmbeddedProxy &&
+           !string.IsNullOrWhiteSpace(state.RemoteProxyServerId) &&
+           !string.IsNullOrWhiteSpace(state.RemoteProxyGameId) &&
+           TryGetProxyManagementClient(state.RemoteProxyServerId, out _);
 
     private async Task<bool> TryRunManagedRemoteScriptAsync(string relativePath)
     {
@@ -45,25 +52,29 @@ public partial class MainWindow
     }
 
     private async Task<bool> EnsureManagedRemoteProxyTerminalConnectedAsync(ProxyManagementClient client)
+        => await EnsureManagedRemoteProxyTerminalConnectedAsync(ResolveCurrentMtcTabContext(), client).ConfigureAwait(false);
+
+    private async Task<bool> EnsureManagedRemoteProxyTerminalConnectedAsync(MtcTabPrototype? owner, ProxyManagementClient client)
     {
-        if (!IsManagedRemoteProxyGame())
+        GameState state = owner?.State ?? _state;
+        TelnetClient telnet = owner?.Telnet ?? _telnet;
+
+        if (!IsManagedRemoteProxyGame(state))
             return false;
 
-        await client.StartGameAsync(_state.RemoteProxyGameId);
-        if (_telnet.IsConnected)
+        await client.StartGameAsync(state.RemoteProxyGameId).ConfigureAwait(false);
+        if (telnet.IsConnected)
             return true;
 
-        _parser.Feed($"\x1b[1;36m[Connecting to remote proxy game: {_state.Host}:{_state.Port}]\x1b[0m\r\n");
-        _buffer.Dirty = true;
-        if (!await ConnectDirectTelnetAsync(reconnectIfConnected: false))
+        PublishMombotClientOutput(owner, $"\x1b[1;36m[Connecting to remote proxy game: {state.Host}:{state.Port}]\x1b[0m\r\n");
+        if (!await ConnectDirectTelnetAsync(owner, reconnectIfConnected: false).ConfigureAwait(false))
             return false;
 
-        await Task.Delay(500);
-        if (_telnet.IsConnected)
+        await Task.Delay(500).ConfigureAwait(false);
+        if (telnet.IsConnected)
             return true;
 
-        _parser.Feed("\x1b[1;31m[Remote proxy game disconnected before bot start]\x1b[0m\r\n");
-        _buffer.Dirty = true;
+        PublishMombotClientOutput(owner, "\x1b[1;31m[Remote proxy game disconnected before bot start]\x1b[0m\r\n");
         return false;
     }
 }

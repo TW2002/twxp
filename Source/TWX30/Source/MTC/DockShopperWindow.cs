@@ -260,6 +260,28 @@ internal sealed class DockShopperWindow : Window
         var cancelButton = BuildActionButton("Cancel", primary: false);
         cancelButton.Click += (_, _) => Close(false);
 
+        var copyButton = BuildActionButton("Copy", primary: false);
+        copyButton.Width = 80;
+        ToolTip.SetTip(copyButton, "Copy LSD command to clipboard");
+        bool copying = false;
+        copyButton.Click += async (_, _) =>
+        {
+            if (copying)
+                return;
+            copying = true;
+            try
+            {
+                bool copied = await ClipboardHelper.TrySetTextAsync(this, _encodedPreview.Text ?? string.Empty);
+                copyButton.Content = copied ? "Copied" : "Failed";
+                await System.Threading.Tasks.Task.Delay(900);
+            }
+            finally
+            {
+                copyButton.Content = "Copy";
+                copying = false;
+            }
+        };
+
         return new Border
         {
             Background = BgPanel,
@@ -290,7 +312,7 @@ internal sealed class DockShopperWindow : Window
                     {
                         Orientation = Orientation.Horizontal,
                         Spacing = 8,
-                        Children = { cancelButton, goButton },
+                        Children = { copyButton, cancelButton, goButton },
                     }.WithGridPosition(0, 1, rowSpan: 2),
                 },
             },

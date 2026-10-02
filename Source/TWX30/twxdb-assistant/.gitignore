@@ -1,0 +1,13 @@
+artifacts/base/
+artifacts/fused/
+artifacts/adapters*/
+artifacts/llama.cpp-tools/
+artifacts/*.gguf
+artifacts/eval-*.json
+artifacts/smoke-*.json
+__pycache__/
+*.pyc
+
+# Local fixture-generator build products
+tests/Fixtures/XdbWriter/bin/
+tests/Fixtures/XdbWriter/obj/

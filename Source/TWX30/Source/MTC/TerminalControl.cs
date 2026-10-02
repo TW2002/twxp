@@ -250,7 +250,9 @@ public class TerminalControl : Control
 
     private void EnsureDirtySubscription()
     {
-        if (_dirtySubscriptionActive)
+        // Tab rebinding can change the buffer after this view was detached.
+        // Only visible-tree views may subscribe to the long-lived game buffer.
+        if (_dirtySubscriptionActive || VisualRoot is null)
             return;
 
         _buffer.DirtyRaised += OnBufferDirtyRaised;

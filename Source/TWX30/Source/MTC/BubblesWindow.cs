@@ -28,6 +28,7 @@ public class BubblesWindow : Window
         Depth,
         DistToSd,
         DistToSol,
+        Figged,
     }
 
     private sealed record FinderRow(
@@ -39,7 +40,8 @@ public class BubblesWindow : Window
         int? DistToSol,
         IReadOnlyList<ushort> Sectors,
         IReadOnlyList<ushort> Gates,
-        bool Gapped)
+        bool Gapped,
+        bool Figged = false)
     {
         public int GateCount => Math.Max(1, Gates.Count);
     }
@@ -76,6 +78,7 @@ public class BubblesWindow : Window
         public Button? SortDepthButton { get; set; }
         public Button? SortDistToSdButton { get; set; }
         public Button? SortDistToSolButton { get; set; }
+        public Button? SortFiggedButton { get; set; }
         public FinderSortMode SortMode { get; set; } = FinderSortMode.Sectors;
         public bool SortDescending { get; set; } = true;
         public List<FinderRow> Rows { get; set; } = [];
@@ -544,7 +547,10 @@ public class BubblesWindow : Window
     {
         var grid = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("84,84,84,92,92,*,Auto"),
+            ColumnDefinitions = new ColumnDefinitions(
+                state.Kind == FinderTabKind.DeadEnds
+                    ? "84,84,84,92,92,74,*,Auto"
+                    : "84,84,84,92,92,*,Auto"),
             ColumnSpacing = 12,
         };
 
@@ -556,17 +562,32 @@ public class BubblesWindow : Window
             state.SortDepthButton = null;
             state.SortDistToSdButton = AddSortHeaderCell(grid, "Dist to SD", 3, state, FinderSortMode.DistToSd);
             state.SortDistToSolButton = AddSortHeaderCell(grid, "Dist to Terra", 4, state, FinderSortMode.DistToSol);
+            state.SortFiggedButton = null;
+            AddHeaderCell(grid, "Sector List", 5);
+            AddHeaderCell(grid, string.Empty, 6);
         }
-        else
+        else if (state.Kind == FinderTabKind.DeadEnds)
         {
-            AddHeaderCell(grid, state.Kind == FinderTabKind.Bubbles ? "Entrance(s)" : "Door", 0);
+            AddHeaderCell(grid, "Door", 0);
             state.SortSectorsButton = AddSortHeaderCell(grid, "Sectors", 1, state, FinderSortMode.Sectors);
             state.SortDepthButton = AddSortHeaderCell(grid, "Depth", 2, state, FinderSortMode.Depth);
             state.SortDistToSdButton = AddSortHeaderCell(grid, "Dist to SD", 3, state, FinderSortMode.DistToSd);
             state.SortDistToSolButton = AddSortHeaderCell(grid, "Dist to Terra", 4, state, FinderSortMode.DistToSol);
+            state.SortFiggedButton = AddSortHeaderCell(grid, "Figged", 5, state, FinderSortMode.Figged);
+            AddHeaderCell(grid, "Sector List", 6);
+            AddHeaderCell(grid, string.Empty, 7);
         }
-        AddHeaderCell(grid, "Sector List", 5);
-        AddHeaderCell(grid, string.Empty, 6);
+        else
+        {
+            AddHeaderCell(grid, "Entrance(s)", 0);
+            state.SortSectorsButton = AddSortHeaderCell(grid, "Sectors", 1, state, FinderSortMode.Sectors);
+            state.SortDepthButton = AddSortHeaderCell(grid, "Depth", 2, state, FinderSortMode.Depth);
+            state.SortDistToSdButton = AddSortHeaderCell(grid, "Dist to SD", 3, state, FinderSortMode.DistToSd);
+            state.SortDistToSolButton = AddSortHeaderCell(grid, "Dist to Terra", 4, state, FinderSortMode.DistToSol);
+            state.SortFiggedButton = null;
+            AddHeaderCell(grid, "Sector List", 5);
+            AddHeaderCell(grid, string.Empty, 6);
+        }
         UpdateSortButtons(state);
 
         return new Border
@@ -650,6 +671,9 @@ public class BubblesWindow : Window
 
         if (state.SortDistToSolButton != null)
             state.SortDistToSolButton.Content = BuildSortLabel("Dist to Terra", state, FinderSortMode.DistToSol);
+
+        if (state.SortFiggedButton != null)
+            state.SortFiggedButton.Content = BuildSortLabel("Figged", state, FinderSortMode.Figged);
     }
 
     private static Control BuildSortLabel(string label, FinderTabState state, FinderSortMode mode)
@@ -889,7 +913,7 @@ public class BubblesWindow : Window
         IReadOnlyList<FinderRow> rows = state.Kind switch
         {
             FinderTabKind.Bubbles => LoadBubbleRows(db, minSize, maxSize, maxGates, state, stardockSector, solSector),
-            FinderTabKind.DeadEnds => LoadDeadEndRows(db, minSize, maxSize, stardockSector, solSector),
+            FinderTabKind.DeadEnds => LoadDeadEndRows(db, minSize, maxSize, stardockSector, solSector, _getState?.Invoke()),
             FinderTabKind.Tunnels => LoadTunnelRows(db, minSize, maxSize, stardockSector, solSector),
             _ => Array.Empty<FinderRow>(),
         };
@@ -979,7 +1003,8 @@ public class BubblesWindow : Window
         int minSize,
         int maxSize,
         int stardockSector,
-        int solSector)
+        int solSector,
+        GameState? state)
     {
         IReadOnlyList<Core.DeadEndInfo> deadEnds = Core.ProxyGameOperations.GetDeadEnds(db, maxSize);
         return deadEnds
@@ -993,8 +1018,52 @@ public class BubblesWindow : Window
                 solSector > 0 ? NormalizeDistance(db.GetDistance(deadEnd.Door, solSector)) : null,
                 deadEnd.Sectors,
                 new[] { deadEnd.Door },
-                false))
+                false,
+                IsAnySectorFigged(db, deadEnd.Sectors, deadEnd.Door, state)))
             .ToArray();
+    }
+
+    private static bool IsAnySectorFigged(
+        Core.ModDatabase db,
+        IReadOnlyList<ushort> branchSectors,
+        ushort door,
+        GameState? state)
+    {
+        if (IsSectorFigged(db.GetSector(door), state))
+            return true;
+
+        foreach (ushort sectorNumber in branchSectors)
+        {
+            if (IsSectorFigged(db.GetSector(sectorNumber), state))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsSectorFigged(Core.SectorData? sector, GameState? state)
+    {
+        if (sector == null)
+            return false;
+
+        if (sector.Fighters.Quantity > 0 &&
+            SectorOwnershipClassifier.IsFriendlyOwner(sector.Fighters.Owner, state))
+        {
+            return true;
+        }
+
+        return sector.Variables.TryGetValue("FIGSEC", out string? figMarker) &&
+               IsTruthySectorVariable(figMarker);
+    }
+
+    private static bool IsTruthySectorVariable(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return !value.Equals("0", StringComparison.OrdinalIgnoreCase) &&
+               !value.Equals("false", StringComparison.OrdinalIgnoreCase) &&
+               !value.Equals("no", StringComparison.OrdinalIgnoreCase);
     }
 
     private static IReadOnlyList<FinderRow> LoadTunnelRows(
@@ -1085,6 +1154,9 @@ public class BubblesWindow : Window
                 : rows.OrderBy(row => row.Depth).ThenBy(row => row.Door),
             FinderSortMode.DistToSd => SortByNullableDistance(rows, row => row.DistToSd, state.SortDescending),
             FinderSortMode.DistToSol => SortByNullableDistance(rows, row => row.DistToSol, state.SortDescending),
+            FinderSortMode.Figged => state.SortDescending
+                ? rows.OrderByDescending(row => row.Figged).ThenBy(row => row.Door)
+                : rows.OrderBy(row => row.Figged).ThenBy(row => row.Door),
             _ => rows.OrderBy(row => row.Door),
         };
     }
@@ -1110,7 +1182,10 @@ public class BubblesWindow : Window
 
         var grid = new Grid
         {
-            ColumnDefinitions = new ColumnDefinitions("84,84,84,92,92,*,Auto"),
+            ColumnDefinitions = new ColumnDefinitions(
+                state.Kind == FinderTabKind.DeadEnds
+                    ? "84,84,84,92,92,74,*,Auto"
+                    : "84,84,84,92,92,*,Auto"),
             ColumnSpacing = 12,
         };
 
@@ -1127,7 +1202,16 @@ public class BubblesWindow : Window
         }
         AddValueCell(grid, FormatDistance(row.DistToSd), 3, ColText);
         AddValueCell(grid, FormatDistance(row.DistToSol), 4, ColText);
-        AddValueCell(grid, sectorList, 5, ColMuted, wrap: true);
+        int sectorListColumn = 5;
+        int copyColumn = 6;
+        if (state.Kind == FinderTabKind.DeadEnds)
+        {
+            AddValueCell(grid, row.Figged ? "Yes" : "No", 5, row.Figged ? ColSuccess : ColMuted, bold: row.Figged);
+            sectorListColumn = 6;
+            copyColumn = 7;
+        }
+
+        AddValueCell(grid, sectorList, sectorListColumn, ColMuted, wrap: true);
 
         var copyButton = new Button
         {
@@ -1138,7 +1222,7 @@ public class BubblesWindow : Window
         };
         StyleActionButton(copyButton, primary: false);
         copyButton.Click += async (_, _) => await CopySectorListAsync(copyButton, sectorList);
-        Grid.SetColumn(copyButton, 6);
+        Grid.SetColumn(copyButton, copyColumn);
         grid.Children.Add(copyButton);
 
         var border = new Border

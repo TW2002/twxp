@@ -396,6 +396,20 @@ internal sealed class MtcJsonRpcServer : IDisposable
             case "mtc.listScripts":
                 return await _bridge.ListScriptsAsync().ConfigureAwait(false);
 
+            case "mtc.getDebugSettings":
+                return await _bridge.GetDebugSettingsAsync(TryReadString(parameters, "gameName")).ConfigureAwait(false);
+
+            case "mtc.setDebugSettings":
+            {
+                var patch = MtcRpcDebugSettings.ParsePatch(parameters);
+                // Resolve the target before approval so switching tabs while the
+                // dialog is open cannot redirect the update into another game.
+                var target = await _bridge.GetDebugSettingsAsync(TryReadString(parameters, "gameName")).ConfigureAwait(false);
+                await EnsureActionAllowedAsync("Change debug settings",
+                    target.GameName + "\n" + string.Join("\n", patch.Select(p => $"{p.Key}: {p.Value}"))).ConfigureAwait(false);
+                return await _bridge.SetDebugSettingsAsync(target.GameName, patch).ConfigureAwait(false);
+            }
+
             case "mtc.subscribe":
                 if (client == null)
                     throw new MtcRpcException(-32006, "Subscriptions require a WebSocket connection.");
@@ -420,6 +434,28 @@ internal sealed class MtcJsonRpcServer : IDisposable
                 bool appendEnter = ReadBool(parameters, "appendEnter", true);
                 await EnsureActionAllowedAsync("Send command", command).ConfigureAwait(false);
                 return await _bridge.SendCommandAsync(command, appendEnter).ConfigureAwait(false);
+            }
+
+            case "mtc.sendPromptCommand":
+            {
+                var command = TryReadString(parameters, "command");
+                if (string.IsNullOrEmpty(command))
+                    throw new MtcRpcException(-32602, "A nonempty command is required (CR is allowed).");
+                var gameName = ReadString(parameters, "gameName", required: true);
+                var prompt = ReadString(parameters, "prompt", required: true);
+                var timestamp = ReadString(parameters, "promptTimestamp", required: true);
+                if (!DateTimeOffset.TryParse(timestamp, System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var promptTimestamp))
+                    throw new MtcRpcException(-32602, "promptTimestamp must be an ISO timestamp.");
+                if (_bridge.SendPromptCommandAsync == null)
+                    throw new MtcRpcException(-32601, "Guarded prompt commands are unavailable.");
+                var request = new MtcRpcPromptCommand
+                {
+                    GameName = gameName, Prompt = prompt, PromptTimestamp = promptTimestamp,
+                    Command = command, AppendEnter = ReadBool(parameters, "appendEnter", false),
+                };
+                await EnsureActionAllowedAsync("Respond to game prompt", gameName + "\n" + command).ConfigureAwait(false);
+                return await _bridge.SendPromptCommandAsync(request).ConfigureAwait(false);
             }
 
             case "mtc.runMombotCommand":
@@ -462,6 +498,8 @@ internal sealed class MtcJsonRpcServer : IDisposable
             transport = new[] { "http-post", "websocket" },
             endpoint = options.Endpoint,
             actionApprovalLevel = MtcRpcApprovalLevels.ToPreferenceValue(options.ApprovalLevel),
+            eventSequence = true,
+            debugSettings = MtcRpcDebugSettings.Names,
             methods = new[]
             {
                 "rpc.discover",
@@ -472,10 +510,13 @@ internal sealed class MtcJsonRpcServer : IDisposable
                 "mtc.querySector",
                 "mtc.getSector",
                 "mtc.listScripts",
+                "mtc.getDebugSettings",
+                "mtc.setDebugSettings",
                 "mtc.subscribe",
                 "mtc.unsubscribe",
                 "mtc.proposeCommand",
                 "mtc.sendCommand",
+                "mtc.sendPromptCommand",
                 "mtc.runMombotCommand",
                 "mtc.runScript",
                 "mtc.stopScript",
@@ -684,10 +725,13 @@ internal sealed class MtcJsonRpcServer : IDisposable
             {
                 jsonrpc = "2.0",
                 method = "mtc.event",
+                sequence = Interlocked.Increment(ref _eventSequence),
                 @params = evt,
             };
             _sendQueue.Writer.TryWrite(JsonSerializer.Serialize(notification, JsonOptions));
         }
+
+        private long _eventSequence;
 
         private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
         {

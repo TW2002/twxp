@@ -67,7 +67,8 @@ internal class PreferencesDialog : Window
         EmbeddedMtcDebugConfig debugPrefs,
         EmbeddedMtcJsonRpcConfig jsonRpcPrefs,
         EmbeddedGameConfig? gameConfig,
-        string? gameName)
+        string? gameName,
+        bool viewPreferences = false)
     {
         Title                 = "Preferences";
         Width                 = 720;
@@ -87,6 +88,8 @@ internal class PreferencesDialog : Window
 
         var txtProgramDir = BuildPathTextBox(defaultProgramDir, "path to TWX program directory");
         var txtScripts = BuildPathTextBox(defaultScriptsDir, "path to scripts folder");
+        var txtDefaultLoginName = BuildPathTextBox(prefs.DefaultLoginName, "login name");
+        var txtDefaultBotName = BuildPathTextBox(prefs.DefaultNativeMombotBotName, "mombot");
 
         var btnBrowseProgramDir = BuildBrowseButton();
         btnBrowseProgramDir.Click += async (_, _) =>
@@ -160,7 +163,6 @@ internal class PreferencesDialog : Window
         var chkCreateAnsiGameLogs = BuildCheckBox("Create ANSI game logs", logPrefs.LogAnsiCompanion);
         var chkEnableRedAlertMode = BuildCheckBox("Enable Red Alert Mode", prefs.EnableRedAlertMode);
         var chkPreparedVm = BuildCheckBox("Use prepared VM", prefs.PreparedVmEnabled);
-        var chkScriptInfiniteLoopProtection = BuildCheckBox("Infinite loop protection", prefs.ScriptInfiniteLoopProtectionEnabled);
         var chkStaleConnectionProbe = BuildCheckBox("Stale connection probe", prefs.StaleConnectionProbeEnabled);
         var txtStaleConnectionProbeTimeout = BuildPathTextBox(
             AppPreferences.NormalizeNetworkWatchdogSeconds(
@@ -298,6 +300,13 @@ internal class PreferencesDialog : Window
             BuildField("Program directory", programDirRow, "Base TWX program data location."),
             BuildField("Scripts directory", scriptsRow, "Live script tree used for Mombot and custom scripts."));
 
+        var defaultsSection = BuildSection(
+            "New Game Defaults",
+            "Initial values used by new-game setup and native MomBot configuration.",
+            BuildTwoColumnRow(
+                BuildField("Login name", txtDefaultLoginName, "Default trader alias for new-game login forms."),
+                BuildField("Bot name", txtDefaultBotName, "Default native MomBot name when a game has not been configured yet.")));
+
         var diagnosticsSection = BuildSection(
             "Diagnostics",
             string.IsNullOrWhiteSpace(gameName)
@@ -328,7 +337,7 @@ internal class PreferencesDialog : Window
         var runtimeSection = BuildSection(
             "Runtime",
             "Global terminal and script runtime behavior.",
-            BuildCheckGroup(chkPreparedVm, chkScriptInfiniteLoopProtection, chkDisableScriptWindowStayInFront, chkVmMetrics, chkPythonScripts, chkPythonExposeRpcToken),
+            BuildCheckGroup(chkPreparedVm, chkDisableScriptWindowStayInFront, chkVmMetrics, chkPythonScripts, chkPythonExposeRpcToken),
             BuildCheckGroup(chkStaleConnectionProbe, chkGameIdleKeepalive),
             BuildTwoColumnRow(
                 BuildField(
@@ -349,6 +358,24 @@ internal class PreferencesDialog : Window
                 $"Global terminal scrollback retained for every game. Use 0 to disable; max {TerminalBuffer.MaximumScrollbackLines.ToString("N0", CultureInfo.InvariantCulture)}."),
             BuildMemoryLimitRow("Prepared cache retention", cboPreparedCacheLimit),
             BuildMemoryLimitRow("Mombot hotkey prewarm cap", cboHotkeyPrewarmLimit));
+
+        var scriptWindowLayout = new ComboBox
+        {
+            ItemsSource = new[] { "Beside notes (full height)", "Above notes (split height)" },
+            SelectedIndex = prefs.ScriptWindowsAboveNotes ? 1 : 0,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
+        var scriptWindowPlacement = new ComboBox
+        {
+            ItemsSource = new[] { "Inside MTC", "Outside MTC (popup windows)" },
+            SelectedIndex = prefs.ScriptWindowsInsideMtc ? 0 : 1,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
+        scriptWindowLayout.IsEnabled = prefs.ScriptWindowsInsideMtc;
+        scriptWindowPlacement.SelectionChanged += (_, _) => scriptWindowLayout.IsEnabled = scriptWindowPlacement.SelectedIndex == 0;
+        var viewSection = BuildSection("Script Windows", string.Empty,
+            BuildField("Open windows", scriptWindowPlacement, string.Empty),
+            BuildField("Window layout", scriptWindowLayout, string.Empty));
 
         var integrationsSection = BuildSection(
             "Integrations",
@@ -382,11 +409,15 @@ internal class PreferencesDialog : Window
 
         btnSave.Click += (_, _) =>
         {
+            prefs.ScriptWindowsAboveNotes = scriptWindowLayout.SelectedIndex == 1;
+            prefs.ScriptWindowsInsideMtc = scriptWindowPlacement.SelectedIndex == 0;
             prefs.ProgramDirectory = txtProgramDir.Text?.Trim()
                 ?? Core.SharedPaths.GetDefaultProgramDir();
             prefs.ScriptsDirectory = string.IsNullOrWhiteSpace(txtScripts.Text)
                 ? Core.SharedPathSettingsStore.GetDefaultScriptsDirectory(prefs.ProgramDirectory)
                 : txtScripts.Text.Trim();
+            prefs.DefaultLoginName = txtDefaultLoginName.Text?.Trim() ?? string.Empty;
+            prefs.DefaultNativeMombotBotName = txtDefaultBotName.Text?.Trim() ?? string.Empty;
             debugPrefs.DebugLoggingEnabled = chkDebug.IsChecked == true;
             debugPrefs.VerboseDebugLogging = debugPrefs.DebugLoggingEnabled && chkVerbose.IsChecked == true;
             debugPrefs.ScriptTraceDebugLogging = debugPrefs.DebugLoggingEnabled && chkScriptTrace.IsChecked == true;
@@ -404,7 +435,6 @@ internal class PreferencesDialog : Window
             }
             prefs.EnableRedAlertMode = chkEnableRedAlertMode.IsChecked == true;
             prefs.PreparedVmEnabled = chkPreparedVm.IsChecked == true;
-            prefs.ScriptInfiniteLoopProtectionEnabled = chkScriptInfiniteLoopProtection.IsChecked == true;
             prefs.StaleConnectionProbeEnabled = chkStaleConnectionProbe.IsChecked == true;
             prefs.StaleConnectionProbeTimeoutSeconds = AppPreferences.NormalizeNetworkWatchdogSeconds(
                 int.TryParse(txtStaleConnectionProbeTimeout.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int staleProbeTimeoutSeconds)
@@ -464,11 +494,13 @@ internal class PreferencesDialog : Window
 
         var tabs = new TabControl
         {
+            SelectedIndex = viewPreferences ? 1 : 0,
             Background = BgPanel,
             Foreground = FgNormal,
             Items =
             {
-                BuildTabItem("General", storageSection, alertsSection, runtimeSection),
+                BuildTabItem("General", storageSection, defaultsSection, alertsSection, runtimeSection),
+                BuildTabItem("View", viewSection),
                 BuildTabItem("Diagnostics", appDiagnosticsSection, diagnosticsSection),
                 BuildTabItem("Updates", updatesSection),
                 BuildTabItem("RPC", integrationsSection),

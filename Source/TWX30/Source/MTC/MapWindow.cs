@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -36,6 +36,9 @@ public class MapWindow : Window
     private const float GridX   = 90f;   // horizontal grid cell size
     private const float GridY   = 66f;   // vertical grid cell size
     private const int   MaxDepth = 4;    // BFS depth from center
+    private const int   MaxVisibleSectors = 500;
+    private static readonly Size DefaultClientSize = new(1100, 760);
+    private static readonly Size MinimumClientSize = new(600, 400);
 
     // ── State ─────────────────────────────────────────────────────────────
     private int  _centerSector;
@@ -70,7 +73,9 @@ public class MapWindow : Window
     private readonly TacticalMapControl _tacticalMap;
     private readonly TextBlock  _titleLabel;
     private readonly TextBox    _sectorBox;
-    private readonly ComboBox   _viewSelector;
+    private          Button     _classicViewBtn = new();
+    private          Button     _modernViewBtn  = new();
+    private          Button     _hexViewBtn     = new();
     private          Button     _backBtn    = new();
     private          Button     _fwdBtn     = new();
     private          Slider     _zoomSlider = new();
@@ -121,13 +126,20 @@ public class MapWindow : Window
         _getState         = getState;
         _centerSector     = getCurrentSector();
         if (_centerSector <= 0) _centerSector = 1;
+        MapViewMode defaultViewMode = GetDefaultMapViewMode();
 
-        Title          = "Visual Map";
-        Width          = 1100;
-        Height         = 760;
-        MinWidth       = 600;
-        MinHeight      = 400;
-        Background     = DeckWindow;
+        Title = "Visual Map";
+        Width = DefaultClientSize.Width;
+        Height = DefaultClientSize.Height;
+        MinWidth = MinimumClientSize.Width;
+        MinHeight = MinimumClientSize.Height;
+        ClientSize = DefaultClientSize;
+        SizeToContent = SizeToContent.Manual;
+        CanResize = true;
+        SystemDecorations = SystemDecorations.Full;
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        Background = DeckWindow;
 
         // Generate a fixed star field
         var rng = new Random(42);
@@ -225,26 +237,20 @@ public class MapWindow : Window
         _sectorBox.KeyDown += OnSectorBoxKeyDown;
         StyleToolbarTextBox(_sectorBox);
 
-        _viewSelector = new ComboBox
+        _classicViewBtn = BuildViewModeButton("Classic", MapViewMode.Classic);
+        _modernViewBtn = BuildViewModeButton("Modern", MapViewMode.Bubble);
+        _hexViewBtn = BuildViewModeButton("Hex", MapViewMode.Hex);
+        var viewSelector = new StackPanel
         {
-            Width = 118,
-            Height = 32,
+            Orientation = Orientation.Horizontal,
+            Spacing = 3,
             VerticalAlignment = VerticalAlignment.Center,
-            Background = DeckHeaderAlt,
-            BorderBrush = DeckInnerEdge,
-            BorderThickness = new Thickness(1),
-            Foreground = DeckText,
-            ItemsSource = new[] { "Classic", "Modern", "Hex" },
-            SelectedIndex = 1,
-        };
-        _viewSelector.SelectionChanged += (_, _) =>
-        {
-            SetMapViewMode(_viewSelector.SelectedIndex switch
+            Children =
             {
-                0 => MapViewMode.Classic,
-                2 => MapViewMode.Hex,
-                _ => MapViewMode.Bubble,
-            });
+                _classicViewBtn,
+                _modernViewBtn,
+                _hexViewBtn,
+            },
         };
 
         var sectorLabelNav = new TextBlock
@@ -327,7 +333,7 @@ public class MapWindow : Window
                     new Border { Width = 4 },
                     _titleLabel,
                     sectorLabelNav, _sectorBox, centerBtn, currentBtn, refreshBtn,
-                    viewLabel, _viewSelector,
+                    viewLabel, viewSelector,
                     _zoomLabel, _zoomSlider,
                     _tacticalZoomBar,
                 },
@@ -363,7 +369,13 @@ public class MapWindow : Window
         mapSurface.Children.Add(_canvas);
         mapSurface.Children.Add(_tacticalMap);
 
-        var layout = new DockPanel { Background = DeckWindow, Margin = new Thickness(10) };
+        var layout = new DockPanel
+        {
+            Background = DeckWindow,
+            Margin = new Thickness(10),
+            MinWidth = MinimumClientSize.Width,
+            MinHeight = MinimumClientSize.Height,
+        };
         DockPanel.SetDock(toolbar, Dock.Top);
         DockPanel.SetDock(_classicLegend,  Dock.Bottom);
         layout.Children.Add(toolbar);
@@ -400,11 +412,36 @@ public class MapWindow : Window
                 else
                     RefreshData();
             });
-        Opened  += (_, _) => _refreshTimer.Start();
+        Opened  += (_, _) =>
+        {
+            EnsureUsableClientSize();
+            _refreshTimer.Start();
+            Dispatcher.UIThread.Post(() =>
+            {
+                EnsureUsableClientSize();
+                if (_positions.Count == 0)
+                    NavigateTo(_centerSector);
+            }, DispatcherPriority.Background);
+        };
         Closing += (_, _) => _refreshTimer.Stop();
 
-        SetMapViewMode(MapViewMode.Bubble);
-        NavigateTo(_centerSector);
+        SetMapViewMode(defaultViewMode);
+        UpdateTitle();
+        UpdateNavButtons();
+    }
+
+    private void EnsureUsableClientSize()
+    {
+        if (double.IsNaN(Width) || Width < MinimumClientSize.Width)
+            Width = DefaultClientSize.Width;
+
+        if (double.IsNaN(Height) || Height < MinimumClientSize.Height)
+            Height = DefaultClientSize.Height;
+
+        if (ClientSize.Width < MinimumClientSize.Width || ClientSize.Height < MinimumClientSize.Height)
+            ClientSize = DefaultClientSize;
+
+        InvalidateMeasure();
     }
 
     // ── Legend bar ────────────────────────────────────────────────────────
@@ -497,8 +534,14 @@ public class MapWindow : Window
             _canvas.InvalidateVisual();
         }
 
+        UpdateViewModeButtons();
         UpdateTitle();
     }
+
+    private static MapViewMode GetDefaultMapViewMode()
+        => OperatingSystem.IsMacOS() || OperatingSystem.IsLinux()
+            ? MapViewMode.Bubble
+            : MapViewMode.Classic;
 
     private void UpdateTitle()
     {
@@ -508,6 +551,27 @@ public class MapWindow : Window
     private void UpdateTacticalZoomUi()
     {
         _tacticalZoomText.Text = $"{_tacticalMap.ZoomPercent}%";
+    }
+
+    private Button BuildViewModeButton(string label, MapViewMode viewMode)
+    {
+        var button = new Button
+        {
+            Content = label,
+            Height = 32,
+            Padding = new Thickness(10, 4),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        button.Click += (_, _) => SetMapViewMode(viewMode);
+        ToolTip.SetTip(button, $"Show {label.ToLowerInvariant()} map view");
+        return button;
+    }
+
+    private void UpdateViewModeButtons()
+    {
+        StyleToolbarButton(_classicViewBtn, primary: _viewMode == MapViewMode.Classic);
+        StyleToolbarButton(_modernViewBtn, primary: _viewMode == MapViewMode.Bubble);
+        StyleToolbarButton(_hexViewBtn, primary: _viewMode == MapViewMode.Hex);
     }
 
     private static void StyleToolbarButton(Button button, bool primary = false)
@@ -735,7 +799,7 @@ public class MapWindow : Window
         if (db == null)
         {
             _canvas.InvalidateVisual();
-            _tacticalMap.InvalidateVisual();
+            _tacticalMap.RefreshSnapshot();
             return;
         }
 
@@ -758,6 +822,9 @@ public class MapWindow : Window
 
             foreach (var w in sd.Warp.Where(w => w > 0))
             {
+                if (visited.Count >= MaxVisibleSectors)
+                    break;
+
                 if (!visited.ContainsKey(w))
                 {
                     visited[w] = d + 1;
@@ -767,6 +834,9 @@ public class MapWindow : Window
             // Also include WarpsIn neighbors so we can draw back-arrows
             foreach (var w in sd.WarpsIn.Where(w => w > 0))
             {
+                if (visited.Count >= MaxVisibleSectors)
+                    break;
+
                 if (!visited.ContainsKey(w) && d + 1 <= MaxDepth)
                 {
                     visited[w] = d + 1;
@@ -802,7 +872,7 @@ public class MapWindow : Window
         UpdateTitle();
         UpdateNavButtons();
         _canvas.InvalidateVisual();
-        _tacticalMap.InvalidateVisual();
+        _tacticalMap.RefreshSnapshot();
     }
 
     /// <summary>
@@ -817,14 +887,14 @@ public class MapWindow : Window
         if (db == null)
         {
             _canvas.InvalidateVisual();
-            _tacticalMap.InvalidateVisual();
+            _tacticalMap.RefreshSnapshot();
             return;
         }
         foreach (var sn in _positions.Keys.ToList())
             _sectorCache[sn] = db.GetSector(sn);
         RefreshMajorSpaceLaneSectors(db);
         _canvas.InvalidateVisual();
-        _tacticalMap.InvalidateVisual();
+        _tacticalMap.RefreshSnapshot();
     }
 
     private int VisibleDepthForZoom()
@@ -1031,11 +1101,12 @@ public class MapWindow : Window
             IsAntialias = true, StrokeWidth = 2f,
             Color = ColLineTwo, Style = SKPaintStyle.Stroke,
         };
+        using var oneWayPathEffect = SKPathEffect.CreateDash(DashIntervals, 0);
         using var linePaintOne = new SKPaint
         {
             IsAntialias = true, StrokeWidth = 1.5f,
             Color = ColLineOne, Style = SKPaintStyle.Stroke,
-            PathEffect = SKPathEffect.CreateDash(DashIntervals, 0),
+            PathEffect = oneWayPathEffect,
         };
 
         int visibleDepth = VisibleDepthForZoom();
@@ -1295,7 +1366,21 @@ public class MapWindow : Window
         public override void Render(DrawingContext context)
         {
             var bounds = new Rect(0, 0, Bounds.Width, Bounds.Height);
+            DrawFallbackSurface(context, bounds);
             context.Custom(new MapDrawOp(bounds, _owner));
+        }
+
+        private static void DrawFallbackSurface(DrawingContext context, Rect bounds)
+        {
+            context.FillRectangle(DeckFrameAlt, bounds);
+            var text = new FormattedText(
+                "Map renderer unavailable",
+                CultureInfo.InvariantCulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Consolas, Menlo, monospace"),
+                14,
+                DeckMuted);
+            context.DrawText(text, new Point(16, 16));
         }
 
         private class MapDrawOp : ICustomDrawOperation
@@ -1310,10 +1395,22 @@ public class MapWindow : Window
 
             public void Render(ImmediateDrawingContext ctx)
             {
-                var feature = ctx.TryGetFeature(typeof(ISkiaSharpApiLeaseFeature)) as ISkiaSharpApiLeaseFeature;
-                if (feature == null) return;
-                using var lease = feature.Lease();
-                _owner.Draw(lease.SkCanvas, (float)_bounds.Width, (float)_bounds.Height);
+                try
+                {
+                    var feature = ctx.TryGetFeature(typeof(ISkiaSharpApiLeaseFeature)) as ISkiaSharpApiLeaseFeature;
+                    if (feature == null)
+                    {
+                        Core.GlobalModules.DebugLog("[MapWindow] Skia lease feature unavailable; fallback surface rendered.\n");
+                        return;
+                    }
+
+                    using var lease = feature.Lease();
+                    _owner.Draw(lease.SkCanvas, (float)_bounds.Width, (float)_bounds.Height);
+                }
+                catch (Exception ex)
+                {
+                    Core.GlobalModules.DebugLog($"[MapWindow] Render failed: {ex}\n");
+                }
             }
         }
     }

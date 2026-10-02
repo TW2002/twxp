@@ -485,6 +485,26 @@ public partial class MainWindow
     private static Dictionary<string, string> NormalizeEmbeddedVariables(IDictionary<string, string>? source)
         => GameConfigService.NormalizeVariables(source);
 
+    private static void AttachGameConfigVariablePersistence(
+        Core.TwxRuntimeContext? runtimeContext,
+        EmbeddedGameConfig gameConfig,
+        string gameName)
+    {
+        if (runtimeContext == null || string.IsNullOrWhiteSpace(gameName))
+            return;
+
+        gameConfig.Variables = NormalizeEmbeddedVariables(gameConfig.Variables);
+        Core.ScriptRef.SetOnVariableSaved(runtimeContext, (varName, value) =>
+        {
+            if (string.Equals(varName, "$gfile_chk", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(varName, "$doRelog", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            gameConfig.Variables[varName] = value;
+            GameConfigService.RequestVariablesSave(gameName, gameConfig.Variables);
+        });
+    }
+
     private static string NormalizeGameName(string? value)
         => GameConfigService.NormalizeGameName(value);
 
@@ -1008,6 +1028,10 @@ public partial class MainWindow
         _embeddedGameConfig = config;
         _embeddedGameName = targetGameName;
         ApplyProfile(BuildProfileFromConfig(config));
+        Core.TwxRuntimeContext? runtimeContext = ResolveCurrentMtcTabContext()?.RuntimeContext ?? ActiveMtcRuntimeContext;
+        LoadOfflineCurrentGameVars(runtimeContext, config);
+        if (!_state.EmbeddedProxy)
+            AttachGameConfigVariablePersistence(runtimeContext, config, targetGameName);
         ApplyDebugLoggingPreferences();
         if (addToRecent)
             AddToRecentAndSave(configPath);

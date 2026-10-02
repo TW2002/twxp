@@ -208,6 +208,8 @@ namespace TWXProxy.Core
 
         public string Name { get; }
         public ITWXMenu? TWXMenu { get; set; }
+        // Embedded hosts can replace script windows for this instance only.
+        public IScriptWindowFactory? ScriptWindowFactory { get; set; }
         public ITWXDatabase? TWXDatabase { get; set; }
         public object? TWXLog { get; set; }
         public object? TWXExtractor { get; set; }
@@ -431,11 +433,6 @@ namespace TWXProxy.Core
         /// These summaries are written through the shared log path even when normal debug logging is off.
         /// </summary>
         public static bool EnableVmMetrics { get; set; } = false;
-
-        /// <summary>
-        /// Enables the script execution watchdog that stops apparent infinite loops.
-        /// </summary>
-        public static bool ScriptInfiniteLoopProtectionEnabled { get; set; } = true;
 
         /// <summary>
         /// When true, newly created Script instances prefer the prepared VM path.

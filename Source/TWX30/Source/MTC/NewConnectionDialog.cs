@@ -227,7 +227,9 @@ public class NewConnectionDialog : Window
             ConnectionProfile.DefaultListenPort.ToString(),
             width: 88);
         var txtLoginScript = CreateTextBox(string.IsNullOrWhiteSpace(profile.LoginScript) ? "0_Login.cts" : profile.LoginScript, width: 250);
-        var txtLoginName = CreateTextBox(profile.LoginName, width: 250);
+        var txtLoginName = CreateTextBox(
+            string.IsNullOrWhiteSpace(profile.LoginName) ? GetDefaultLoginName() : profile.LoginName,
+            width: 250);
         var txtPassword = CreateTextBox(profile.Password, width: 250);
         var txtGameLetter = CreateTextBox(profile.GameLetter, width: 88);
         IReadOnlyList<TwEditOption> editOptions = TwEditCatalogService.LoadOptions();
@@ -610,7 +612,7 @@ public class NewConnectionDialog : Window
             FontSize = 13,
             TextWrapping = TextWrapping.Wrap,
         };
-        _autoUsernameBox = CreateTextBox(string.Empty, "username", width: 180);
+        _autoUsernameBox = CreateTextBox(GetDefaultLoginName(), "username", width: 180);
         _autoPasswordBox = CreateTextBox(string.Empty, "password", width: 180);
         _autoPasswordBox.PasswordChar = '*';
         _autoBotNameBox = CreateTextBox(GetRememberedAutoBotName(), "bot name", width: 50);
@@ -750,12 +752,29 @@ public class NewConnectionDialog : Window
     {
         try
         {
-            string remembered = AppPreferences.Load().LastNativeMombotBotName.Trim();
+            AppPreferences prefs = AppPreferences.Load();
+            string configured = prefs.DefaultNativeMombotBotName.Trim();
+            if (!string.IsNullOrWhiteSpace(configured))
+                return configured;
+
+            string remembered = prefs.LastNativeMombotBotName.Trim();
             return string.IsNullOrWhiteSpace(remembered) ? "mombot" : remembered;
         }
         catch
         {
             return "mombot";
+        }
+    }
+
+    private static string GetDefaultLoginName()
+    {
+        try
+        {
+            return AppPreferences.Load().DefaultLoginName.Trim();
+        }
+        catch
+        {
+            return string.Empty;
         }
     }
 
@@ -1255,7 +1274,7 @@ public class NewConnectionDialog : Window
         }
         else if (string.Equals(afterLoginAction, "terra", StringComparison.OrdinalIgnoreCase))
         {
-            macroAfterLogin = "pt";
+            macroAfterLogin = "L";
         }
 
         if (!TwcrawlDiscoveryClient.TryParseTelnetEndpoint(_selectedAutoGame.ServerTelnet, out string host, out int port))

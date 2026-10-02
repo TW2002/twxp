@@ -46,6 +46,11 @@ internal sealed class GameAgentContextSnapshot
     public int Corp { get; init; }
     public int CurrentSector { get; init; }
     public long Credits { get; init; }
+    public int Turns { get; init; }
+    public int FuelOre { get; init; }
+    public int Organics { get; init; }
+    public int Equipment { get; init; }
+    public int Colonists { get; init; }
     public int Fighters { get; init; }
     public int Shields { get; init; }
     public int HoldsEmpty { get; init; }
@@ -296,6 +301,11 @@ internal sealed class GameAgentRuntime : IDisposable
             Corp = state.Corp,
             CurrentSector = state.Sector,
             Credits = state.Credits,
+            Turns = state.Turns,
+            FuelOre = state.FuelOre,
+            Organics = state.Organics,
+            Equipment = state.Equipment,
+            Colonists = state.Colonists,
             Fighters = state.Fighters,
             Shields = state.Shields,
             HoldsEmpty = state.HoldsEmpty,

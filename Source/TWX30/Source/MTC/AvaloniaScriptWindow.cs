@@ -35,7 +35,9 @@ internal class ScriptPopupWindow : Window
         MinWidth   = 120;
         MinHeight  = 60;
         Background = BgWin;
-        Topmost    = onTop;
+        // Do not honor script-requested Topmost in MTC. On macOS/Avalonia it can
+        // leave script popups pinned above unrelated windows and stealing focus.
+        Topmost    = false;
         ShowActivated = false;
         // Don't show in taskbar — these are script auxiliary windows
         ShowInTaskbar = false;
@@ -67,12 +69,9 @@ internal class ScriptPopupWindow : Window
         if (!IsVisible)
             return;
 
-        Topmost = true;
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (IsVisible)
-                Topmost = false;
-        }, DispatcherPriority.Background);
+        Topmost = false;
+        ShowActivated = false;
+        Show();
     }
 
     /// <summary>
@@ -205,7 +204,9 @@ public sealed class AvaloniaScriptWindowFactory : IScriptWindowFactory
     {
         TwxRuntimeContext runtimeContext = GlobalModules.CurrentContext;
         Action<Window>? registerWindow = _registrationResolver?.Invoke(runtimeContext);
-        bool effectiveOnTop = onTop && _ignoreStayInFrontResolver?.Invoke() != true;
+        _ = onTop;
+        _ = _ignoreStayInFrontResolver?.Invoke();
+        bool effectiveOnTop = false;
         return new AvaloniaScriptWindow(name, title, width, height, effectiveOnTop, registerWindow);
     }
 }

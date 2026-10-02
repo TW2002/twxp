@@ -252,6 +252,8 @@ namespace TWXProxy.Core
         private readonly object _deferredLocalOutputLock = new();
         private readonly List<DeferredLocalOutput> _deferredLocalOutput = new();
         private readonly ConcurrentQueue<byte[]> _serverSendQueue = new();
+        private readonly ConcurrentQueue<byte[]> _serverSentNotifications = new();
+        private int _dispatchingServerSentNotifications;
         private readonly SemaphoreSlim _serverSendSignal = new(0);
         private readonly object _fastServerDataResponderLock = new();
         private readonly List<Action<FastServerDataEventArgs>> _fastServerDataResponders = new();
@@ -285,7 +287,8 @@ namespace TWXProxy.Core
         public const int DefaultGameIdleKeepaliveIntervalSeconds = 30;
         private const int MinimumNetworkWatchdogSeconds = 5;
         private const int MaximumNetworkWatchdogSeconds = 600;
-        private static readonly byte[] GameIdleKeepaliveBytes = [0x1B, (byte)'[', (byte)'0', (byte)'n'];
+        // Keep this at the Telnet layer: unsolicited ANSI replies can become game input.
+        private static readonly byte[] GameIdleKeepaliveBytes = [IAC, 0xF1]; // Telnet NOP
         private static readonly TimeSpan ServerStaleWatchdogInterval = TimeSpan.FromSeconds(1);
         private static readonly TimeSpan DeferredLocalOutputQuietDelay = TimeSpan.FromMilliseconds(100);
         public bool AutoReconnect { get => _autoReconnect; set => _autoReconnect = value; }
@@ -1194,6 +1197,7 @@ namespace TWXProxy.Core
                 // Send disconnect message to client
                 await SendToLocalAsync(Encoding.ASCII.GetBytes($"\r\n[twxp] Disconnected from server.  Type {_commandChar}c to reconnect.\r\n"));
 
+                DispatchConnectionLostScriptEvent();
                 Disconnected?.Invoke(this, new DisconnectEventArgs("User requested disconnect"));
             }
             catch (Exception ex)
@@ -1384,6 +1388,7 @@ namespace TWXProxy.Core
                             _clientBufferDuringNegotiation.Clear();
                         }
 
+                        DispatchConnectionLostScriptEvent();
                         Disconnected?.Invoke(this, new DisconnectEventArgs("Server closed connection"));
                         StartReconnectIfNeeded();
                         break;
@@ -1452,8 +1457,7 @@ namespace TWXProxy.Core
                             bool suppressLocalOutput = pipeToggleAction != ScriptPipeToggleOutputAction.None;
                             if (!suppressLocalOutput)
                             {
-                                UpdateServerOutputBoundaryState(segment);
-                                await SendToLocalAsync(segment, token: token);
+                                await SendToLocalCoreAsync(segment, false, token, serverOutput: true);
                             }
 
                             await FlushDeferredLocalOutputWhenSafeAsync(token);
@@ -1522,6 +1526,7 @@ namespace TWXProxy.Core
                     Log($"[{_gameName}] Could not send disconnect message to clients: {sendEx.Message}");
                 }
 
+                DispatchConnectionLostScriptEvent();
                 Disconnected?.Invoke(this, new DisconnectEventArgs(ex.Message));
                 StartReconnectIfNeeded();
             }
@@ -1672,9 +1677,16 @@ namespace TWXProxy.Core
                 Log($"[{_gameName}] Could not send stale disconnect message to clients: {ex.Message}");
             }
 
+            DispatchConnectionLostScriptEvent();
             Disconnected?.Invoke(this, new DisconnectEventArgs(reason));
 
             StartReconnectIfNeeded();
+        }
+
+        private void DispatchConnectionLostScriptEvent()
+        {
+            ModInterpreter? interpreter = RuntimeContext.ActiveInterpreter ?? _interpreter;
+            interpreter?.DispatchProgramEvent("Connection Lost", string.Empty, false);
         }
 
         private long MarkServerReceive()
@@ -1745,8 +1757,7 @@ namespace TWXProxy.Core
             if (idle < TimeSpan.FromSeconds(intervalSeconds))
                 return;
 
-            if (!_serverSendQueue.IsEmpty ||
-                Interlocked.CompareExchange(ref _serverSendPumpScheduled, 0, 0) != 0)
+            if (!_serverSendQueue.IsEmpty)
             {
                 return;
             }
@@ -1781,7 +1792,7 @@ namespace TWXProxy.Core
                 await stream.WriteAsync(GameIdleKeepaliveBytes, 0, GameIdleKeepaliveBytes.Length, token);
                 await stream.FlushAsync(token);
                 MarkClientToServerActivity();
-                GlobalModules.DebugLog($"[{_gameName}] Sent ANSI status-response keepalive {reason}; next keepalive based on client-to-server inactivity\n");
+                GlobalModules.DebugLog($"[{_gameName}] Sent telnet NOP keepalive {reason}; next keepalive based on client-to-server inactivity\n");
             }
             catch (OperationCanceledException)
             {
@@ -2440,7 +2451,6 @@ namespace TWXProxy.Core
 
             byte[] copy = new byte[data.Length];
             Buffer.BlockCopy(data, 0, copy, 0, data.Length);
-            DispatchServerDataSent(copy);
 
             if (_serverSendQueue.IsEmpty && _serverSendLock.Wait(0))
             {
@@ -2452,6 +2462,7 @@ namespace TWXProxy.Core
                         stream.Write(copy, 0, copy.Length);
                         stream.Flush();
                         MarkClientToServerActivity();
+                        _serverSentNotifications.Enqueue(copy);
                     }
 
                     return Task.CompletedTask;
@@ -2464,6 +2475,7 @@ namespace TWXProxy.Core
                 finally
                 {
                     _serverSendLock.Release();
+                    DispatchPendingServerDataSent();
                 }
             }
 
@@ -2493,7 +2505,7 @@ namespace TWXProxy.Core
                 stream.Write(data, 0, data.Length);
                 stream.Flush();
                 MarkClientToServerActivity();
-                DispatchServerDataSent(data);
+                _serverSentNotifications.Enqueue(CopyBytes(data));
                 return FastServerSendResult.Succeeded(startTimestamp, Stopwatch.GetTimestamp(), data.Length);
             }
             catch (Exception ex)
@@ -2503,6 +2515,7 @@ namespace TWXProxy.Core
             finally
             {
                 _serverSendLock.Release();
+                DispatchPendingServerDataSent();
             }
         }
 
@@ -2677,11 +2690,13 @@ namespace TWXProxy.Core
                                     await stream.WriteAsync(data, 0, data.Length, token);
                                     await stream.FlushAsync(token);
                                     MarkClientToServerActivity();
+                                    _serverSentNotifications.Enqueue(data);
                                 }
                             }
                             finally
                             {
                                 _serverSendLock.Release();
+                                DispatchPendingServerDataSent();
                             }
                         }
                         catch (OperationCanceledException)
@@ -2724,39 +2739,69 @@ namespace TWXProxy.Core
             await client.WriteStream.FlushAsync(token);
         }
 
-        public async Task SendToLocalAsync(byte[] data, bool broadcastDeaf = false, CancellationToken token = default)
+        public Task SendToLocalAsync(byte[] data, bool broadcastDeaf = false, CancellationToken token = default)
+            => SendToLocalCoreAsync(data, broadcastDeaf, token, serverOutput: false);
+
+        private async Task SendToLocalCoreAsync(byte[] data, bool broadcastDeaf, CancellationToken token, bool serverOutput)
         {
             using var runtimeScope = GlobalModules.UseRuntimeContext(RuntimeContext);
+            bool deferred = false;
             await _localSendLock.WaitAsync(token);
             try
             {
-                IReadOnlyList<ClientSession> clients = GetClientSnapshot();
-                foreach (ClientSession client in clients)
+                // Boundary checks and socket writes must be serialized together. In
+                // particular, ECHO's broadcastDeaf must not bypass an incomplete CSI.
+                if (serverOutput)
+                    UpdateServerOutputBoundaryState(data);
+                else if (IsServerOutputInsideAnsi())
                 {
-                    if (client.Type == ClientType.Rejected)
-                        continue;
-                    if (!broadcastDeaf && client.Type == ClientType.Deaf)
-                        continue;
-
-                    try
+                    lock (_deferredLocalOutputLock)
                     {
-                        await WriteToClientAsync(client, data, token);
+                        _deferredLocalOutput.Add(new DeferredLocalOutput
+                        {
+                            Data = (byte[])data.Clone(),
+                            BroadcastDeaf = broadcastDeaf
+                        });
                     }
-                    catch (OperationCanceledException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"[SendToLocalAsync] Failed sending to client {client.RemoteAddress}: {ex.Message}");
-                        RemoveClientSession(client);
-                        CloseClientSession(client);
-                    }
+                    deferred = true;
+                    return;
                 }
+
+                await WriteToLocalClientsAsync(data, broadcastDeaf, token);
             }
             finally
             {
                 _localSendLock.Release();
+                if (deferred)
+                    ScheduleDeferredLocalOutputFlushAfterQuiet(_cancellationSource?.Token ?? token);
+            }
+        }
+
+        // Caller holds _localSendLock.
+        private async Task WriteToLocalClientsAsync(byte[] data, bool broadcastDeaf, CancellationToken token)
+        {
+            IReadOnlyList<ClientSession> clients = GetClientSnapshot();
+            foreach (ClientSession client in clients)
+            {
+                if (client.Type == ClientType.Rejected)
+                    continue;
+                if (!broadcastDeaf && client.Type == ClientType.Deaf)
+                    continue;
+
+                try
+                {
+                    await WriteToClientAsync(client, data, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log($"[SendToLocalAsync] Failed sending to client {client.RemoteAddress}: {ex.Message}");
+                    RemoveClientSession(client);
+                    CloseClientSession(client);
+                }
             }
         }
 
@@ -3022,6 +3067,26 @@ namespace TWXProxy.Core
             }
         }
 
+        private void DispatchPendingServerDataSent()
+        {
+            // Enqueued under the send lock, but callbacks may send or run scripts.
+            // Drain outside that lock and defer reentrant notifications to preserve wire order.
+            do
+            {
+                if (Interlocked.CompareExchange(ref _dispatchingServerSentNotifications, 1, 0) != 0)
+                    return;
+                try
+                {
+                    while (_serverSentNotifications.TryDequeue(out byte[]? data))
+                        DispatchServerDataSent(data);
+                }
+                finally
+                {
+                    Volatile.Write(ref _dispatchingServerSentNotifications, 0);
+                }
+            } while (!_serverSentNotifications.IsEmpty);
+        }
+
         private void DispatchServerDataSent(byte[] data)
         {
             EventHandler<DataReceivedEventArgs>? handler = ServerDataSent;
@@ -3250,7 +3315,8 @@ namespace TWXProxy.Core
             // ECHO/ECHOEX and script prompts use broadcastDeaf so menu/status
             // messages remain visible while scripts mute server output. Do not
             // defer those behind server dispatch, or a deafing script can appear
-            // to hang without showing its own progress message.
+            // to hang without showing its own progress message. SendToLocalAsync
+            // still defers them if they would split a server ANSI sequence.
             if (!broadcastDeaf && TryQueueDeferredLocalOutput(data, broadcastDeaf: false))
                 return;
 
@@ -3438,18 +3504,31 @@ namespace TWXProxy.Core
 
         private async Task FlushDeferredLocalOutputAsync(CancellationToken token = default)
         {
-            List<DeferredLocalOutput>? pending = null;
-            lock (_deferredLocalOutputLock)
+            await _localSendLock.WaitAsync(token);
+            try
             {
-                if (_serverDataDispatchDepth > 0 || _deferredLocalOutput.Count == 0)
+                // A server write may have started another ANSI sequence since the
+                // caller checked the boundary (including the quiet-period timer).
+                if (IsServerOutputInsideAnsi())
                     return;
 
-                pending = new List<DeferredLocalOutput>(_deferredLocalOutput);
-                _deferredLocalOutput.Clear();
-            }
+                List<DeferredLocalOutput> pending;
+                lock (_deferredLocalOutputLock)
+                {
+                    if (_serverDataDispatchDepth > 0 || _deferredLocalOutput.Count == 0)
+                        return;
 
-            foreach (DeferredLocalOutput output in pending)
-                await SendToLocalAsync(output.Data, output.BroadcastDeaf, token);
+                    pending = new List<DeferredLocalOutput>(_deferredLocalOutput);
+                    _deferredLocalOutput.Clear();
+                }
+
+                foreach (DeferredLocalOutput output in pending)
+                    await WriteToLocalClientsAsync(output.Data, output.BroadcastDeaf, token);
+            }
+            finally
+            {
+                _localSendLock.Release();
+            }
         }
 
         private void ScheduleDeferredLocalOutputFlushAfterQuiet(CancellationToken token = default)

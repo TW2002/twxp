@@ -28,6 +28,8 @@ public partial class MainWindow
         public DateTime CreatedUtc { get; init; } = DateTime.UtcNow;
         public MtcTabPerfCounters Perf { get; init; } = null!;
         public Core.TwxRuntimeContext RuntimeContext { get; init; } = null!;
+        public DockedScriptWindows ScriptWindows { get; } = new();
+        public ScriptWindowPopups? ScriptWindowPopups { get; set; }
         public GameState State { get; init; } = null!;
         public TerminalBuffer Buffer { get; init; } = null!;
         public AnsiParser Parser { get; init; } = null!;
@@ -43,6 +45,8 @@ public partial class MainWindow
         public Action<bool, Core.NativeHaggleChangeSource>? EmbeddedNativeHaggleChangedHandler { get; set; }
         public Action? EmbeddedNativeHaggleStatsChangedHandler { get; set; }
         public Action<Core.ShipStatus>? EmbeddedShipStatusUpdatedHandler { get; set; }
+        public Core.GameInstance? EmbeddedServerDataSentSource { get; set; }
+        public EventHandler<Core.DataReceivedEventArgs>? EmbeddedServerDataSentHandler { get; set; }
         public ConcurrentQueue<PendingDisplayChunk> PendingDisplayChunks { get; } = new();
         public int PendingDisplayChunkCount;
         public long PendingDisplayByteCount;
@@ -94,9 +98,20 @@ public partial class MainWindow
         public int DeckConsoleVisible;
         public Core.NativeHaggleEngine StandaloneNativeHaggle { get; init; } = null!;
         public MTC.mombot.mombotService Mombot { get; init; } = null!;
+        public string TelnetScriptInputBuffer { get; set; } = string.Empty;
         public PythonScriptRunner PythonScripts { get; init; } = null!;
         public GameAgentRuntime GameAgent { get; init; } = null!;
         public Action<byte[]>? TerminalInputHandler { get; set; }
+        public OpenTwMapFrameFilter TerminalMapFrameFilter { get; } = new();
+        public OpenTwMapFrameFilter ScriptMapFrameFilter { get; } = new();
+        public bool OpenTwServerDetected { get; set; }
+        public bool OpenTwCommandReady { get; set; }
+        public string OpenTwMapSyncStatus { get; set; } = string.Empty;
+        public long OpenTwConnectionGeneration;
+        public CancellationTokenSource? OpenTwMapSyncCancellation { get; set; }
+        public OpenTwInitialSyncGate OpenTwInitialSyncGate { get; } = new();
+        public OpenTwMapProbe OpenTwMapProbe { get; } = new();
+        public int OpenTwMapSyncRunning;
         public List<CommEntry> CommEntries { get; } = [];
         public bool CommWindowVisible { get; set; }
         public Core.CommMessageChannel CommSelectedChannel { get; set; } = Core.CommMessageChannel.FedComm;
@@ -131,6 +146,7 @@ public partial class MainWindow
         public MombotGridContext? MombotMacroContext { get; set; }
         public IReadOnlyList<MombotHotkeyScriptEntry> MombotHotkeyScripts { get; set; } = Array.Empty<MombotHotkeyScriptEntry>();
         public List<string> MombotCommandHistory { get; } = [];
+        public List<string> PendingNativeMombotCommands { get; } = [];
         public string MombotPromptBuffer { get; set; } = string.Empty;
         public string MombotPromptDraft { get; set; } = string.Empty;
         public Func<string, string>? MombotPromptSubmitTransform { get; set; }
@@ -389,6 +405,11 @@ public partial class MainWindow
             NotesPanelVisible = _appPrefs.ShowNotesPanel,
         };
 
+        runtimeContext.ScriptWindowFactory = tab.ScriptWindows;
+        tab.ScriptWindowPopups = new ScriptWindowPopups(tab.ScriptWindows, window => RegisterMtcTabOwnedWindow(tab, window));
+        tab.ScriptWindowPopups.SetEnabled(!_appPrefs.ScriptWindowsInsideMtc);
+        InitializeOpenTwMapSync(tab);
+
         tab.GameAgent.EventRecorded += evt => _jsonRpcServer?.PublishGameAgentEvent(evt);
         tab.PythonScripts.EventRecorded += evt =>
         {
@@ -456,6 +477,7 @@ public partial class MainWindow
 
         tab.Telnet.Connected += () =>
         {
+            ResetOpenTwMapSync(tab);
             RecordMtcUiPost(tab, "telnet.connected", DispatcherPriority.Background);
             Dispatcher.UIThread.Post(() =>
             {
@@ -466,6 +488,7 @@ public partial class MainWindow
 
         tab.Telnet.Disconnected += () =>
         {
+            CancelOpenTwMapSync(tab);
             RecordMtcUiPost(tab, "telnet.disconnected", DispatcherPriority.Background);
             Dispatcher.UIThread.Post(() =>
             {
@@ -506,6 +529,7 @@ public partial class MainWindow
         {
             string safeAnsiLine = ansiLine ?? string.Empty;
             string safeStrippedLine = strippedLine ?? string.Empty;
+            ObserveOpenTwMapSyncLine(tab, safeStrippedLine);
             RecordMtcPerf(tab, "telnet.ansi.lines");
             RecordMtcPerf(tab, "telnet.ansi.bytes", safeAnsiLine.Length);
             if (tab.Id != _activeMtcTabId)
@@ -516,6 +540,10 @@ public partial class MainWindow
                     if (ShouldDispatchOnlinePlayersLine(safeStrippedLine))
                         ObserveOnlinePlayersLine(safeStrippedLine);
                     Core.GlobalModules.GlobalAutoRecorder.RecordLine(safeStrippedLine, safeAnsiLine);
+                    SyncMombotPromptVarsFromLine(tab.RuntimeContext, safeStrippedLine);
+                    DispatchMtcTabLocalInterpreterLine(tab, safeStrippedLine, safeAnsiLine);
+                    ObserveMtcTabMombotServerLine(tab, safeStrippedLine);
+                    ScheduleNativeMombotStartupWatch(tab);
                     ProcessStandaloneNativeHaggleLine(tab, safeStrippedLine);
                 });
                 return;
@@ -524,6 +552,10 @@ public partial class MainWindow
             ExecuteInMtcTabSession(tab, () =>
             {
                 Core.GlobalModules.GlobalAutoRecorder.RecordLine(safeStrippedLine, safeAnsiLine);
+                SyncMombotPromptStateFromLine(safeStrippedLine, safeAnsiLine);
+                DispatchMtcTabLocalInterpreterLine(tab, safeStrippedLine, safeAnsiLine);
+                ObserveMtcTabMombotServerLine(tab, safeStrippedLine);
+                ScheduleNativeMombotStartupWatch(tab);
                 if (MtcPerfSwitches.DisableAgent)
                     RecordMtcSubsystemSkipped(tab, "agent");
                 else
@@ -646,6 +678,35 @@ public partial class MainWindow
                 ApplyShipStatusDeltaToTabParser(tab, delta);
             });
         };
+    }
+
+    private static void DispatchMtcTabLocalInterpreterLine(MtcTabPrototype tab, string strippedLine, string ansiLine)
+    {
+        if (tab.GameInstance != null)
+            return;
+
+        Core.ModInterpreter? interpreter = tab.RuntimeContext.ActiveInterpreter ?? tab.RuntimeContext.TWXInterpreter as Core.ModInterpreter;
+        if (interpreter == null)
+            return;
+
+        interpreter.DispatchCompleteLine(strippedLine, ansiLine, forceTrigger: false);
+    }
+
+    private void ObserveMtcTabMombotServerLine(MtcTabPrototype tab, string strippedLine)
+    {
+        if (tab.GameInstance != null || string.IsNullOrWhiteSpace(strippedLine))
+            return;
+
+        if (!tab.Mombot.ObserveServerLine(strippedLine, observeWatcher: false))
+            return;
+
+        if (tab.Id != Volatile.Read(ref _activeMtcTabId))
+        {
+            MarkMtcTabVisualStateDirty(tab, infoPanels: true, statusBar: true);
+            return;
+        }
+
+        RequestStatusBarRefresh();
     }
 
     private void RequestCoalescedMtcTabInfoPanelsRefresh(MtcTabPrototype tab, string source)
@@ -907,6 +968,11 @@ public partial class MainWindow
             tab.MombotCommandHistory.Clear();
             tab.MombotCommandHistory.AddRange(_mombotCommandHistory);
         }
+        if (!ReferenceEquals(tab.PendingNativeMombotCommands, _pendingNativeMombotCommands))
+        {
+            tab.PendingNativeMombotCommands.Clear();
+            tab.PendingNativeMombotCommands.AddRange(_pendingNativeMombotCommands);
+        }
         tab.MombotPromptBuffer = _mombotPromptBuffer;
         tab.MombotPromptDraft = _mombotPromptDraft;
         tab.MombotPromptSubmitTransform = _mombotPromptSubmitTransform;
@@ -919,6 +985,7 @@ public partial class MainWindow
         tab.MombotLastObservedGamePromptAnsi = _mombotLastObservedGamePromptAnsi;
         tab.MombotLastObservedGamePromptPlain = _mombotLastObservedGamePromptPlain;
         tab.PendingNativeMombotPostLoginMacro = _pendingNativeMombotPostLoginMacro;
+        tab.TelnetScriptInputBuffer = _telnetScriptInputBuffer;
         tab.PendingTerminalSyncMarkerLeadByte = _pendingTerminalSyncMarkerLeadByte;
         tab.PendingTerminalSyncMarkerUtf8LeadByte = _pendingTerminalSyncMarkerUtf8LeadByte;
         tab.MombotKeepaliveTickRunning = _mombotKeepaliveTickRunning;
@@ -1028,6 +1095,7 @@ public partial class MainWindow
         _mombotMacroContext = tab.MombotMacroContext;
         _mombotHotkeyScripts = tab.MombotHotkeyScripts;
         _mombotCommandHistory = tab.MombotCommandHistory;
+        _pendingNativeMombotCommands = tab.PendingNativeMombotCommands;
         _mombotPromptBuffer = tab.MombotPromptBuffer;
         _mombotPromptDraft = tab.MombotPromptDraft;
         _mombotPromptSubmitTransform = tab.MombotPromptSubmitTransform;
@@ -1040,6 +1108,7 @@ public partial class MainWindow
         _mombotLastObservedGamePromptAnsi = tab.MombotLastObservedGamePromptAnsi;
         _mombotLastObservedGamePromptPlain = tab.MombotLastObservedGamePromptPlain;
         _pendingNativeMombotPostLoginMacro = tab.PendingNativeMombotPostLoginMacro;
+        _telnetScriptInputBuffer = tab.TelnetScriptInputBuffer;
         _pendingTerminalSyncMarkerLeadByte = tab.PendingTerminalSyncMarkerLeadByte;
         _pendingTerminalSyncMarkerUtf8LeadByte = tab.PendingTerminalSyncMarkerUtf8LeadByte;
         _mombotKeepaliveTickRunning = tab.MombotKeepaliveTickRunning;
@@ -1760,11 +1829,7 @@ public partial class MainWindow
             return true;
         }
 
-        bool live = owner.GameInstance?.IsRunning == true ||
-                    owner.GameInstance?.IsConnected == true ||
-                    owner.Telnet.IsConnected ||
-                    owner.State.Connected;
-        if (!live)
+        if (!IsMtcTabConnectedToServer(owner))
             return true;
 
         Core.GlobalModules.DebugLog(
@@ -1930,12 +1995,13 @@ public partial class MainWindow
             BindActiveMtcTabSession();
             bool commandDeckAlreadyHostsEveryGame =
                 _useCommandDeckSkin &&
-                _deckSurface is not null &&
+                _commandDeckRoot is not null &&
                 _mtcTabs.Where(tab => tab.IsLiveSession)
                     .All(tab => _deckTerminalControls.ContainsKey(tab.Id));
             if (commandDeckAlreadyHostsEveryGame)
             {
                 UpdateCommandDeckActiveConsole();
+                RefreshScriptWindowSidebar();
                 _shellHost.Child = _liveTabShell;
             }
             else
@@ -1959,7 +2025,7 @@ public partial class MainWindow
 
     private void RestoreLiveMtcTabStatusBar()
     {
-        _statusBar.IsVisible = _appPrefs.ShowBottomBar;
+        _statusBar.IsVisible = ShowMainStatusBar;
         _statusBarLayoutSignature = string.Empty;
         EnsureStatusBarLayout();
         UpdateClassicTerminalSizeStatus();
@@ -1967,7 +2033,8 @@ public partial class MainWindow
 
     private void ShowStagedMtcTabStatusBar(MtcTabPrototype tab)
     {
-        _statusBar.IsVisible = _appPrefs.ShowBottomBar;
+        RefreshSectorExplorationStatus();
+        _statusBar.IsVisible = ShowMainStatusBar;
         _statusTerminalSizeText.IsVisible = false;
         _statusBarLayoutSignature = $"staged:{tab.Id}";
         _statusBarContent.Children.Clear();
@@ -2224,6 +2291,7 @@ public partial class MainWindow
 
     private void RefreshMtcTabStrip(bool force = false)
     {
+        _tabStripHost.IsVisible = !_useCommandDeckSkin || !IsLiveMtcTabActive();
         if (_tabStripItems is null)
             return;
 
@@ -2267,6 +2335,7 @@ public partial class MainWindow
 
     private async Task StopMtcTabSessionAsync(MtcTabPrototype tab)
     {
+        tab.ScriptWindowPopups?.Dispose();
         Interlocked.Exchange(ref tab.EmbeddedServerConnectedState, 0);
         tab.State.Connected = false;
         await ExecuteInOptionalMtcTabSessionAsync(tab, async () =>

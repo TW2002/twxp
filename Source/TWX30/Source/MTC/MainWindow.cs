@@ -33,7 +33,7 @@ namespace MTC;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private sealed record CommEntry(Core.CommMessageChannel Channel, string Sender, string Message, bool IsLocal);
+    private sealed record CommEntry(Core.CommMessageChannel Channel, string Sender, string Message, bool IsLocal, DateTime ReceivedAt);
     private readonly record struct PendingDisplayChunk(byte[] Bytes);
     private readonly record struct FinderPrewarmKey(
         string DatabasePath,
@@ -133,6 +133,7 @@ public partial class MainWindow : Window
     private readonly NativeMenu _nativeAppMenu = new();
     private readonly NativeMenu _nativeDockMenu = new();
     private MTC.mombot.mombotService _mombot = null!;
+    private string _telnetScriptInputBuffer = string.Empty;
     private PythonScriptRunner _pythonScripts = null!;
     private readonly Border _shellHost = new();
     private readonly Border _statusBar = new();
@@ -157,8 +158,6 @@ public partial class MainWindow : Window
     };
     private Canvas? _deckSurface;
     private Grid? _deckWorkspaceHost;
-    private Viewbox? _deckWorkspaceScaler;
-    private Control? _deckWorkspace;
     private double _deckWorkspaceMinimumWidth;
     private double _deckWorkspaceMinimumHeight;
     private readonly Dictionary<string, FloatingDeckPanel> _deckPanels = new(StringComparer.OrdinalIgnoreCase);
@@ -284,9 +283,11 @@ public partial class MainWindow : Window
     private ScrollViewer? _commSubspaceScrollViewer;
     private ScrollViewer? _commPrivateScrollViewer;
     private ScrollViewer? _commEventsScrollViewer;
+    private Grid? _commComposerGrid;
     private TextBox? _commComposeTextBox;
     private TextBox? _commPrivateTargetTextBox;
     private TextBlock? _commPrivateTargetLabel;
+    private Button? _commSendButton;
     private RowDefinition? _commSplitterRow;
     private RowDefinition? _commPanelRow;
     private GridSplitter? _commGridSplitter;
@@ -303,9 +304,11 @@ public partial class MainWindow : Window
     private ScrollViewer? _deckCommSubspaceScrollViewer;
     private ScrollViewer? _deckCommPrivateScrollViewer;
     private ScrollViewer? _deckCommEventsScrollViewer;
+    private Grid? _deckCommComposerGrid;
     private TextBox? _deckCommComposeTextBox;
     private TextBox? _deckCommPrivateTargetTextBox;
     private TextBlock? _deckCommPrivateTargetLabel;
+    private Button? _deckCommSendButton;
     private RowDefinition? _deckCommSplitterRow;
     private RowDefinition? _deckCommPanelRow;
     private GridSplitter? _deckCommGridSplitter;
@@ -339,6 +342,7 @@ public partial class MainWindow : Window
     private MombotGridContext? _mombotMacroContext;
     private IReadOnlyList<MombotHotkeyScriptEntry> _mombotHotkeyScripts = Array.Empty<MombotHotkeyScriptEntry>();
     private List<string> _mombotCommandHistory = [];
+    private List<string> _pendingNativeMombotCommands = [];
     private string _mombotPromptBuffer = string.Empty;
     private string _mombotPromptDraft = string.Empty;
     private Func<string, string>? _mombotPromptSubmitTransform;
@@ -393,6 +397,7 @@ public partial class MainWindow : Window
     private TextBlock _valName     = new();
     private StackPanel _onlinePlayersHost = new() { Spacing = 2 };
     private TextBlock _valSector    = new();
+    private Border    _sectorValueHighlight = new();
     private Border    _sectorBustIndicator = new();
     private TextBlock _valTurns     = new();
     private TextBlock _valExper     = new();
@@ -438,6 +443,7 @@ public partial class MainWindow : Window
     private Border    _scanIndP     = new();
     private TextBlock _deckValName     = new();
     private TextBlock _deckValSector   = new();
+    private Border    _deckValSectorHighlight = new();
     private TextBlock _deckValTurns    = new();
     private TextBlock _deckValExper    = new();
     private TextBlock _deckValAlignm   = new();
@@ -476,11 +482,14 @@ public partial class MainWindow : Window
     private TextBlock _statusBackdoorValue = new();
     private TextBlock _statusRylosValue = new();
     private TextBlock _statusAlphaValue = new();
+    private MenuItem _openTwMapStatusMenuItem = new() { Header = "OpenTW map: not detected", IsEnabled = false };
+    private MenuItem _openTwMapRefreshMenuItem = new() { Header = "Refresh OpenTW _Map", IsEnabled = false };
     private Control? _statusStarDockChip;
     private Control? _statusBackdoorChip;
     private Control? _statusRylosChip;
     private Control? _statusAlphaChip;
     private TextBlock _deckHudHeaderSector = new();
+    private Border _deckHudHeaderSectorHighlight = new();
     private TextBlock _deckHudHeaderConnection = new();
     private TextBlock _deckHudShipName = new();
     private TextBlock _deckHudShipSubtitle = new();
